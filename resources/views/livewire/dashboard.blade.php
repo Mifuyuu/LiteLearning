@@ -1,11 +1,11 @@
-@section('page-title', 'Dashboard')
+@section('page-title', __('Dashboard'))
 
 <div>
     <!-- Welcome Banner -->
     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 mb-6 text-white animate__animated animate__fadeIn">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold">Welcome back, {{ auth()->user()->name }}! 👋</h2>
+                <h2 class="text-2xl font-bold">{{ __('Welcome back, :name!', ['name' => auth()->user()->name]) }} 👋</h2>
                 <p class="mt-1 text-indigo-100">{{ now()->format('l, F j, Y') }}</p>
             </div>
             <div class="hidden md:block">
@@ -24,7 +24,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-2xl font-bold text-gray-900">{{ $stats['classrooms'] ?? 0 }}</p>
-                    <p class="text-sm text-gray-500">Classrooms</p>
+                    <p class="text-sm text-gray-500">{{ __('Classrooms') }}</p>
                 </div>
             </div>
         </div>
@@ -35,7 +35,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-2xl font-bold text-gray-900">{{ $stats['students'] ?? 0 }}</p>
-                    <p class="text-sm text-gray-500">Students</p>
+                    <p class="text-sm text-gray-500">{{ __('Students') }}</p>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-2xl font-bold text-gray-900">{{ $stats['assignments'] ?? 0 }}</p>
-                    <p class="text-sm text-gray-500">Assignments</p>
+                    <p class="text-sm text-gray-500">{{ __('Assignments') }}</p>
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-2xl font-bold text-gray-900">{{ $stats['pending'] ?? 0 }}</p>
-                    <p class="text-sm text-gray-500">Pending Review</p>
+                    <p class="text-sm text-gray-500">{{ __('Pending Review') }}</p>
                 </div>
             </div>
         </div>
@@ -68,9 +68,9 @@
         <!-- Classrooms -->
         <div class="lg:col-span-2">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">My Classrooms</h3>
+                <h3 class="text-lg font-semibold text-gray-900">{{ __('My Classrooms') }}</h3>
                 <a href="{{ route('classrooms') }}" class="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
-                    View all <i class="fas fa-arrow-right ml-1"></i>
+                    {{ __('View all') }} <i class="fas fa-arrow-right ml-1"></i>
                 </a>
             </div>
 
@@ -79,12 +79,12 @@
                     <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-chalkboard text-gray-400 text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">No classrooms yet</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">{{ __('No classrooms yet') }}</h3>
                     <p class="text-gray-500 mb-4">
                         @if(auth()->user()->isTeacher())
-                            Create your first classroom to get started.
+                            {{ __('Create your first classroom to get started.') }}
                         @else
-                            Join a classroom using a class code.
+                            {{ __('Join a classroom using a class code.') }}
                         @endif
                     </p>
                 </div>
@@ -129,7 +129,7 @@
 
         <!-- Upcoming Assignments -->
         <div>
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Upcoming Assignments') }}</h3>
             <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
                 @forelse($upcomingAssignments as $assignment)
                 <a href="{{ route('assignment.show', ['classroom' => $assignment->classroom, 'assignment' => $assignment->id]) }}"
@@ -158,7 +158,7 @@
                 @empty
                 <div class="p-8 text-center">
                     <i class="fas fa-check-circle text-green-400 text-2xl mb-2"></i>
-                    <p class="text-sm text-gray-500">No upcoming assignments!</p>
+                    <p class="text-sm text-gray-500">{{ __('No upcoming assignments') }}</p>
                 </div>
                 @endforelse
             </div>

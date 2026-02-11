@@ -9,7 +9,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -42,41 +42,41 @@
                 <a href="{{ route('dashboard') }}"
                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('dashboard') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-home w-5 mr-3 text-center"></i>
-                    Dashboard
+                    {{ __('Dashboard') }}
                 </a>
 
                 <a href="{{ route('classrooms') }}"
                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('classrooms*') || request()->routeIs('classroom*') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-chalkboard w-5 mr-3 text-center"></i>
-                    Classrooms
+                    {{ __('Classrooms') }}
                 </a>
 
                 <a href="{{ route('calendar') }}"
                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('calendar') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-calendar-alt w-5 mr-3 text-center"></i>
-                    Calendar
+                    {{ __('Calendar') }}
                 </a>
 
                 @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
                 <div class="pt-4">
-                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Teaching</p>
+                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Teaching') }}</p>
                     <div class="mt-2 space-y-1">
                         <a href="{{ route('classrooms') }}?filter=teaching"
                            class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
                             <i class="fas fa-chalkboard-teacher w-5 mr-3 text-center"></i>
-                            My Classes
+                            {{ __('My Classes') }}
                         </a>
                         <a href="{{ route('to-review') }}"
                            class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
                             <i class="fas fa-tasks w-5 mr-3 text-center"></i>
-                            To Review
+                            {{ __('To Review') }}
                         </a>
                     </div>
                 </div>
                 @endif
 
                 <div class="pt-4">
-                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Enrolled</p>
+                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Enrolled') }}</p>
                     <div class="mt-2 space-y-1">
                         @php
                             $enrolledClasses = auth()->user()->enrolledClassrooms()->where('is_archived', false)->take(5)->get();
@@ -93,7 +93,7 @@
 
                 @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
                 <div class="pt-4">
-                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Teaching</p>
+                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Teaching') }}</p>
                     <div class="mt-2 space-y-1">
                         @php
                             $teachingClasses = auth()->user()->ownedClassrooms()->where('is_archived', false)->take(5)->get();
@@ -174,16 +174,16 @@
                                     </span>
                                 </div>
                                 <a href="{{ route('profile') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                    <i class="fas fa-user-circle w-4 mr-3"></i> Profile
+                                    <i class="fas fa-user-circle w-4 mr-3"></i> {{ __('Profile') }}
                                 </a>
                                 <a href="{{ route('settings') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                    <i class="fas fa-cog w-4 mr-3"></i> Settings
+                                    <i class="fas fa-cog w-4 mr-3"></i> {{ __('Settings') }}
                                 </a>
                                 <hr class="my-1 border-gray-100">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                        <i class="fas fa-sign-out-alt w-4 mr-3"></i> Sign Out
+                                        <i class="fas fa-sign-out-alt w-4 mr-3"></i> {{ __('Sign Out') }}
                                     </button>
                                 </form>
                             </div>

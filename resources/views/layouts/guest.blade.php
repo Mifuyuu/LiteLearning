@@ -9,7 +9,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -28,7 +28,7 @@
                 <i class="fas fa-graduation-cap text-white text-2xl"></i>
             </div>
             <h1 class="text-3xl font-bold text-gray-900">LiteLearning</h1>
-            <p class="text-gray-500 mt-1">Your modern learning platform</p>
+            <p class="text-gray-500 mt-1">{{ __('Your modern learning platform') }}</p>
         </div>
 
         <!-- Content -->

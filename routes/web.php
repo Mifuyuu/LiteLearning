@@ -11,6 +11,7 @@ use App\Livewire\Classroom\People;
 use App\Livewire\Assignment\Create as AssignmentCreate;
 use App\Livewire\Assignment\Show as AssignmentShow;
 use App\Livewire\Assignment\Grade;
+use App\Livewire\Settings;
 
 // Landing page
 Route::get('/', function () {
@@ -64,7 +65,5 @@ Route::middleware('auth')->group(function () {
         return view('pages.profile');
     })->name('profile');
 
-    Route::get('/settings', function () {
-        return view('pages.settings');
-    })->name('settings');
+    Route::get('/settings', Settings::class)->name('settings');
 });

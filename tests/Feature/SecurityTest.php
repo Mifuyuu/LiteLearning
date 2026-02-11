@@ -21,6 +21,7 @@ class SecurityTest extends TestCase
 
     public function test_assignment_show_rejects_assignment_from_different_classroom(): void
     {
+        /** @var User $teacher */
         $teacher = User::factory()->create(['role' => 'teacher']);
         $classroomA = Classroom::factory()->create(['teacher_id' => $teacher->id]);
         $classroomB = Classroom::factory()->create(['teacher_id' => $teacher->id]);
@@ -42,6 +43,7 @@ class SecurityTest extends TestCase
 
     public function test_grade_rejects_submission_from_different_assignment(): void
     {
+        /** @var User $teacher */
         $teacher = User::factory()->create(['role' => 'teacher']);
         $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
 
@@ -54,6 +56,7 @@ class SecurityTest extends TestCase
             'user_id' => $teacher->id,
         ]);
 
+        /** @var User $student */
         $student = User::factory()->create(['role' => 'student']);
         $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
 
@@ -82,7 +85,9 @@ class SecurityTest extends TestCase
 
     public function test_teacher_cannot_delete_announcement_from_another_classroom(): void
     {
+        /** @var User $teacherA */
         $teacherA = User::factory()->create(['role' => 'teacher']);
+        /** @var User $teacherB */
         $teacherB = User::factory()->create(['role' => 'teacher']);
 
         $classroomA = Classroom::factory()->create(['teacher_id' => $teacherA->id]);
@@ -107,7 +112,9 @@ class SecurityTest extends TestCase
 
     public function test_user_cannot_comment_on_announcement_they_have_no_access_to(): void
     {
+        /** @var User $teacher */
         $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $outsider */
         $outsider = User::factory()->create(['role' => 'student']);
 
         $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
@@ -130,6 +137,7 @@ class SecurityTest extends TestCase
 
     public function test_student_cannot_create_classroom(): void
     {
+        /** @var User $student */
         $student = User::factory()->create(['role' => 'student']);
 
         Livewire::actingAs($student)
@@ -141,6 +149,7 @@ class SecurityTest extends TestCase
 
     public function test_teacher_can_create_classroom(): void
     {
+        /** @var User $teacher */
         $teacher = User::factory()->create(['role' => 'teacher']);
 
         Livewire::actingAs($teacher)
