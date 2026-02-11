@@ -1,8 +1,8 @@
 @extends('layouts.app')
-@section('page-title', 'Profile')
+@section('page-title', __('Profile'))
 @section('content')
     <div class="max-w-2xl mx-auto">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Profile</h2>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Profile') }}</h2>
 
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <!-- Cover -->
@@ -17,7 +17,7 @@
                 <h3 class="text-xl font-bold text-gray-900">{{ auth()->user()->name }}</h3>
                 <p class="text-gray-500">{{ auth()->user()->email }}</p>
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mt-2 capitalize">
-                    {{ auth()->user()->role }}
+                    {{ __(ucfirst(auth()->user()->role)) }}
                 </span>
 
                 @if(auth()->user()->bio)
@@ -28,12 +28,12 @@
                     @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
                     <div class="bg-gray-50 rounded-lg p-4 text-center">
                         <p class="text-2xl font-bold text-gray-900">{{ auth()->user()->ownedClassrooms()->count() }}</p>
-                        <p class="text-sm text-gray-500">Classes Teaching</p>
+                        <p class="text-sm text-gray-500">{{ __('Classes Teaching') }}</p>
                     </div>
                     @endif
                     <div class="bg-gray-50 rounded-lg p-4 text-center">
                         <p class="text-2xl font-bold text-gray-900">{{ auth()->user()->enrolledClassrooms()->count() }}</p>
-                        <p class="text-sm text-gray-500">Classes Enrolled</p>
+                        <p class="text-sm text-gray-500">{{ __('Classes Enrolled') }}</p>
                     </div>
                 </div>
             </div>

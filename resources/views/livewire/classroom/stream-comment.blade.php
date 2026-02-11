@@ -1,7 +1,7 @@
 <div class="border-t border-gray-100">
     <button wire:click="toggleComments" class="flex items-center gap-2 px-5 py-3 text-sm text-gray-500 hover:text-gray-700 w-full text-left">
         <i class="fas fa-comment text-xs"></i>
-        {{ $comments->count() }} class comment{{ $comments->count() !== 1 ? 's' : '' }}
+        {{ $comments->count() }} {{ $comments->count() !== 1 ? __('class comments') : __('class comment') }}
     </button>
 
     @if($showComments)
@@ -28,7 +28,7 @@
             <div class="flex-1 relative">
                 <input wire:model="commentText" wire:keydown.enter="addComment" type="text"
                        class="w-full border border-gray-300 rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pr-10"
-                       placeholder="Add class comment...">
+                       placeholder="{{ __('Add class comment...') }}">
                 <button wire:click="addComment" class="absolute right-2 top-1/2 -translate-y-1/2 text-indigo-600 hover:text-indigo-700 p-1">
                     <i class="fas fa-paper-plane text-sm"></i>
                 </button>

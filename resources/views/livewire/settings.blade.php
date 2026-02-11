@@ -50,7 +50,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-500">{{ __('Role') }}</label>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 capitalize mt-1">
-                                {{ auth()->user()->role }}
+                                {{ __(ucfirst(auth()->user()->role)) }}
                             </span>
                         </div>
                     </div>

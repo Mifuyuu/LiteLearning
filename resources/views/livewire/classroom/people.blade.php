@@ -1,14 +1,23 @@
-@section('page-title', 'People - ' . $classroom->name)
+@section('page-title', __('People') . ' - ' . $classroom->name)
+@section('breadcrumb')
+    <nav class="flex items-center space-x-1 text-sm">
+        <a href="{{ route('classrooms') }}" class="text-gray-500 hover:text-indigo-600 transition-colors">{{ __('Classrooms') }}</a>
+        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+        <a href="{{ route('classroom.show', $classroom) }}" class="text-gray-500 hover:text-indigo-600 transition-colors">{{ $classroom->name }}</a>
+        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+        <span class="text-gray-800 font-semibold">{{ __('People') }}</span>
+    </nav>
+@endsection
 
 <div class="max-w-3xl mx-auto">
     <!-- Back -->
     <a href="{{ route('classroom.show', $classroom) }}" class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
-        <i class="fas fa-arrow-left mr-2"></i> Back to {{ $classroom->name }}
+        <i class="fas fa-arrow-left mr-2"></i> {{ __('Back to :name', ['name' => $classroom->name]) }}
     </a>
 
     <!-- Teacher -->
     <div class="mb-8">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Teacher</h3>
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Teacher') }}</h3>
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="flex items-center">
                 <img src="{{ $classroom->teacher->avatar_url }}" class="w-12 h-12 rounded-full mr-4">
@@ -24,7 +33,7 @@
     <div>
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">
-                Students <span class="text-gray-400 font-normal">({{ $classroom->members->count() }})</span>
+                {{ __('Students') }} <span class="text-gray-400 font-normal">({{ $classroom->members->count() }})</span>
             </h3>
         </div>
 
@@ -47,7 +56,7 @@
                 @endif
             </div>
             @empty
-            <div class="p-8 text-center text-gray-500">No students enrolled yet.</div>
+            <div class="p-8 text-center text-gray-500">{{ __('No students enrolled yet.') }}</div>
             @endforelse
         </div>
     </div>

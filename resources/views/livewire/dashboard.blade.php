@@ -6,7 +6,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="text-2xl font-bold">{{ __('Welcome back, :name!', ['name' => auth()->user()->name]) }} 👋</h2>
-                <p class="mt-1 text-indigo-100">{{ now()->format('l, F j, Y') }}</p>
+                <p class="mt-1 text-indigo-100">{{ now()->translatedFormat('l, j F Y') }}</p>
             </div>
             <div class="hidden md:block">
                 <i class="fas fa-graduation-cap text-6xl text-white/20"></i>
@@ -102,7 +102,7 @@
                                 </div>
                                 @if($classroom->isOwnedBy(auth()->user()))
                                     <span class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
-                                        <i class="fas fa-crown mr-1"></i> Owner
+                                        <i class="fas fa-crown mr-1"></i> {{ __('Owner') }}
                                     </span>
                                 @endif
                             </div>
@@ -112,11 +112,11 @@
                                 <div class="flex items-center justify-between mt-3">
                                     <div class="flex items-center text-xs text-gray-400">
                                         <i class="fas fa-users mr-1"></i>
-                                        {{ $classroom->students()->count() }} students
+                                        {{ $classroom->students()->count() }} {{ __('students') }}
                                     </div>
                                     <div class="flex items-center text-xs text-gray-400">
                                         <i class="fas fa-file-alt mr-1"></i>
-                                        {{ $classroom->assignments()->published()->count() }} tasks
+                                        {{ $classroom->assignments()->published()->count() }} {{ __('assignments') }}
                                     </div>
                                 </div>
                             </div>

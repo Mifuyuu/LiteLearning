@@ -1,4 +1,11 @@
 @section('page-title', $classroom->name)
+@section('breadcrumb')
+    <nav class="flex items-center space-x-1 text-sm">
+        <a href="{{ route('classrooms') }}" class="text-gray-500 hover:text-indigo-600 transition-colors">{{ __('Classrooms') }}</a>
+        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+        <span class="text-gray-800 font-semibold">{{ $classroom->name }}</span>
+    </nav>
+@endsection
 
 <div>
     <!-- Classroom Header -->
@@ -18,10 +25,10 @@
                     </button>
                     <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-1 z-10">
                         <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                            <i class="fas fa-cog w-4 mr-2"></i> Class Settings
+                            <i class="fas fa-cog w-4 mr-2"></i> {{ __('Class Settings') }}
                         </button>
                         <div class="px-4 py-2 text-sm text-gray-500">
-                            <span class="font-medium">Code:</span>
+                            <span class="font-medium">{{ __('Class code') }}:</span>
                             <span class="font-mono text-indigo-600">{{ $classroom->code }}</span>
                         </div>
                     </div>
@@ -35,20 +42,20 @@
     <div class="flex border-b border-gray-200 mb-6 overflow-x-auto">
         <button wire:click="setTab('stream')"
                 class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'stream' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
-            <i class="fas fa-stream mr-2"></i> Stream
+            <i class="fas fa-stream mr-2"></i> {{ __('Stream') }}
         </button>
         <button wire:click="setTab('classwork')"
                 class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'classwork' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
-            <i class="fas fa-book-open mr-2"></i> Classwork
+            <i class="fas fa-book-open mr-2"></i> {{ __('Classwork') }}
         </button>
         <button wire:click="setTab('people')"
                 class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'people' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
-            <i class="fas fa-users mr-2"></i> People
+            <i class="fas fa-users mr-2"></i> {{ __('People') }}
         </button>
         @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
         <button wire:click="setTab('grades')"
                 class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'grades' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
-            <i class="fas fa-chart-bar mr-2"></i> Grades
+            <i class="fas fa-chart-bar mr-2"></i> {{ __('Grades') }}
         </button>
         @endif
     </div>
@@ -60,7 +67,7 @@
         @if($classroom->isOwnedBy(auth()->user()))
         <div class="bg-white rounded-xl border border-gray-200 p-4 mb-4 flex items-center justify-between">
             <div>
-                <p class="text-sm text-gray-500">Class code</p>
+                <p class="text-sm text-gray-500">{{ __('Class code') }}</p>
                 <p class="text-2xl font-mono font-bold text-indigo-600">{{ $classroom->code }}</p>
             </div>
             <button onclick="navigator.clipboard.writeText('{{ $classroom->code }}')" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg" title="Copy code">
@@ -76,13 +83,13 @@
                 @if(!$newAnnouncement)
                 <div x-show="!expanded" class="flex items-center text-gray-400">
                     <img src="{{ auth()->user()->avatar_url }}" class="w-10 h-10 rounded-full mr-3">
-                    <span class="text-sm">Announce something to your class...</span>
+                    <span class="text-sm">{{ __('Announce something to your class...') }}</span>
                 </div>
                 @endif
                 <div x-show="expanded" x-cloak>
                     <textarea wire:model="newAnnouncement" rows="3"
                               class="w-full border-0 focus:ring-0 text-sm resize-none p-0"
-                              placeholder="Share something with your class..."></textarea>
+                              placeholder="{{ __('Share something with your class...') }}"></textarea>
                     <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
                         <div class="flex gap-2">
                             <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
@@ -93,9 +100,9 @@
                             </button>
                         </div>
                         <div class="flex gap-2">
-                            <button @click="expanded = false" wire:click="$set('newAnnouncement', '')" class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
+                            <button @click="expanded = false" wire:click="$set('newAnnouncement', '')" class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">{{ __('Cancel') }}</button>
                             <button wire:click="postAnnouncement" class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
-                                Post
+                                {{ __('Post') }}
                             </button>
                         </div>
                     </div>
@@ -119,7 +126,7 @@
                         </div>
                         @if($announcement->user_id === auth()->id() || $classroom->isOwnedBy(auth()->user()))
                         <button wire:click="deleteAnnouncement({{ $announcement->id }})"
-                                wire:confirm="Are you sure you want to delete this announcement?"
+                                wire:confirm="{{ __('Are you sure you want to delete this announcement?') }}"
                                 class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg">
                             <i class="fas fa-trash-alt text-sm"></i>
                         </button>
@@ -137,7 +144,7 @@
         @if($classroom->announcements->isEmpty())
         <div class="bg-white rounded-xl border border-gray-200 p-12 text-center">
             <i class="fas fa-bullhorn text-gray-300 text-4xl mb-3"></i>
-            <p class="text-gray-500">No announcements yet. Start the conversation!</p>
+            <p class="text-gray-500">{{ __('No announcements yet. Start the conversation!') }}</p>
         </div>
         @endif
     </div>
@@ -150,7 +157,7 @@
         <div class="mb-6">
             <a href="{{ route('assignment.create', $classroom) }}"
                class="inline-flex items-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
-                <i class="fas fa-plus mr-2"></i> Create
+                <i class="fas fa-plus mr-2"></i> {{ __('Create') }}
             </a>
         </div>
         @endif
@@ -177,23 +184,23 @@
                             <h4 class="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors truncate">{{ $assignment->title }}</h4>
                             <span class="text-xs px-2.5 py-1 rounded-full font-medium capitalize ml-2 flex-shrink-0
                                 {{ $assignment->type === 'quiz' ? 'bg-purple-100 text-purple-700' : ($assignment->type === 'material' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700') }}">
-                                {{ $assignment->type }}
+                                {{ __(ucfirst($assignment->type)) }}
                             </span>
                         </div>
                         <div class="flex items-center gap-4 mt-1">
                             @if($assignment->due_date)
                             <span class="text-xs text-gray-500">
                                 <i class="fas fa-clock mr-1"></i>
-                                Due {{ $assignment->due_date->format('M j, g:i A') }}
+                                {{ __('Due') }} {{ $assignment->due_date->translatedFormat('j M, H:i') }}
                                 @if($assignment->isOverdue())
-                                    <span class="text-red-500 font-medium">(Overdue)</span>
+                                    <span class="text-red-500 font-medium">({{ __('Overdue') }})</span>
                                 @endif
                             </span>
                             @endif
                             @if($assignment->type !== 'material')
                             <span class="text-xs text-gray-500">
                                 <i class="fas fa-users mr-1"></i>
-                                {{ $assignment->submittedCount() }}/{{ $classroom->students()->count() }} turned in
+                                {{ $assignment->submittedCount() }}/{{ $classroom->students()->count() }} {{ __('turned in') }}
                             </span>
                             @endif
                         </div>
@@ -203,7 +210,7 @@
             @empty
             <div class="bg-white rounded-xl border border-gray-200 p-12 text-center">
                 <i class="fas fa-clipboard text-gray-300 text-4xl mb-3"></i>
-                <p class="text-gray-500">No assignments yet.</p>
+                <p class="text-gray-500">{{ __('No assignments yet.') }}</p>
             </div>
             @endforelse
         </div>
@@ -216,7 +223,7 @@
         <!-- Teacher -->
         <div class="mb-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <i class="fas fa-chalkboard-teacher mr-2 text-indigo-600"></i> Teacher
+                <i class="fas fa-chalkboard-teacher mr-2 text-indigo-600"></i> {{ __('Teacher') }}
             </h3>
             <div class="bg-white rounded-xl border border-gray-200 p-4">
                 <div class="flex items-center">
@@ -232,15 +239,15 @@
         <!-- Students -->
         <div>
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <i class="fas fa-users mr-2 text-indigo-600"></i> Students
+                <i class="fas fa-users mr-2 text-indigo-600"></i> {{ __('Students') }}
                 <span class="ml-2 text-sm font-normal text-gray-500">({{ $classroom->students->count() }})</span>
             </h3>
 
             @if($classroom->students->isEmpty())
                 <div class="bg-white rounded-xl border border-gray-200 p-8 text-center">
-                    <p class="text-gray-500">No students enrolled yet.</p>
+                    <p class="text-gray-500">{{ __('No students enrolled yet.') }}</p>
                     @if($classroom->isOwnedBy(auth()->user()))
-                    <p class="text-sm text-gray-400 mt-1">Share the class code <strong class="text-indigo-600 font-mono">{{ $classroom->code }}</strong> with your students.</p>
+                    <p class="text-sm text-gray-400 mt-1">{{ __('Share the class code') }} <strong class="text-indigo-600 font-mono">{{ $classroom->code }}</strong> {{ __('with your students.') }}</p>
                     @endif
                 </div>
             @else
@@ -270,14 +277,14 @@
                 <table class="w-full text-sm">
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr>
-                            <th class="text-left px-4 py-3 font-semibold text-gray-700 sticky left-0 bg-gray-50">Student</th>
+                            <th class="text-left px-4 py-3 font-semibold text-gray-700 sticky left-0 bg-gray-50">{{ __('Student') }}</th>
                             @foreach($classroom->assignments->where('type', '!=', 'material') as $assignment)
                             <th class="text-center px-4 py-3 font-medium text-gray-600 min-w-[120px]">
                                 <div class="truncate max-w-[100px]" title="{{ $assignment->title }}">{{ $assignment->title }}</div>
                                 <div class="text-xs font-normal text-gray-400">/ {{ $assignment->max_score }}</div>
                             </th>
                             @endforeach
-                            <th class="text-center px-4 py-3 font-semibold text-gray-700">Average</th>
+                            <th class="text-center px-4 py-3 font-semibold text-gray-700">{{ __('Average') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -303,7 +310,7 @@
                                             {{ $score }}
                                         </span>
                                     @elseif($submission->status === 'turned_in')
-                                        <span class="text-blue-500 text-xs"><i class="fas fa-check"></i> Turned in</span>
+                                        <span class="text-blue-500 text-xs"><i class="fas fa-check"></i> {{ __('Turned in') }}</span>
                                     @else
                                         <span class="text-gray-400 text-xs">-</span>
                                     @endif

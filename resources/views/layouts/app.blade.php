@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full overflow-hidden">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,11 +20,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="bg-gray-50 font-sans antialiased" x-data="{ sidebarOpen: true, mobileSidebar: false }">
-    <div class="min-h-screen flex">
+<body class="h-full overflow-hidden bg-gray-50 font-sans antialiased" x-data="{ sidebarOpen: true, mobileSidebar: false }">
+    <div class="h-screen flex overflow-hidden">
         <!-- Sidebar -->
         <aside
-            class="fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto"
+            class="fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:flex-shrink-0 overflow-y-auto"
             :class="{ '-translate-x-full': !mobileSidebar, 'translate-x-0': mobileSidebar }"
         >
             <!-- Logo -->
@@ -67,7 +67,7 @@
                             {{ __('My Classes') }}
                         </a>
                         <a href="{{ route('to-review') }}"
-                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('to-review') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
                             <i class="fas fa-tasks w-5 mr-3 text-center"></i>
                             {{ __('To Review') }}
                         </a>
@@ -125,16 +125,20 @@
         ></div>
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-w-0">
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             <!-- Top Navbar -->
-            <header class="sticky top-0 z-10 bg-white border-b border-gray-200">
+            <header class="flex-shrink-0 bg-white border-b border-gray-200 z-10">
                 <div class="flex items-center justify-between h-16 px-4 sm:px-6">
                     <div class="flex items-center">
                         <button @click="mobileSidebar = !mobileSidebar" class="lg:hidden mr-3 p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-bars"></i>
                         </button>
                         <h1 class="text-lg font-semibold text-gray-800 hidden sm:block">
-                            @yield('page-title', 'Dashboard')
+                            @hasSection('breadcrumb')
+                                @yield('breadcrumb')
+                            @else
+                                @yield('page-title', __('Dashboard'))
+                            @endif
                         </h1>
                     </div>
 
@@ -170,7 +174,7 @@
                                     <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
                                     <p class="text-xs text-gray-500">{{ auth()->user()->email }}</p>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mt-1 capitalize">
-                                        {{ auth()->user()->role }}
+                                        {{ __(ucfirst(auth()->user()->role)) }}
                                     </span>
                                 </div>
                                 <a href="{{ route('profile') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
@@ -193,7 +197,7 @@
             </header>
 
             <!-- Page Content -->
-            <main class="flex-1 p-4 sm:p-6 overflow-auto">
+            <main class="flex-1 min-h-0 p-4 sm:p-6 overflow-y-auto" style="scrollbar-gutter: stable">
                 @if(session()->has('message'))
                     <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm animate__animated animate__fadeIn">
                         <i class="fas fa-check-circle mr-2"></i> {{ session('message') }}
