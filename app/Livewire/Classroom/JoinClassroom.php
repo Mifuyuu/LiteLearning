@@ -31,7 +31,7 @@ class JoinClassroom extends Component
         $classroom = Classroom::where('code', strtoupper($this->code))->first();
 
         if (!$classroom) {
-            $this->addError('code', 'No classroom found with this code.');
+            $this->addError('code', __('No classroom found with this code.'));
             return;
         }
 
@@ -39,12 +39,12 @@ class JoinClassroom extends Component
         $user = Auth::user();
 
         if ($classroom->isOwnedBy($user)) {
-            $this->addError('code', 'You are the teacher of this classroom.');
+            $this->addError('code', __('You are the teacher of this classroom.'));
             return;
         }
 
         if ($classroom->hasMember($user)) {
-            $this->addError('code', 'You are already a member of this classroom.');
+            $this->addError('code', __('You are already a member of this classroom.'));
             return;
         }
 

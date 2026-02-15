@@ -199,5 +199,18 @@
     "Type classroom name here...": "พิมพ์ชื่อห้องเรียนที่นี่...",
     "Please type the classroom name exactly to confirm deletion.": "กรุณาพิมพ์ชื่อห้องเรียนให้ตรงเพื่อยืนยันการลบ",
     "Classroom \":name\" was deleted.": "ลบห้องเรียน \":name\" เรียบร้อยแล้ว",
-    "Classroom settings saved successfully.": "บันทึกการตั้งค่าห้องเรียนเรียบร้อยแล้ว"
+    "Classroom settings saved successfully.": "บันทึกการตั้งค่าห้องเรียนเรียบร้อยแล้ว",
+    "Assignment created successfully!": "สร้างงานเรียบร้อยแล้ว!",
+    "Assignment turned in successfully!": "ส่งงานเรียบร้อยแล้ว!",
+    "Draft saved!": "บันทึกฉบับร่างเรียบร้อยแล้ว!",
+    "Submission graded successfully!": "ให้คะแนนงานเรียบร้อยแล้ว!",
+    "Submission returned to student.": "ส่งงานคืนให้นักเรียนเรียบร้อยแล้ว",
+    "Member removed successfully.": "นำสมาชิกออกเรียบร้อยแล้ว",
+    "No classroom found with this code.": "ไม่พบห้องเรียนด้วยรหัสนี้",
+    "You are the teacher of this classroom.": "คุณเป็นครูเจ้าของห้องเรียนนี้",
+    "You are already a member of this classroom.": "คุณเป็นสมาชิกของห้องเรียนนี้อยู่แล้ว",
+    "Please enter a score.": "กรุณากรอกคะแนน",
+    "The score must be a number.": "คะแนนต้องเป็นตัวเลข",
+    "The score must be at least :min.": "คะแนนต้องไม่น้อยกว่า :min",
+    "The score must not be greater than :max.": "คะแนนต้องไม่เกิน :max"
 }

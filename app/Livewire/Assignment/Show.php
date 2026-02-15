@@ -70,7 +70,7 @@ class Show extends Component
             app(GamificationService::class)->awardForAssignmentTurnedIn($user, $this->assignment->id);
         }
 
-        session()->flash('message', 'Assignment turned in successfully!');
+        session()->flash('message', __('Assignment turned in successfully!'));
     }
 
     public function unsubmit()
@@ -96,7 +96,7 @@ class Show extends Component
             ]);
         }
 
-        session()->flash('message', 'Draft saved!');
+        session()->flash('message', __('Draft saved!'));
     }
 
     public function render()

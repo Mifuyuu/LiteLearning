@@ -199,5 +199,18 @@
     "Type classroom name here...": "Type classroom name here...",
     "Please type the classroom name exactly to confirm deletion.": "Please type the classroom name exactly to confirm deletion.",
     "Classroom \":name\" was deleted.": "Classroom \":name\" was deleted.",
-    "Classroom settings saved successfully.": "Classroom settings saved successfully."
+    "Classroom settings saved successfully.": "Classroom settings saved successfully.",
+    "Assignment created successfully!": "Assignment created successfully!",
+    "Assignment turned in successfully!": "Assignment turned in successfully!",
+    "Draft saved!": "Draft saved!",
+    "Submission graded successfully!": "Submission graded successfully!",
+    "Submission returned to student.": "Submission returned to student.",
+    "Member removed successfully.": "Member removed successfully.",
+    "No classroom found with this code.": "No classroom found with this code.",
+    "You are the teacher of this classroom.": "You are the teacher of this classroom.",
+    "You are already a member of this classroom.": "You are already a member of this classroom.",
+    "Please enter a score.": "Please enter a score.",
+    "The score must be a number.": "The score must be a number.",
+    "The score must be at least :min.": "The score must be at least :min.",
+    "The score must not be greater than :max.": "The score must not be greater than :max."
 }

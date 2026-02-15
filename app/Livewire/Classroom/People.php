@@ -36,7 +36,7 @@ class People extends Component
         $this->classroom->members()->detach($userId);
         $this->classroom->refresh();
 
-        session()->flash('message', 'Member removed successfully.');
+        session()->flash('message', __('Member removed successfully.'));
     }
 
     public function render()

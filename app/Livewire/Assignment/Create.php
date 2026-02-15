@@ -77,7 +77,7 @@ class Create extends Component
 
         app(GamificationService::class)->awardForAssignmentCreated($user, $assignment->id);
 
-        session()->flash('message', 'Assignment created successfully!');
+        session()->flash('message', __('Assignment created successfully!'));
 
         return redirect()->route('assignment.show', [
             'classroom' => $this->classroom,

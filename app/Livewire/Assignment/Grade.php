@@ -47,12 +47,17 @@ class Grade extends Component
         $this->validate([
             'score' => "required|integer|min:0|max:{$this->assignment->max_score}",
             'feedback' => 'nullable|string',
+        ], [
+            'score.required' => __('Please enter a score.'),
+            'score.integer' => __('The score must be a number.'),
+            'score.min' => __('The score must be at least :min.'),
+            'score.max' => __('The score must not be greater than :max.'),
         ]);
 
         $this->submission->grade($this->score, $this->feedback);
         $this->submission->refresh();
 
-        session()->flash('message', 'Submission graded successfully!');
+        session()->flash('message', __('Submission graded successfully!'));
     }
 
     public function returnSubmission()
@@ -60,7 +65,7 @@ class Grade extends Component
         $this->submission->returnSubmission();
         $this->submission->refresh();
 
-        session()->flash('message', 'Submission returned to student.');
+        session()->flash('message', __('Submission returned to student.'));
     }
 
     public function render()
