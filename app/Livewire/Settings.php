@@ -11,13 +11,19 @@ use Livewire\Component;
 #[Layout('layouts.app')]
 class Settings extends Component
 {
-    public string $locale = 'en';
+    public string $locale = 'th';
+
+    public function setLocale(string $value): void
+    {
+        $this->locale = $value;
+        $this->updatedLocale($value);
+    }
 
     public function mount()
     {
         /** @var User $user */
         $user = Auth::user();
-        $this->locale = $user->locale ?? 'en';
+        $this->locale = $user->locale ?? 'th';
     }
 
     public function updatedLocale(string $value)
@@ -35,6 +41,8 @@ class Settings extends Component
         session()->put('locale', $value);
 
         session()->flash('message', __('Changes saved successfully.'));
+
+        return $this->redirectRoute('settings', navigate: false);
     }
 
     public function render()

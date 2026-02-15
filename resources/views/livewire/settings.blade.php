@@ -14,16 +14,56 @@
                     <h3 class="text-lg font-semibold text-gray-900">{{ __('Language') }}</h3>
                     <p class="text-sm text-gray-500 mt-1">{{ __('Choose your preferred language for the interface.') }}</p>
 
-                    <div class="mt-4">
-                        <label for="locale" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Select Language') }}</label>
-                        <select
-                            wire:model.live="locale"
-                            id="locale"
-                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-2.5 px-3 border"
-                        >
-                            <option value="en">🇺🇸 English</option>
-                            <option value="th">🇹🇭 ไทย (Thai)</option>
-                        </select>
+                    <div class="mt-4" x-data="{ open: false }">
+                        <label id="language-dropdown-label" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Select Language') }}</label>
+
+                        <div class="relative dropdown-menu" id="language-dropdown-menu">
+                            <button type="button"
+                                    @click="open = !open"
+                                    aria-haspopup="menu"
+                                    aria-controls="language-dropdown-menu-list"
+                                    :aria-expanded="open ? 'true' : 'false'"
+                                    class="flex w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <span class="flex items-center gap-2">
+                                    <i class="fas fa-language text-gray-500"></i>
+                                    <span>{{ $locale === 'th' ? 'ไทย (Thai)' : 'English' }}</span>
+                                </span>
+                                <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                            </button>
+
+                            <div id="language-dropdown-menu-popover" data-popover x-show="open" :aria-hidden="open ? 'false' : 'true'" x-cloak @click.outside="open = false"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="absolute right-0 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                                <div role="menu" id="language-dropdown-menu-list" aria-labelledby="language-dropdown-label" class="outline-none">
+                                    <button type="button" role="menuitem" wire:click="setLocale('en')" @click="open = false"
+                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $locale === 'en' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                        <span class="flex items-center gap-2">
+                                            <i class="fas fa-language w-4 text-center"></i>
+                                            <span>English</span>
+                                        </span>
+                                        @if($locale === 'en')
+                                            <i class="fas fa-check text-xs"></i>
+                                        @endif
+                                    </button>
+
+                                    <button type="button" role="menuitem" wire:click="setLocale('th')" @click="open = false"
+                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $locale === 'th' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                        <span class="flex items-center gap-2">
+                                            <i class="fas fa-language w-4 text-center"></i>
+                                            <span>ไทย (Thai)</span>
+                                        </span>
+                                        @if($locale === 'th')
+                                            <i class="fas fa-check text-xs"></i>
+                                        @endif
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

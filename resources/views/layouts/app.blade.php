@@ -75,6 +75,7 @@
                 </div>
                 @endif
 
+                @if(auth()->user()->isStudent())
                 <div class="pt-4">
                     <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Enrolled') }}</p>
                     <div class="mt-2 space-y-1">
@@ -90,6 +91,7 @@
                         @endforeach
                     </div>
                 </div>
+                @endif
 
                 @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
                 <div class="pt-4">
@@ -114,6 +116,7 @@
         <!-- Mobile sidebar overlay -->
         <div
             x-show="mobileSidebar"
+            x-cloak
             x-transition:enter="transition-opacity ease-linear duration-300"
             x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100"
@@ -147,7 +150,9 @@
                         @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
                             @livewire('classroom.create')
                         @endif
-                        @livewire('classroom.join-classroom')
+                        @if(auth()->user()->isStudent())
+                            @livewire('classroom.join-classroom')
+                        @endif
 
                         <!-- Notifications -->
                         <button class="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
@@ -155,14 +160,18 @@
                         </button>
 
                         <!-- User Menu -->
-                        <div x-data="{ open: false }" class="relative">
-                            <button @click="open = !open" class="flex items-center space-x-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div x-data="{ open: false }" class="relative dropdown-menu" id="user-dropdown-menu">
+                            <button @click="open = !open"
+                                    aria-haspopup="menu"
+                                    aria-controls="user-dropdown-menu-list"
+                                    :aria-expanded="open ? 'true' : 'false'"
+                                    class="flex items-center space-x-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
                                 <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover">
                                 <span class="hidden sm:block text-sm font-medium text-gray-700">{{ auth()->user()->name }}</span>
                                 <i class="fas fa-chevron-down text-xs text-gray-400 hidden sm:block"></i>
                             </button>
 
-                            <div x-show="open" @click.outside="open = false"
+                               <div id="user-dropdown-menu-popover" data-popover x-show="open" :aria-hidden="open ? 'false' : 'true'" x-cloak @click.outside="open = false"
                                  x-transition:enter="transition ease-out duration-100"
                                  x-transition:enter-start="opacity-0 scale-95"
                                  x-transition:enter-end="opacity-100 scale-100"
@@ -170,26 +179,30 @@
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95"
                                  class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                                <div class="px-4 py-3 border-b border-gray-100">
+                                <div role="menu" id="user-dropdown-menu-list" aria-labelledby="user-dropdown-menu" class="outline-none">
+                                <div role="group" aria-labelledby="user-menu-account">
+                                <div class="px-4 py-3 border-b border-gray-100" role="heading" id="user-menu-account">
                                     <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
                                     <p class="text-xs text-gray-500">{{ auth()->user()->email }}</p>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mt-1 capitalize">
                                         {{ __(ucfirst(auth()->user()->role)) }}
                                     </span>
                                 </div>
-                                <a href="{{ route('profile') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <a href="{{ route('profile') }}" role="menuitem" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
                                     <i class="fas fa-user-circle w-4 mr-3"></i> {{ __('Profile') }}
                                 </a>
-                                <a href="{{ route('settings') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <a href="{{ route('settings') }}" role="menuitem" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
                                     <i class="fas fa-cog w-4 mr-3"></i> {{ __('Settings') }}
                                 </a>
+                                </div>
                                 <hr class="my-1 border-gray-100">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    <button type="submit" role="menuitem" class="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer">
                                         <i class="fas fa-sign-out-alt w-4 mr-3"></i> {{ __('Sign Out') }}
                                     </button>
                                 </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -198,12 +211,6 @@
 
             <!-- Page Content -->
             <main class="flex-1 min-h-0 p-4 sm:p-6 overflow-y-auto" style="scrollbar-gutter: stable">
-                @if(session()->has('message'))
-                    <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm animate__animated animate__fadeIn">
-                        <i class="fas fa-check-circle mr-2"></i> {{ session('message') }}
-                    </div>
-                @endif
-
                 @hasSection('content')
                     @yield('content')
                 @else
@@ -212,6 +219,28 @@
             </main>
         </div>
     </div>
+
+    @if(session()->has('message'))
+        <div x-data="{ show: true }"
+             x-init="setTimeout(() => show = false, 3000)"
+             x-show="show"
+             x-cloak
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 translate-y-2"
+             class="fixed bottom-4 right-4 z-[100] w-[calc(100%-2rem)] max-w-sm rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 shadow-lg">
+            <div class="flex items-start gap-2">
+                <i class="fas fa-check-circle mt-0.5"></i>
+                <p class="flex-1">{{ session('message') }}</p>
+                <button type="button" @click="show = false" class="text-green-600 hover:text-green-800 cursor-pointer">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+    @endif
 
     @livewireScripts
 </body>
