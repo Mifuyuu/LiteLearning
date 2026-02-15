@@ -2,7 +2,7 @@
 
 <div>
     <!-- Welcome Banner -->
-    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 mb-6 text-white animate__animated animate__fadeIn">
+    <div class="bg-linear-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 mb-6 text-white animate__animated animate__fadeIn">
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="text-2xl font-bold">{{ __('Welcome back, :name!', ['name' => auth()->user()->name]) }} 👋</h2>
@@ -13,6 +13,70 @@
             </div>
         </div>
     </div>
+
+    @if(auth()->user()->isStudent() && $gamification)
+    <!-- Gamification Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-coins text-amber-600 text-lg"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-2xl font-bold text-gray-900">{{ $gamification['coins'] }}</p>
+                    <p class="text-sm text-gray-500">{{ __('Coins') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-layer-group text-purple-600 text-lg"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-2xl font-bold text-gray-900">{{ $gamification['level'] }}</p>
+                    <p class="text-sm text-gray-500">{{ __('Level') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-trophy text-indigo-600 text-lg"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-2xl font-bold text-gray-900">{{ $gamification['achievements'] }}</p>
+                    <p class="text-sm text-gray-500">{{ __('Achievements') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-award text-emerald-600 text-lg"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-2xl font-bold text-gray-900">{{ $gamification['badges'] }}</p>
+                    <p class="text-sm text-gray-500">{{ __('Badges') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+        <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-semibold text-gray-700">{{ __('Level Progress') }}</h3>
+            <span class="text-xs text-gray-500">{{ $gamification['xp_to_next'] }} {{ __('XP to next level') }}</span>
+        </div>
+        <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div class="h-full bg-indigo-600 rounded-full transition-all" style="width: {{ $gamification['progress_percent'] }}%"></div>
+        </div>
+        <p class="mt-2 text-xs text-gray-500">{{ __('Total XP') }}: {{ $gamification['xp'] }}</p>
+    </div>
+    @endif
 
     @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
     <!-- Teacher Stats -->
@@ -52,8 +116,8 @@
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
             <div class="flex items-center">
-                <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-clock text-amber-600 text-lg"></i>
+                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-clock text-purple-600 text-lg"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-2xl font-bold text-gray-900">{{ $stats['pending'] ?? 0 }}</p>
@@ -97,7 +161,7 @@
                             <div class="h-24 relative" style="background-color: {{ $classroom->theme_color }}">
                                 <div class="absolute inset-0 bg-black/10"></div>
                                 <div class="absolute bottom-3 left-4">
-                                    <h4 class="text-white font-bold text-lg leading-tight truncate max-w-[200px]">{{ $classroom->name }}</h4>
+                                    <h4 class="text-white font-bold text-lg leading-tight truncate max-w-50">{{ $classroom->name }}</h4>
                                     <p class="text-white/80 text-sm">{{ $classroom->section }}</p>
                                 </div>
                                 @if($classroom->isOwnedBy(auth()->user()))
@@ -135,7 +199,7 @@
                 <a href="{{ route('assignment.show', ['classroom' => $assignment->classroom, 'assignment' => $assignment->id]) }}"
                    class="block p-4 hover:bg-gray-50 transition-colors">
                     <div class="flex items-start">
-                        <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
                              style="background-color: {{ $assignment->classroom->theme_color }}20; color: {{ $assignment->classroom->theme_color }}">
                             @if($assignment->type === 'quiz')
                                 <i class="fas fa-question-circle"></i>

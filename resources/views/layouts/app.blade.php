@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
@@ -24,7 +24,7 @@
     <div class="h-screen flex overflow-hidden">
         <!-- Sidebar -->
         <aside
-            class="fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:flex-shrink-0 overflow-y-auto"
+            class="fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:shrink-0 overflow-y-auto"
             :class="{ '-translate-x-full': !mobileSidebar, 'translate-x-0': mobileSidebar }"
         >
             <!-- Logo -->
@@ -45,11 +45,13 @@
                     {{ __('Dashboard') }}
                 </a>
 
+                @if(!auth()->user()->isTeacher())
                 <a href="{{ route('classrooms') }}"
                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('classrooms*') || request()->routeIs('classroom*') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-chalkboard w-5 mr-3 text-center"></i>
                     {{ __('Classrooms') }}
                 </a>
+                @endif
 
                 <a href="{{ route('calendar') }}"
                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('calendar') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
@@ -62,7 +64,7 @@
                     <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Teaching') }}</p>
                     <div class="mt-2 space-y-1">
                         <a href="{{ route('classrooms') }}?filter=teaching"
-                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ (request()->routeIs('classrooms') && request()->query('filter') === 'teaching') || request()->routeIs('classroom*') || request()->routeIs('assignment*') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
                             <i class="fas fa-chalkboard-teacher w-5 mr-3 text-center"></i>
                             {{ __('My Classes') }}
                         </a>
@@ -84,8 +86,8 @@
                         @endphp
                         @foreach($enrolledClasses as $ec)
                         <a href="{{ route('classroom.show', $ec) }}"
-                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
-                            <div class="w-5 h-5 rounded mr-3 flex-shrink-0" style="background-color: {{ $ec->theme_color }}"></div>
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $ec->id ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                            <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $ec->theme_color }}"></div>
                             <span class="truncate">{{ $ec->name }}</span>
                         </a>
                         @endforeach
@@ -95,15 +97,15 @@
 
                 @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
                 <div class="pt-4">
-                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Teaching') }}</p>
+                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Classes') }}</p>
                     <div class="mt-2 space-y-1">
                         @php
                             $teachingClasses = auth()->user()->ownedClassrooms()->where('is_archived', false)->take(5)->get();
                         @endphp
                         @foreach($teachingClasses as $tc)
                         <a href="{{ route('classroom.show', $tc) }}"
-                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
-                            <div class="w-5 h-5 rounded mr-3 flex-shrink-0" style="background-color: {{ $tc->theme_color }}"></div>
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $tc->id ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                            <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $tc->theme_color }}"></div>
                             <span class="truncate">{{ $tc->name }}</span>
                         </a>
                         @endforeach
@@ -123,14 +125,14 @@
             x-transition:leave="transition-opacity ease-linear duration-300"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-gray-600 bg-opacity-50 z-20 lg:hidden"
+            class="fixed inset-0 bg-black/50 bg-opacity-50 z-20 lg:hidden"
             @click="mobileSidebar = false"
         ></div>
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             <!-- Top Navbar -->
-            <header class="flex-shrink-0 bg-white border-b border-gray-200 z-10">
+            <header class="shrink-0 bg-white border-b border-gray-200 z-10">
                 <div class="flex items-center justify-between h-16 px-4 sm:px-6">
                     <div class="flex items-center">
                         <button @click="mobileSidebar = !mobileSidebar" class="lg:hidden mr-3 p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
@@ -155,7 +157,7 @@
                         @endif
 
                         <!-- Notifications -->
-                        <button class="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
+                        <button class="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                             <i class="fas fa-bell"></i>
                         </button>
 
@@ -231,7 +233,7 @@
              x-transition:leave="transition ease-in duration-200"
              x-transition:leave-start="opacity-100 translate-y-0"
              x-transition:leave-end="opacity-0 translate-y-2"
-             class="fixed bottom-4 right-4 z-[100] w-[calc(100%-2rem)] max-w-sm rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 shadow-lg">
+             class="fixed bottom-4 right-4 z-100 w-[calc(100%-2rem)] max-w-sm rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 shadow-lg">
             <div class="flex items-start gap-2">
                 <i class="fas fa-check-circle mt-0.5"></i>
                 <p class="flex-1">{{ session('message') }}</p>

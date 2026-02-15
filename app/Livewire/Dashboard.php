@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Classroom;
 use App\Models\User;
+use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -55,10 +56,30 @@ class Dashboard extends Component
             ];
         }
 
+        $gamification = null;
+        if ($user->isStudent()) {
+            $gamificationService = app(GamificationService::class);
+            $currentLevelStartXp = $gamificationService->totalXpForLevel($user->level);
+            $nextLevelXp = $gamificationService->totalXpForLevel($user->level + 1);
+            $xpInCurrentLevel = max(0, $user->xp - $currentLevelStartXp);
+            $xpNeededInLevel = max(1, $nextLevelXp - $currentLevelStartXp);
+
+            $gamification = [
+                'coins' => $user->coins,
+                'level' => $user->level,
+                'xp' => $user->xp,
+                'achievements' => $user->achievements()->count(),
+                'badges' => $user->badges()->count(),
+                'xp_to_next' => max(0, $nextLevelXp - $user->xp),
+                'progress_percent' => (int) min(100, round(($xpInCurrentLevel / $xpNeededInLevel) * 100)),
+            ];
+        }
+
         return view('livewire.dashboard', [
             'classrooms' => $classrooms,
             'upcomingAssignments' => $upcomingAssignments,
             'stats' => $stats,
+            'gamification' => $gamification,
         ]);
     }
 }

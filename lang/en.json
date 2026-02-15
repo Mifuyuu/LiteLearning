@@ -6,6 +6,7 @@
     "Enrolled": "Enrolled",
     "My Classes": "My Classes",
     "To Review": "To Review",
+    "Classes": "Classes",
     "Profile": "Profile",
     "Settings": "Settings",
     "Sign Out": "Sign Out",
@@ -181,5 +182,22 @@
     "Your modern learning platform": "Your modern learning platform",
 
     "Share the class code": "Share the class code",
-    "with your students.": "with your students."
+    "with your students.": "with your students.",
+    "Coins": "Coins",
+    "Level": "Level",
+    "Achievements": "Achievements",
+    "Badges": "Badges",
+    "Level Progress": "Level Progress",
+    "XP to next level": "XP to next level",
+    "Total XP": "Total XP",
+    "Classroom Settings": "Classroom Settings",
+    "Update classroom details and theme color.": "Update classroom details and theme color.",
+    "Banner Color": "Banner Color",
+    "Delete this classroom permanently. This action cannot be undone.": "Delete this classroom permanently. This action cannot be undone.",
+    "Delete Classroom": "Delete Classroom",
+    "Type \":name\" to confirm deletion.": "Type \":name\" to confirm deletion.",
+    "Type classroom name here...": "Type classroom name here...",
+    "Please type the classroom name exactly to confirm deletion.": "Please type the classroom name exactly to confirm deletion.",
+    "Classroom \":name\" was deleted.": "Classroom \":name\" was deleted.",
+    "Classroom settings saved successfully.": "Classroom settings saved successfully."
 }

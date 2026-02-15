@@ -4,6 +4,7 @@ namespace App\Livewire\Classroom;
 
 use App\Models\Classroom;
 use App\Models\User;
+use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -51,6 +52,8 @@ class JoinClassroom extends Component
             'role' => 'student',
             'joined_at' => now(),
         ]);
+
+        app(GamificationService::class)->awardForClassroomJoined($user, $classroom->id);
 
         $this->showModal = false;
 

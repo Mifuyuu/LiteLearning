@@ -6,6 +6,7 @@ use App\Models\Assignment;
 use App\Models\Classroom;
 use App\Models\Submission;
 use App\Models\User;
+use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -45,6 +46,8 @@ class Show extends Component
 
     public function turnIn()
     {
+        $wasAlreadyTurnedIn = $this->userSubmission?->status === 'turned_in';
+
         if (!$this->userSubmission) {
             $this->userSubmission = Submission::create([
                 'assignment_id' => $this->assignment->id,
@@ -59,6 +62,12 @@ class Show extends Component
                 'status' => 'turned_in',
                 'turned_in_at' => now(),
             ]);
+        }
+
+        if (!$wasAlreadyTurnedIn) {
+            /** @var User $user */
+            $user = Auth::user();
+            app(GamificationService::class)->awardForAssignmentTurnedIn($user, $this->assignment->id);
         }
 
         session()->flash('message', 'Assignment turned in successfully!');

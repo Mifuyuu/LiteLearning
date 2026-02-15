@@ -7,7 +7,7 @@
         <!-- Language Settings -->
         <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
             <div class="flex items-start space-x-4">
-                <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center shrink-0">
                     <i class="fas fa-language text-indigo-600"></i>
                 </div>
                 <div class="flex-1">
@@ -72,7 +72,7 @@
         <!-- Account Info (read-only summary) -->
         <div class="bg-white rounded-xl border border-gray-200 p-6">
             <div class="flex items-start space-x-4">
-                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
                     <i class="fas fa-user-circle text-gray-600"></i>
                 </div>
                 <div class="flex-1">

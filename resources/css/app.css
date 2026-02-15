@@ -29,3 +29,32 @@
 [x-cloak] {
     display: none !important;
 }
+
+/* Tabs horizontal scrollbar */
+.tabs-scroll {
+    scrollbar-width: thin;
+}
+
+.tabs-scroll::-webkit-scrollbar {
+    height: 4px;
+}
+
+.tabs-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tabs-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground));
+    border-radius: 9999px;
+}
+
+@media (max-width: 640px) {
+    .tabs-scroll {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .tabs-scroll::-webkit-scrollbar {
+        display: none;
+    }
+}

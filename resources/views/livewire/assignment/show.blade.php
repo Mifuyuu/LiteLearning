@@ -23,7 +23,7 @@
                 <div class="p-6 border-b border-gray-200">
                     <div class="flex items-start justify-between">
                         <div class="flex items-start">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
                                  style="background-color: {{ $classroom->theme_color }}; color: white;">
                                 @if($assignment->type === 'quiz')
                                     <i class="fas fa-question-circle text-lg"></i>
@@ -152,7 +152,7 @@
         <!-- Sidebar: Student Submission -->
         @if(auth()->user()->isStudent() && $assignment->type !== 'material')
         <div>
-            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-24">
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-0">
                 <div class="p-4 border-b border-gray-200">
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-900">{{ __('Your Work') }}</h3>
@@ -214,7 +214,7 @@
         <!-- Sidebar info for materials or teacher -->
         @if($assignment->type === 'material' || ($classroom->isOwnedBy(auth()->user()) && $assignment->type !== 'material'))
         <div>
-            <div class="bg-white rounded-xl border border-gray-200 p-4 sticky top-24">
+            <div class="bg-white rounded-xl border border-gray-200 p-4 sticky top-0">
                 @if($assignment->type !== 'material')
                 <div class="space-y-3 text-sm">
                     <div class="flex items-center justify-between">

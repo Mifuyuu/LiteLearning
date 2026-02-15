@@ -20,6 +20,9 @@ class User extends Authenticatable
         'avatar',
         'bio',
         'locale',
+        'coins',
+        'xp',
+        'level',
     ];
 
     protected $hidden = [
@@ -32,6 +35,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'coins' => 'integer',
+            'xp' => 'integer',
+            'level' => 'integer',
         ];
     }
 
@@ -58,9 +64,33 @@ class User extends Authenticatable
         return $this->hasMany(Announcement::class);
     }
 
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class);
+    }
+
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function coinTransactions(): HasMany
+    {
+        return $this->hasMany(CoinTransaction::class)->latest();
+    }
+
+    public function achievements(): BelongsToMany
+    {
+        return $this->belongsToMany(Achievement::class, 'user_achievements')
+            ->withPivot('unlocked_at')
+            ->withTimestamps();
+    }
+
+    public function badges(): BelongsToMany
+    {
+        return $this->belongsToMany(Badge::class, 'user_badges')
+            ->withPivot('earned_at')
+            ->withTimestamps();
     }
 
     // Helpers

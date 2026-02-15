@@ -10,7 +10,7 @@
 <div>
     <!-- Classroom Header -->
     <div class="rounded-2xl overflow-hidden mb-6 relative" style="background-color: {{ $classroom->theme_color }}">
-        <div class="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40"></div>
+        <div class="absolute inset-0 bg-linear-to-b from-black/10 to-black/40"></div>
         <div class="relative p-6 sm:p-8">
             <div class="flex items-start justify-between">
                 <div>
@@ -18,28 +18,12 @@
                     <p class="text-white/80 mt-1">{{ $classroom->section }} &middot; {{ $classroom->subject }}</p>
                     <p class="text-white/60 text-sm mt-2">{{ $classroom->teacher->name }}</p>
                 </div>
-                @if($classroom->isOwnedBy(auth()->user()))
-                <div x-data="{ open: false }" class="relative">
-                    <button @click="open = !open" class="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-1 z-10">
-                        <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                            <i class="fas fa-cog w-4 mr-2"></i> {{ __('Class Settings') }}
-                        </button>
-                        <div class="px-4 py-2 text-sm text-gray-500">
-                            <span class="font-medium">{{ __('Class code') }}:</span>
-                            <span class="font-mono text-indigo-600">{{ $classroom->code }}</span>
-                        </div>
-                    </div>
-                </div>
-                @endif
             </div>
         </div>
     </div>
 
     <!-- Tabs -->
-    <div class="flex border-b border-gray-200 mb-6 overflow-x-auto">
+    <div class="tabs-scroll flex border-b border-gray-200 mb-6 overflow-x-auto">
         <button wire:click="setTab('stream')"
                 class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'stream' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
             <i class="fas fa-stream mr-2"></i> {{ __('Stream') }}
@@ -56,6 +40,10 @@
         <button wire:click="setTab('grades')"
                 class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'grades' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
             <i class="fas fa-chart-bar mr-2"></i> {{ __('Grades') }}
+        </button>
+        <button wire:click="setTab('settings')"
+                class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'settings' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+            <i class="fas fa-sliders-h mr-2"></i> {{ __('Settings') }}
         </button>
         @endif
     </div>
@@ -169,7 +157,7 @@
                class="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all group"
                wire:key="assignment-{{ $assignment->id }}">
                 <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
                          style="background-color: {{ $classroom->theme_color }}20; color: {{ $classroom->theme_color }}">
                         @if($assignment->type === 'quiz')
                             <i class="fas fa-question-circle text-lg"></i>
@@ -182,7 +170,7 @@
                     <div class="ml-4 flex-1 min-w-0">
                         <div class="flex items-center justify-between">
                             <h4 class="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors truncate">{{ $assignment->title }}</h4>
-                            <span class="text-xs px-2.5 py-1 rounded-full font-medium capitalize ml-2 flex-shrink-0
+                            <span class="text-xs px-2.5 py-1 rounded-full font-medium capitalize ml-2 shrink-0
                                 {{ $assignment->type === 'quiz' ? 'bg-purple-100 text-purple-700' : ($assignment->type === 'material' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700') }}">
                                 {{ __(ucfirst($assignment->type)) }}
                             </span>
@@ -273,14 +261,14 @@
     @if($activeTab === 'grades')
     <div>
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div class="overflow-x-auto">
+            <div class="tabs-scroll overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr>
                             <th class="text-left px-4 py-3 font-semibold text-gray-700 sticky left-0 bg-gray-50">{{ __('Student') }}</th>
                             @foreach($classroom->assignments->where('type', '!=', 'material') as $assignment)
-                            <th class="text-center px-4 py-3 font-medium text-gray-600 min-w-[120px]">
-                                <div class="truncate max-w-[100px]" title="{{ $assignment->title }}">{{ $assignment->title }}</div>
+                            <th class="text-center px-4 py-3 font-medium text-gray-600 min-w-30">
+                                <div class="truncate max-w-25" title="{{ $assignment->title }}">{{ $assignment->title }}</div>
                                 <div class="text-xs font-normal text-gray-400">/ {{ $assignment->max_score }}</div>
                             </th>
                             @endforeach
@@ -291,9 +279,9 @@
                         @foreach($classroom->students as $student)
                         <tr class="hover:bg-gray-50">
                             <td class="px-4 py-3 sticky left-0 bg-white">
-                                <div class="flex items-center">
-                                    <img src="{{ $student->avatar_url }}" class="w-8 h-8 rounded-full mr-2">
-                                    <span class="font-medium text-gray-900">{{ $student->name }}</span>
+                                <div class="flex items-center min-w-0">
+                                    <img src="{{ $student->avatar_url }}" class="hidden sm:block w-8 h-8 rounded-full mr-2">
+                                    <span class="font-medium text-gray-900 truncate max-w-24 sm:max-w-none">{{ $student->name }}</span>
                                 </div>
                             </td>
                             @php $grades = []; @endphp
@@ -330,6 +318,105 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Settings Tab -->
+    @if($activeTab === 'settings' && ($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin()))
+    <div class="max-w-3xl mx-auto space-y-6">
+        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ __('Classroom Settings') }}</h3>
+            <p class="text-sm text-gray-500 mb-5">{{ __('Update classroom details and theme color.') }}</p>
+
+            <form wire:submit="saveSettings" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Class Name *') }}</label>
+                    <input wire:model="name" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    @error('name') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Section') }}</label>
+                        <input wire:model="section" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        @error('section') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Subject') }}</label>
+                        <input wire:model="subject" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        @error('subject') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Description') }}</label>
+                    <textarea wire:model="description" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                    @error('description') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Banner Color') }}</label>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach(['#2563EB', '#4F46E5', '#0EA5E9', '#16A34A', '#EAB308', '#F97316', '#DC2626', '#A855F7'] as $color)
+                        <button type="button" wire:click="$set('theme_color', '{{ $color }}')"
+                                class="w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 {{ $theme_color === $color ? 'border-gray-900 scale-110' : 'border-transparent' }}"
+                                style="background-color: {{ $color }}"
+                                title="{{ $color }}"></button>
+                        @endforeach
+                    </div>
+                    @error('theme_color') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="pt-2 flex justify-end">
+                    <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                        <span wire:loading.remove wire:target="saveSettings">{{ __('Save Settings') }}</span>
+                        <span wire:loading wire:target="saveSettings"><i class="fas fa-spinner fa-spin mr-1"></i> {{ __('Saving...') }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-xl border border-red-200 p-6" x-data="{ showDeleteModal: false }" @keydown.escape.window="showDeleteModal = false">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-red-600">{{ __('Danger Zone') }}</h3>
+                    <p class="text-sm text-gray-500 mt-1">{{ __('Delete this classroom permanently. This action cannot be undone.') }}</p>
+                </div>
+                <button type="button" @click="showDeleteModal = true" class="px-4 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors">
+                    <i class="fas fa-trash-alt mr-1.5"></i>{{ __('Delete Classroom') }}
+                </button>
+            </div>
+
+            <div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" @click.self="showDeleteModal = false">
+                <div class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-100">
+                        <h4 class="text-base font-semibold text-gray-900">{{ __('Delete Classroom') }}</h4>
+                        <p class="text-sm text-gray-500 mt-1">{{ __('Type ":name" to confirm deletion.', ['name' => $classroom->name]) }}</p>
+                    </div>
+
+                    <form wire:submit="deleteClassroom" class="px-6 py-5 space-y-4">
+                        <div>
+                            <input wire:model="deleteConfirm" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-0 focus:border-red-500" placeholder="{{ __('Type classroom name here...') }}" autocomplete="off">
+                            @error('deleteConfirm') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="flex justify-end gap-2">
+                            <button type="button" @click="showDeleteModal = false" class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-xmark mr-1.5"></i>{{ __('Cancel') }}
+                            </button>
+                            <button type="submit" wire:loading.attr="disabled" class="px-4 py-2 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors">
+                                <span wire:loading.remove wire:target="deleteClassroom" class="inline-flex items-center">
+                                    <i class="fas fa-trash-alt mr-1.5"></i>{{ __('Delete') }}
+                                </span>
+                                <span wire:loading wire:target="deleteClassroom" class="inline-flex items-center">
+                                    <i class="fas fa-spinner fa-spin mr-1.5"></i>{{ __('Deleting...') }}
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

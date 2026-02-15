@@ -5,6 +5,7 @@ namespace App\Livewire\Assignment;
 use App\Models\Assignment;
 use App\Models\Classroom;
 use App\Models\User;
+use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
@@ -46,11 +47,14 @@ class Create extends Component
 
     public function save()
     {
+        /** @var User $user */
+        $user = Auth::user();
+
         $this->validate();
 
         $assignment = Assignment::create([
             'classroom_id' => $this->classroom->id,
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
             'title' => $this->title,
             'description' => $this->description,
             'instructions' => $this->instructions,
@@ -70,6 +74,8 @@ class Create extends Component
                 ]);
             }
         }
+
+        app(GamificationService::class)->awardForAssignmentCreated($user, $assignment->id);
 
         session()->flash('message', 'Assignment created successfully!');
 
