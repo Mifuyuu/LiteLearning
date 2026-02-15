@@ -12,6 +12,7 @@ use App\Livewire\Assignment\Create as AssignmentCreate;
 use App\Livewire\Assignment\Show as AssignmentShow;
 use App\Livewire\Assignment\Grade;
 use App\Livewire\Settings;
+use App\Http\Controllers\SidebarClassroomPreferenceController;
 
 // Landing page
 Route::get('/', function () {
@@ -66,4 +67,8 @@ Route::middleware('auth')->group(function () {
     })->name('profile');
 
     Route::get('/settings', Settings::class)->name('settings');
+
+    // Sidebar classroom preferences
+    Route::post('/sidebar/classrooms/reorder', [SidebarClassroomPreferenceController::class, 'reorder'])
+        ->name('sidebar.classrooms.reorder');
 });

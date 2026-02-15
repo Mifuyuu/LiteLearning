@@ -63,13 +63,25 @@
                 <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                     <!-- Cover -->
                     <div class="h-28 relative" style="background-color: {{ $classroom->theme_color }}">
-                        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/30"></div>
+                        <div class="absolute inset-0 bg-linear-to-b from-transparent to-black/30"></div>
+                        @php $isPinned = in_array($classroom->id, $pinnedIds ?? [], true); @endphp
+                        <button type="button"
+                                wire:click.prevent.stop="togglePin({{ $classroom->id }})"
+                                onclick="event.preventDefault(); event.stopPropagation();"
+                                title="{{ $isPinned ? __('Unpin from sidebar') : __('Pin to sidebar') }}"
+                                class="absolute top-3 right-3 h-8 w-8 rounded-full backdrop-blur-sm flex items-center justify-center border transition-colors {{ $isPinned ? 'bg-amber-400/90 border-amber-300 text-white hover:bg-amber-500' : 'bg-white/20 border-white/40 text-white hover:bg-white/30' }}">
+                            @if($isPinned)
+                                <i class="fas fa-thumbtack-slash text-xs"></i>
+                            @else
+                                <i class="fas fa-thumbtack text-xs"></i>
+                            @endif
+                        </button>
                         <div class="absolute bottom-3 left-4 right-4">
                             <h4 class="text-white font-bold text-lg leading-tight truncate">{{ $classroom->name }}</h4>
                             <p class="text-white/80 text-sm">{{ $classroom->section }}</p>
                         </div>
                         @if($classroom->isOwnedBy(auth()->user()))
-                            <span class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                            <span class="absolute top-3 left-3 bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
                                 <i class="fas fa-crown mr-1"></i> {{ __('Teacher') }}
                             </span>
                         @endif

@@ -224,5 +224,10 @@
     "Deleting...": "กำลังลบ...",
     "UI Size": "ขนาด UI",
     "Adjust interface zoom size for better readability.": "ปรับขนาดการซูมของหน้าจอเพื่อให้อ่านง่ายขึ้น",
-    "Select UI Size": "เลือกขนาด UI"
+    "Select UI Size": "เลือกขนาด UI",
+    "Pin to sidebar": "ปักหมุดในแถบด้านข้าง",
+    "Unpin from sidebar": "ยกเลิกปักหมุดจากแถบด้านข้าง",
+    "Pinned to sidebar.": "ปักหมุดในแถบด้านข้างแล้ว",
+    "Unpinned from sidebar.": "ยกเลิกปักหมุดจากแถบด้านข้างแล้ว",
+    "No pinned classrooms.": "ยังไม่มีห้องเรียนที่ปักหมุด"
 }

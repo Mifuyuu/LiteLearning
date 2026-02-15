@@ -22,7 +22,7 @@
     border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #b1b8c5;
+    background: #9ca3af;
 }
 
 /* Alpine.js cloak */
@@ -57,4 +57,11 @@
     .tabs-scroll::-webkit-scrollbar {
         display: none;
     }
+}
+
+/* Prevent double focus border (browser outline + Tailwind ring) */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
 }

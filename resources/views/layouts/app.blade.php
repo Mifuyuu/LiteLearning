@@ -39,22 +39,32 @@
 
             <!-- Navigation -->
             <nav class="p-4 space-y-1 flex-1 min-h-0 overflow-y-auto" style="scrollbar-gutter: stable">
+                @php
+                    $navItemClass = fn (bool $isActive): string => $isActive
+                        ? 'bg-indigo-50 text-indigo-700'
+                        : 'text-gray-700 hover:bg-gray-100';
+
+                    $isDashboardActive = request()->routeIs('dashboard');
+                    $isClassroomsActive = request()->routeIs('classrooms');
+                    $isCalendarActive = request()->routeIs('calendar');
+                    $isToReviewActive = request()->routeIs('to-review');
+                @endphp
                 <a href="{{ route('dashboard') }}"
-                   class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('dashboard') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                   class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isDashboardActive) }}">
                     <i class="fas fa-home w-5 mr-3 text-center"></i>
                     {{ __('Dashboard') }}
                 </a>
 
                 @if(!auth()->user()->isTeacher())
                 <a href="{{ route('classrooms') }}"
-                   class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('classrooms*') || request()->routeIs('classroom*') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                   class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isClassroomsActive) }}">
                     <i class="fas fa-chalkboard w-5 mr-3 text-center"></i>
                     {{ __('Classrooms') }}
                 </a>
                 @endif
 
                 <a href="{{ route('calendar') }}"
-                   class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('calendar') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                   class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isCalendarActive) }}">
                     <i class="fas fa-calendar-alt w-5 mr-3 text-center"></i>
                     {{ __('Calendar') }}
                 </a>
@@ -67,12 +77,12 @@
                             $isMyClassesActive = request()->routeIs('classrooms') && request()->query('filter') === 'teaching';
                         @endphp
                         <a href="{{ route('classrooms') }}?filter=teaching"
-                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $isMyClassesActive ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isMyClassesActive) }}">
                             <i class="fas fa-chalkboard-teacher w-5 mr-3 text-center"></i>
                             {{ __('My Classes') }}
                         </a>
                         <a href="{{ route('to-review') }}"
-                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('to-review') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isToReviewActive) }}">
                             <i class="fas fa-tasks w-5 mr-3 text-center"></i>
                             {{ __('To Review') }}
                         </a>
@@ -83,17 +93,34 @@
                 @if(auth()->user()->isStudent())
                 <div class="pt-4">
                     <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Enrolled') }}</p>
-                    <div class="mt-2 space-y-1">
+                    <div class="mt-2 space-y-1" data-sortable-sidebar data-sidebar-list="enrolled">
                         @php
-                            $enrolledClasses = auth()->user()->enrolledClassrooms()->where('is_archived', false)->get();
+                            $pinnedEnrolledIds = \App\Models\ClassroomSidebarPreference::query()
+                                ->where('user_id', auth()->id())
+                                ->where('is_pinned', true)
+                                ->whereIn('classroom_id', auth()->user()->enrolledClassrooms()->where('is_archived', false)->pluck('classrooms.id'))
+                                ->orderBy('position')
+                                ->pluck('classroom_id')
+                                ->all();
+
+                            $pinnedEnrolledMap = \App\Models\Classroom::query()
+                                ->whereIn('id', $pinnedEnrolledIds)
+                                ->get()
+                                ->keyBy('id');
+
+                            $enrolledClasses = collect($pinnedEnrolledIds)
+                                ->map(fn ($id) => $pinnedEnrolledMap->get($id))
+                                ->filter();
                         @endphp
                         @foreach($enrolledClasses as $ec)
                         <a href="{{ route('classroom.show', $ec) }}"
-                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $ec->id ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                                    data-classroom-id="{{ $ec->id }}"
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $ec->id) }}">
                             <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $ec->theme_color }}"></div>
                             <span class="truncate">{{ $ec->name }}</span>
                         </a>
                         @endforeach
+                        <p data-empty-pinned class="px-3 py-2 text-xs text-gray-400 {{ $enrolledClasses->isEmpty() ? '' : 'hidden' }}">{{ __('No pinned classrooms.') }}</p>
                     </div>
                 </div>
                 @endif
@@ -101,17 +128,34 @@
                 @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
                 <div class="pt-4">
                     <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Classes') }}</p>
-                    <div class="mt-2 space-y-1">
+                    <div class="mt-2 space-y-1" data-sortable-sidebar data-sidebar-list="teaching">
                         @php
-                            $teachingClasses = auth()->user()->ownedClassrooms()->where('is_archived', false)->take(5)->get();
+                            $pinnedTeachingIds = \App\Models\ClassroomSidebarPreference::query()
+                                ->where('user_id', auth()->id())
+                                ->where('is_pinned', true)
+                                ->whereIn('classroom_id', auth()->user()->ownedClassrooms()->where('is_archived', false)->pluck('id'))
+                                ->orderBy('position')
+                                ->pluck('classroom_id')
+                                ->all();
+
+                            $pinnedTeachingMap = \App\Models\Classroom::query()
+                                ->whereIn('id', $pinnedTeachingIds)
+                                ->get()
+                                ->keyBy('id');
+
+                            $teachingClasses = collect($pinnedTeachingIds)
+                                ->map(fn ($id) => $pinnedTeachingMap->get($id))
+                                ->filter();
                         @endphp
                         @foreach($teachingClasses as $tc)
                         <a href="{{ route('classroom.show', $tc) }}"
-                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $tc->id ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                                    data-classroom-id="{{ $tc->id }}"
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $tc->id) }}">
                             <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $tc->theme_color }}"></div>
                             <span class="truncate">{{ $tc->name }}</span>
                         </a>
                         @endforeach
+                        <p data-empty-pinned class="px-3 py-2 text-xs text-gray-400 {{ $teachingClasses->isEmpty() ? '' : 'hidden' }}">{{ __('No pinned classrooms.') }}</p>
                     </div>
                 </div>
                 @endif

@@ -224,5 +224,10 @@
     "Deleting...": "Deleting...",
     "UI Size": "UI Size",
     "Adjust interface zoom size for better readability.": "Adjust interface zoom size for better readability.",
-    "Select UI Size": "Select UI Size"
+    "Select UI Size": "Select UI Size",
+    "Pin to sidebar": "Pin to sidebar",
+    "Unpin from sidebar": "Unpin from sidebar",
+    "Pinned to sidebar.": "Pinned to sidebar.",
+    "Unpinned from sidebar.": "Unpinned from sidebar.",
+    "No pinned classrooms.": "No pinned classrooms."
 }

@@ -30,8 +30,11 @@
                     </h4>
                     <div class="space-y-2">
                         @foreach($assignments as $a)
+                        @php
+                            $isUrgent = $a->due_date->lt(now()->addDay());
+                        @endphp
                         <a href="{{ route('assignment.show', ['classroom' => $a->classroom, 'assignment' => $a->id]) }}"
-                           class="block p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                           class="block p-3 rounded-lg border transition-colors {{ $isUrgent ? 'bg-red-50 border-red-200 hover:bg-red-100' : 'bg-gray-50 border-gray-200 hover:bg-gray-100' }}">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center">
                                     <div class="w-3 h-3 rounded-full mr-3" style="background-color: {{ $a->classroom->theme_color }}"></div>
@@ -40,7 +43,7 @@
                                         <p class="text-xs text-gray-500">{{ $a->classroom->name }}</p>
                                     </div>
                                 </div>
-                                <span class="text-xs text-gray-400">{{ $a->due_date->translatedFormat('H:i') }}</span>
+                                <span class="text-xs {{ $isUrgent ? 'text-red-500' : 'text-gray-400' }}">{{ $a->due_date->translatedFormat('H:i') }}</span>
                             </div>
                         </a>
                         @endforeach
