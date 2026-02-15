@@ -20,6 +20,7 @@ class User extends Authenticatable
         'avatar',
         'bio',
         'locale',
+        'ui_scale',
         'coins',
         'xp',
         'level',
@@ -35,6 +36,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'ui_scale' => 'integer',
             'coins' => 'integer',
             'xp' => 'integer',
             'level' => 'integer',

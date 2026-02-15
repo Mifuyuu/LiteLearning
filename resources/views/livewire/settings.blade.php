@@ -69,6 +69,32 @@
             </div>
         </div>
 
+        <!-- UI Size Settings -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <div class="flex items-start space-x-4">
+                <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center shrink-0">
+                    <i class="fas fa-magnifying-glass-plus text-indigo-600"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900">{{ __('UI Size') }}</h3>
+                    <p class="text-sm text-gray-500 mt-1">{{ __('Adjust interface zoom size for better readability.') }}</p>
+
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Select UI Size') }}</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            @foreach([90, 100, 110, 125] as $scale)
+                            <button type="button"
+                                    wire:click="setUiScale({{ $scale }})"
+                                    class="px-3 py-2.5 text-sm rounded-lg border transition-colors {{ $uiScale === $scale ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-medium' : 'border-gray-300 text-gray-700 hover:bg-gray-50' }}">
+                                {{ $scale }}%
+                            </button>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Account Info (read-only summary) -->
         <div class="bg-white rounded-xl border border-gray-200 p-6">
             <div class="flex items-start space-x-4">

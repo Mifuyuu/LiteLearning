@@ -20,11 +20,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="h-full overflow-hidden bg-gray-50 font-sans antialiased" x-data="{ sidebarOpen: true, mobileSidebar: false }">
+<body class="h-full overflow-hidden bg-gray-50 font-sans antialiased" x-data="{ sidebarOpen: true, mobileSidebar: false }" style="zoom: {{ (int) (auth()->user()->ui_scale ?? 100) }}%;">
     <div class="h-screen flex overflow-hidden">
         <!-- Sidebar -->
         <aside
-            class="fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:shrink-0 overflow-y-auto"
+            class="fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:shrink-0 overflow-hidden flex flex-col"
             :class="{ '-translate-x-full': !mobileSidebar, 'translate-x-0': mobileSidebar }"
         >
             <!-- Logo -->
@@ -38,7 +38,7 @@
             </div>
 
             <!-- Navigation -->
-            <nav class="p-4 space-y-1">
+            <nav class="p-4 space-y-1 flex-1 min-h-0 overflow-y-auto" style="scrollbar-gutter: stable">
                 <a href="{{ route('dashboard') }}"
                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('dashboard') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
                     <i class="fas fa-home w-5 mr-3 text-center"></i>
@@ -63,8 +63,11 @@
                 <div class="pt-4">
                     <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Teaching') }}</p>
                     <div class="mt-2 space-y-1">
+                        @php
+                            $isMyClassesActive = request()->routeIs('classrooms') && request()->query('filter') === 'teaching';
+                        @endphp
                         <a href="{{ route('classrooms') }}?filter=teaching"
-                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ (request()->routeIs('classrooms') && request()->query('filter') === 'teaching') || request()->routeIs('classroom*') || request()->routeIs('assignment*') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $isMyClassesActive ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
                             <i class="fas fa-chalkboard-teacher w-5 mr-3 text-center"></i>
                             {{ __('My Classes') }}
                         </a>
@@ -82,7 +85,7 @@
                     <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Enrolled') }}</p>
                     <div class="mt-2 space-y-1">
                         @php
-                            $enrolledClasses = auth()->user()->enrolledClassrooms()->where('is_archived', false)->take(5)->get();
+                            $enrolledClasses = auth()->user()->enrolledClassrooms()->where('is_archived', false)->get();
                         @endphp
                         @foreach($enrolledClasses as $ec)
                         <a href="{{ route('classroom.show', $ec) }}"

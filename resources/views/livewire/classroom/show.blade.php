@@ -176,15 +176,17 @@
                             </span>
                         </div>
                         <div class="flex items-center gap-4 mt-1">
-                            @if($assignment->due_date)
                             <span class="text-xs text-gray-500">
                                 <i class="fas fa-clock mr-1"></i>
-                                {{ __('Due') }} {{ $assignment->due_date->translatedFormat('j M, H:i') }}
-                                @if($assignment->isOverdue())
+                                @if($assignment->due_date)
+                                    {{ __('Due') }} {{ $assignment->due_date->translatedFormat('j M, H:i') }}
+                                @else
+                                    {{ __('No due date') }}
+                                @endif
+                                @if($assignment->due_date && $assignment->isOverdue())
                                     <span class="text-red-500 font-medium">({{ __('Overdue') }})</span>
                                 @endif
                             </span>
-                            @endif
                             @if($assignment->type !== 'material')
                             <span class="text-xs text-gray-500">
                                 <i class="fas fa-users mr-1"></i>

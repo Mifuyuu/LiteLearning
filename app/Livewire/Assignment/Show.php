@@ -19,6 +19,17 @@ class Show extends Component
     public string $submissionContent = '';
     public ?Submission $userSubmission = null;
 
+    public bool $isEditTab = false;
+    public string $editTitle = '';
+    public string $editDescription = '';
+    public string $editInstructions = '';
+    public int $editMaxScore = 100;
+    public ?string $editDueDate = null;
+    public string $editType = 'assignment';
+    public string $editTopic = '';
+    public string $editStatus = 'published';
+    public bool $showDeleteModal = false;
+
     public function mount(Classroom $classroom, Assignment $assignment)
     {
         /** @var User $user */
@@ -42,6 +53,97 @@ class Show extends Component
                 $this->submissionContent = $this->userSubmission->content ?? '';
             }
         }
+
+        $this->syncEditFields();
+    }
+
+    public function openEditTab()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
+            abort(403);
+        }
+
+        $this->syncEditFields();
+        $this->resetValidation();
+        $this->isEditTab = true;
+    }
+
+    public function cancelEditTab()
+    {
+        $this->syncEditFields();
+        $this->resetValidation();
+        $this->isEditTab = false;
+    }
+
+    public function saveAssignment()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
+            abort(403);
+        }
+
+        $this->validate([
+            'editTitle' => 'required|string|max:255',
+            'editDescription' => 'nullable|string',
+            'editInstructions' => 'nullable|string',
+            'editMaxScore' => 'required|integer|min:0|max:1000',
+            'editDueDate' => 'nullable|date',
+            'editType' => 'required|in:assignment,quiz,material',
+            'editTopic' => 'nullable|string|max:255',
+            'editStatus' => 'required|in:draft,published',
+        ]);
+
+        $this->assignment->update([
+            'title' => $this->editTitle,
+            'description' => $this->editDescription,
+            'instructions' => $this->editInstructions,
+            'max_score' => $this->editType === 'material' ? 0 : $this->editMaxScore,
+            'due_date' => $this->editType === 'material' ? null : $this->editDueDate,
+            'type' => $this->editType,
+            'topic' => $this->editTopic,
+            'status' => $this->editStatus,
+        ]);
+
+        $this->assignment->refresh();
+        $this->syncEditFields();
+        $this->isEditTab = false;
+
+        session()->flash('message', __('Assignment updated successfully.'));
+    }
+
+    public function deleteAssignment()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
+            abort(403);
+        }
+
+        $this->showDeleteModal = false;
+        $this->assignment->delete();
+
+        session()->flash('message', __('Assignment deleted successfully.'));
+
+        return redirect()->route('classroom.show', $this->classroom);
+    }
+
+    public function openDeleteModal()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
+            abort(403);
+        }
+
+        $this->showDeleteModal = true;
+    }
+
+    public function closeDeleteModal()
+    {
+        $this->showDeleteModal = false;
     }
 
     public function turnIn()
@@ -113,5 +215,17 @@ class Show extends Component
         return view('livewire.assignment.show', [
             'submissions' => $submissions,
         ]);
+    }
+
+    private function syncEditFields(): void
+    {
+        $this->editTitle = $this->assignment->title;
+        $this->editDescription = $this->assignment->description ?? '';
+        $this->editInstructions = $this->assignment->instructions ?? '';
+        $this->editMaxScore = (int) $this->assignment->max_score;
+        $this->editDueDate = $this->assignment->due_date?->format('Y-m-d\TH:i');
+        $this->editType = $this->assignment->type;
+        $this->editTopic = $this->assignment->topic ?? '';
+        $this->editStatus = $this->assignment->status;
     }
 }

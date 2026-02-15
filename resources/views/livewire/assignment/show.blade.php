@@ -18,6 +18,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Content -->
         <div class="lg:col-span-2">
+            @if(!$isEditTab)
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <!-- Header -->
                 <div class="p-6 border-b border-gray-200">
@@ -41,16 +42,26 @@
                                 </div>
                             </div>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium capitalize
-                            {{ $assignment->type === 'quiz' ? 'bg-purple-100 text-purple-700' : ($assignment->type === 'material' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700') }}">
-                            {{ __(ucfirst($assignment->type)) }}
-                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium capitalize
+                                {{ $assignment->type === 'quiz' ? 'bg-purple-100 text-purple-700' : ($assignment->type === 'material' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700') }}">
+                                {{ __(ucfirst($assignment->type)) }}
+                            </span>
+                            @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
+                            <button wire:click="openEditTab" type="button" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-yellow-500 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                                <i class="fas fa-pen mr-1.5"></i>{{ __('Edit') }}
+                            </button>
+                            <button wire:click="openDeleteModal" type="button" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-500 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
+                                <i class="fas fa-trash-alt mr-1.5"></i>{{ __('Delete') }}
+                            </button>
+                            @endif
+                        </div>
                     </div>
 
-                    @if($assignment->due_date)
                     <div class="mt-4 flex items-center gap-4 text-sm">
                         <span class="text-gray-500">
-                            <i class="fas fa-clock mr-1"></i> {{ __('Due') }}: {{ $assignment->due_date->translatedFormat('j M Y, H:i') }}
+                            <i class="fas fa-clock mr-1"></i>
+                            {{ __('Due') }}: {{ $assignment->due_date ? $assignment->due_date->translatedFormat('j M Y, H:i') : __('No due date') }}
                         </span>
                         @if($assignment->type !== 'material')
                         <span class="text-gray-500">
@@ -63,7 +74,6 @@
                         </span>
                         @endif
                     </div>
-                    @endif
                 </div>
 
                 <!-- Description / Instructions -->
@@ -147,10 +157,90 @@
                 </div>
             </div>
             @endif
+            @else
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div class="p-5 border-b border-gray-200 flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">{{ __('Edit Assignment') }}</h3>
+                    <button wire:click="cancelEditTab" type="button" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-arrow-left mr-1.5"></i>{{ __('Back') }}
+                    </button>
+                </div>
+
+                <form wire:submit="saveAssignment" class="p-5 space-y-4">
+                    <div class="grid grid-cols-3 gap-3">
+                        @foreach(['assignment' => ['icon' => 'fa-file-alt', 'label' => __('Assignment')], 'quiz' => ['icon' => 'fa-question-circle', 'label' => __('Quiz')], 'material' => ['icon' => 'fa-book', 'label' => __('Material')]] as $t => $info)
+                        <label class="cursor-pointer">
+                            <input wire:model.live="editType" type="radio" value="{{ $t }}" class="peer sr-only">
+                            <div class="flex flex-col items-center p-3 border-2 rounded-xl transition-all peer-checked:border-indigo-600 peer-checked:bg-indigo-50 border-gray-200 hover:bg-gray-50">
+                                <i class="fas {{ $info['icon'] }} text-lg mb-1"></i>
+                                <span class="text-sm font-medium">{{ $info['label'] }}</span>
+                            </div>
+                        </label>
+                        @endforeach
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Title *') }}</label>
+                        <input wire:model="editTitle" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        @error('editTitle') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Description') }}</label>
+                        <textarea wire:model="editDescription" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                        @error('editDescription') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Instructions') }}</label>
+                        <textarea wire:model="editInstructions" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                        @error('editInstructions') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                    </div>
+
+                    @if($editType !== 'material')
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Points') }}</label>
+                            <input wire:model="editMaxScore" type="number" min="0" max="1000" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            @error('editMaxScore') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Due Date') }}</label>
+                            <input wire:model="editDueDate" type="datetime-local" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            @error('editDueDate') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                    @endif
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Topic') }}</label>
+                        <input wire:model="editTopic" type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        @error('editTopic') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Status') }}</label>
+                        <select wire:model="editStatus" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="draft">{{ __('Draft') }}</option>
+                            <option value="published">{{ __('Published') }}</option>
+                        </select>
+                        @error('editStatus') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="pt-2 flex justify-end gap-2">
+                        <button wire:click="cancelEditTab" type="button" class="px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">{{ __('Cancel') }}</button>
+                        <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                            <span wire:loading.remove wire:target="saveAssignment">{{ __('Update Assignment') }}</span>
+                            <span wire:loading wire:target="saveAssignment"><i class="fas fa-spinner fa-spin mr-1"></i> {{ __('Saving...') }}</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            @endif
         </div>
 
         <!-- Sidebar: Student Submission -->
-        @if(auth()->user()->isStudent() && $assignment->type !== 'material')
+        @if(!$isEditTab && auth()->user()->isStudent() && $assignment->type !== 'material')
         <div>
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-0">
                 <div class="p-4 border-b border-gray-200">
@@ -212,7 +302,7 @@
         @endif
 
         <!-- Sidebar info for materials or teacher -->
-        @if($assignment->type === 'material' || ($classroom->isOwnedBy(auth()->user()) && $assignment->type !== 'material'))
+        @if(!$isEditTab && ($assignment->type === 'material' || ($classroom->isOwnedBy(auth()->user()) && $assignment->type !== 'material')))
         <div>
             <div class="bg-white rounded-xl border border-gray-200 p-4 sticky top-0">
                 @if($assignment->type !== 'material')
@@ -246,4 +336,32 @@
         </div>
         @endif
     </div>
+
+    @if($showDeleteModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" wire:click="closeDeleteModal">
+        <div class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden" wire:click.stop>
+            <div class="px-6 py-5 border-b border-gray-100">
+                <h4 class="text-base font-semibold text-gray-900">{{ __('Delete Assignment') }}</h4>
+                <p class="text-sm text-gray-500 mt-1">{{ __('Are you sure you want to delete this assignment?') }}</p>
+            </div>
+
+            <div class="px-6 py-5">
+                <div class="flex justify-end gap-2">
+                    <button type="button" wire:click="closeDeleteModal" class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-xmark mr-1.5"></i>{{ __('Cancel') }}
+                    </button>
+                    <button type="button" wire:click="deleteAssignment" wire:loading.attr="disabled" class="px-4 py-2 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors">
+                        <span wire:loading.remove wire:target="deleteAssignment" class="inline-flex items-center">
+                            <i class="fas fa-trash-alt mr-1.5"></i>{{ __('Delete') }}
+                        </span>
+                        <span wire:loading wire:target="deleteAssignment" class="inline-flex items-center">
+                            <i class="fas fa-spinner fa-spin mr-1.5"></i>{{ __('Deleting...') }}
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
 </div>

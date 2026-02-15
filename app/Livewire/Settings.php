@@ -12,6 +12,7 @@ use Livewire\Component;
 class Settings extends Component
 {
     public string $locale = 'th';
+    public int $uiScale = 100;
 
     public function setLocale(string $value): void
     {
@@ -24,6 +25,7 @@ class Settings extends Component
         /** @var User $user */
         $user = Auth::user();
         $this->locale = $user->locale ?? 'th';
+        $this->uiScale = (int) ($user->ui_scale ?? 100);
     }
 
     public function updatedLocale(string $value)
@@ -43,6 +45,24 @@ class Settings extends Component
         session()->flash('message', __('Changes saved successfully.'));
 
         return $this->redirectRoute('settings', navigate: false);
+    }
+
+    public function setUiScale(string|int $value): void
+    {
+        $scale = (int) $value;
+        if (!in_array($scale, [90, 100, 110, 125], true)) {
+            return;
+        }
+
+        $this->uiScale = $scale;
+
+        /** @var User $user */
+        $user = Auth::user();
+        $user->update(['ui_scale' => $scale]);
+
+        session()->flash('message', __('Changes saved successfully.'));
+
+        $this->redirectRoute('settings', navigate: false);
     }
 
     public function render()

@@ -212,5 +212,17 @@
     "Please enter a score.": "กรุณากรอกคะแนน",
     "The score must be a number.": "คะแนนต้องเป็นตัวเลข",
     "The score must be at least :min.": "คะแนนต้องไม่น้อยกว่า :min",
-    "The score must not be greater than :max.": "คะแนนต้องไม่เกิน :max"
+    "The score must not be greater than :max.": "คะแนนต้องไม่เกิน :max",
+    "No due date": "ไม่มีกำหนด",
+    "Edit": "แก้ไข",
+    "Edit Assignment": "แก้ไขงาน",
+    "Update Assignment": "อัปเดตงาน",
+    "Assignment updated successfully.": "อัปเดตงานเรียบร้อยแล้ว",
+    "Assignment deleted successfully.": "ลบงานเรียบร้อยแล้ว",
+    "Are you sure you want to delete this assignment?": "คุณแน่ใจหรือไม่ว่าต้องการลบงานนี้?",
+    "Delete Assignment": "ลบงาน",
+    "Deleting...": "กำลังลบ...",
+    "UI Size": "ขนาด UI",
+    "Adjust interface zoom size for better readability.": "ปรับขนาดการซูมของหน้าจอเพื่อให้อ่านง่ายขึ้น",
+    "Select UI Size": "เลือกขนาด UI"
 }
