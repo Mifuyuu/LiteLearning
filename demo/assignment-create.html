@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Create Assignment Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen overflow-hidden bg-gray-50" style="font-family:'Google Sans Text','Google Sans','Noto Sans Thai',sans-serif;">
+<div class="flex h-screen overflow-hidden">
+  <aside class="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
+    <div class="flex h-16 items-center border-b border-gray-200 px-6"><div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"><i class="fa-solid fa-graduation-cap text-sm"></i></div><span class="text-lg font-bold text-gray-900">LiteLearning</span></div>
+    <nav class="space-y-1 p-4 text-sm"><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classrooms.html"><i class="fa-solid fa-chalkboard mr-3 w-5 text-center"></i>Classrooms</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./assignment-create.html"><i class="fa-solid fa-file-circle-plus mr-3 w-5 text-center"></i>Create Assignment</a><p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wider text-gray-400">Classes</p><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Mathematics 101</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Physics Advanced</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>English Literature</a></nav>
+  </aside>
+  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    <header class="h-16 shrink-0 border-b border-gray-200 bg-white px-6"><div class="flex h-full items-center"><h1 class="text-lg font-semibold text-gray-800">Create Assignment</h1></div></header>
+    <main class="min-h-0 flex-1 overflow-y-auto p-6">
+      <div class="mx-auto max-w-3xl">
+        <a href="./classroom-show.html" class="mb-6 inline-flex items-center text-sm text-gray-500 hover:text-gray-700"><i class="fa-solid fa-arrow-left mr-2"></i>Back to Mathematics 101</a>
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+          <div class="border-b border-gray-200 p-6"><h2 class="text-xl font-bold text-gray-900">Create Assignment</h2><p class="mt-1 text-sm text-gray-500">Mathematics 101</p></div>
+          <form class="space-y-5 p-6">
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">Type</label>
+              <div class="grid grid-cols-3 gap-3">
+                <label class="cursor-pointer"><input type="radio" checked class="peer sr-only"><div class="flex flex-col items-center rounded-xl border-2 border-indigo-600 bg-indigo-50 p-4"><i class="fa-solid fa-file-alt mb-2 text-xl"></i><span class="text-sm font-medium">Assignment</span></div></label>
+                <label class="cursor-pointer"><input type="radio" class="peer sr-only"><div class="flex flex-col items-center rounded-xl border-2 border-gray-200 p-4 hover:bg-gray-50"><i class="fa-solid fa-question-circle mb-2 text-xl"></i><span class="text-sm font-medium">Quiz</span></div></label>
+                <label class="cursor-pointer"><input type="radio" class="peer sr-only"><div class="flex flex-col items-center rounded-xl border-2 border-gray-200 p-4 hover:bg-gray-50"><i class="fa-solid fa-book mb-2 text-xl"></i><span class="text-sm font-medium">Material</span></div></label>
+              </div>
+            </div>
+            <div><label class="mb-1 block text-sm font-medium text-gray-700">Title *</label><input class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500" value="Worksheet #6"></div>
+            <div><label class="mb-1 block text-sm font-medium text-gray-700">Description</label><textarea rows="3" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm">Practice equations and show all steps.</textarea></div>
+            <div><label class="mb-1 block text-sm font-medium text-gray-700">Instructions</label><textarea rows="4" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm">Solve all problems and include final answers clearly.</textarea></div>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2"><div><label class="mb-1 block text-sm font-medium text-gray-700">Points</label><input class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm" value="100"></div><div><label class="mb-1 block text-sm font-medium text-gray-700">Due Date</label><input type="datetime-local" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm"></div></div>
+            <div><label class="mb-1 block text-sm font-medium text-gray-700">Topic</label><input class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm" value="Algebra"></div>
+            <div class="flex items-center justify-between border-t border-gray-200 pt-4"><button type="button" class="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">Save as Draft</button><button type="button" class="rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700">Assign</button></div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

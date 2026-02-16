@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Classroom Show Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen overflow-hidden bg-gray-50" style="font-family:'Google Sans Text','Google Sans','Noto Sans Thai',sans-serif;">
+<div class="flex h-screen overflow-hidden">
+  <aside class="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
+    <div class="flex h-16 items-center border-b border-gray-200 px-6"><div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"><i class="fa-solid fa-graduation-cap text-sm"></i></div><span class="text-lg font-bold text-gray-900">LiteLearning</span></div>
+    <nav class="space-y-1 p-4 text-sm"><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./dashboard.html"><i class="fa-solid fa-house mr-3 w-5 text-center"></i>Dashboard</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classrooms.html"><i class="fa-solid fa-chalkboard mr-3 w-5 text-center"></i>Classrooms</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classrooms.html"><i class="fa-solid fa-arrow-left mr-3 w-5 text-center"></i>Back</a><p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wider text-gray-400">Classes</p><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Mathematics 101</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Physics Advanced</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>English Literature</a></nav>
+  </aside>
+  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    <header class="h-16 shrink-0 border-b border-gray-200 bg-white px-6"><div class="flex h-full items-center justify-between"><h1 class="text-lg font-semibold text-gray-800">Classrooms / Mathematics 101</h1><div class="flex items-center gap-3"><button class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><i class="fa-solid fa-plus mr-1"></i>Create</button><div class="h-8 w-8 rounded-full bg-gray-200"></div></div></div></header>
+    <main class="min-h-0 flex-1 overflow-y-auto p-6">
+      <div class="relative mb-6 overflow-hidden rounded-2xl bg-indigo-600 p-8 text-white">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40"></div>
+        <div class="relative">
+        <h2 class="text-3xl font-bold">Mathematics 101</h2>
+        <p class="mt-1 text-white/80">Section A · Algebra</p>
+        <p class="mt-2 text-sm text-white/70">John Smith</p>
+        </div>
+      </div>
+      <div class="mb-6 flex overflow-x-auto border-b border-gray-200">
+        <span class="whitespace-nowrap border-b-2 border-indigo-600 px-6 py-3 text-sm font-medium text-indigo-600"><i class="fa-solid fa-stream mr-2"></i>Stream</span>
+        <a href="./assignment-show.html" class="whitespace-nowrap border-b-2 border-transparent px-6 py-3 text-sm font-medium text-gray-500 hover:text-gray-700"><i class="fa-solid fa-book-open mr-2"></i>Classwork</a>
+        <a href="./classroom-people.html" class="whitespace-nowrap border-b-2 border-transparent px-6 py-3 text-sm font-medium text-gray-500 hover:text-gray-700"><i class="fa-solid fa-users mr-2"></i>People</a>
+        <span class="whitespace-nowrap border-b-2 border-transparent px-6 py-3 text-sm font-medium text-gray-500"><i class="fa-solid fa-chart-bar mr-2"></i>Grades</span>
+        <span class="whitespace-nowrap border-b-2 border-transparent px-6 py-3 text-sm font-medium text-gray-500"><i class="fa-solid fa-sliders-h mr-2"></i>Settings</span>
+      </div>
+      <div class="mx-auto max-w-3xl space-y-4">
+        <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4"><div><p class="text-sm text-gray-500">Class code</p><p class="font-mono text-2xl font-bold text-indigo-600">A1B2C3</p></div><button class="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"><i class="fa-solid fa-copy"></i></button></div>
+        <div class="rounded-xl border border-gray-200 bg-white p-5"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-semibold text-gray-900">John Smith</p><p class="text-xs text-gray-500">1 hour ago</p></div></div><p class="mt-3 text-sm text-gray-700">Welcome to class. Next week we begin linear equations.</p></div>
+        <a href="./assignment-show.html" class="block rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md"><div class="flex items-center justify-between"><div><p class="text-sm font-semibold text-gray-900">Quiz #2</p><p class="text-xs text-gray-500">Due tomorrow 09:00</p></div><i class="fa-solid fa-chevron-right text-gray-400"></i></div></a>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

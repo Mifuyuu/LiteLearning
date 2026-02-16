@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Assignment Grade Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen overflow-hidden bg-gray-50" style="font-family:'Google Sans Text','Google Sans','Noto Sans Thai',sans-serif;">
+<div class="flex h-screen overflow-hidden">
+  <aside class="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
+    <div class="flex h-16 items-center border-b border-gray-200 px-6"><div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"><i class="fa-solid fa-graduation-cap text-sm"></i></div><span class="text-lg font-bold text-gray-900">LiteLearning</span></div>
+    <nav class="space-y-1 p-4 text-sm"><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./assignment-show.html"><i class="fa-solid fa-file-lines mr-3 w-5 text-center"></i>Quiz #2</a><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./assignment-grade.html"><i class="fa-solid fa-list-check mr-3 w-5 text-center"></i>Grade</a><p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wider text-gray-400">Classes</p><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Mathematics 101</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Physics Advanced</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>English Literature</a></nav>
+  </aside>
+  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    <header class="h-16 shrink-0 border-b border-gray-200 bg-white px-6"><div class="flex h-full items-center justify-between"><h1 class="text-lg font-semibold text-gray-800">Classrooms / Mathematics 101 / Quiz #2 / Grade</h1><div class="h-8 w-8 rounded-full bg-gray-200"></div></div></header>
+    <main class="min-h-0 flex-1 overflow-y-auto p-6">
+      <a href="./assignment-show.html" class="mb-6 inline-flex items-center text-sm text-gray-500 hover:text-gray-700"><i class="fa-solid fa-arrow-left mr-2"></i>Back to Quiz #2</a>
+      <div class="mx-auto grid max-w-4xl grid-cols-1 gap-6 lg:grid-cols-3">
+        <div class="lg:col-span-2">
+          <div class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+            <div class="border-b border-gray-200 p-5"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="font-semibold text-gray-900">Student A</p><p class="text-xs text-gray-500">Turned in 16 Feb 2026, 08:45</p></div></div></div>
+            <div class="p-5"><h3 class="mb-2 text-sm font-semibold text-gray-700">Student's Response</h3><div class="rounded-lg border border-gray-200 bg-gray-50 p-4"><p class="text-sm text-gray-700">The derivative of x² is 2x. I applied power rule for each equation.</p></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="sticky top-0 overflow-hidden rounded-xl border border-gray-200 bg-white">
+            <div class="border-b border-gray-200 p-4"><h3 class="text-lg font-semibold text-gray-900">Grade</h3></div>
+            <div class="space-y-4 p-4">
+              <div><label class="mb-1 block text-sm font-medium text-gray-700">Score</label><div class="flex items-center gap-2"><input class="w-24 rounded-lg border border-gray-300 px-3 py-2.5 text-center text-lg font-bold focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500" value="9"><span class="text-lg text-gray-500">/</span><span class="text-lg font-bold text-gray-900">10</span></div></div>
+              <div><label class="mb-1 block text-sm font-medium text-gray-700">Feedback</label><textarea rows="4" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm">Great work. Add clearer step-by-step on Q3.</textarea></div>
+              <div class="space-y-2"><button class="w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white hover:bg-indigo-700">Update Grade</button><button class="w-full rounded-lg border border-gray-300 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">Return to Student</button></div>
+              <div class="rounded-lg bg-green-50 p-3 text-center"><i class="fa-solid fa-check-circle mb-1 text-xl text-green-500"></i><p class="text-sm font-medium text-green-700">Graded 16 Feb, 09:10</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

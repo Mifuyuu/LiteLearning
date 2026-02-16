@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Classroom People Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen overflow-hidden bg-gray-50" style="font-family:'Google Sans Text','Google Sans','Noto Sans Thai',sans-serif;">
+<div class="flex h-screen overflow-hidden">
+  <aside class="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
+    <div class="flex h-16 items-center border-b border-gray-200 px-6"><div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"><i class="fa-solid fa-graduation-cap text-sm"></i></div><span class="text-lg font-bold text-gray-900">LiteLearning</span></div>
+    <nav class="space-y-1 p-4 text-sm"><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-arrow-left mr-3 w-5 text-center"></i>Back to classroom</a><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./classroom-people.html"><i class="fa-solid fa-users mr-3 w-5 text-center"></i>People</a><p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wider text-gray-400">Classes</p><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Mathematics 101</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Physics Advanced</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>English Literature</a></nav>
+  </aside>
+  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    <header class="h-16 shrink-0 border-b border-gray-200 bg-white px-6"><div class="flex h-full items-center justify-between"><h1 class="text-lg font-semibold text-gray-800">People</h1><div class="flex gap-2 text-xs"><span class="rounded-full bg-gray-100 px-3 py-1.5 text-gray-600">2 Teachers</span><span class="rounded-full bg-gray-100 px-3 py-1.5 text-gray-600">28 Students</span></div></div></header>
+    <main class="min-h-0 flex-1 overflow-y-auto p-6">
+      <div class="mx-auto max-w-3xl space-y-8">
+        <div><h2 class="mb-4 flex items-center text-lg font-semibold text-gray-900"><i class="fa-solid fa-chalkboard-teacher mr-2 text-indigo-600"></i>Teacher</h2><div class="overflow-hidden rounded-xl border border-gray-200 bg-white"><div class="flex items-center justify-between border-b border-gray-100 p-4"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">John Smith</p><p class="text-xs text-gray-500">john@example.com</p></div></div></div><div class="flex items-center justify-between p-4"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">Jane Doe</p><p class="text-xs text-gray-500">jane@example.com</p></div></div></div></div></div>
+        <div><h2 class="mb-4 flex items-center text-lg font-semibold text-gray-900"><i class="fa-solid fa-users mr-2 text-indigo-600"></i>Students <span class="ml-2 text-sm font-normal text-gray-500">(28)</span></h2><div class="overflow-hidden rounded-xl border border-gray-200 bg-white"><div class="flex items-center justify-between border-b border-gray-100 p-4"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">Student A</p><p class="text-xs text-gray-500">a@example.com</p></div></div><span class="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700">Active</span></div><div class="flex items-center justify-between border-b border-gray-100 p-4"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">Student B</p><p class="text-xs text-gray-500">b@example.com</p></div></div><span class="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700">Active</span></div><div class="flex items-center justify-between p-4"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">Student C</p><p class="text-xs text-gray-500">c@example.com</p></div></div><span class="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">Pending</span></div></div></div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Classrooms Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="h-screen overflow-hidden bg-gray-50"
+    style="font-family:'Google Sans Text','Google Sans','Noto Sans Thai',sans-serif;">
+    <div class="flex h-screen overflow-hidden">
+        <aside class="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
+            <div class="flex h-16 items-center border-b border-gray-200 px-6">
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"><i
+                        class="fa-solid fa-graduation-cap text-sm"></i></div><span
+                    class="text-lg font-bold text-gray-900">LiteLearning</span>
+            </div>
+            <nav class="space-y-1 p-4 text-sm"><a
+                    class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100"
+                    href="./dashboard.html"><i class="fa-solid fa-house mr-3 w-5 text-center"></i>Dashboard</a><a
+                    class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700"
+                    href="./classrooms.html"><i class="fa-solid fa-chalkboard mr-3 w-5 text-center"></i>Classrooms</a><a
+                    class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100"
+                    href="./calendar.html"><i class="fa-solid fa-calendar-alt mr-3 w-5 text-center"></i>Calendar</a>
+                <p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wider text-gray-400">Classes</p><a
+                    class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100"
+                    href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Mathematics
+                    101</a><a
+                    class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100"
+                    href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Physics
+                    Advanced</a><a
+                    class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100"
+                    href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>English
+                    Literature</a>
+            </nav>
+        </aside>
+        <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+            <header class="h-16 shrink-0 border-b border-gray-200 bg-white px-6">
+                <div class="flex h-full items-center justify-between">
+                    <h1 class="text-lg font-semibold text-gray-800">My Classrooms</h1>
+                    <div class="flex items-center gap-3"><button
+                            class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><i
+                                class="fa-solid fa-plus mr-1"></i>Create</button>
+                        <div class="h-8 w-8 rounded-full bg-gray-200"></div>
+                    </div>
+                </div>
+            </header>
+            <main class="min-h-0 flex-1 overflow-y-auto p-6">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">My Classrooms</h2>
+                    <p class="mt-1 text-gray-500">Manage and access your classrooms</p>
+                </div>
+                <div class="mb-4 relative"><i
+                        class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i><input
+                        class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Search classrooms..."></div>
+                <div class="mb-6 flex flex-wrap gap-2">
+                    <span class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white">All</span>
+                    <span
+                        class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">Teaching</span>
+                    <span
+                        class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">Enrolled</span>
+                    <span
+                        class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">Archived</span>
+                </div>
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    <a href="./classroom-show.html"
+                        class="overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:-translate-y-1 hover:shadow-lg">
+                        <div class="relative h-28 bg-indigo-600">
+                            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/30"></div><span
+                                class="absolute left-3 top-3 rounded-full bg-white/20 px-2 py-1 text-xs text-white"><i
+                                    class="fa-solid fa-crown mr-1"></i>Teacher</span>
+                            <div class="absolute bottom-3 left-4">
+                                <h3 class="font-bold text-white">Mathematics 101</h3>
+                                <p class="text-sm text-white/80">Section A</p>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-sm font-medium text-gray-900">John Smith</p>
+                            <p class="text-xs text-gray-500">Algebra</p>
+                            <div class="mt-3 flex items-center justify-between text-xs text-gray-400"><span><i
+                                        class="fa-solid fa-users mr-1"></i>35 students</span><span><i
+                                        class="fa-solid fa-file-alt mr-1"></i>8 assignments</span></div>
+                        </div>
+                    </a>
+                    <a href="./classroom-show.html"
+                        class="overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:-translate-y-1 hover:shadow-lg">
+                        <div class="relative h-28 bg-blue-600">
+                            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/30"></div>
+                            <div class="absolute bottom-3 left-4">
+                                <h3 class="font-bold text-white">Physics Advanced</h3>
+                                <p class="text-sm text-white/80">Section B</p>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-sm font-medium text-gray-900">Sarah Johnson</p>
+                            <p class="text-xs text-gray-500">Physics</p>
+                            <div class="mt-3 flex items-center justify-between text-xs text-gray-400"><span><i
+                                        class="fa-solid fa-users mr-1"></i>29 students</span><span><i
+                                        class="fa-solid fa-file-alt mr-1"></i>6 assignments</span></div>
+                        </div>
+                    </a>
+                    <a href="./classroom-show.html"
+                        class="overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:-translate-y-1 hover:shadow-lg">
+                        <div class="relative h-28 bg-emerald-600">
+                            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/30"></div>
+                            <div class="absolute bottom-3 left-4">
+                                <h3 class="font-bold text-white">English Literature</h3>
+                                <p class="text-sm text-white/80">Period 1</p>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-sm font-medium text-gray-900">Michael Chen</p>
+                            <p class="text-xs text-gray-500">Reading</p>
+                            <div class="mt-3 flex items-center justify-between text-xs text-gray-400"><span><i
+                                        class="fa-solid fa-users mr-1"></i>31 students</span><span><i
+                                        class="fa-solid fa-file-alt mr-1"></i>7 assignments</span></div>
+                        </div>
+                    </a>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>

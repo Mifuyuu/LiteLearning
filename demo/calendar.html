@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Calendar Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen overflow-hidden bg-gray-50" style="font-family:'Google Sans Text','Google Sans','Noto Sans Thai',sans-serif;">
+<div class="flex h-screen overflow-hidden">
+  <aside class="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
+    <div class="flex h-16 items-center border-b border-gray-200 px-6"><div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"><i class="fa-solid fa-graduation-cap text-sm"></i></div><span class="text-lg font-bold text-gray-900">LiteLearning</span></div>
+    <nav class="space-y-1 p-4 text-sm"><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./dashboard.html"><i class="fa-solid fa-home mr-3 w-5 text-center"></i>Dashboard</a><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./calendar.html"><i class="fa-solid fa-calendar-alt mr-3 w-5 text-center"></i>Calendar</a><p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wider text-gray-400">Classes</p><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Mathematics 101</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Physics Advanced</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>English Literature</a></nav>
+  </aside>
+  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+    <header class="h-16 shrink-0 border-b border-gray-200 bg-white px-6"><div class="flex h-full items-center"><h1 class="text-lg font-semibold text-gray-800">Calendar</h1></div></header>
+    <main class="min-h-0 flex-1 overflow-y-auto p-6">
+      <div class="mx-auto max-w-4xl">
+        <h2 class="mb-6 text-2xl font-bold text-gray-900">Calendar</h2>
+        <div class="rounded-xl border border-gray-200 bg-white p-12 text-center">
+          <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-indigo-100"><i class="fa-solid fa-calendar-alt text-3xl text-indigo-600"></i></div>
+          <h3 class="mb-2 text-xl font-semibold text-gray-900">Calendar View</h3>
+          <p class="mx-auto max-w-md text-gray-500">View all your upcoming assignments and deadlines in one place.</p>
+          <div class="mt-8 text-left">
+            <div class="mb-6"><h4 class="mb-2 text-sm font-semibold text-gray-500">Monday, 16 February</h4><div class="space-y-2"><a href="./assignment-show.html" class="block rounded-lg border border-red-200 bg-red-50 p-3 transition-colors hover:bg-red-100"><div class="flex items-center justify-between"><div class="flex items-center"><div class="mr-3 h-3 w-3 rounded-full bg-indigo-600"></div><div><p class="text-sm font-medium text-gray-900">Quiz #2</p><p class="text-xs text-gray-500">Mathematics 101</p></div></div><span class="text-xs text-red-500">09:00</span></div></a><a href="./assignment-show.html" class="block rounded-lg border border-gray-200 bg-gray-50 p-3 transition-colors hover:bg-gray-100"><div class="flex items-center justify-between"><div class="flex items-center"><div class="mr-3 h-3 w-3 rounded-full bg-blue-600"></div><div><p class="text-sm font-medium text-gray-900">Worksheet #5</p><p class="text-xs text-gray-500">Physics Advanced</p></div></div><span class="text-xs text-gray-400">14:00</span></div></a></div></div>
+            <div class="mb-6"><h4 class="mb-2 text-sm font-semibold text-gray-500">Tuesday, 17 February</h4><div class="space-y-2"><a href="./assignment-show.html" class="block rounded-lg border border-gray-200 bg-gray-50 p-3 transition-colors hover:bg-gray-100"><div class="flex items-center justify-between"><div class="flex items-center"><div class="mr-3 h-3 w-3 rounded-full bg-emerald-600"></div><div><p class="text-sm font-medium text-gray-900">Reading Journal</p><p class="text-xs text-gray-500">English Literature</p></div></div><span class="text-xs text-gray-400">11:30</span></div></a></div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>
