@@ -229,5 +229,25 @@
     "Unpin from sidebar": "ยกเลิกปักหมุดจากแถบด้านข้าง",
     "Pinned to sidebar.": "ปักหมุดในแถบด้านข้างแล้ว",
     "Unpinned from sidebar.": "ยกเลิกปักหมุดจากแถบด้านข้างแล้ว",
-    "No pinned classrooms.": "ยังไม่มีห้องเรียนที่ปักหมุด"
+    "No pinned classrooms.": "ยังไม่มีห้องเรียนที่ปักหมุด",
+
+    "Complete your profile setup": "กรอกข้อมูลโปรไฟล์ให้ครบ",
+    "Please provide your basic information before using the platform.": "กรุณากรอกข้อมูลพื้นฐานก่อนเริ่มใช้งานแพลตฟอร์ม",
+    "Institution": "สถาบันการศึกษา",
+    "Type your university name": "พิมพ์ชื่อมหาวิทยาลัยของคุณ",
+    "You can type to search or enter your own institution name.": "คุณสามารถพิมพ์เพื่อค้นหา หรือกรอกชื่อสถาบันด้วยตนเองได้",
+    "Study Year": "ชั้นปี",
+    "Select study year": "เลือกชั้นปี",
+    "Year 1": "ปี 1",
+    "Year 2": "ปี 2",
+    "Year 3": "ปี 3",
+    "Year 4": "ปี 4",
+    "Other": "อื่น ๆ",
+    "Enter your study year": "กรอกชั้นปีของคุณ",
+    "Date of Birth": "วันเดือนปีเกิด",
+    "I agree to the": "ฉันยอมรับ",
+    "Terms of Service": "ข้อกำหนดการใช้งาน",
+    "Complete Setup": "ตั้งค่าให้เสร็จสิ้น",
+    "Sign out": "ออกจากระบบ",
+    "Setup completed successfully.": "ตั้งค่าบัญชีเรียบร้อยแล้ว"
 }

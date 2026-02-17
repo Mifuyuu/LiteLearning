@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'teacher' => \App\Http\Middleware\EnsureUserIsTeacher::class,
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'setup' => \App\Http\Middleware\EnsureUserHasCompletedSetup::class,
         ]);
 
         $middleware->web(append: [

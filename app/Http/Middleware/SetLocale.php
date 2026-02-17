@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
@@ -13,11 +14,14 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // Prefer authenticated user's saved locale, fall back to session, then config default
-        if (Auth::check() && Auth::user()->locale) {
-            $locale = Auth::user()->locale;
-        } else {
-            $locale = session('locale', config('app.locale'));
+        $locale = session('locale', config('app.locale'));
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            if ($user instanceof User && !$user->needsSetup() && $user->locale) {
+                $locale = $user->locale;
+            }
         }
 
         if (in_array($locale, ['en', 'th'])) {

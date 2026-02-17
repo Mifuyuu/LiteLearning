@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Auth;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
@@ -37,6 +38,14 @@ class Login extends Component
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::clear($throttleKey);
             session()->regenerate();
+
+            /** @var User|null $user */
+            $user = Auth::user();
+
+            if ($user?->needsSetup()) {
+                return redirect()->route('setup');
+            }
+
             return redirect()->intended(route('dashboard'));
         }
 

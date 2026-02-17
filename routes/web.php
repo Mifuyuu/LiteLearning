@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Auth\Setup;
 use App\Livewire\Dashboard;
 use App\Livewire\Classroom\Index as ClassroomIndex;
 use App\Livewire\Classroom\Show as ClassroomShow;
@@ -17,10 +18,17 @@ use App\Http\Controllers\SidebarClassroomPreferenceController;
 // Landing page
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('dashboard');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        return $user->needsSetup()
+            ? redirect()->route('setup')
+            : redirect()->route('dashboard');
     }
-    return redirect()->route('login');
-});
+    return view('welcome');
+})->name('landing');
+
+Route::view('/tos', 'pages.tos')->name('tos');
 
 // Auth routes (guest only)
 Route::middleware('guest')->group(function () {
@@ -38,6 +46,9 @@ Route::post('/logout', function () {
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
+    Route::get('/setup', Setup::class)->name('setup');
+
+    Route::middleware('setup')->group(function () {
     // Dashboard
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
@@ -71,4 +82,5 @@ Route::middleware('auth')->group(function () {
     // Sidebar classroom preferences
     Route::post('/sidebar/classrooms/reorder', [SidebarClassroomPreferenceController::class, 'reorder'])
         ->name('sidebar.classrooms.reorder');
+    });
 });

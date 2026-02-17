@@ -32,28 +32,6 @@
                 @error('email') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
             </div>
 
-            <!-- Role -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('I am a') }}</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <label class="relative cursor-pointer">
-                        <input wire:model="role" type="radio" value="student" class="peer sr-only">
-                        <div class="flex items-center justify-center py-3 px-4 border-2 rounded-lg transition-all peer-checked:border-indigo-600 peer-checked:bg-indigo-50 border-gray-200 hover:bg-gray-50">
-                            <i class="fas fa-user-graduate mr-2 peer-checked:text-indigo-600"></i>
-                            <span class="text-sm font-medium">{{ __('Student') }}</span>
-                        </div>
-                    </label>
-                    <label class="relative cursor-pointer">
-                        <input wire:model="role" type="radio" value="teacher" class="peer sr-only">
-                        <div class="flex items-center justify-center py-3 px-4 border-2 rounded-lg transition-all peer-checked:border-indigo-600 peer-checked:bg-indigo-50 border-gray-200 hover:bg-gray-50">
-                            <i class="fas fa-chalkboard-teacher mr-2 peer-checked:text-indigo-600"></i>
-                            <span class="text-sm font-medium">{{ __('Teacher') }}</span>
-                        </div>
-                    </label>
-                </div>
-                @error('role') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-            </div>
-
             <!-- Password -->
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Password') }}</label>

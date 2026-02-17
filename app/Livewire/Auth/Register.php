@@ -15,13 +15,10 @@ class Register extends Component
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
-    public string $role = 'student';
-
     protected $rules = [
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email',
         'password' => 'required|min:8|confirmed',
-        'role' => 'required|in:student,teacher',
     ];
 
     public function register()
@@ -32,13 +29,14 @@ class Register extends Component
             'name' => $this->name,
             'email' => $this->email,
             'password' => Hash::make($this->password),
-            'role' => $this->role,
+            'role' => 'student',
+            'locale' => session('locale', config('app.locale')),
             'email_verified_at' => now(),
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('setup');
     }
 
     public function render()

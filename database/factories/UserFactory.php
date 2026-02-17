@@ -26,6 +26,12 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'role' => 'student',
+            'school_name' => 'LiteLearning Academy',
+            'study_year' => 'Year 1',
+            'birth_date' => fake()->dateTimeBetween('-30 years', '-12 years')->format('Y-m-d'),
+            'tos_accepted_at' => now(),
+            'setup_completed_at' => now(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),

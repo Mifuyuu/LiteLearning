@@ -229,5 +229,25 @@
     "Unpin from sidebar": "Unpin from sidebar",
     "Pinned to sidebar.": "Pinned to sidebar.",
     "Unpinned from sidebar.": "Unpinned from sidebar.",
-    "No pinned classrooms.": "No pinned classrooms."
+    "No pinned classrooms.": "No pinned classrooms.",
+
+    "Complete your profile setup": "Complete your profile setup",
+    "Please provide your basic information before using the platform.": "Please provide your basic information before using the platform.",
+    "Institution": "Institution",
+    "Type your university name": "Type your university name",
+    "You can type to search or enter your own institution name.": "You can type to search or enter your own institution name.",
+    "Study Year": "Study Year",
+    "Select study year": "Select study year",
+    "Year 1": "Year 1",
+    "Year 2": "Year 2",
+    "Year 3": "Year 3",
+    "Year 4": "Year 4",
+    "Other": "Other",
+    "Enter your study year": "Enter your study year",
+    "Date of Birth": "Date of Birth",
+    "I agree to the": "I agree to the",
+    "Terms of Service": "Terms of Service",
+    "Complete Setup": "Complete Setup",
+    "Sign out": "Sign out",
+    "Setup completed successfully.": "Setup completed successfully."
 }

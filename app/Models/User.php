@@ -17,6 +17,11 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'school_name',
+        'study_year',
+        'birth_date',
+        'tos_accepted_at',
+        'setup_completed_at',
         'avatar',
         'bio',
         'locale',
@@ -36,6 +41,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'birth_date' => 'date',
+            'tos_accepted_at' => 'datetime',
+            'setup_completed_at' => 'datetime',
             'ui_scale' => 'integer',
             'coins' => 'integer',
             'xp' => 'integer',
@@ -138,5 +146,10 @@ class User extends Authenticatable
             $initials .= strtoupper(substr($word, 0, 1));
         }
         return $initials;
+    }
+
+    public function needsSetup(): bool
+    {
+        return $this->setup_completed_at === null;
     }
 }

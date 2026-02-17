@@ -1,0 +1,38 @@
+<?php
+
+return [
+    'accepted' => ':attribute ต้องได้รับการยอมรับ',
+    'before' => ':attribute ต้องเป็นวันที่ก่อน :date',
+    'boolean' => ':attribute ต้องเป็นจริงหรือเท็จ',
+    'confirmed' => ':attribute และการยืนยันไม่ตรงกัน',
+    'date' => ':attribute ต้องเป็นวันที่ที่ถูกต้อง',
+    'email' => ':attribute ต้องเป็นอีเมลที่ถูกต้อง',
+    'in' => ':attribute ที่เลือกไม่ถูกต้อง',
+    'max' => [
+        'numeric' => ':attribute ต้องไม่เกิน :max',
+        'string' => ':attribute ต้องมีความยาวไม่เกิน :max ตัวอักษร',
+    ],
+    'min' => [
+        'numeric' => ':attribute ต้องมีค่าอย่างน้อย :min',
+        'string' => ':attribute ต้องมีความยาวอย่างน้อย :min ตัวอักษร',
+    ],
+    'nullable' => ':attribute สามารถเว้นว่างได้',
+    'required' => 'กรุณากรอก:attribute',
+    'required_if' => 'กรุณากรอก:attribute',
+    'string' => ':attribute ต้องเป็นข้อความ',
+    'unique' => ':attribute นี้ถูกใช้งานแล้ว',
+
+    'attributes' => [
+        'name' => 'ชื่อ',
+        'email' => 'อีเมล',
+        'password' => 'รหัสผ่าน',
+        'password_confirmation' => 'ยืนยันรหัสผ่าน',
+        'role' => 'บทบาท',
+        'school' => 'สถานศึกษา',
+        'school_other' => 'สถานศึกษา',
+        'study_year' => 'ชั้นปี',
+        'study_year_other' => 'ชั้นปี',
+        'birth_date' => 'วัน/เดือน/ปีเกิด',
+        'accept_tos' => 'การยอมรับข้อตกลงการใช้งาน',
+    ],
+];
