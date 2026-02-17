@@ -4,7 +4,6 @@ SortableJS
 Quill
 Chart.js
 CropperJS
-Bootstrap5
 FontAwesome
 Animate.css
 TailwindCSS

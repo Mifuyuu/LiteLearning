@@ -194,3 +194,18 @@ a.bg-red-600 {
     --btn-3d-border: #c35a6c;
     --btn-3d-text: #6a1527;
 }
+
+/* Auth page animation stability */
+.auth-page {
+    overflow-x: hidden;
+}
+
+.auth-page-shell {
+    overflow: hidden;
+}
+
+.auth-animated {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}

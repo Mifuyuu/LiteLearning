@@ -20,10 +20,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="bg-gray-50 font-sans antialiased">
-    <div class="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+<body class="bg-gray-50 font-sans antialiased auth-page">
+    <div class="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 auth-page-shell">
         <!-- Logo -->
-        <div class="mb-8 text-center animate__animated animate__fadeInDown">
+        <div class="mb-8 text-center animate__animated animate__fadeInDown auth-animated">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl shadow-lg mb-4">
                 <i class="fas fa-graduation-cap text-white text-2xl"></i>
             </div>
@@ -32,7 +32,7 @@
         </div>
 
         <!-- Content -->
-        <div class="w-full max-w-md animate__animated animate__fadeInUp">
+        <div class="w-full max-w-md animate__animated animate__fadeInUp auth-animated">
             {{ $slot }}
         </div>
     </div>
