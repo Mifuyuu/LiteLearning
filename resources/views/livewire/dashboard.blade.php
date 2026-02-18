@@ -2,10 +2,12 @@
 
 <div>
     <!-- Welcome Banner -->
-    <div class="bg-linear-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 mb-6 text-white animate__animated animate__fadeIn">
+    <div
+        class="bg-linear-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 mb-6 text-white animate__animated animate__fadeIn">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold">{{ __('Welcome back, :name!', ['name' => auth()->user()->name]) }} 👋</h2>
+                <h2 class="text-2xl font-bold">{{ __('Welcome back, :name!', ['name' => auth()->user()->name]) }} 👋
+                </h2>
                 <p class="mt-1 text-indigo-100">{{ now()->translatedFormat('l, j F Y') }}</p>
             </div>
             <div class="hidden md:block">
@@ -15,117 +17,118 @@
     </div>
 
     @if(auth()->user()->isStudent() && $gamification)
-    <!-- Gamification Stats -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-coins text-amber-600 text-lg"></i>
+        <!-- Gamification Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-coins text-amber-600 text-lg"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-2xl font-bold text-gray-900">{{ $gamification['coins'] }}</p>
+                        <p class="text-sm text-gray-500">{{ __('Coins') }}</p>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold text-gray-900">{{ $gamification['coins'] }}</p>
-                    <p class="text-sm text-gray-500">{{ __('Coins') }}</p>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-layer-group text-purple-600 text-lg"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-2xl font-bold text-gray-900">{{ $gamification['level'] }}</p>
+                        <p class="text-sm text-gray-500">{{ __('Level') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-trophy text-indigo-600 text-lg"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-2xl font-bold text-gray-900">{{ $gamification['achievements'] }}</p>
+                        <p class="text-sm text-gray-500">{{ __('Achievements') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-award text-emerald-600 text-lg"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-2xl font-bold text-gray-900">{{ $gamification['badges'] }}</p>
+                        <p class="text-sm text-gray-500">{{ __('Badges') }}</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-layer-group text-purple-600 text-lg"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold text-gray-900">{{ $gamification['level'] }}</p>
-                    <p class="text-sm text-gray-500">{{ __('Level') }}</p>
-                </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-sm font-semibold text-gray-700">{{ __('Level Progress') }}</h3>
+                <span class="text-xs text-gray-500">{{ $gamification['xp_to_next'] }} {{ __('XP to next level') }}</span>
             </div>
-        </div>
-
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-trophy text-indigo-600 text-lg"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold text-gray-900">{{ $gamification['achievements'] }}</p>
-                    <p class="text-sm text-gray-500">{{ __('Achievements') }}</p>
-                </div>
+            <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div class="h-full bg-indigo-600 rounded-full transition-all"
+                    style="width: {{ $gamification['progress_percent'] }}%"></div>
             </div>
+            <p class="mt-2 text-xs text-gray-500">{{ __('Total XP') }}: {{ $gamification['xp'] }}</p>
         </div>
-
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-award text-emerald-600 text-lg"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold text-gray-900">{{ $gamification['badges'] }}</p>
-                    <p class="text-sm text-gray-500">{{ __('Badges') }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
-        <div class="flex items-center justify-between mb-2">
-            <h3 class="text-sm font-semibold text-gray-700">{{ __('Level Progress') }}</h3>
-            <span class="text-xs text-gray-500">{{ $gamification['xp_to_next'] }} {{ __('XP to next level') }}</span>
-        </div>
-        <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div class="h-full bg-indigo-600 rounded-full transition-all" style="width: {{ $gamification['progress_percent'] }}%"></div>
-        </div>
-        <p class="mt-2 text-xs text-gray-500">{{ __('Total XP') }}: {{ $gamification['xp'] }}</p>
-    </div>
     @endif
 
     @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
-    <!-- Teacher Stats -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-chalkboard text-indigo-600 text-lg"></i>
+        <!-- Teacher Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-chalkboard text-indigo-600 text-lg"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-2xl font-bold text-gray-900">{{ $stats['classrooms'] ?? 0 }}</p>
+                        <p class="text-sm text-gray-500">{{ __('Classrooms') }}</p>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['classrooms'] ?? 0 }}</p>
-                    <p class="text-sm text-gray-500">{{ __('Classrooms') }}</p>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-users text-green-600 text-lg"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-2xl font-bold text-gray-900">{{ $stats['students'] ?? 0 }}</p>
+                        <p class="text-sm text-gray-500">{{ __('Students') }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-file-alt text-blue-600 text-lg"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-2xl font-bold text-gray-900">{{ $stats['assignments'] ?? 0 }}</p>
+                        <p class="text-sm text-gray-500">{{ __('Assignments') }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-clock text-purple-600 text-lg"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-2xl font-bold text-gray-900">{{ $stats['pending'] ?? 0 }}</p>
+                        <p class="text-sm text-gray-500">{{ __('Pending Review') }}</p>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-users text-green-600 text-lg"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['students'] ?? 0 }}</p>
-                    <p class="text-sm text-gray-500">{{ __('Students') }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-file-alt text-blue-600 text-lg"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['assignments'] ?? 0 }}</p>
-                    <p class="text-sm text-gray-500">{{ __('Assignments') }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-clock text-purple-600 text-lg"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['pending'] ?? 0 }}</p>
-                    <p class="text-sm text-gray-500">{{ __('Pending Review') }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
     @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -155,37 +158,40 @@
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     @foreach($classrooms->take(4) as $classroom)
-                    <a href="{{ route('classroom.show', $classroom) }}" class="group">
-                        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                            <!-- Cover -->
-                            <div class="h-24 relative" style="background-color: {{ $classroom->theme_color }}">
-                                <div class="absolute inset-0 bg-black/10"></div>
-                                <div class="absolute bottom-3 left-4">
-                                    <h4 class="text-white font-bold text-lg leading-tight truncate max-w-50">{{ $classroom->name }}</h4>
-                                    <p class="text-white/80 text-sm">{{ $classroom->section }}</p>
-                                </div>
-                                @if($classroom->isOwnedBy(auth()->user()))
-                                    <span class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
-                                        <i class="fas fa-crown mr-1"></i> {{ __('Owner') }}
-                                    </span>
-                                @endif
-                            </div>
-                            <!-- Info -->
-                            <div class="p-4">
-                                <p class="text-sm text-gray-500 truncate">{{ $classroom->teacher->name }}</p>
-                                <div class="flex items-center justify-between mt-3">
-                                    <div class="flex items-center text-xs text-gray-400">
-                                        <i class="fas fa-users mr-1"></i>
-                                        {{ $classroom->students()->count() }} {{ __('students') }}
+                        <a href="{{ route('classroom.show', $classroom) }}" class="group">
+                            <div
+                                class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                                <!-- Cover -->
+                                <div class="h-24 relative" style="background-color: {{ $classroom->theme_color }}">
+                                    <div class="absolute inset-0 bg-black/10"></div>
+                                    <div class="absolute bottom-3 left-4">
+                                        <h4 class="text-white font-bold text-lg leading-tight truncate max-w-50">
+                                            {{ $classroom->name }}</h4>
+                                        <p class="text-white/80 text-sm">{{ $classroom->section }}</p>
                                     </div>
-                                    <div class="flex items-center text-xs text-gray-400">
-                                        <i class="fas fa-file-alt mr-1"></i>
-                                        {{ $classroom->assignments()->published()->count() }} {{ __('assignments') }}
+                                    @if($classroom->isOwnedBy(auth()->user()))
+                                        <span
+                                            class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                                            <i class="fas fa-crown mr-1"></i> {{ __('Owner') }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <!-- Info -->
+                                <div class="p-4">
+                                    <p class="text-sm text-gray-500 truncate">{{ $classroom->teacher->name }}</p>
+                                    <div class="flex items-center justify-between mt-3">
+                                        <div class="flex items-center text-xs text-gray-400">
+                                            <i class="fas fa-users mr-1"></i>
+                                            {{ $classroom->students()->count() }} {{ __('students') }}
+                                        </div>
+                                        <div class="flex items-center text-xs text-gray-400">
+                                            <i class="fas fa-file-alt mr-1"></i>
+                                            {{ $classroom->assignments()->published()->count() }} {{ __('assignments') }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
                     @endforeach
                 </div>
             @endif
@@ -196,34 +202,36 @@
             <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Upcoming Assignments') }}</h3>
             <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
                 @forelse($upcomingAssignments as $assignment)
-                <a href="{{ route('assignment.show', ['classroom' => $assignment->classroom, 'assignment' => $assignment->id]) }}"
-                   class="block p-4 hover:bg-gray-50 transition-colors">
-                    <div class="flex items-start">
-                        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
-                             style="background-color: {{ $assignment->classroom->theme_color }}20; color: {{ $assignment->classroom->theme_color }}">
-                            @if($assignment->type === 'quiz')
-                                <i class="fas fa-question-circle"></i>
-                            @else
-                                <i class="fas fa-file-alt"></i>
-                            @endif
-                        </div>
-                        <div class="ml-3 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">{{ $assignment->title }}</p>
-                            <p class="text-xs text-gray-500 truncate">{{ $assignment->classroom->name }}</p>
-                            <div class="flex items-center mt-1">
-                                <i class="fas fa-clock text-xs mr-1 {{ $assignment->due_date->isPast() ? 'text-red-400' : 'text-gray-400' }}"></i>
-                                <span class="text-xs {{ $assignment->due_date->isPast() ? 'text-red-500 font-medium' : 'text-gray-400' }}">
-                                    {{ $assignment->due_date->diffForHumans() }}
-                                </span>
+                    <a href="{{ route('assignment.show', ['classroom' => $assignment->classroom, 'assignment' => $assignment]) }}"
+                        class="block p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
+                                style="background-color: {{ $assignment->classroom->theme_color }}20; color: {{ $assignment->classroom->theme_color }}">
+                                @if($assignment->type === 'quiz')
+                                    <i class="fas fa-question-circle"></i>
+                                @else
+                                    <i class="fas fa-file-alt"></i>
+                                @endif
+                            </div>
+                            <div class="ml-3 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ $assignment->title }}</p>
+                                <p class="text-xs text-gray-500 truncate">{{ $assignment->classroom->name }}</p>
+                                <div class="flex items-center mt-1">
+                                    <i
+                                        class="fas fa-clock text-xs mr-1 {{ $assignment->due_date->isPast() ? 'text-red-400' : 'text-gray-400' }}"></i>
+                                    <span
+                                        class="text-xs {{ $assignment->due_date->isPast() ? 'text-red-500 font-medium' : 'text-gray-400' }}">
+                                        {{ $assignment->due_date->diffForHumans() }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
                 @empty
-                <div class="p-8 text-center">
-                    <i class="fas fa-check-circle text-green-400 text-2xl mb-2"></i>
-                    <p class="text-sm text-gray-500">{{ __('No upcoming assignments') }}</p>
-                </div>
+                    <div class="p-8 text-center">
+                        <i class="fas fa-check-circle text-green-400 text-2xl mb-2"></i>
+                        <p class="text-sm text-gray-500">{{ __('No upcoming assignments') }}</p>
+                    </div>
                 @endforelse
             </div>
         </div>

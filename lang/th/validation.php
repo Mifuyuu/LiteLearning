@@ -17,8 +17,8 @@ return [
         'string' => ':attribute ต้องมีความยาวอย่างน้อย :min ตัวอักษร',
     ],
     'nullable' => ':attribute สามารถเว้นว่างได้',
-    'required' => 'กรุณากรอก:attribute',
-    'required_if' => 'กรุณากรอก:attribute',
+    'required' => 'กรุณากรอก :attribute',
+    'required_if' => 'กรุณากรอก :attribute',
     'string' => ':attribute ต้องเป็นข้อความ',
     'unique' => ':attribute นี้ถูกใช้งานแล้ว',
 
@@ -34,5 +34,41 @@ return [
         'study_year_other' => 'ชั้นปี',
         'birth_date' => 'วัน/เดือน/ปีเกิด',
         'accept_tos' => 'การยอมรับข้อตกลงการใช้งาน',
+
+        // Assignment
+        'title' => 'ชื่องาน',
+        'description' => 'คำอธิบาย',
+        'instructions' => 'คำสั่ง',
+        'max_score' => 'คะแนนเต็ม',
+        'due_date' => 'กำหนดส่ง',
+        'status' => 'สถานะ',
+        'type' => 'ประเภท',
+        'topic' => 'หัวข้อ',
+        'allow_late_submission' => 'อนุญาตส่งงานล่าช้า',
+
+        // Assignment edit
+        'editTitle' => 'ชื่องาน',
+        'editDescription' => 'คำอธิบาย',
+        'editInstructions' => 'คำสั่ง',
+        'editMaxScore' => 'คะแนนเต็ม',
+        'editDueDate' => 'กำหนดส่ง',
+        'editStatus' => 'สถานะ',
+        'editType' => 'ประเภท',
+        'editTopic' => 'หัวข้อ',
+
+        // Grade
+        'score' => 'คะแนน',
+        'feedback' => 'ข้อเสนอแนะ',
+
+        // Classroom
+        'section' => 'ตอนเรียน',
+        'subject' => 'วิชา',
+        'theme_color' => 'สีธีม',
+        'code' => 'รหัสห้อง',
+        'deleteConfirm' => 'ยืนยันการลบ',
+
+        // File upload
+        'uploadedFiles' => 'ไฟล์ที่อัปโหลด',
+        'uploadedFiles.*' => 'ไฟล์ที่อัปโหลด',
     ],
 ];

@@ -58,8 +58,12 @@ class Classroom extends Model
 
     public static function generateUniqueSlug(): string
     {
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         do {
-            $slug = strtolower(Str::random(12));
+            $slug = '';
+            for ($i = 0; $i < 16; $i++) {
+                $slug .= $chars[random_int(0, strlen($chars) - 1)];
+            }
         } while (self::where('slug', $slug)->exists());
 
         return $slug;

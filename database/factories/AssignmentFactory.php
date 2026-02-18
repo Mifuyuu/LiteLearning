@@ -22,8 +22,31 @@ class AssignmentFactory extends Factory
             'max_score' => fake()->randomElement([10, 20, 50, 100]),
             'due_date' => fake()->dateTimeBetween('now', '+2 weeks'),
             'status' => 'published',
-            'type' => 'assignment',
+            'type' => 'question',
+            'allow_late_submission' => true,
         ];
+    }
+
+    public function attendance(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'type' => 'attendance',
+            'max_score' => 1,
+        ]);
+    }
+
+    public function file(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'type' => 'file',
+        ]);
+    }
+
+    public function question(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'type' => 'question',
+        ]);
     }
 
     public function quiz(): static
@@ -45,6 +68,13 @@ class AssignmentFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'status' => 'draft',
+        ]);
+    }
+
+    public function noLateSubmission(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'allow_late_submission' => false,
         ]);
     }
 }

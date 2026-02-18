@@ -9,7 +9,8 @@
                 <i class="fas fa-calendar-alt text-indigo-600 text-3xl"></i>
             </div>
             <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('Calendar View') }}</h3>
-            <p class="text-gray-500 max-w-md mx-auto">{{ __('View all your upcoming assignments and deadlines in one place.') }}</p>
+            <p class="text-gray-500 max-w-md mx-auto">
+                {{ __('View all your upcoming assignments and deadlines in one place.') }}</p>
 
             <!-- Upcoming assignments list -->
             <div class="mt-8 text-left">
@@ -24,33 +25,35 @@
                 @endphp
 
                 @forelse($upcoming->groupBy(fn($a) => $a->due_date->format('Y-m-d')) as $date => $assignments)
-                <div class="mb-6">
-                    <h4 class="text-sm font-semibold text-gray-500 mb-2">
-                        {{ \Carbon\Carbon::parse($date)->translatedFormat('l, j F') }}
-                    </h4>
-                    <div class="space-y-2">
-                        @foreach($assignments as $a)
-                        @php
-                            $isUrgent = $a->due_date->lt(now()->addDay());
-                        @endphp
-                        <a href="{{ route('assignment.show', ['classroom' => $a->classroom, 'assignment' => $a->id]) }}"
-                           class="block p-3 rounded-lg border transition-colors {{ $isUrgent ? 'bg-red-50 border-red-200 hover:bg-red-100' : 'bg-gray-50 border-gray-200 hover:bg-gray-100' }}">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="w-3 h-3 rounded-full mr-3" style="background-color: {{ $a->classroom->theme_color }}"></div>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-900">{{ $a->title }}</p>
-                                        <p class="text-xs text-gray-500">{{ $a->classroom->name }}</p>
+                    <div class="mb-6">
+                        <h4 class="text-sm font-semibold text-gray-500 mb-2">
+                            {{ \Carbon\Carbon::parse($date)->translatedFormat('l, j F') }}
+                        </h4>
+                        <div class="space-y-2">
+                            @foreach($assignments as $a)
+                                @php
+                                    $isUrgent = $a->due_date->lt(now()->addDay());
+                                @endphp
+                                <a href="{{ route('assignment.show', ['classroom' => $a->classroom, 'assignment' => $a]) }}"
+                                    class="block p-3 rounded-lg border transition-colors {{ $isUrgent ? 'bg-red-50 border-red-200 hover:bg-red-100' : 'bg-gray-50 border-gray-200 hover:bg-gray-100' }}">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-3 h-3 rounded-full mr-3"
+                                                style="background-color: {{ $a->classroom->theme_color }}"></div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-900">{{ $a->title }}</p>
+                                                <p class="text-xs text-gray-500">{{ $a->classroom->name }}</p>
+                                            </div>
+                                        </div>
+                                        <span
+                                            class="text-xs {{ $isUrgent ? 'text-red-500' : 'text-gray-400' }}">{{ $a->due_date->translatedFormat('H:i') }}</span>
                                     </div>
-                                </div>
-                                <span class="text-xs {{ $isUrgent ? 'text-red-500' : 'text-gray-400' }}">{{ $a->due_date->translatedFormat('H:i') }}</span>
-                            </div>
-                        </a>
-                        @endforeach
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
                 @empty
-                <p class="text-center text-gray-400 py-4">{{ __('No upcoming deadlines!') }}</p>
+                    <p class="text-center text-gray-400 py-4">{{ __('No upcoming deadlines!') }}</p>
                 @endforelse
             </div>
         </div>

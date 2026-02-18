@@ -5,216 +5,189 @@ namespace App\Livewire\Assignment;
 use App\Models\Assignment;
 use App\Models\Classroom;
 use App\Models\Submission;
-use App\Models\User;
+use App\Models\Topic;
 use App\Services\GamificationService;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
-#[Layout('layouts.app')]
 class Show extends Component
 {
+    use WithFileUploads;
+
     public Classroom $classroom;
     public Assignment $assignment;
-    public string $submissionContent = '';
-    public ?Submission $userSubmission = null;
 
+    // Student submission
+    public ?Submission $userSubmission = null;
+    public string $submissionContent = '';
+
+    // File upload
+    public $uploadedFiles = [];
+
+    // Edit mode
     public bool $isEditTab = false;
     public string $editTitle = '';
     public string $editDescription = '';
     public string $editInstructions = '';
     public int $editMaxScore = 100;
     public ?string $editDueDate = null;
-    public string $editType = 'assignment';
-    public string $editTopic = '';
     public string $editStatus = 'published';
+    public string $editType = 'question';
+    public string $editTopic = '';
+    public bool $editAllowLateSubmission = true;
+
+    // Delete modal
     public bool $showDeleteModal = false;
 
-    public function mount(Classroom $classroom, Assignment $assignment)
+    // Teacher: submissions list
+    public $submissions = null;
+
+    public function mount(Classroom $classroom, Assignment $assignment): void
     {
-        /** @var User $user */
-        $user = Auth::user();
-        if (!$classroom->hasAccess($user)) {
-            abort(403);
-        }
-
-        // Ensure assignment belongs to this classroom (prevent IDOR)
-        if ($assignment->classroom_id !== $classroom->id) {
-            abort(404);
-        }
-
         $this->classroom = $classroom;
         $this->assignment = $assignment;
 
-        // Load user's submission if student
+        // Verify assignment belongs to this classroom
+        abort_unless($assignment->classroom_id === $classroom->id, 404);
+        // Verify access
+        abort_unless($classroom->hasAccess(auth()->user()), 403);
+
+        $user = auth()->user();
+
         if ($user->isStudent()) {
             $this->userSubmission = $assignment->submissionFor($user);
-            if ($this->userSubmission) {
-                $this->submissionContent = $this->userSubmission->content ?? '';
+            $this->submissionContent = $this->userSubmission?->content ?? '';
+        }
+
+        if ($classroom->isOwnedBy($user) || $user->isAdmin()) {
+            $this->submissions = $assignment->submissions()->with('user')->get();
+
+            // Auto-open edit tab if ?edit=1
+            if (request()->query('edit') == '1') {
+                $this->openEditTab();
             }
         }
-
-        $this->syncEditFields();
     }
 
-    public function openEditTab()
+    // ──────────────────────────────────────────────
+    // Student: File Upload
+    // ──────────────────────────────────────────────
+
+    public function updatedUploadedFiles(): void
     {
-        /** @var User $user */
-        $user = Auth::user();
-        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
-            abort(403);
-        }
-
-        $this->syncEditFields();
-        $this->resetValidation();
-        $this->isEditTab = true;
-    }
-
-    public function cancelEditTab()
-    {
-        $this->syncEditFields();
-        $this->resetValidation();
-        $this->isEditTab = false;
-    }
-
-    public function saveAssignment()
-    {
-        /** @var User $user */
-        $user = Auth::user();
-        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
-            abort(403);
-        }
-
         $this->validate([
-            'editTitle' => 'required|string|max:255',
-            'editDescription' => 'nullable|string',
-            'editInstructions' => 'nullable|string',
-            'editMaxScore' => 'required|integer|min:0|max:1000',
-            'editDueDate' => 'nullable|date',
-            'editType' => 'required|in:assignment,quiz,material',
-            'editTopic' => 'nullable|string|max:255',
-            'editStatus' => 'required|in:draft,published',
+            'uploadedFiles.*' => 'file|max:25600', // 25MB
         ]);
 
-        $this->assignment->update([
-            'title' => $this->editTitle,
-            'description' => $this->editDescription,
-            'instructions' => $this->editInstructions,
-            'max_score' => $this->editType === 'material' ? 0 : $this->editMaxScore,
-            'due_date' => $this->editType === 'material' ? null : $this->editDueDate,
-            'type' => $this->editType,
-            'topic' => $this->editTopic,
-            'status' => $this->editStatus,
-        ]);
+        foreach ($this->uploadedFiles as $file) {
+            $path = $file->store('submissions/' . $this->assignment->id, 's3');
 
-        $this->assignment->refresh();
-        $this->syncEditFields();
-        $this->isEditTab = false;
+            // Ensure we have a submission record
+            if (!$this->userSubmission) {
+                $this->userSubmission = $this->assignment->submissions()->create([
+                    'user_id' => auth()->id(),
+                    'status' => 'assigned',
+                ]);
+            }
 
-        session()->flash('message', __('Assignment updated successfully.'));
-    }
-
-    public function deleteAssignment()
-    {
-        /** @var User $user */
-        $user = Auth::user();
-        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
-            abort(403);
-        }
-
-        $this->showDeleteModal = false;
-        $this->assignment->delete();
-
-        session()->flash('message', __('Assignment deleted successfully.'));
-
-        return redirect()->route('classroom.show', $this->classroom);
-    }
-
-    public function openDeleteModal()
-    {
-        /** @var User $user */
-        $user = Auth::user();
-        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
-            abort(403);
-        }
-
-        $this->showDeleteModal = true;
-    }
-
-    public function closeDeleteModal()
-    {
-        $this->showDeleteModal = false;
-    }
-
-    public function turnIn()
-    {
-        $wasAlreadyTurnedIn = $this->userSubmission?->status === 'turned_in';
-
-        if (!$this->userSubmission) {
-            $this->userSubmission = Submission::create([
-                'assignment_id' => $this->assignment->id,
-                'user_id' => Auth::id(),
-                'content' => $this->submissionContent,
-                'status' => 'turned_in',
-                'turned_in_at' => now(),
-            ]);
-        } else {
-            $this->userSubmission->update([
-                'content' => $this->submissionContent,
-                'status' => 'turned_in',
-                'turned_in_at' => now(),
+            $this->userSubmission->attachments()->create([
+                'file_name' => $file->getClientOriginalName(),
+                'file_path' => $path,
+                'file_type' => $file->getMimeType(),
+                'file_size' => $file->getSize(),
+                'uploaded_by' => auth()->id(),
             ]);
         }
 
-        if (!$wasAlreadyTurnedIn) {
-            /** @var User $user */
-            $user = Auth::user();
-            app(GamificationService::class)->awardForAssignmentTurnedIn($user, $this->assignment->id);
-        }
+        $this->uploadedFiles = [];
+        $this->userSubmission->refresh();
 
-        session()->flash('message', __('Assignment turned in successfully!'));
+        session()->flash('message', __('File uploaded successfully'));
     }
 
-    public function unsubmit()
+    public function removeFile(int $attachmentId): void
     {
-        if ($this->userSubmission) {
-            $this->userSubmission->unsubmit();
-            $this->userSubmission->refresh();
-        }
+        $attachment = $this->userSubmission?->attachments()->findOrFail($attachmentId);
+
+        abort_unless($attachment->uploaded_by === auth()->id(), 403);
+
+        // Delete from S3
+        Storage::disk('s3')->delete($attachment->file_path);
+        $attachment->delete();
+
+        $this->userSubmission->refresh();
     }
 
-    public function saveDraft()
+    // ──────────────────────────────────────────────
+    // Student: Submit / Draft / Unsubmit
+    // ──────────────────────────────────────────────
+
+    public function turnIn(): void
     {
+        $user = auth()->user();
+
+        // Check if submission is allowed
+        if (!$this->assignment->canAcceptSubmission()) {
+            session()->flash('error', __('Submissions closed'));
+            return;
+        }
+
         if (!$this->userSubmission) {
-            $this->userSubmission = Submission::create([
-                'assignment_id' => $this->assignment->id,
-                'user_id' => Auth::id(),
-                'content' => $this->submissionContent,
+            $this->userSubmission = $this->assignment->submissions()->create([
+                'user_id' => $user->id,
                 'status' => 'assigned',
             ]);
-        } else {
-            $this->userSubmission->update([
-                'content' => $this->submissionContent,
+        }
+
+        $wasAlreadyTurnedIn = $this->userSubmission->isTurnedIn();
+
+        $this->userSubmission->update([
+            'content' => $this->submissionContent,
+        ]);
+
+        $this->userSubmission->turnIn();
+
+        if (!$wasAlreadyTurnedIn) {
+            app(GamificationService::class)->awardForAssignmentTurnedIn($user, $this->assignment->id);
+        }
+    }
+
+    public function saveDraft(): void
+    {
+        if (!$this->userSubmission) {
+            $this->userSubmission = $this->assignment->submissions()->create([
+                'user_id' => auth()->id(),
+                'status' => 'assigned',
             ]);
         }
 
-        session()->flash('message', __('Draft saved!'));
+        $this->userSubmission->update([
+            'content' => $this->submissionContent,
+        ]);
+
+        session()->flash('message', __('Draft saved'));
     }
 
-    public function render()
+    public function unsubmit(): void
     {
-        $this->assignment->load(['user', 'comments.user', 'attachments']);
+        $this->userSubmission?->unsubmit();
+        $this->submissionContent = $this->userSubmission?->content ?? '';
+    }
 
-        $submissions = null;
-        /** @var User $user */
-        $user = Auth::user();
-        if ($this->classroom->isOwnedBy($user) || $user->isAdmin()) {
-            $submissions = $this->assignment->submissions()->with('user')->get();
-        }
+    // ──────────────────────────────────────────────
+    // Teacher: Edit assignment
+    // ──────────────────────────────────────────────
 
-        return view('livewire.assignment.show', [
-            'submissions' => $submissions,
-        ]);
+    public function openEditTab(): void
+    {
+        $this->isEditTab = true;
+        $this->syncEditFields();
+    }
+
+    public function cancelEditTab(): void
+    {
+        $this->isEditTab = false;
     }
 
     private function syncEditFields(): void
@@ -222,10 +195,86 @@ class Show extends Component
         $this->editTitle = $this->assignment->title;
         $this->editDescription = $this->assignment->description ?? '';
         $this->editInstructions = $this->assignment->instructions ?? '';
-        $this->editMaxScore = (int) $this->assignment->max_score;
+        $this->editMaxScore = $this->assignment->max_score;
         $this->editDueDate = $this->assignment->due_date?->format('Y-m-d\TH:i');
+        $this->editStatus = $this->assignment->status;
         $this->editType = $this->assignment->type;
         $this->editTopic = $this->assignment->topic ?? '';
-        $this->editStatus = $this->assignment->status;
+        $this->editAllowLateSubmission = $this->assignment->allow_late_submission;
+    }
+
+    public function saveAssignment(): void
+    {
+        $this->validate([
+            'editTitle' => 'required|string|max:255',
+            'editDescription' => 'nullable|string',
+            'editInstructions' => 'nullable|string',
+            'editMaxScore' => 'required|integer|min:0|max:1000',
+            'editDueDate' => 'nullable|date',
+            'editStatus' => 'required|in:draft,published,closed',
+            'editType' => 'required|in:attendance,file,question,quiz,material',
+            'editTopic' => 'nullable|string|max:255',
+            'editAllowLateSubmission' => 'boolean',
+        ]);
+
+        $topicName = trim($this->editTopic);
+        if ($topicName) {
+            Topic::firstOrCreate([
+                'classroom_id' => $this->classroom->id,
+                'name' => $topicName,
+            ]);
+        }
+
+        $this->assignment->update([
+            'title' => $this->editTitle,
+            'description' => $this->editDescription,
+            'instructions' => $this->editInstructions,
+            'max_score' => $this->editMaxScore,
+            'due_date' => $this->editDueDate,
+            'status' => $this->editStatus,
+            'type' => $this->editType,
+            'topic' => $topicName ?: null,
+            'allow_late_submission' => $this->editAllowLateSubmission,
+        ]);
+
+        $this->isEditTab = false;
+        $this->assignment->refresh();
+
+        session()->flash('message', __('Assignment updated'));
+    }
+
+    // ──────────────────────────────────────────────
+    // Teacher: Delete assignment
+    // ──────────────────────────────────────────────
+
+    public function openDeleteModal(): void
+    {
+        $this->showDeleteModal = true;
+    }
+
+    public function closeDeleteModal(): void
+    {
+        $this->showDeleteModal = false;
+    }
+
+    public function deleteAssignment(): void
+    {
+        $this->assignment->delete();
+
+        $this->redirect(route('classroom.show', $this->classroom->slug), navigate: true);
+    }
+
+    // ──────────────────────────────────────────────
+    // Computed
+    // ──────────────────────────────────────────────
+
+    public function getTopicsProperty()
+    {
+        return Topic::where('classroom_id', $this->classroom->id)->get();
+    }
+
+    public function render()
+    {
+        return view('livewire.assignment.show');
     }
 }

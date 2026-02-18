@@ -146,6 +146,21 @@ class Show extends Component
         $this->classroom->refresh();
     }
 
+    public function deleteAssignment(int $id)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        if (!$this->canManageClassroom()) {
+            abort(403);
+        }
+
+        $assignment = \App\Models\Assignment::where('classroom_id', $this->classroom->id)
+            ->findOrFail($id);
+
+        $assignment->delete();
+        $this->classroom->refresh();
+    }
+
     public function render()
     {
         $this->classroom->load([
