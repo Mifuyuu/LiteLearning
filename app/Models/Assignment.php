@@ -21,7 +21,6 @@ class Assignment extends Model
         'title',
         'slug',
         'description',
-        'instructions',
         'attachments',
         'max_score',
         'due_date',

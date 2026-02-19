@@ -29,7 +29,6 @@ class Show extends Component
     public bool $isEditTab = false;
     public string $editTitle = '';
     public string $editDescription = '';
-    public string $editInstructions = '';
     public int $editMaxScore = 100;
     public ?string $editDueDate = null;
     public string $editStatus = 'published';
@@ -194,7 +193,6 @@ class Show extends Component
     {
         $this->editTitle = $this->assignment->title;
         $this->editDescription = $this->assignment->description ?? '';
-        $this->editInstructions = $this->assignment->instructions ?? '';
         $this->editMaxScore = $this->assignment->max_score;
         $this->editDueDate = $this->assignment->due_date?->format('Y-m-d\TH:i');
         $this->editStatus = $this->assignment->status;
@@ -208,7 +206,6 @@ class Show extends Component
         $this->validate([
             'editTitle' => 'required|string|max:255',
             'editDescription' => 'nullable|string',
-            'editInstructions' => 'nullable|string',
             'editMaxScore' => 'required|integer|min:0|max:1000',
             'editDueDate' => 'nullable|date',
             'editStatus' => 'required|in:draft,published,closed',
@@ -228,7 +225,6 @@ class Show extends Component
         $this->assignment->update([
             'title' => $this->editTitle,
             'description' => $this->editDescription,
-            'instructions' => $this->editInstructions,
             'max_score' => $this->editMaxScore,
             'due_date' => $this->editDueDate,
             'status' => $this->editStatus,

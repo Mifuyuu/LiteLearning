@@ -18,7 +18,6 @@ class AssignmentFactory extends Factory
             'user_id' => User::factory(),
             'title' => fake()->sentence(4),
             'description' => fake()->paragraph(),
-            'instructions' => fake()->paragraphs(2, true),
             'max_score' => fake()->randomElement([10, 20, 50, 100]),
             'due_date' => fake()->dateTimeBetween('now', '+2 weeks'),
             'status' => 'published',

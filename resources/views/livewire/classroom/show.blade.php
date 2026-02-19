@@ -185,89 +185,75 @@
                             </div>
 
                             <!-- Assignments under this topic -->
-                            <div class="divide-y divide-gray-100">
+                            <div class="space-y-1">
                                 @foreach($grouped[$topicName]->sortByDesc('created_at') as $assignment)
-                                    <div class="border-b border-gray-100 last:border-0" wire:key="assignment-{{ $assignment->id }}">
+                                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-gray-300 transition-all duration-200"
+                                         wire:key="assignment-{{ $assignment->id }}">
+                                        
+                                        <!-- Clickable Header -->
                                         <div @click="activeAssignment = activeAssignment === {{ $assignment->id }} ? null : {{ $assignment->id }}"
-                                            class="flex items-center py-4 px-3 -mx-3 hover:bg-gray-50 transition-colors cursor-pointer group rounded-t-lg relative"
-                                            :class="{ 'rounded-b-none': activeAssignment === {{ $assignment->id }}, 'rounded-b-lg': activeAssignment !== {{ $assignment->id }} }"
-                                            :style="activeAssignment === {{ $assignment->id }} ? 'background-color: {{ $classroom->theme_color }}10' : ''">
-
-                                            <div class="flex items-center flex-1 min-w-0">
-                                                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                                                    style="background-color: {{ $classroom->theme_color }}20; color: {{ $classroom->theme_color }}">
-                                                    <i class="fas {{ $assignment->typeIcon() }}"></i>
-                                                </div>
-                                                <div class="ml-4 flex-1 min-w-0">
-                                                    <p
-                                                        class="text-sm font-medium text-gray-900 group-hover:text-indigo-600 transition-colors truncate">
-                                                        {{ $assignment->title }}
-                                                    </p>
-                                                    <p class="text-xs text-gray-500 mt-0.5 truncate">
-                                                        {{ __('Posted') }} {{ $assignment->created_at->translatedFormat('j M') }}
-                                                    </p>
-                                                </div>
-                                                @if($assignment->due_date)
-                                                    <span class="text-xs text-gray-400 shrink-0 ml-4 hidden sm:block">
-                                                        {{ __('Due') }} {{ $assignment->due_date->translatedFormat('j M Y, H:i') }}
+                                             class="flex items-center p-4 cursor-pointer group"
+                                             :class="{ 'bg-gray-50': activeAssignment === {{ $assignment->id }} }">
+                                            
+                                            <!-- Type Icon -->
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mr-3"
+                                                 style="background-color: {{ $classroom->theme_color }}15;">
+                                                <i class="fas {{ $assignment->typeIcon() }}" style="color: {{ $classroom->theme_color }}"></i>
+                                            </div>
+                                            
+                                            <!-- Title & Info -->
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors">
+                                                    {{ $assignment->title }}
+                                                </p>
+                                                <div class="flex items-center gap-3 mt-0.5">
+                                                    <span class="text-xs text-gray-500">
+                                                        {{ $assignment->created_at->translatedFormat('j M') }}
                                                     </span>
-                                                @endif
-                                            </div>
-
-                                            @if($canManage)
-                                                <div class="relative ml-2 shrink-0" x-data="{ open: false }" @click.stop>
-                                                    <button @click="open = !open" type="button"
-                                                        class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors">
-                                                        <i class="fas fa-ellipsis-vertical"></i>
-                                                    </button>
-                                                    <div x-show="open" x-cloak @click.outside="open = false"
-                                                        x-transition:enter="transition ease-out duration-100"
-                                                        x-transition:enter-start="opacity-0 scale-95"
-                                                        x-transition:enter-end="opacity-100 scale-100"
-                                                        x-transition:leave="transition ease-in duration-75"
-                                                        x-transition:leave-start="opacity-100 scale-100"
-                                                        x-transition:leave-end="opacity-0 scale-95"
-                                                        class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                                                        <button
-                                                            @click.stop="navigator.clipboard.writeText('{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}'); open = false; copiedToast = true; setTimeout(() => copiedToast = false, 2000)"
-                                                            class="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                                            <i class="fas fa-link w-5 text-gray-400"></i>
-                                                            <span class="ml-2">{{ __('Copy link') }}</span>
-                                                        </button>
-                                                        <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}?edit=1"
-                                                            @click.stop
-                                                            class="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                                            <i class="fas fa-pen w-5 text-gray-400"></i>
-                                                            <span class="ml-2">{{ __('Edit') }}</span>
-                                                        </a>
-                                                        <button
-                                                            @click.stop="deleteAssignmentId = {{ $assignment->id }}; deleteAssignmentTitle = '{{ addslashes($assignment->title) }}'; showDeleteModal = true; open = false"
-                                                            class="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                                            <i class="fas fa-trash-alt w-5 text-red-400"></i>
-                                                            <span class="ml-2">{{ __('Delete') }}</span>
-                                                        </button>
-                                                    </div>
+                                                    @if($assignment->due_date)
+                                                        <span class="text-xs text-gray-500 flex items-center gap-1">
+                                                            <i class="fas fa-clock text-gray-400"></i>
+                                                            {{ __('Due') }} {{ $assignment->due_date->translatedFormat('j M, H:i') }}
+                                                        </span>
+                                                    @endif
                                                 </div>
-                                            @endif
-                                        </div>
-
-                                        <!-- Accordion Content -->
-                                        <div x-show="activeAssignment === {{ $assignment->id }}"
-                                            x-transition:enter="transition ease-out duration-200"
-                                            x-transition:enter-start="opacity-0 -translate-y-2"
-                                            x-transition:enter-end="opacity-100 translate-y-0"
-                                            class="pl-[4.25rem] pr-6 py-4 -mx-3 border-l-4 border-t border-transparent rounded-b-lg"
-                                            style="border-color: {{ $classroom->theme_color }}20; background-color: {{ $classroom->theme_color }}10;">
-                                            <div
-                                                class="text-sm text-gray-700 prose prose-sm max-w-none mb-4 max-h-80 overflow-y-auto pr-2">
-                                                {!! $assignment->description ?? $assignment->instructions !!}
                                             </div>
-
-                                            <div class="border-t border-gray-200 pt-3">
-                                                <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}"
-                                                    class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline">
-                                                    {{ __('View instructions') }} <i class="fas fa-chevron-right ml-1 text-xs"></i>
-                                                </a>
+                                            
+                                            <!-- Expand Arrow -->
+                                            <div class="ml-3 text-gray-400 transition-transform duration-200"
+                                                 :class="{ 'rotate-180': activeAssignment === {{ $assignment->id }} }">
+                                                <i class="fas fa-chevron-down text-sm"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Expanded Content -->
+                                        <div x-show="activeAssignment === {{ $assignment->id }}"
+                                             x-collapse
+                                             x-cloak
+                                             class="border-t border-gray-100 bg-gray-50">
+                                            <div class="p-4 pl-[4.5rem]">
+                                                <p class="text-sm text-gray-600 mb-3">
+                                                    {{ \Illuminate\Support\Str::limit(strip_tags($assignment->description ?? $assignment->instructions), 200) }}
+                                                </p>
+                                                
+                                                <div class="flex items-center gap-2">
+                                                    <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}"
+                                                       class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white rounded-md transition-colors"
+                                                       style="background-color: {{ $classroom->theme_color }}">
+                                                        {{ __('View') }}
+                                                    </a>
+                                                    
+                                                    @if($canManage)
+                                                        <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}?edit=1"
+                                                           class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                                                            <i class="fas fa-pen mr-1"></i> {{ __('Edit') }}
+                                                        </a>
+                                                        <button @click="deleteAssignmentId = {{ $assignment->id }}; deleteAssignmentTitle = '{{ addslashes($assignment->title) }}'; showDeleteModal = true"
+                                                                class="px-3 py-1.5 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50">
+                                                            <i class="fas fa-trash-alt mr-1"></i> {{ __('Delete') }}
+                                                        </button>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -285,89 +271,75 @@
                                 </div>
                             @endif
 
-                            <div class="divide-y divide-gray-100">
+                            <div class="space-y-1">
                                 @foreach($noTopicAssignments->sortByDesc('created_at') as $assignment)
-                                    <div class="border-b border-gray-100 last:border-0" wire:key="assignment-{{ $assignment->id }}">
+                                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-gray-300 transition-all duration-200"
+                                         wire:key="assignment-{{ $assignment->id }}">
+                                        
+                                        <!-- Clickable Header -->
                                         <div @click="activeAssignment = activeAssignment === {{ $assignment->id }} ? null : {{ $assignment->id }}"
-                                            class="flex items-center py-4 px-3 -mx-3 hover:bg-gray-50 transition-colors cursor-pointer group rounded-t-lg relative"
-                                            :class="{ 'rounded-b-none': activeAssignment === {{ $assignment->id }}, 'rounded-b-lg': activeAssignment !== {{ $assignment->id }} }"
-                                            :style="activeAssignment === {{ $assignment->id }} ? 'background-color: {{ $classroom->theme_color }}10' : ''">
-
-                                            <div class="flex items-center flex-1 min-w-0">
-                                                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                                                    style="background-color: {{ $classroom->theme_color }}20; color: {{ $classroom->theme_color }}">
-                                                    <i class="fas {{ $assignment->typeIcon() }}"></i>
-                                                </div>
-                                                <div class="ml-4 flex-1 min-w-0">
-                                                    <p
-                                                        class="text-sm font-medium text-gray-900 group-hover:text-indigo-600 transition-colors truncate">
-                                                        {{ $assignment->title }}
-                                                    </p>
-                                                    <p class="text-xs text-gray-500 mt-0.5 truncate">
-                                                        {{ __('Posted') }} {{ $assignment->created_at->translatedFormat('j M') }}
-                                                    </p>
-                                                </div>
-                                                @if($assignment->due_date)
-                                                    <span class="text-xs text-gray-400 shrink-0 ml-4 hidden sm:block">
-                                                        {{ __('Due') }} {{ $assignment->due_date->translatedFormat('j M Y, H:i') }}
+                                             class="flex items-center p-4 cursor-pointer group"
+                                             :class="{ 'bg-gray-50': activeAssignment === {{ $assignment->id }} }">
+                                            
+                                            <!-- Type Icon -->
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mr-3"
+                                                 style="background-color: {{ $classroom->theme_color }}15;">
+                                                <i class="fas {{ $assignment->typeIcon() }}" style="color: {{ $classroom->theme_color }}"></i>
+                                            </div>
+                                            
+                                            <!-- Title & Info -->
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors">
+                                                    {{ $assignment->title }}
+                                                </p>
+                                                <div class="flex items-center gap-3 mt-0.5">
+                                                    <span class="text-xs text-gray-500">
+                                                        {{ $assignment->created_at->translatedFormat('j M') }}
                                                     </span>
-                                                @endif
-                                            </div>
-
-                                            @if($canManage)
-                                                <div class="relative ml-2 shrink-0" x-data="{ open: false }" @click.stop>
-                                                    <button @click="open = !open" type="button"
-                                                        class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors">
-                                                        <i class="fas fa-ellipsis-vertical"></i>
-                                                    </button>
-                                                    <div x-show="open" x-cloak @click.outside="open = false"
-                                                        x-transition:enter="transition ease-out duration-100"
-                                                        x-transition:enter-start="opacity-0 scale-95"
-                                                        x-transition:enter-end="opacity-100 scale-100"
-                                                        x-transition:leave="transition ease-in duration-75"
-                                                        x-transition:leave-start="opacity-100 scale-100"
-                                                        x-transition:leave-end="opacity-0 scale-95"
-                                                        class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                                                        <button
-                                                            @click.stop="navigator.clipboard.writeText('{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}'); open = false; copiedToast = true; setTimeout(() => copiedToast = false, 2000)"
-                                                            class="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                                            <i class="fas fa-link w-5 text-gray-400"></i>
-                                                            <span class="ml-2">{{ __('Copy link') }}</span>
-                                                        </button>
-                                                        <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}?edit=1"
-                                                            @click.stop
-                                                            class="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                                            <i class="fas fa-pen w-5 text-gray-400"></i>
-                                                            <span class="ml-2">{{ __('Edit') }}</span>
-                                                        </a>
-                                                        <button
-                                                            @click.stop="deleteAssignmentId = {{ $assignment->id }}; deleteAssignmentTitle = '{{ addslashes($assignment->title) }}'; showDeleteModal = true; open = false"
-                                                            class="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                                            <i class="fas fa-trash-alt w-5 text-red-400"></i>
-                                                            <span class="ml-2">{{ __('Delete') }}</span>
-                                                        </button>
-                                                    </div>
+                                                    @if($assignment->due_date)
+                                                        <span class="text-xs text-gray-500 flex items-center gap-1">
+                                                            <i class="fas fa-clock text-gray-400"></i>
+                                                            {{ __('Due') }} {{ $assignment->due_date->translatedFormat('j M, H:i') }}
+                                                        </span>
+                                                    @endif
                                                 </div>
-                                            @endif
-                                        </div>
-
-                                        <!-- Accordion Content -->
-                                        <div x-show="activeAssignment === {{ $assignment->id }}"
-                                            x-transition:enter="transition ease-out duration-200"
-                                            x-transition:enter-start="opacity-0 -translate-y-2"
-                                            x-transition:enter-end="opacity-100 translate-y-0"
-                                            class="pl-[4.25rem] pr-6 py-4 -mx-3 border-l-4 border-t border-transparent rounded-b-lg"
-                                            style="border-color: {{ $classroom->theme_color }}20; background-color: {{ $classroom->theme_color }}10;">
-                                            <div
-                                                class="text-sm text-gray-700 prose prose-sm max-w-none mb-4 max-h-80 overflow-y-auto pr-2">
-                                                {!! $assignment->description ?? $assignment->instructions !!}
                                             </div>
-
-                                            <div class="border-t border-gray-200 pt-3">
-                                                <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}"
-                                                    class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline">
-                                                    {{ __('View instructions') }} <i class="fas fa-chevron-right ml-1 text-xs"></i>
-                                                </a>
+                                            
+                                            <!-- Expand Arrow -->
+                                            <div class="ml-3 text-gray-400 transition-transform duration-200"
+                                                 :class="{ 'rotate-180': activeAssignment === {{ $assignment->id }} }">
+                                                <i class="fas fa-chevron-down text-sm"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Expanded Content -->
+                                        <div x-show="activeAssignment === {{ $assignment->id }}"
+                                             x-collapse
+                                             x-cloak
+                                             class="border-t border-gray-100 bg-gray-50">
+                                            <div class="p-4 pl-[4.5rem]">
+                                                <p class="text-sm text-gray-600 mb-3">
+                                                    {{ \Illuminate\Support\Str::limit(strip_tags($assignment->description ?? $assignment->instructions), 200) }}
+                                                </p>
+                                                
+                                                <div class="flex items-center gap-2">
+                                                    <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}"
+                                                       class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white rounded-md transition-colors"
+                                                       style="background-color: {{ $classroom->theme_color }}">
+                                                        {{ __('View') }}
+                                                    </a>
+                                                    
+                                                    @if($canManage)
+                                                        <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}?edit=1"
+                                                           class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                                                            <i class="fas fa-pen mr-1"></i> {{ __('Edit') }}
+                                                        </a>
+                                                        <button @click="deleteAssignmentId = {{ $assignment->id }}; deleteAssignmentTitle = '{{ addslashes($assignment->title) }}'; showDeleteModal = true"
+                                                                class="px-3 py-1.5 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50">
+                                                            <i class="fas fa-trash-alt mr-1"></i> {{ __('Delete') }}
+                                                        </button>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

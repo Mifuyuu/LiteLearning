@@ -30,66 +30,20 @@
             @error('title')
                 <p class="px-6 py-1 text-sm text-red-500 bg-red-50">{{ $message }}</p>
             @enderror
+        </div>
 
-            <!-- Instructions -->
-            <!-- Instructions (Rich Text) -->
-            <div class="relative" x-data="{
-                content: @entangle('instructions'),
-                init() {
-                    // Update content if changed externally (e.g. initial load)
-                    this.$watch('content', value => {
-                        if (this.$refs.editor.innerHTML !== value) {
-                            this.$refs.editor.innerHTML = value;
-                        }
-                    });
-                },
-                exec(cmd) {
-                    document.execCommand(cmd, false, null);
-                    this.content = this.$refs.editor.innerHTML;
-                },
-                update() {
-                    this.content = this.$refs.editor.innerHTML;
-                }
-            }">
-                <div
-                    class="border border-gray-300 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-shadow">
-                    <!-- Toolbar -->
-                    <div class="flex items-center gap-1 p-2 bg-gray-50 border-b border-gray-200">
-                        <button type="button" @click="exec('bold')"
-                            class="p-1.5 rounded-lg text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
-                            title="Bold">
-                            <i class="fas fa-bold w-4 h-4 text-xs"></i>
-                        </button>
-                        <button type="button" @click="exec('italic')"
-                            class="p-1.5 rounded-lg text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
-                            title="Italic">
-                            <i class="fas fa-italic w-4 h-4 text-xs"></i>
-                        </button>
-                        <button type="button" @click="exec('underline')"
-                            class="p-1.5 rounded-lg text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
-                            title="Underline">
-                            <i class="fas fa-underline w-4 h-4 text-xs"></i>
-                        </button>
-                        <div class="w-px h-4 bg-gray-300 mx-1"></div>
-                        <button type="button" @click="exec('insertUnorderedList')"
-                            class="p-1.5 rounded-lg text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
-                            title="Bullet List">
-                            <i class="fas fa-list-ul w-4 h-4 text-xs"></i>
-                        </button>
-                        <button type="button" @click="exec('removeFormat')"
-                            class="p-1.5 rounded-lg text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
-                            title="Clear Formatting">
-                            <i class="fas fa-eraser w-4 h-4 text-xs"></i>
-                        </button>
-                    </div>
-                    <!-- Editor Area -->
-                    <div x-ref="editor" contenteditable="true"
-                        class="w-full px-6 py-4 text-sm text-gray-700 min-h-[160px] outline-none prose prose-sm max-w-none"
-                        @input="update()" placeholder="{{ __('Instructions (optional)') }}">
-                        {!! $instructions !!}
-                    </div>
-                </div>
-                <input type="hidden" name="instructions" wire:model="instructions">
+        <!-- Description Card -->
+        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+                <h3 class="text-sm font-semibold text-gray-700">{{ __('Description') }}</h3>
+            </div>
+            <div class="p-6">
+                <textarea wire:model="description" rows="4"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="{{ __('Add a description or instructions for this assignment...') }}"></textarea>
+                @error('description')
+                    <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                @enderror
             </div>
         </div>
 

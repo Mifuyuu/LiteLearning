@@ -30,7 +30,7 @@
                             </div>
                             <div class="ml-3 sm:ml-4 min-w-0">
                                 <div class="flex items-center gap-2 flex-wrap">
-                                    <h1 class="text-lg sm:text-xl font-bold text-gray-900 break-words">{{ $assignment->title }}</h1>
+                                    <h1 class="text-lg sm:text-xl font-bold text-gray-900 wrap-break-word">{{ $assignment->title }}</h1>
                                     <span class="px-2.5 py-0.5 rounded-full text-xs font-medium shrink-0"
                                           style="background-color: {{ $classroom->theme_color }}20; color: {{ $classroom->theme_color }}">
                                         {{ $assignment->typeLabel() }}
@@ -106,18 +106,11 @@
                     </div>
                 </div>
 
-                <!-- Description / Instructions -->
+                <!-- Description -->
                 <div class="p-6">
                     @if($assignment->description)
                     <div class="mb-4">
                         <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ $assignment->description }}</p>
-                    </div>
-                    @endif
-
-                    @if($assignment->instructions)
-                    <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                        <h3 class="text-sm font-semibold text-gray-900 mb-2"><i class="fas fa-list-ul mr-1"></i> {{ __('Instructions') }}</h3>
-                        <div class="text-sm text-gray-700 prose prose-sm max-w-none">{!! $assignment->instructions !!}</div>
                     </div>
                     @endif
 
@@ -283,58 +276,6 @@
                         @error('editDescription') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Instructions') }}</label>
-                        <div x-data="{
-                            content: @entangle('editInstructions'),
-                            init() {
-                                this.$watch('content', value => {
-                                    if (this.$refs.editor.innerHTML !== value) {
-                                        this.$refs.editor.innerHTML = value;
-                                    }
-                                });
-                            },
-                            exec(cmd) {
-                                document.execCommand(cmd, false, null);
-                                this.content = this.$refs.editor.innerHTML;
-                            },
-                            update() {
-                                this.content = this.$refs.editor.innerHTML;
-                            }
-                        }">
-                            <div class="border border-gray-300 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-shadow">
-                                <!-- Toolbar -->
-                                <div class="flex items-center gap-1 p-2 bg-gray-50 border-b border-gray-200">
-                                    <button type="button" @click="exec('bold')" class="p-1.5 rounded-lg text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors" title="Bold">
-                                        <i class="fas fa-bold w-4 h-4 text-xs"></i>
-                                    </button>
-                                    <button type="button" @click="exec('italic')" class="p-1.5 rounded-lg text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors" title="Italic">
-                                        <i class="fas fa-italic w-4 h-4 text-xs"></i>
-                                    </button>
-                                    <button type="button" @click="exec('underline')" class="p-1.5 rounded-lg text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors" title="Underline">
-                                        <i class="fas fa-underline w-4 h-4 text-xs"></i>
-                                    </button>
-                                    <div class="w-px h-4 bg-gray-300 mx-1"></div>
-                                    <button type="button" @click="exec('insertUnorderedList')" class="p-1.5 rounded-lg text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors" title="Bullet List">
-                                        <i class="fas fa-list-ul w-4 h-4 text-xs"></i>
-                                    </button>
-                                    <button type="button" @click="exec('removeFormat')" class="p-1.5 rounded-lg text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors" title="Clear Formatting">
-                                        <i class="fas fa-eraser w-4 h-4 text-xs"></i>
-                                    </button>
-                                </div>
-                                <!-- Editor -->
-                                <div x-ref="editor"
-                                     contenteditable="true"
-                                     class="w-full px-4 py-3 text-sm text-gray-700 min-h-[120px] outline-none prose prose-sm max-w-none"
-                                     @input="update()"
-                                     placeholder="{{ __('Instructions') }}">
-                                    {!! $editInstructions !!}
-                                </div>
-                            </div>
-                        </div>
-                        @error('editInstructions') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-                    </div>
-
                     @if(!in_array($editType, ['material', 'attendance']))
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -353,7 +294,7 @@
                     <div class="flex items-center gap-3">
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input wire:model="editAllowLateSubmission" type="checkbox" class="sr-only peer">
-                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
                         </label>
                         <span class="text-sm text-gray-700">{{ __('Allow late submission') }}</span>
                     </div>
@@ -592,7 +533,7 @@
             x-transition:leave="transition ease-in duration-150"
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 translate-y-4"
-            class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] px-4 py-2.5 bg-gray-800 text-white text-sm rounded-lg shadow-lg flex items-center gap-2">
+            class="fixed bottom-6 left-1/2 -translate-x-1/2 z-60 px-4 py-2.5 bg-gray-800 text-white text-sm rounded-lg shadow-lg flex items-center gap-2">
         <i class="fas fa-check-circle text-green-400"></i>
         {{ __('Link copied!') }}
     </div>

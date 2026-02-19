@@ -18,7 +18,7 @@ class Create extends Component
 
     // Form fields
     public string $title = '';
-    public string $instructions = '';
+    public string $description = '';
     public int $max_score = 100;
     public ?string $due_date = null;
     public string $status = 'published';
@@ -71,7 +71,7 @@ class Create extends Component
     {
         $this->validate([
             'title' => 'required|string|max:255',
-            'instructions' => 'nullable|string',
+            'description' => 'nullable|string',
             'max_score' => 'required|integer|min:0|max:1000',
             'due_date' => 'nullable|date',
             'status' => 'required|in:draft,published',
@@ -109,7 +109,7 @@ class Create extends Component
             'classroom_id' => $this->classroom->id,
             'user_id' => $user->id,
             'title' => $this->title,
-            'instructions' => $this->instructions,
+            'description' => $this->description ?: null,
             'attachments' => !empty($attachments) ? $attachments : null,
             'max_score' => $this->max_score,
             'due_date' => $this->due_date,
