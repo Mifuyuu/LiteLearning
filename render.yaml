@@ -50,8 +50,3 @@ services:
         value: database
       - key: CACHE_STORE
         value: database
-
-  - type: database
-    name: litelearning-db
-    plan: free
-    postgresMajorVersion: 15
