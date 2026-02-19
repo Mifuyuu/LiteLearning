@@ -9,6 +9,10 @@ services:
     startCommand: |
       php artisan migrate --force
       php artisan serve --host=0.0.0.0 --port=$PORT
+    disk:
+      name: storage
+      mountPath: /var/www/html/storage
+      sizeGB: 1
     envVars:
       - key: APP_ENV
         value: production
@@ -46,11 +50,6 @@ services:
         value: database
       - key: CACHE_STORE
         value: database
-
-  - type: persistent
-    name: litelearning-storage
-    sizeGB: 1
-    mountPath: /var/www/html/storage
 
   - type: database
     name: litelearning-db
