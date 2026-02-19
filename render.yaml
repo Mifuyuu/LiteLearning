@@ -1,7 +1,9 @@
 services:
   - type: web
     name: litelearning
-    env: php
+    runtime: docker
+    dockerfilePath: Dockerfile
+    dockerContext: .
     buildCommand: |
       composer install --no-dev --optimize-autoloader
       npm install
@@ -33,7 +35,7 @@ services:
       - key: DB_DATABASE
         fromDatabase:
           name: litelearning-db
-          property: name
+          property: database
       - key: DB_USERNAME
         fromDatabase:
           name: litelearning-db

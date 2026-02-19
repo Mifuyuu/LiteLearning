@@ -1,0 +1,13 @@
+/vendor
+/node_modules
+/.env
+/.env.*
+!/.env.example
+/.git
+/.dockerignore
+/.gitignore
+/README.md
+/tests
+/node_modules
+npm-debug.log
+yarn-error.log
