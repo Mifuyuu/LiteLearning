@@ -21,4 +21,4 @@ RUN chmod -R 755 /var/www/html/bootstrap/cache /var/www/html/storage
 
 EXPOSE 8080
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+CMD ["sh", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"]
