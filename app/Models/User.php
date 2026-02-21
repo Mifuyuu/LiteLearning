@@ -26,9 +26,6 @@ class User extends Authenticatable
         'bio',
         'locale',
         'ui_scale',
-        'coins',
-        'xp',
-        'level',
     ];
 
     protected $hidden = [
@@ -45,13 +42,15 @@ class User extends Authenticatable
             'tos_accepted_at' => 'datetime',
             'setup_completed_at' => 'datetime',
             'ui_scale' => 'integer',
-            'coins' => 'integer',
-            'xp' => 'integer',
-            'level' => 'integer',
         ];
     }
 
     // Relationships
+    public function gamification(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(UserGamification::class);
+    }
+
     public function ownedClassrooms(): HasMany
     {
         return $this->hasMany(Classroom::class, 'teacher_id');
@@ -151,5 +150,21 @@ class User extends Authenticatable
     public function needsSetup(): bool
     {
         return $this->setup_completed_at === null;
+    }
+
+    // Magic getters for gamification downward compatibility
+    public function getCoinsAttribute(): int
+    {
+        return $this->gamification?->coins ?? 0;
+    }
+
+    public function getXpAttribute(): int
+    {
+        return $this->gamification?->xp ?? 0;
+    }
+
+    public function getLevelAttribute(): int
+    {
+        return $this->gamification?->level ?? 1;
     }
 }

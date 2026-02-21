@@ -49,7 +49,8 @@ class Login extends Component
             return redirect()->intended(route('dashboard'));
         }
 
-        $this->addError('email', 'The provided credentials do not match our records.');
+        // Generic error message to prevent enumeration attacks
+        $this->addError('password', __('The provided credentials do not match our records.'));
     }
 
     public function render()

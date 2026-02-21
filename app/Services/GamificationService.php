@@ -35,8 +35,11 @@ class GamificationService
             'happened_at' => now(),
         ]);
 
-        $user->increment('coins', $amount);
-        $user->refresh();
+        $gamification = $user->gamification()->firstOrCreate(
+            ['user_id' => $user->id],
+            ['coins' => 0, 'xp' => 0, 'level' => 1]
+        );
+        $gamification->increment('coins', $amount);
     }
 
     public function awardXp(User $user, int $amount): void
@@ -49,11 +52,17 @@ class GamificationService
             return;
         }
 
-        $newXp = $user->xp + $amount;
-        $newLevel = $this->resolveLevelFromXp($newXp);
-        $levelUps = max(0, $newLevel - $user->level);
+        // Ensure gamification record exists
+        $gamification = $user->gamification()->firstOrCreate(
+            ['user_id' => $user->id],
+            ['coins' => 0, 'xp' => 0, 'level' => 1]
+        );
 
-        $user->update([
+        $newXp = $gamification->xp + $amount;
+        $newLevel = $this->resolveLevelFromXp($newXp);
+        $levelUps = max(0, $newLevel - $gamification->level);
+
+        $gamification->update([
             'xp' => $newXp,
             'level' => $newLevel,
         ]);

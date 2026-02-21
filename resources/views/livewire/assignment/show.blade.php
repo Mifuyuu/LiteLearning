@@ -109,8 +109,10 @@
                 <!-- Description -->
                 <div class="p-6">
                     @if($assignment->description)
-                    <div class="mb-4">
-                        <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ $assignment->description }}</p>
+                    <div class="mb-4 ql-snow">
+                        <div class="ql-editor !p-0 text-gray-700">
+                            {!! $assignment->description !!}
+                        </div>
                     </div>
                     @endif
 
@@ -272,7 +274,58 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Description') }}</label>
-                        <textarea wire:model="editDescription" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                        <div x-data="{
+                                content: @entangle('editDescription'),
+                                initialized: false,
+                                init() {
+                                    const quill = new Quill($refs.editEditor, {
+                                        theme: 'snow',
+                                        placeholder: '{{ __('Add a description or instructions for this assignment...') }}',
+                                        modules: {
+                                            toolbar: [
+                                                [{ 'header': [1, 2, 3, false] }],
+                                                ['bold', 'italic', 'underline', 'strike'],
+                                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                                [{ 'color': [] }, { 'background': [] }],
+                                                ['link'],
+                                                ['clean']
+                                            ]
+                                        }
+                                    });
+                                    
+                                    // Set initial content if exists
+                                    if (this.content) {
+                                        quill.root.innerHTML = this.content;
+                                    }
+                                    
+                                    // Listen for Livewire updates (e.g. when opening edit tab)
+                                    $watch('content', value => {
+                                        if (value !== quill.root.innerHTML && value !== '<p><br></p>') {
+                                            quill.root.innerHTML = value || '';
+                                        }
+                                    });
+                                    
+                                    // Sync changes to Livewire
+                                    quill.on('text-change', () => {
+                                        let html = quill.root.innerHTML;
+                                        if (html === '<p><br></p>') html = '';
+                                        this.content = html;
+                                    });
+                                }
+                            }" 
+                            wire:ignore
+                            class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500"
+                        >
+                            <div x-ref="editEditor" class="min-h-[150px] text-sm border-0 !border-t border-gray-200"></div>
+                        </div>
+                        
+                        <style>
+                            /* Custom Quill styling to better fit Tailwind */
+                            .ql-toolbar.ql-snow { border: none !important; background-color: #f9fafb; padding: 10px; }
+                            .ql-container.ql-snow { border: none !important; }
+                            .ql-editor { font-family: inherit; font-size: 0.875rem; color: #374151; min-height: 150px; }
+                            .ql-editor:focus { border: none; outline: none; box-shadow: none; }
+                        </style>
                         @error('editDescription') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
 

@@ -293,10 +293,9 @@
     "Yes": "ใช่",
     "No": "ไม่",
     "No topic": "ไม่มีหัวข้อ",
-    "Attachments": "แนบ",
     "Upload files": "อัปโหลดไฟล์",
     "Instructions (optional)": "คำแนะนำ (ไม่บังคับ)",
     "Title.name": "ชื่อ",
-    "Uploading...": "กำลังอัปโหลด...",
-    "Copy link": "คัดลอกลิงก์"
+    "Copy link": "คัดลอกลิงก์",
+    "The provided credentials do not match our records.": "อีเมลหรือรหัสผ่านไม่ถูกต้อง"
 }

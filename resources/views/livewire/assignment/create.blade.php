@@ -38,9 +38,67 @@
                 <h3 class="text-sm font-semibold text-gray-700">{{ __('Description') }}</h3>
             </div>
             <div class="p-6">
-                <textarea wire:model="description" rows="4"
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="{{ __('Add a description or instructions for this assignment...') }}"></textarea>
+                <div x-data="{
+                        content: @entangle('description'),
+                        init() {
+                            const quill = new Quill($refs.editor, {
+                                theme: 'snow',
+                                placeholder: '{{ __('Add a description or instructions for this assignment...') }}',
+                                modules: {
+                                    toolbar: [
+                                        [{ 'header': [1, 2, 3, false] }],
+                                        ['bold', 'italic', 'underline', 'strike'],
+                                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                        [{ 'color': [] }, { 'background': [] }],
+                                        ['link'],
+                                        ['clean']
+                                    ]
+                                }
+                            });
+                            
+                            // Set initial content if exists
+                            if (this.content) {
+                                quill.root.innerHTML = this.content;
+                            }
+                            
+                            // Sync changes to Livewire
+                            quill.on('text-change', () => {
+                                let html = quill.root.innerHTML;
+                                if (html === '<p><br></p>') html = '';
+                                this.content = html;
+                            });
+                        }
+                    }" wire:ignore
+                    class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
+                    <div x-ref="editor" class="min-h-[150px] text-sm border-0 !border-t border-gray-200"></div>
+                </div>
+
+                <style>
+                    /* Custom Quill styling to better fit Tailwind */
+                    .ql-toolbar.ql-snow {
+                        border: none !important;
+                        background-color: #f9fafb;
+                        padding: 10px;
+                    }
+
+                    .ql-container.ql-snow {
+                        border: none !important;
+                    }
+
+                    .ql-editor {
+                        font-family: inherit;
+                        font-size: 0.875rem;
+                        color: #374151;
+                        min-height: 150px;
+                    }
+
+                    .ql-editor:focus {
+                        border: none;
+                        outline: none;
+                        box-shadow: none;
+                    }
+                </style>
+
                 @error('description')
                     <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
                 @enderror

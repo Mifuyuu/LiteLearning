@@ -293,10 +293,9 @@
     "Yes": "Yes",
     "No": "No",
     "No topic": "No topic",
-    "Attachments": "Attachments",
     "Upload files": "Upload files",
     "Instructions (optional)": "Instructions (optional)",
-    "Title": "Title",
-    "Uploading...": "Uploading...",
-    "Copy link": "Copy link"
+    "Title.name": "Title",
+    "Copy link": "Copy link",
+    "The provided credentials do not match our records.": "The provided credentials do not match our records."
 }
