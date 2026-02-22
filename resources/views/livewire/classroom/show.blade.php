@@ -27,24 +27,24 @@
     <!-- Tabs -->
     <div class="tabs-scroll flex border-b border-gray-200 mb-6 overflow-x-auto">
         <button wire:click="setTab('stream')"
-            class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'stream' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+            class="px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap {{ $activeTab === 'stream' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
             <i class="fas fa-stream mr-2"></i> {{ __('Stream') }}
         </button>
         <button wire:click="setTab('classwork')"
-            class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'classwork' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+            class="px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap {{ $activeTab === 'classwork' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
             <i class="fas fa-book-open mr-2"></i> {{ __('Classwork') }}
         </button>
         <button wire:click="setTab('people')"
-            class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'people' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+            class="px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap {{ $activeTab === 'people' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
             <i class="fas fa-users mr-2"></i> {{ __('People') }}
         </button>
         @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
             <button wire:click="setTab('grades')"
-                class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'grades' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+                class="px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap {{ $activeTab === 'grades' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
                 <i class="fas fa-chart-bar mr-2"></i> {{ __('Grades') }}
             </button>
             <button wire:click="setTab('settings')"
-                class="px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap {{ $activeTab === 'settings' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+                class="px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap {{ $activeTab === 'settings' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
                 <i class="fas fa-sliders-h mr-2"></i> {{ __('Settings') }}
             </button>
         @endif
@@ -131,7 +131,7 @@
                         </div>
 
                         <!-- Comments -->
-                        @livewire('classroom.stream-comment', ['announcementId' => $announcement->id], key('comment-' . $announcement->id))
+                        @livewire('classroom.stream-comment', ['announcementId' => $announcement->id], 'comment-' . $announcement->id)
                     </div>
                 @endforeach
             </div>
@@ -205,8 +205,14 @@
                                             <!-- Title & Info -->
                                             <div class="flex-1 min-w-0">
                                                 <p
-                                                    class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors">
+                                                    class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors flex items-center gap-2">
                                                     {{ $assignment->title }}
+                                                    @if($assignment->status === 'draft')
+                                                        <span
+                                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                                            {{ __('Draft') }}
+                                                        </span>
+                                                    @endif
                                                 </p>
                                                 <div class="flex items-center gap-3 mt-0.5">
                                                     <span class="text-xs text-gray-500">
@@ -292,8 +298,14 @@
                                             <!-- Title & Info -->
                                             <div class="flex-1 min-w-0">
                                                 <p
-                                                    class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors">
+                                                    class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors flex items-center gap-2">
                                                     {{ $assignment->title }}
+                                                    @if($assignment->status === 'draft')
+                                                        <span
+                                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                                            {{ __('Draft') }}
+                                                        </span>
+                                                    @endif
                                                 </p>
                                                 <div class="flex items-center gap-3 mt-0.5">
                                                     <span class="text-xs text-gray-500">
@@ -460,7 +472,7 @@
                                 <th class="text-left px-4 py-3 font-semibold text-gray-700 sticky left-0 bg-gray-50">
                                     {{ __('Student') }}
                                 </th>
-                                @foreach($classroom->assignments->where('type', '!=', 'material') as $assignment)
+                                @foreach($classroom->assignments->where('type', '!=', 'material')->where('status', 'published') as $assignment)
                                     <th class="text-center px-4 py-3 font-medium text-gray-600 min-w-30">
                                         <div class="truncate max-w-25" title="{{ $assignment->title }}">{{ $assignment->title }}
                                         </div>
@@ -482,7 +494,7 @@
                                         </div>
                                     </td>
                                     @php $grades = []; @endphp
-                                    @foreach($classroom->assignments->where('type', '!=', 'material') as $assignment)
+                                    @foreach($classroom->assignments->where('type', '!=', 'material')->where('status', 'published') as $assignment)
                                         @php
                                             $submission = $assignment->submissions->where('user_id', $student->id)->first();
                                             $score = $submission?->score;
@@ -563,7 +575,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Banner Color') }}</label>
                         <div class="flex flex-wrap gap-2">
-                            @foreach(['#2563EB', '#4F46E5', '#0EA5E9', '#16A34A', '#EAB308', '#F97316', '#DC2626', '#A855F7'] as $color)
+                            @foreach(['#DC2626', '#F97316', '#F59E0B', '#059669', '#0891B2', '#2563EB', '#4F46E5', '#9333EA', '#DB2777', '#475569'] as $color)
                                 <button type="button" wire:click="$set('theme_color', '{{ $color }}')"
                                     class="w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 {{ $theme_color === $color ? 'border-gray-900 scale-110' : 'border-transparent' }}"
                                     style="background-color: {{ $color }}" title="{{ $color }}"></button>
@@ -575,7 +587,9 @@
                     <div class="pt-2 flex justify-end">
                         <button type="submit"
                             class="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
-                            <span wire:loading.remove wire:target="saveSettings">{{ __('Save Settings') }}</span>
+                            <span wire:loading.remove wire:target="saveSettings">
+                                <i class="fas fa-save mr-2"></i>{{ __('Save Settings') }}
+                            </span>
                             <span wire:loading wire:target="saveSettings"><i class="fas fa-spinner fa-spin mr-1"></i>
                                 {{ __('Saving...') }}</span>
                         </button>

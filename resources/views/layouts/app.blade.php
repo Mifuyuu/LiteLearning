@@ -23,6 +23,8 @@
     <!-- Quill.js Theme (Snow) -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
+
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -131,7 +133,8 @@
                             @endforeach
                             <p data-empty-pinned
                                 class="px-3 py-2 text-xs text-gray-400 {{ $enrolledClasses->isEmpty() ? '' : 'hidden' }}">
-                                {{ __('No pinned classrooms.') }}</p>
+                                {{ __('No pinned classrooms.') }}
+                            </p>
                         </div>
                     </div>
                 @endif
@@ -168,7 +171,8 @@
                             @endforeach
                             <p data-empty-pinned
                                 class="px-3 py-2 text-xs text-gray-400 {{ $teachingClasses->isEmpty() ? '' : 'hidden' }}">
-                                {{ __('No pinned classrooms.') }}</p>
+                                {{ __('No pinned classrooms.') }}
+                            </p>
                         </div>
                     </div>
                 @endif
@@ -220,7 +224,7 @@
                         <div x-data="{ open: false }" class="relative dropdown-menu" id="user-dropdown-menu">
                             <button @click="open = !open" aria-haspopup="menu" aria-controls="user-dropdown-menu-list"
                                 :aria-expanded="open ? 'true' : 'false'"
-                                class="flex items-center space-x-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                                class="flex items-center space-x-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
                                 <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
                                     class="w-8 h-8 rounded-full object-cover">
                                 <span
@@ -302,8 +306,26 @@
 
     @livewireScripts
 
-    <!-- Quill.js Library -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+
+
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('classroom-updated', (event) => {
+                const data = Array.isArray(event) ? event[0] : event;
+
+                // Update sidebar items
+                document.querySelectorAll(`a[data-classroom-id="${data.id}"]`).forEach(el => {
+                    const colorIndicator = el.querySelector('div.w-5.h-5');
+                    if (colorIndicator) colorIndicator.style.backgroundColor = data.color;
+
+                    const nameSpan = el.querySelector('span.truncate');
+                    if (nameSpan) nameSpan.textContent = data.name;
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

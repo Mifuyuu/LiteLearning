@@ -206,7 +206,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Biology 101', 'subject' => 'Biology', 'section' => 'Period 2'],
         ];
 
-        $colors = ['#4F46E5', '#059669', '#DC2626', '#D97706', '#7C3AED'];
+        $colors = ['#DC2626', '#F97316', '#F59E0B', '#059669', '#0891B2', '#2563EB', '#4F46E5', '#9333EA', '#DB2777', '#475569'];
 
         foreach ($classroomData as $i => $data) {
             $teacher = $teachers[$i % $teachers->count()];

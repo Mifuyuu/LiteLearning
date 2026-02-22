@@ -45,7 +45,7 @@
                         @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
                         <div class="relative ml-auto sm:ml-0" x-data="{ open: false }">
                             <button @click.stop="open = !open" type="button"
-                                class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+                                class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer">
                                 <i class="fas fa-ellipsis-vertical"></i>
                             </button>
                             <div x-show="open" x-cloak @click.outside="open = false"
@@ -123,7 +123,9 @@
                         <div class="space-y-3">
                             @foreach($assignment->attachments as $attachment)
                             @php
-                                $url = Storage::disk('s3')->url($attachment['path']);
+                                /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+                                $disk = Storage::disk('s3');
+                                $url = $disk->url($attachment['path']);
                                 $ext = strtolower(pathinfo($attachment['name'] ?? '', PATHINFO_EXTENSION));
                                 $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
                                 $isVideo = in_array($ext, ['mp4', 'webm', 'mov']);
@@ -185,7 +187,7 @@
             {{-- Attendance session (embedded for attendance type) --}}
             @if($assignment->isAttendance())
             <div class="mt-6">
-                @livewire('assignment.attendance', ['classroom' => $classroom, 'assignment' => $assignment], key('attendance-'.$assignment->id))
+                @livewire('assignment.attendance', ['classroom' => $classroom, 'assignment' => $assignment], 'attendance-'.$assignment->id)
             </div>
             @endif
 
@@ -247,21 +249,25 @@
                 </div>
 
                 <form wire:submit="saveAssignment" class="p-5 space-y-4">
-                    <!-- Type selector (5 types) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    <!-- Type selector (4 types) -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         @foreach([
                             'attendance' => ['icon' => 'fa-clipboard-check', 'label' => __('Attendance')],
                             'file' => ['icon' => 'fa-cloud-arrow-up', 'label' => __('File Upload')],
                             'question' => ['icon' => 'fa-pen-to-square', 'label' => __('Question')],
-                            'quiz' => ['icon' => 'fa-circle-question', 'label' => __('Quiz')],
                             'material' => ['icon' => 'fa-book-open', 'label' => __('Material')],
                         ] as $t => $info)
-                        <label class="cursor-pointer">
-                            <input wire:model.live="editType" type="radio" value="{{ $t }}" class="peer sr-only">
-                            <div class="flex flex-col items-center p-3 border-2 rounded-xl transition-all peer-checked:border-indigo-600 peer-checked:bg-indigo-50 border-gray-200 hover:bg-gray-50">
-                                <i class="fas {{ $info['icon'] }} text-lg mb-1"></i>
-                                <span class="text-xs font-medium text-center">{{ $info['label'] }}</span>
+                        <label class="relative flex flex-col items-center p-3 cursor-pointer rounded-lg border-2 transition-all
+                            {{ $editType === $t ? 'border-indigo-500 bg-indigo-50/50' : 'border-gray-100 hover:border-gray-200 bg-gray-50/50 hover:bg-gray-50' }}">
+                            <input wire:model.live="editType" type="radio" value="{{ $t }}" class="sr-only">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center mb-2 
+                                {{ $editType === $t ? 'bg-indigo-100 text-indigo-600' : 'bg-white text-gray-400 shadow-sm' }}">
+                                <i class="fas {{ $info['icon'] }} text-lg"></i>
                             </div>
+                            <span class="text-xs font-medium text-center {{ $editType === $t ? 'text-indigo-700' : 'text-gray-600' }}">{{ $info['label'] }}</span>
+                            @if($editType === $t)
+                                <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500"></div>
+                            @endif
                         </label>
                         @endforeach
                     </div>
@@ -272,6 +278,7 @@
                         @error('editTitle') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
 
+                    @if($editType !== 'attendance')
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Description') }}</label>
                         <div x-data="{
@@ -285,8 +292,9 @@
                                             toolbar: [
                                                 [{ 'header': [1, 2, 3, false] }],
                                                 ['bold', 'italic', 'underline', 'strike'],
+                                                [{ 'color': [] }],
+                                                [{ 'align': [] }],
                                                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                                [{ 'color': [] }, { 'background': [] }],
                                                 ['link'],
                                                 ['clean']
                                             ]
@@ -322,25 +330,33 @@
                         <style>
                             /* Custom Quill styling to better fit Tailwind */
                             .ql-toolbar.ql-snow { border: none !important; background-color: #f9fafb; padding: 10px; }
+                            .ql-toolbar.ql-snow .ql-formats { margin-right: 4px !important; }
                             .ql-container.ql-snow { border: none !important; }
-                            .ql-editor { font-family: inherit; font-size: 0.875rem; color: #374151; min-height: 150px; }
+                            .ql-editor { font-family: inherit !important; font-size: 0.875rem; color: #374151; min-height: 150px; }
                             .ql-editor:focus { border: none; outline: none; box-shadow: none; }
                         </style>
                         @error('editDescription') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
+                    @endif
 
-                    @if(!in_array($editType, ['material', 'attendance']))
+                    @if(!in_array($editType, ['material']))
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Points') }}</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ $editType === 'attendance' ? __('Attendance Points') : __('Points') }}
+                            </label>
                             <input wire:model="editMaxScore" type="number" min="0" max="1000" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             @error('editMaxScore') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                         </div>
+                        
+                        @if($editType !== 'attendance')
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Due Date') }}</label>
-                            <input wire:model="editDueDate" type="datetime-local" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input wire:model="editDueDate" type="datetime-local"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
                             @error('editDueDate') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                         </div>
+                        @endif
                     </div>
 
                     <!-- Allow late submission toggle -->
@@ -349,7 +365,9 @@
                             <input wire:model="editAllowLateSubmission" type="checkbox" class="sr-only peer">
                             <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
                         </label>
-                        <span class="text-sm text-gray-700">{{ __('Allow late submission') }}</span>
+                        <span class="text-sm text-gray-700">
+                            {{ $editType === 'attendance' ? __('Allow late attendance') : __('Allow late submission') }}
+                        </span>
                     </div>
                     @endif
 

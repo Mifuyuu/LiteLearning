@@ -24,6 +24,7 @@ class Create extends Component
     public string $status = 'published';
     public string $topic = '';
     public bool $allow_late_submission = true;
+    public string $type = 'question';
 
     // File upload - single file at a time, accumulated into uploadedFiles
     public $file = null;
@@ -72,12 +73,22 @@ class Create extends Component
         $this->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'max_score' => 'required|integer|min:0|max:1000',
+            'max_score' => 'required_unless:type,material|integer|min:0|max:1000',
+            'type' => 'required|in:attendance,file,question,material',
             'due_date' => 'nullable|date',
             'status' => 'required|in:draft,published',
             'topic' => 'nullable|string|max:255',
             'allow_late_submission' => 'boolean',
         ]);
+
+        if ($this->type === 'material') {
+            $this->max_score = 0;
+            $this->due_date = null;
+        }
+
+        if ($this->type === 'attendance') {
+            $this->description = '';
+        }
 
         $user = auth()->user();
 
@@ -114,7 +125,7 @@ class Create extends Component
             'max_score' => $this->max_score,
             'due_date' => $this->due_date,
             'status' => $this->status,
-            'type' => 'question',
+            'type' => $this->type,
             'topic' => $topicName ?: null,
             'allow_late_submission' => $this->allow_late_submission,
         ]);

@@ -206,10 +206,10 @@ class Show extends Component
         $this->validate([
             'editTitle' => 'required|string|max:255',
             'editDescription' => 'nullable|string',
-            'editMaxScore' => 'required|integer|min:0|max:1000',
+            'editMaxScore' => 'required_unless:editType,material|integer|min:0|max:1000',
             'editDueDate' => 'nullable|date',
             'editStatus' => 'required|in:draft,published,closed',
-            'editType' => 'required|in:attendance,file,question,quiz,material',
+            'editType' => 'required|in:attendance,file,question,material',
             'editTopic' => 'nullable|string|max:255',
             'editAllowLateSubmission' => 'boolean',
         ]);

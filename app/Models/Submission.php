@@ -58,6 +58,15 @@ class Submission extends Model
         return $this->status === 'graded';
     }
 
+    public function isLate(): bool
+    {
+        if (!$this->turned_in_at || !$this->assignment->due_date) {
+            return false;
+        }
+
+        return $this->turned_in_at->isAfter($this->assignment->due_date);
+    }
+
     public function turnIn(): void
     {
         $this->update([

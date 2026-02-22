@@ -14,7 +14,7 @@ class ClassroomFactory extends Factory
     {
         $subjects = ['Mathematics', 'Science', 'English', 'History', 'Computer Science', 'Physics', 'Chemistry', 'Biology', 'Art', 'Music'];
         $sections = ['Section A', 'Section B', 'Section C', 'Period 1', 'Period 2', 'Period 3'];
-        $colors = ['#4F46E5', '#059669', '#DC2626', '#D97706', '#7C3AED', '#2563EB', '#DB2777'];
+        $colors = ['#DC2626', '#F97316', '#F59E0B', '#059669', '#0891B2', '#2563EB', '#4F46E5', '#9333EA', '#DB2777', '#475569'];
 
         return [
             'teacher_id' => User::factory(),

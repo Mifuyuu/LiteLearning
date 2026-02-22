@@ -19,163 +19,223 @@
     </a>
 
     <form wire:submit="save" class="space-y-5">
-        <!-- Main Card: Title + Instructions -->
+        <!-- Type Selection -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white p-4 rounded-xl border border-gray-200">
+            @php
+                $types = [
+                    'question' => ['icon' => 'fa-pen-to-square', 'label' => 'Question'],
+                    'file' => ['icon' => 'fa-cloud-arrow-up', 'label' => 'File Upload'],
+                    'attendance' => ['icon' => 'fa-clipboard-check', 'label' => 'Attendance'],
+                    'material' => ['icon' => 'fa-book-open', 'label' => 'Material'],
+                ];
+            @endphp
+            @foreach($types as $typeKey => $info)
+                <label
+                    class="relative flex flex-col items-center p-3 cursor-pointer rounded-lg border-2 transition-all
+                                    {{ $type === $typeKey ? 'border-indigo-500 bg-indigo-50/50' : 'border-gray-100 hover:border-gray-200 bg-gray-50/50 hover:bg-gray-50' }}">
+                    <input type="radio" wire:model.live="type" value="{{ $typeKey }}" class="sr-only">
+                    <div
+                        class="w-10 h-10 rounded-full flex items-center justify-center mb-2 
+                                        {{ $type === $typeKey ? 'bg-indigo-100 text-indigo-600' : 'bg-white text-gray-400 shadow-sm' }}">
+                        <i class="fas {{ $info['icon'] }} text-lg"></i>
+                    </div>
+                    <span class="text-sm font-medium {{ $type === $typeKey ? 'text-indigo-700' : 'text-gray-600' }}">
+                        {{ __($info['label']) }}
+                    </span>
+                    @if($type === $typeKey)
+                        <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500"></div>
+                    @endif
+                </label>
+            @endforeach
+        </div>
+
+        <!-- Title Card -->
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <!-- Title -->
-            <div class="relative">
-                <input wire:model="title" type="text"
-                    class="w-full px-6 py-4 text-lg font-medium text-gray-900 border-0 border-b-2 border-transparent focus:border-indigo-500 focus:ring-0 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
-                    placeholder="{{ __('Title') }} *">
+            <div class="px-6 py-4 border-b border-gray-100">
+                <h3 class="text-sm font-semibold text-gray-700">{{ __('Title') }} *</h3>
             </div>
-            @error('title')
-                <p class="px-6 py-1 text-sm text-red-500 bg-red-50">{{ $message }}</p>
-            @enderror
+            <div class="p-6">
+                <input wire:model="title" type="text"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="{{ __('Title') }} *">
+                @error('title')
+                    <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
         </div>
 
         <!-- Description Card -->
-        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100">
-                <h3 class="text-sm font-semibold text-gray-700">{{ __('Description') }}</h3>
-            </div>
-            <div class="p-6">
-                <div x-data="{
-                        content: @entangle('description'),
-                        init() {
-                            const quill = new Quill($refs.editor, {
-                                theme: 'snow',
-                                placeholder: '{{ __('Add a description or instructions for this assignment...') }}',
-                                modules: {
-                                    toolbar: [
-                                        [{ 'header': [1, 2, 3, false] }],
-                                        ['bold', 'italic', 'underline', 'strike'],
-                                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                        [{ 'color': [] }, { 'background': [] }],
-                                        ['link'],
-                                        ['clean']
-                                    ]
-                                }
-                            });
-                            
-                            // Set initial content if exists
-                            if (this.content) {
-                                quill.root.innerHTML = this.content;
-                            }
-                            
-                            // Sync changes to Livewire
-                            quill.on('text-change', () => {
-                                let html = quill.root.innerHTML;
-                                if (html === '<p><br></p>') html = '';
-                                this.content = html;
-                            });
+        @if($type !== 'attendance')
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100">
+                    <h3 class="text-sm font-semibold text-gray-700">{{ __('Description') }}</h3>
+                </div>
+                <div class="p-6">
+                    <div x-data="{
+                                    content: @entangle('description'),
+                                    init() {
+                                        const quill = new Quill($refs.editor, {
+                                            theme: 'snow',
+                                            placeholder: '{{ __('Add a description or instructions for this assignment...') }}',
+                                            modules: {
+                                                toolbar: [
+                                                    [{ 'header': [1, 2, 3, false] }],
+                                                    ['bold', 'italic', 'underline', 'strike'],
+                                                    [{ 'color': [] }],
+                                                    [{ 'align': [] }],
+                                                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                                    ['link'],
+                                                    ['clean']
+                                                ]
+                                            }
+                                        });
+
+                                        // Set initial content if exists
+                                        if (this.content) {
+                                            quill.root.innerHTML = this.content;
+                                        }
+
+                                        // Sync changes to Livewire
+                                        quill.on('text-change', () => {
+                                            let html = quill.root.innerHTML;
+                                            if (html === '<p><br></p>') html = '';
+                                            this.content = html;
+                                        });
+                                    }
+                                }" wire:ignore
+                        class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
+                        <div x-ref="editor" class="min-h-[150px] text-sm border-0 !border-t border-gray-200"></div>
+                    </div>
+
+                    <style>
+                        /* Custom Quill styling to better fit Tailwind */
+                        .ql-toolbar.ql-snow {
+                            border: none !important;
+                            background-color: #f9fafb;
+                            padding: 10px;
                         }
-                    }" wire:ignore
-                    class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
-                    <div x-ref="editor" class="min-h-[150px] text-sm border-0 !border-t border-gray-200"></div>
+
+                        .ql-toolbar.ql-snow .ql-formats {
+                            margin-right: 4px !important;
+                        }
+
+                        .ql-container.ql-snow {
+                            border: none !important;
+                        }
+
+                        .ql-editor {
+                            font-family: inherit !important;
+                            font-size: 0.875rem;
+                            color: #374151;
+                            min-height: 150px;
+                        }
+
+                        .ql-editor:focus {
+                            border: none;
+                            outline: none;
+                            box-shadow: none;
+                        }
+                    </style>
+
+                    @error('description')
+                        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                    @enderror
                 </div>
-
-                <style>
-                    /* Custom Quill styling to better fit Tailwind */
-                    .ql-toolbar.ql-snow {
-                        border: none !important;
-                        background-color: #f9fafb;
-                        padding: 10px;
-                    }
-
-                    .ql-container.ql-snow {
-                        border: none !important;
-                    }
-
-                    .ql-editor {
-                        font-family: inherit;
-                        font-size: 0.875rem;
-                        color: #374151;
-                        min-height: 150px;
-                    }
-
-                    .ql-editor:focus {
-                        border: none;
-                        outline: none;
-                        box-shadow: none;
-                    }
-                </style>
-
-                @error('description')
-                    <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
-                @enderror
             </div>
-        </div>
+        @endif
 
-        <!-- Attachments Card -->
-        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100">
-                <h3 class="text-sm font-semibold text-gray-700">{{ __('Attachments') }}</h3>
-            </div>
-
-            <div class="p-6">
-                <!-- Uploaded files preview -->
-                @if(count($uploadedFiles))
-                    <div class="space-y-2 mb-4">
-                        @foreach($uploadedFiles as $index => $uploaded)
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-                                <div class="flex items-center min-w-0">
-                                    <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
-                                        @php
-                                            $ext = pathinfo($uploaded['name'], PATHINFO_EXTENSION);
-                                            $icon = match (true) {
-                                                in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']) => 'fa-image text-green-600',
-                                                in_array($ext, ['pdf']) => 'fa-file-pdf text-red-600',
-                                                in_array($ext, ['doc', 'docx']) => 'fa-file-word text-blue-600',
-                                                in_array($ext, ['xls', 'xlsx']) => 'fa-file-excel text-green-700',
-                                                in_array($ext, ['ppt', 'pptx']) => 'fa-file-powerpoint text-orange-600',
-                                                in_array($ext, ['zip', 'rar', '7z']) => 'fa-file-zipper text-yellow-600',
-                                                in_array($ext, ['mp4', 'mov', 'avi']) => 'fa-file-video text-purple-600',
-                                                default => 'fa-file text-gray-500',
-                                            };
-                                            $sizeKb = round($uploaded['size'] / 1024);
-                                            $sizeLabel = $sizeKb >= 1024 ? round($sizeKb / 1024, 1) . ' MB' : $sizeKb . ' KB';
-                                        @endphp
-                                        <i class="fas {{ $icon }} text-sm"></i>
-                                    </div>
-                                    <div class="ml-3 min-w-0">
-                                        <p class="text-sm font-medium text-gray-900 truncate">{{ $uploaded['name'] }}</p>
-                                        <p class="text-xs text-gray-500">{{ $sizeLabel }}</p>
-                                    </div>
-                                </div>
-                                <button type="button" wire:click="removeFile({{ $index }})"
-                                    class="p-1.5 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors">
-                                    <i class="fas fa-xmark"></i>
-                                </button>
+        <!-- File Upload Section -->
+        @if(!in_array($type, ['question', 'attendance']))
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="text-sm font-semibold text-gray-700">{{ __('Attachments') }}</h3>
+                </div>
+                <div class="p-6">
+                    <!-- Dropzone Area -->
+                    <div class="w-full">
+                        <label for="file-upload"
+                            class="relative flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors {{ $file ? 'border-indigo-500 bg-indigo-50' : '' }}">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <i
+                                    class="fas {{ $file ? 'fa-check-circle text-indigo-500' : 'fa-cloud-arrow-up text-gray-400' }} text-3xl mb-3"></i>
+                                <p class="mb-1 text-sm text-gray-500">
+                                    @if($file)
+                                        <span class="font-semibold text-indigo-600">{{ __('File selected') }}</span>
+                                    @else
+                                        <span class="font-semibold">{{ __('Click to upload') }}</span>
+                                        {{ __('or drag and drop') }}
+                                    @endif
+                                </p>
+                                @if(!$file)
+                                    <p class="text-xs text-gray-400">{{ __('PDF, DOCX, PPTX, JPG, PNG (Max. 25MB)') }}</p>
+                                @endif
                             </div>
-                        @endforeach
+                            <input id="file-upload" type="file" wire:model.live="file" class="hidden" />
+                        </label>
                     </div>
-                @endif
 
-                <!-- Upload area (single file at a time) -->
-                <label
-                    class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/50 transition-all group">
-                    <input type="file" wire:model="file" class="sr-only">
-                    <div
-                        class="w-12 h-12 rounded-full bg-gray-100 group-hover:bg-indigo-100 flex items-center justify-center transition-colors mb-3">
-                        <i
-                            class="fas fa-cloud-arrow-up text-xl text-gray-400 group-hover:text-indigo-500 transition-colors"></i>
+                    <!-- Loading State -->
+                    <div wire:loading wire:target="file" class="mt-4 w-full">
+                        <div
+                            class="flex items-center justify-center space-x-2 text-sm text-indigo-600 bg-indigo-50 rounded-lg p-3">
+                            <i class="fas fa-circle-notch fa-spin"></i>
+                            <span>{{ __('Uploading file...') }}</span>
+                        </div>
                     </div>
-                    <p class="text-sm font-medium text-gray-700 group-hover:text-indigo-600">{{ __('Upload files') }}
-                    </p>
-                    <p class="text-xs text-gray-400 mt-1">{{ __('Max file size: 25MB') }}</p>
-                </label>
-                @error('file')
-                    <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
-                @enderror
 
-                <!-- Upload progress -->
-                <div wire:loading wire:target="file" class="mt-3">
-                    <div class="flex items-center text-sm text-indigo-600">
-                        <i class="fas fa-spinner fa-spin mr-2"></i> {{ __('Uploading...') }}
-                    </div>
+                    @error('file')
+                        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                    @enderror
+
+                    <!-- Uploaded Files List -->
+                    @if(count($uploadedFiles) > 0)
+                        <div class="mt-4 space-y-2">
+                            <h4 class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">
+                                {{ __('Files to attach') }} ({{ count($uploadedFiles) }})
+                            </h4>
+                            @foreach($uploadedFiles as $index => $uploadedFile)
+                                <div
+                                    class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm group hover:border-indigo-300 transition-colors">
+                                    <div class="flex items-center space-x-3 overflow-hidden">
+                                        <div
+                                            class="flex-shrink-0 w-10 h-10 rounded bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                            @php
+                                                $mime = $uploadedFile['mime'];
+                                                $icon = 'fa-file';
+                                                if (str_contains($mime, 'image'))
+                                                    $icon = 'fa-file-image';
+                                                elseif (str_contains($mime, 'pdf'))
+                                                    $icon = 'fa-file-pdf';
+                                                elseif (str_contains($mime, 'word'))
+                                                    $icon = 'fa-file-word';
+                                                elseif (str_contains($mime, 'video'))
+                                                    $icon = 'fa-file-video';
+                                                elseif (str_contains($mime, 'audio'))
+                                                    $icon = 'fa-file-audio';
+                                            @endphp
+                                            <i class="fas {{ $icon }} text-lg"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-gray-900 truncate">
+                                                {{ $uploadedFile['name'] }}
+                                            </p>
+                                            <p class="text-xs text-gray-500">
+                                                {{ number_format($uploadedFile['size'] / 1024 / 1024, 2) }} MB
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button type="button" wire:click="removeFile({{ $index }})"
+                                        class="text-gray-400 hover:text-red-500 flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"
+                                        title="{{ __('Remove') }}">
+                                        <i class="fas fa-xmark"></i>
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </div>
-        </div>
-
+        @endif
         <!-- Options Card: Topic + Due Date + Points -->
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div class="p-6 space-y-4">
@@ -195,33 +255,37 @@
                 </div>
 
                 <!-- Due Date + Points row -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                            <i class="fas fa-clock mr-1.5 text-gray-400"></i>{{ __('Due Date') }}
-                        </label>
-                        <input wire:model="due_date" type="datetime-local"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                            <i class="fas fa-star mr-1.5 text-gray-400"></i>{{ __('Points') }}
-                        </label>
-                        <input wire:model="max_score" type="number" min="0" max="1000"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                </div>
-
-                <!-- Allow late submission -->
-                <div class="flex items-center gap-3 pt-2">
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input wire:model="allow_late_submission" type="checkbox" class="sr-only peer">
-                        <div
-                            class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600">
+                @if($type !== 'material')
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                <i class="fas fa-clock mr-1.5 text-gray-400"></i>{{ __('Due Date') }}
+                            </label>
+                            <input wire:model="due_date" type="datetime-local"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
                         </div>
-                    </label>
-                    <span class="text-sm text-gray-700">{{ __('Allow late submission') }}</span>
-                </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                <i class="fas fa-star mr-1.5 text-gray-400"></i>{{ __('Points') }}
+                            </label>
+                            <input wire:model="max_score" type="number" min="0" max="1000"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <!-- Allow late submission -->
+                    <div class="flex items-center gap-3 pt-2">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input wire:model="allow_late_submission" type="checkbox" class="sr-only peer">
+                            <div
+                                class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600">
+                            </div>
+                        </label>
+                        <span class="text-sm text-gray-700">
+                            {{ $type === 'attendance' ? __('Allow late attendance') : __('Allow late submission') }}
+                        </span>
+                    </div>
+                @endif
             </div>
         </div>
 

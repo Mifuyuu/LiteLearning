@@ -105,6 +105,12 @@ class Show extends Component
 
         $this->classroom->refresh();
 
+        $this->dispatch('classroom-updated', [
+            'id' => $this->classroom->id,
+            'name' => $this->name,
+            'color' => $this->theme_color
+        ]);
+
         session()->flash('message', __('Classroom settings saved successfully.'));
     }
 
@@ -167,7 +173,12 @@ class Show extends Component
             'teacher',
             'announcements.user',
             'announcements.comments.user',
-            'assignments' => fn($q) => $q->published(),
+            'assignments' => function ($q) {
+                if (Auth::user()->isAdmin() || $this->classroom->isOwnedBy(Auth::user())) {
+                    return $q;
+                }
+                return $q->published();
+            },
             'assignments.submissions',
             'students',
             'topics',
