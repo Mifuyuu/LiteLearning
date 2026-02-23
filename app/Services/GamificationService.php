@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Achievement;
 use App\Models\Badge;
 use App\Models\CoinTransaction;
+use App\Models\StoreItem;
 use App\Models\User;
 
 class GamificationService
@@ -200,5 +201,63 @@ class GamificationService
         }
 
         return (int) (((($level - 1) * $level) / 2) * 100);
+    }
+
+    public function purchaseItem(User $user, StoreItem $item): void
+    {
+        if (!$this->isEligible($user)) {
+            throw new \Exception(__('Only students can purchase items.'));
+        }
+
+        if (!$item->is_active) {
+            throw new \Exception(__('This item is no longer available.'));
+        }
+
+        if ($user->storeItems()->where('store_item_id', $item->id)->exists()) {
+            throw new \Exception(__('You already own this item.'));
+        }
+
+        $gamification = $user->gamification()->firstOrCreate(
+            ['user_id' => $user->id],
+            ['coins' => 0, 'xp' => 0, 'level' => 1]
+        );
+
+        if ($gamification->coins < $item->price) {
+            throw new \Exception(__('Not enough coins.'));
+        }
+
+        // Deduct coins
+        $gamification->decrement('coins', $item->price);
+
+        // Record transaction
+        CoinTransaction::create([
+            'user_id' => $user->id,
+            'amount' => -$item->price,
+            'type' => 'spend',
+            'source' => 'store_purchase',
+            'reference_type' => StoreItem::class,
+            'reference_id' => $item->id,
+            'happened_at' => now(),
+        ]);
+
+        // Attach item
+        $user->storeItems()->attach($item->id);
+    }
+
+    public function equipItem(User $user, StoreItem $item): void
+    {
+        if (!$this->isEligible($user)) {
+            throw new \Exception(__('Only students can equip items.'));
+        }
+
+        if (!$user->storeItems()->where('store_item_id', $item->id)->exists()) {
+            throw new \Exception(__('You do not own this item.'));
+        }
+
+        if ($item->type === 'name_color') {
+            $user->update(['active_name_color' => $item->value]);
+        } elseif ($item->type === 'avatar_frame') {
+            $user->update(['active_avatar_frame' => $item->value]);
+        }
     }
 }

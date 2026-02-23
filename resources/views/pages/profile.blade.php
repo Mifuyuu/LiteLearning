@@ -10,9 +10,17 @@
 
             <div class="px-6 pb-6">
                 <!-- Avatar -->
-                <div class="-mt-12 mb-4">
+                <div class="-mt-12 mb-4 relative inline-block">
                     <img src="{{ auth()->user()->avatar_url }}"
-                        class="w-24 h-24 rounded-full border-4 border-white shadow-lg">
+                        class="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover bg-white">
+                    @if(auth()->user()->active_avatar_frame && !str_starts_with(auth()->user()->active_avatar_frame, 'border'))
+                        <img src="{{ asset(auth()->user()->active_avatar_frame) }}"
+                            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] max-w-none pointer-events-none drop-shadow-sm">
+                    @elseif(auth()->user()->active_avatar_frame)
+                        <div
+                            class="absolute inset-0 rounded-full {{ auth()->user()->active_avatar_frame }} pointer-events-none">
+                        </div>
+                    @endif
                 </div>
 
                 <h3 class="text-xl font-bold text-gray-900">{{ auth()->user()->name }}</h3>

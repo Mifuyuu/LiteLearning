@@ -38,6 +38,22 @@
             <h3 class="text-lg font-semibold text-gray-900">
                 {{ __('Students') }} <span class="text-gray-400 font-normal">({{ $classroom->members->count() }})</span>
             </h3>
+
+            @if($classroom->members->count() > 0 && ($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin()))
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" @click.outside="open = false"
+                        class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
+                        <i class="fas fa-ellipsis-v px-1"></i>
+                    </button>
+                    <div x-show="open" x-transition.opacity.duration.200ms x-cloak
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10">
+                        <button wire:click="removeAllMembers" wire:confirm="{{ __('classrooms.remove_all_confirm') }}"
+                            class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer">
+                            <i class="fas fa-users-slash w-4"></i> {{ __('classrooms.remove_all') }}
+                        </button>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
@@ -51,11 +67,20 @@
                         </div>
                     </div>
                     @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
-                        <button wire:click="removeMember({{ $member->id }})"
-                            wire:confirm="Remove {{ $member->name }} from this classroom?"
-                            class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
-                            <i class="fas fa-user-times"></i>
-                        </button>
+                        <div x-data="{ open: false }" class="relative">
+                            <button @click="open = !open" @click.outside="open = false"
+                                class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                <i class="fas fa-ellipsis-v px-1"></i>
+                            </button>
+                            <div x-show="open" x-transition.opacity.duration.200ms x-cloak
+                                class="absolute right-0 top-10 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10">
+                                <button wire:click="removeMember({{ $member->id }})"
+                                    wire:confirm="{{ __('classrooms.remove_confirm', ['name' => $member->name]) }}"
+                                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer">
+                                    <i class="fas fa-user-times w-4"></i> {{ __('classrooms.remove_student') }}
+                                </button>
+                            </div>
+                        </div>
                     @endif
                 </div>
             @empty

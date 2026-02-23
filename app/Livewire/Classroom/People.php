@@ -39,6 +39,20 @@ class People extends Component
         session()->flash('message', __('Member removed successfully.'));
     }
 
+    public function removeAllMembers()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
+            abort(403);
+        }
+
+        $this->classroom->members()->detach();
+        $this->classroom->refresh();
+
+        session()->flash('message', __('All students removed successfully.'));
+    }
+
     public function render()
     {
         $this->classroom->load(['teacher', 'members']);

@@ -57,6 +57,10 @@
                     $isClassroomsActive = request()->routeIs('classrooms');
                     $isCalendarActive = request()->routeIs('calendar');
                     $isToReviewActive = request()->routeIs('to-review');
+
+                    $isStoreActive = request()->routeIs('store');
+                    $isLeaderboardActive = request()->routeIs('leaderboard');
+                    $isAchievementsActive = request()->routeIs('achievements');
                 @endphp
                 <a href="{{ route('dashboard') }}"
                     class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isDashboardActive) }}">
@@ -78,6 +82,24 @@
                     {{ __('Calendar') }}
                 </a>
 
+                @if(auth()->user()->isStudent())
+                    <a href="{{ route('achievements') }}"
+                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAchievementsActive) }}">
+                        <i class="fas fa-medal w-5 mr-3 text-center"></i>
+                        {{ __('Achievements & Badges') }}
+                    </a>
+                    <a href="{{ route('leaderboard') }}"
+                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isLeaderboardActive) }}">
+                        <i class="fas fa-trophy w-5 mr-3 text-center"></i>
+                        {{ __('Leaderboard') }}
+                    </a>
+                    <a href="{{ route('store') }}"
+                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isStoreActive) }}">
+                        <i class="fas fa-store w-5 mr-3 text-center"></i>
+                        {{ __('store.title') }}
+                    </a>
+                @endif
+
                 @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
                     <div class="pt-4">
                         <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Teaching') }}
@@ -85,6 +107,7 @@
                         <div class="mt-2 space-y-1">
                             @php
                                 $isMyClassesActive = request()->routeIs('classrooms') && request()->query('filter') === 'teaching';
+                                $isBugReportsActive = request()->routeIs('admin.reports');
                             @endphp
                             <a href="{{ route('classrooms') }}?filter=teaching"
                                 class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isMyClassesActive) }}">
@@ -96,6 +119,13 @@
                                 <i class="fas fa-tasks w-5 mr-3 text-center"></i>
                                 {{ __('To Review') }}
                             </a>
+                            @if(auth()->user()->isAdmin())
+                                <a href="{{ route('admin.reports') }}"
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isBugReportsActive) }}">
+                                    <i class="fas fa-flag w-5 mr-3 text-center"></i>
+                                    {{ __('Bug Reports') }}
+                                </a>
+                            @endif
                         </div>
                     </div>
                 @endif
@@ -261,6 +291,11 @@
                                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
                                             <i class="fas fa-cog w-4 mr-3"></i> {{ __('Settings') }}
                                         </a>
+                                        <button @click="open = false; $dispatch('openReportModal')" role="menuitem"
+                                            class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
+                                            <i class="fas fa-flag w-4 mr-3"></i>
+                                            {{ __('report.button') }}
+                                        </button>
                                     </div>
                                     <hr class="my-1 border-gray-100">
                                     <form method="POST" action="{{ route('logout') }}">
@@ -288,21 +323,22 @@
         </div>
     </div>
 
-    @if(session()->has('message'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-cloak
-            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
-            x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2"
-            class="fixed bottom-4 right-4 z-100 w-[calc(100%-2rem)] max-w-sm rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 shadow-lg">
-            <div class="flex items-start gap-2">
-                <i class="fas fa-check-circle mt-0.5"></i>
-                <p class="flex-1">{{ session('message') }}</p>
-                <button type="button" @click="show = false" class="text-green-600 hover:text-green-800 cursor-pointer">
-                    <i class="fas fa-xmark"></i>
-                </button>
-            </div>
+    <div x-data="{ show: {{ session()->has('message') ? 'true' : 'false' }}, message: '{{ session('message') }}' }" 
+         @notify.window="message = $event.detail.message; show = true; setTimeout(() => show = false, 3000)"
+         x-init="if(show) setTimeout(() => show = false, 3000)" 
+         x-show="show" x-cloak
+         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2"
+         class="fixed bottom-4 right-4 z-[100] w-[calc(100%-2rem)] max-w-sm rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 shadow-lg">
+        <div class="flex items-start gap-2">
+            <i class="fas fa-check-circle mt-0.5"></i>
+            <p class="flex-1" x-text="message"></p>
+            <button type="button" @click="show = false" class="text-green-600 hover:text-green-800 cursor-pointer">
+                <i class="fas fa-xmark"></i>
+            </button>
         </div>
-    @endif
+    </div>
 
     @livewireScripts
 
@@ -326,6 +362,8 @@
             });
         });
     </script>
+
+    @livewire('report-bug')
 </body>
 
 </html>

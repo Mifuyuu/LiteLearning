@@ -26,6 +26,8 @@ class User extends Authenticatable
         'bio',
         'locale',
         'ui_scale',
+        'active_name_color',
+        'active_avatar_frame',
     ];
 
     protected $hidden = [
@@ -100,6 +102,17 @@ class User extends Authenticatable
         return $this->belongsToMany(Badge::class, 'user_badges')
             ->withPivot('earned_at')
             ->withTimestamps();
+    }
+
+    public function storeItems(): BelongsToMany
+    {
+        return $this->belongsToMany(StoreItem::class, 'user_store_items')
+            ->withTimestamps();
+    }
+
+    public function bugReports(): HasMany
+    {
+        return $this->hasMany(BugReport::class);
     }
 
     // Helpers

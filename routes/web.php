@@ -52,6 +52,11 @@ Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
+    // Gamification (Student only)
+    Route::get('/store', \App\Livewire\Student\Store::class)->name('store');
+    Route::get('/leaderboard', \App\Livewire\Student\Leaderboard::class)->name('leaderboard');
+    Route::get('/achievements', \App\Livewire\Student\Achievements::class)->name('achievements');
+
     // Classrooms
     Route::get('/classrooms', ClassroomIndex::class)->name('classrooms');
     Route::get('/c/{classroom}', ClassroomShow::class)->name('classroom.show');
@@ -78,6 +83,11 @@ Route::middleware('auth')->group(function () {
     })->name('profile');
 
     Route::get('/settings', Settings::class)->name('settings');
+
+    // Bug Reports (Admin only)
+    Route::get('/admin/reports', \App\Livewire\Admin\BugReports::class)
+        ->name('admin.reports')
+        ->middleware('admin');
 
     // Sidebar classroom preferences
     Route::post('/sidebar/classrooms/reorder', [SidebarClassroomPreferenceController::class, 'reorder'])

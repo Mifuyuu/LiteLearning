@@ -18,6 +18,7 @@ class Achievement extends Model
         'coin_reward',
         'xp_reward',
         'is_active',
+        'target_role',
     ];
 
     protected $casts = [

@@ -60,6 +60,12 @@ class Show extends Component
 
     public function postAnnouncement()
     {
+        /** @var User $user */
+        $user = Auth::user();
+        if (!$this->classroom->hasAccess($user)) {
+            abort(403);
+        }
+
         $this->validate([
             'newAnnouncement' => 'required|string|min:1',
         ]);

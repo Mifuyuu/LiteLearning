@@ -33,8 +33,8 @@ class Assignment extends Model
     protected function casts(): array
     {
         return [
-            'attachments' => 'array',
-            'due_date' => 'datetime',
+            'attachments'           => 'array',
+            'due_date'              => 'datetime',
             'allow_late_submission' => 'boolean',
         ];
     }
@@ -65,11 +65,6 @@ class Assignment extends Model
 
         return $slug;
     }
-
-    protected $casts = [
-        'due_date' => 'datetime',
-        'allow_late_submission' => 'boolean',
-    ];
 
     // ──────────────────────────────────────────────
     // Relationships
@@ -146,11 +141,11 @@ class Assignment extends Model
     {
         return match ($this->type) {
             'attendance' => 'fa-clipboard-check',
-            'file' => 'fa-cloud-arrow-up',
-            'question' => 'fa-pen-to-square',
-            'quiz' => 'fa-circle-question',
-            'material' => 'fa-book-open',
-            default => 'fa-file-alt',
+            'file'       => 'fa-cloud-arrow-up',
+            'question'   => 'fa-pen-to-square',
+            'quiz'       => 'fa-circle-question',
+            'material'   => 'fa-book-open',
+            default      => 'fa-file-alt',
         };
     }
 
@@ -162,11 +157,11 @@ class Assignment extends Model
     {
         return match ($this->type) {
             'attendance' => ['bg-amber-100', 'text-amber-700'],
-            'file' => ['bg-blue-100', 'text-blue-700'],
-            'question' => ['bg-green-100', 'text-green-700'],
-            'quiz' => ['bg-purple-100', 'text-purple-700'],
-            'material' => ['bg-slate-100', 'text-slate-700'],
-            default => ['bg-gray-100', 'text-gray-700'],
+            'file'       => ['bg-blue-100', 'text-blue-700'],
+            'question'   => ['bg-green-100', 'text-green-700'],
+            'quiz'       => ['bg-purple-100', 'text-purple-700'],
+            'material'   => ['bg-slate-100', 'text-slate-700'],
+            default      => ['bg-gray-100', 'text-gray-700'],
         };
     }
 
@@ -177,11 +172,11 @@ class Assignment extends Model
     {
         return match ($this->type) {
             'attendance' => __('Attendance'),
-            'file' => __('File Upload'),
-            'question' => __('Question'),
-            'quiz' => __('Quiz'),
-            'material' => __('Material'),
-            default => __(ucfirst($this->type)),
+            'file'       => __('File Upload'),
+            'question'   => __('Question'),
+            'quiz'       => __('Quiz'),
+            'material'   => __('Material'),
+            default      => __(ucfirst($this->type)),
         };
     }
 
@@ -208,14 +203,14 @@ class Assignment extends Model
 
         if ($diff->days >= 1) {
             return __('Overdue by :days days :hours hours', [
-                'days' => $diff->days,
+                'days'  => $diff->days,
                 'hours' => $diff->h,
             ]);
         }
 
         if ($diff->h >= 1) {
             return __('Overdue by :hours hours :minutes minutes', [
-                'hours' => $diff->h,
+                'hours'   => $diff->h,
                 'minutes' => $diff->i,
             ]);
         }

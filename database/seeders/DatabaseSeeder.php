@@ -17,12 +17,14 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(GamificationFeaturesSeeder::class);
+
         Achievement::upsert([
             [
                 'code' => 'first_classroom_created',
                 'name' => 'First Classroom',
                 'description' => 'Create your first classroom',
-                'icon' => 'fa-chalkboard',
+                'icon' => 'fas fa-chalkboard',
                 'coin_reward' => 50,
                 'xp_reward' => 50,
                 'is_active' => true,
@@ -33,7 +35,7 @@ class DatabaseSeeder extends Seeder
                 'code' => 'classroom_builder',
                 'name' => 'Classroom Builder',
                 'description' => 'Create 5 classrooms',
-                'icon' => 'fa-school',
+                'icon' => 'fas fa-school',
                 'coin_reward' => 120,
                 'xp_reward' => 120,
                 'is_active' => true,
@@ -44,7 +46,7 @@ class DatabaseSeeder extends Seeder
                 'code' => 'first_classroom_joined',
                 'name' => 'Welcome Student',
                 'description' => 'Join your first classroom',
-                'icon' => 'fa-door-open',
+                'icon' => 'fas fa-door-open',
                 'coin_reward' => 30,
                 'xp_reward' => 35,
                 'is_active' => true,
@@ -55,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 'code' => 'first_assignment_created',
                 'name' => 'First Assignment',
                 'description' => 'Publish your first assignment',
-                'icon' => 'fa-file-circle-plus',
+                'icon' => 'fas fa-file-circle-plus',
                 'coin_reward' => 40,
                 'xp_reward' => 40,
                 'is_active' => true,
@@ -66,7 +68,7 @@ class DatabaseSeeder extends Seeder
                 'code' => 'first_assignment_turned_in',
                 'name' => 'On Time',
                 'description' => 'Turn in your first assignment',
-                'icon' => 'fa-paper-plane',
+                'icon' => 'fas fa-paper-plane',
                 'coin_reward' => 35,
                 'xp_reward' => 35,
                 'is_active' => true,
@@ -77,7 +79,7 @@ class DatabaseSeeder extends Seeder
                 'code' => 'consistent_submitter',
                 'name' => 'Consistent Submitter',
                 'description' => 'Turn in 10 assignments',
-                'icon' => 'fa-medal',
+                'icon' => 'fas fa-medal',
                 'coin_reward' => 100,
                 'xp_reward' => 100,
                 'is_active' => true,
@@ -91,7 +93,7 @@ class DatabaseSeeder extends Seeder
                 'code' => 'new-learner',
                 'name' => 'New Learner',
                 'description' => 'Joined your first class',
-                'icon' => 'fa-seedling',
+                'icon' => 'fas fa-seedling',
                 'color' => 'green',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -100,7 +102,7 @@ class DatabaseSeeder extends Seeder
                 'code' => 'class-starter',
                 'name' => 'Class Starter',
                 'description' => 'Created your first class',
-                'icon' => 'fa-rocket',
+                'icon' => 'fas fa-rocket',
                 'color' => 'indigo',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -109,7 +111,7 @@ class DatabaseSeeder extends Seeder
                 'code' => 'submission-pro',
                 'name' => 'Submission Pro',
                 'description' => 'Submitted 10 assignments',
-                'icon' => 'fa-award',
+                'icon' => 'fas fa-award',
                 'color' => 'amber',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -118,7 +120,7 @@ class DatabaseSeeder extends Seeder
                 'code' => 'master-teacher',
                 'name' => 'Master Teacher',
                 'description' => 'Created 5 classrooms',
-                'icon' => 'fa-crown',
+                'icon' => 'fas fa-crown',
                 'color' => 'purple',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -249,15 +251,14 @@ class DatabaseSeeder extends Seeder
             }
 
             // Create assignments
-            $assignmentTypes = ['assignment', 'assignment', 'quiz', 'material'];
+            $assignmentTypes = ['question', 'attendance', 'material'];
             for ($j = 0; $j < rand(3, 6); $j++) {
                 $type = $assignmentTypes[array_rand($assignmentTypes)];
                 $assignment = Assignment::create([
                     'classroom_id' => $classroom->id,
                     'user_id' => $teacher->id,
                     'title' => fake()->sentence(4),
-                    'description' => fake()->paragraph(),
-                    'instructions' => fake()->paragraphs(2, true),
+                    'description' => fake()->paragraph() . "\n\n" . fake()->paragraphs(2, true),
                     'max_score' => $type === 'material' ? 0 : fake()->randomElement([10, 20, 50, 100]),
                     'due_date' => $type === 'material' ? null : fake()->dateTimeBetween('-1 week', '+2 weeks'),
                     'status' => 'published',

@@ -2,9 +2,9 @@
 
 <div>
     @if(auth()->user()->isStudent() && $gamification)
-        <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
-            <!-- Left Content: Gamification Stats & Classrooms (3 Columns) -->
-            <div class="xl:col-span-3 space-y-6">
+        <div class="flex flex-col xl:flex-row gap-4 xl:h-[calc(100vh-6rem)]">
+            <!-- Left Content: Gamification Stats & Classrooms -->
+            <div class="flex-1 space-y-6 xl:overflow-y-auto xl:pr-4 custom-scrollbar pb-6 xl:pb-0">
     @endif
 
             <!-- Welcome Banner -->
@@ -25,10 +25,10 @@
 
             @if(auth()->user()->isStudent() && $gamification)
                 <!-- Gamification Stats -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center shrink-0">
                                 <i class="gsi-gemstone-blue text-blue-500 text-3xl"></i>
                             </div>
                             <div class="ml-4">
@@ -40,8 +40,8 @@
 
                     <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                                <i class="gsi-fire-red text-red-500 text-3xl"></i>
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="gsi-flash-lime text-green-500 text-3xl"></i>
                             </div>
                             <div class="ml-4">
                                 <p class="text-2xl font-bold text-gray-900">{{ $gamification['level'] }}</p>
@@ -52,8 +52,8 @@
 
                     <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                                <i class="gsi-cup-gold text-indigo-500 text-3xl"></i>
+                            <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="gsi-cup-gold text-amber-500 text-3xl"></i>
                             </div>
                             <div class="ml-4">
                                 <p class="text-2xl font-bold text-gray-900">{{ $gamification['achievements'] }}</p>
@@ -64,8 +64,8 @@
 
                     <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                                <i class="gsi-star-pirple text-emerald-500 text-3xl"></i>
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="gsi-star-pirple text-purple-500 text-3xl"></i>
                             </div>
                             <div class="ml-4">
                                 <p class="text-2xl font-bold text-gray-900">{{ $gamification['badges'] }}</p>
@@ -82,7 +82,7 @@
                             {{ __('XP to next level') }}</span>
                     </div>
                     <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div class="h-full bg-indigo-600 rounded-full transition-all"
+                        <div class="h-full bg-gradient-to-b from-blue-400 to-blue-600 rounded-full transition-all"
                             style="width: {{ $gamification['progress_percent'] }}%"></div>
                     </div>
                     <p class="mt-2 text-xs text-gray-500">{{ __('Total XP') }}: {{ $gamification['xp'] }}</p>
@@ -169,7 +169,7 @@
                             @foreach($classrooms->take(6) as $classroom)
                                 <a href="{{ route('classroom.show', $classroom) }}" class="group">
                                     <div
-                                        class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 hover:-translate-y-1">
+                                        class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                                         <!-- Cover -->
                                         <div class="h-24 relative" style="background-color: {{ $classroom->theme_color }}">
                                             <div class="absolute inset-0 bg-black/10"></div>
@@ -213,18 +213,19 @@
                     </div>
 
                     <!-- Right Profile Card (Student) -->
-                    <div class="xl:col-span-1">
+                    <div class="w-full xl:w-80 shrink-0">
                         <div class="sticky top-0">
                             <div
                                 class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
                                 <div class="h-24 bg-linear-to-r from-indigo-500 to-purple-500"></div>
-                                <div class="w-full px-6 flex justify-start -mt-12 mb-4">
+                                <div class="w-full px-6 flex justify-start -mt-12 mb-4 relative z-10">
                                     <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
-                                        class="w-24 h-24 rounded-full border-4 border-white object-cover shadow-sm bg-white"
+                                        class="w-24 h-24 rounded-full border-4 border-white object-cover shadow-sm bg-white {{ auth()->user()->active_avatar_frame ?? '' }}"
                                         onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&color=7F9CF5&background=EBF4FF';" />
                                 </div>
-                                <div class="px-6 pb-6 text-left">
-                                    <h3 class="text-xl font-bold text-gray-900 mb-1">{{ auth()->user()->name }}</h3>
+                                <div class="px-6 pb-6 text-left relative z-10">
+                                    <h3 class="text-xl font-bold mb-1 {{ auth()->user()->active_name_color ?? 'text-gray-900' }}">
+                                        {{ auth()->user()->name }}</h3>
                                     <p class="text-sm text-gray-500 mb-4">{{ auth()->user()->email }}</p>
 
                                     <div

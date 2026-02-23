@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-
         .gradient-text {
             background-clip: text;
             -webkit-background-clip: text;
@@ -215,7 +214,7 @@
 
                     <!-- Dashboard Mockup Image / Graphic -->
                     <div
-                        class="fade-up-enter delay-300 mt-16 relative max-w-5xl mx-auto rounded-2xl border-4 border-white/50 bg-white/40 p-2 shadow-2xl backdrop-blur-sm transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                        class="fade-up-enter delay-300 mt-16 relative max-w-5xl mx-auto rounded-2xl border-4 border-white/50 bg-white/40 p-2 shadow-2xl backdrop-blur-sm transform rotate-1 transition-transform duration-500">
                         <div
                             class="rounded-xl overflow-hidden shadow-inner border border-gray-100 bg-gray-50 flex flex-col">
                             <!-- Mac Window header mock -->
@@ -487,8 +486,11 @@
         </main>
         <div class="relative mt-auto">
             <!-- Wave SVG -->
-            <svg class="absolute bottom-full left-0 w-full h-12 md:h-24 lg:h-32 text-slate-900 drop-shadow-sm pointer-events-none" preserveAspectRatio="none" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
-                <path fill="currentColor" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,117.3C960,139,1056,181,1152,192C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            <svg class="absolute bottom-full left-0 w-full h-12 md:h-24 lg:h-32 text-slate-900 drop-shadow-sm pointer-events-none"
+                preserveAspectRatio="none" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+                <path fill="currentColor" fill-opacity="1"
+                    d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,117.3C960,139,1056,181,1152,192C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+                </path>
             </svg>
 
             <footer class="bg-slate-900 border-t border-slate-800 pt-16 pb-8">
@@ -497,22 +499,27 @@
                         <!-- Brand -->
                         <div class="col-span-1 md:col-span-1">
                             <div class="flex items-center gap-3 mb-6 relative">
-                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500 text-white shadow-lg shadow-indigo-500/30">
+                                <span
+                                    class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500 text-white shadow-lg shadow-indigo-500/30">
                                     <i class="fas fa-graduation-cap text-lg"></i>
                                 </span>
                                 <span class="text-2xl font-bold text-white tracking-tight">LiteLearning</span>
                             </div>
                             <p class="text-slate-400 text-sm leading-relaxed max-w-sm">
-                                ยกระดับการจัดการห้องเรียนให้ง่ายและสนุกยิ่งขึ้น ด้วยเครื่องมือที่ตอบโจทย์ทั้งผู้สอนและผู้เรียน
+                                ยกระดับการจัดการห้องเรียนให้ง่ายและสนุกยิ่งขึ้น
+                                ด้วยเครื่องมือที่ตอบโจทย์ทั้งผู้สอนและผู้เรียน
                             </p>
                             <div class="flex gap-4 mt-6">
-                                <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-indigo-500 hover:text-white transition-all shadow-sm">
+                                <a href="#"
+                                    class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-indigo-500 hover:text-white transition-all shadow-sm">
                                     <i class="fa-brands fa-facebook-f"></i>
                                 </a>
-                                <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-indigo-500 hover:text-white transition-all shadow-sm">
+                                <a href="#"
+                                    class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-indigo-500 hover:text-white transition-all shadow-sm">
                                     <i class="fa-brands fa-twitter"></i>
                                 </a>
-                                <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-indigo-500 hover:text-white transition-all shadow-sm">
+                                <a href="#"
+                                    class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-indigo-500 hover:text-white transition-all shadow-sm">
                                     <i class="fa-brands fa-discord"></i>
                                 </a>
                             </div>
@@ -522,26 +529,44 @@
                         <div class="col-span-1">
                             <h4 class="text-white font-semibold mb-6 uppercase tracking-wider text-sm">ส่วนสำคัญ</h4>
                             <ul class="space-y-4">
-                                <li><a href="#features" class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">ฟีเจอร์เด่น</a></li>
-                                <li><a href="#benefits" class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">ประโยชน์การใช้งาน</a></li>
-                                <li><a href="#pricing" class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">แผนการใช้งาน</a></li>
-                                <li><a href="{{ route('register') }}" class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">สมัครสมาชิกฟรี</a></li>
+                                <li><a href="#features"
+                                        class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">ฟีเจอร์เด่น</a>
+                                </li>
+                                <li><a href="#benefits"
+                                        class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">ประโยชน์การใช้งาน</a>
+                                </li>
+                                <li><a href="#pricing"
+                                        class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">แผนการใช้งาน</a>
+                                </li>
+                                <li><a href="{{ route('register') }}"
+                                        class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">สมัครสมาชิกฟรี</a>
+                                </li>
                             </ul>
                         </div>
 
                         <!-- Links section 2 -->
                         <div class="col-span-1">
-                            <h4 class="text-white font-semibold mb-6 uppercase tracking-wider text-sm">ความช่วยเหลือ</h4>
+                            <h4 class="text-white font-semibold mb-6 uppercase tracking-wider text-sm">ความช่วยเหลือ
+                            </h4>
                             <ul class="space-y-4">
-                                <li><a href="#" class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">ศูนย์ช่วยเหลือ (Help Center)</a></li>
-                                <li><a href="#" class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">ติดต่อทีมงาน</a></li>
-                                <li><a href="{{ route('tos') }}" class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">เงื่อนไขการให้บริการ (ToS)</a></li>
-                                <li><a href="#" class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">นโยบายความเป็นส่วนตัว (Privacy)</a></li>
+                                <li><a href="#"
+                                        class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">ศูนย์ช่วยเหลือ
+                                        (Help Center)</a></li>
+                                <li><a href="#"
+                                        class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">ติดต่อทีมงาน</a>
+                                </li>
+                                <li><a href="{{ route('tos') }}"
+                                        class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">เงื่อนไขการให้บริการ
+                                        (ToS)</a></li>
+                                <li><a href="#"
+                                        class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">นโยบายความเป็นส่วนตัว
+                                        (Privacy)</a></li>
                             </ul>
                         </div>
                     </div>
 
-                    <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div
+                        class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
                         <p class="text-sm text-slate-500 font-medium">
                             &copy; {{ now()->year }} LiteLearning. All rights reserved.
                         </p>
@@ -555,81 +580,81 @@
             </footer>
         </div>
 
-    <script>
-        // Intersection Observer for scroll animations
-        document.addEventListener('DOMContentLoaded', () => {
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
+        <script>
+            // Intersection Observer for scroll animations
+            document.addEventListener('DOMContentLoaded', () => {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.1
+                };
 
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const targets = entry.target.querySelectorAll('.fade-up-enter');
-                        targets.forEach(el => {
-                            el.classList.add('fade-up-enter-active');
-                        });
-                        observer.unobserve(entry.target);
+                const observer = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const targets = entry.target.querySelectorAll('.fade-up-enter');
+                            targets.forEach(el => {
+                                el.classList.add('fade-up-enter-active');
+                            });
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.observer-target').forEach(el => {
+                    observer.observe(el);
+                });
+
+                // Navbar background on scroll
+                const navbar = document.getElementById('navbar');
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 20) {
+                        navbar.classList.add('shadow-md');
+                    } else {
+                        navbar.classList.remove('shadow-md');
                     }
                 });
-            }, observerOptions);
-
-            document.querySelectorAll('.observer-target').forEach(el => {
-                observer.observe(el);
             });
 
-            // Navbar background on scroll
-            const navbar = document.getElementById('navbar');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 20) {
-                    navbar.classList.add('shadow-md');
-                } else {
-                    navbar.classList.remove('shadow-md');
+            // Mobile Menu Script
+            (() => {
+                const toggle = document.getElementById('mobile-menu-toggle');
+                const panel = document.getElementById('mobile-menu-panel');
+                const icon = toggle.querySelector('.hamburger-icon');
+
+                if (!toggle || !panel || !icon) {
+                    return;
                 }
-            });
-        });
 
-        // Mobile Menu Script
-        (() => {
-            const toggle = document.getElementById('mobile-menu-toggle');
-            const panel = document.getElementById('mobile-menu-panel');
-            const icon = toggle.querySelector('.hamburger-icon');
+                const toggleIcon = (isOpen) => {
+                    icon.classList.toggle('is-active', isOpen);
+                };
 
-            if (!toggle || !panel || !icon) {
-                return;
-            }
+                const closeMenu = () => {
+                    panel.classList.remove('max-h-[500px]', 'opacity-100', 'translate-y-0');
+                    panel.classList.add('max-h-0', 'opacity-0', '-translate-y-1');
+                    toggleIcon(false);
+                };
 
-            const toggleIcon = (isOpen) => {
-                icon.classList.toggle('is-active', isOpen);
-            };
+                const openMenu = () => {
+                    panel.classList.remove('max-h-0', 'opacity-0', '-translate-y-1');
+                    panel.classList.add('max-h-[500px]', 'opacity-100', 'translate-y-0');
+                    toggleIcon(true);
+                };
 
-            const closeMenu = () => {
-                panel.classList.remove('max-h-[500px]', 'opacity-100', 'translate-y-0');
-                panel.classList.add('max-h-0', 'opacity-0', '-translate-y-1');
-                toggleIcon(false);
-            };
+                toggle.addEventListener('click', () => {
+                    if (panel.classList.contains('max-h-0')) {
+                        openMenu();
+                    } else {
+                        closeMenu();
+                    }
+                });
 
-            const openMenu = () => {
-                panel.classList.remove('max-h-0', 'opacity-0', '-translate-y-1');
-                panel.classList.add('max-h-[500px]', 'opacity-100', 'translate-y-0');
-                toggleIcon(true);
-            };
-
-            toggle.addEventListener('click', () => {
-                if (panel.classList.contains('max-h-0')) {
-                    openMenu();
-                } else {
-                    closeMenu();
-                }
-            });
-
-            panel.querySelectorAll('[data-menu-close]').forEach((link) => {
-                link.addEventListener('click', closeMenu);
-            });
-        })();
-    </script>
+                panel.querySelectorAll('[data-menu-close]').forEach((link) => {
+                    link.addEventListener('click', closeMenu);
+                });
+            })();
+        </script>
 </body>
 
 </html>
