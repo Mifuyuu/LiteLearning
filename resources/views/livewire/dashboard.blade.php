@@ -219,9 +219,7 @@
                                 class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
                                 <div class="h-24 bg-linear-to-r from-indigo-500 to-purple-500"></div>
                                 <div class="w-full px-6 flex justify-start -mt-12 mb-4 relative z-10">
-                                    <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
-                                        class="w-24 h-24 rounded-full border-4 border-white object-cover shadow-sm bg-white {{ auth()->user()->active_avatar_frame ?? '' }}"
-                                        onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&color=7F9CF5&background=EBF4FF';" />
+                                    <x-user-avatar :user="auth()->user()" size="w-24 h-24" border="border-4 border-white" />
                                 </div>
                                 <div class="px-6 pb-6 text-left relative z-10">
                                     <h3 class="text-xl font-bold mb-1 {{ auth()->user()->active_name_color ?? 'text-gray-900' }}">

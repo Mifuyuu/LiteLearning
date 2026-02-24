@@ -23,22 +23,22 @@ class GamificationFeaturesSeeder extends Seeder
         // 1. Initial Store Items
         $storeItems = [
             // Name Colors
-            ['code' => 'color_red', 'name' => 'Ruby Red', 'description' => 'A shining red name color.', 'type' => 'name_color', 'value' => 'text-red-500', 'price' => 100],
-            ['code' => 'color_blue', 'name' => 'Ocean Blue', 'description' => 'A deep blue name color.', 'type' => 'name_color', 'value' => 'text-blue-500', 'price' => 100],
-            ['code' => 'color_gold', 'name' => 'Golden Legend', 'description' => 'A prestige gold name color.', 'type' => 'name_color', 'value' => 'text-amber-500 font-bold', 'price' => 500],
-            ['code' => 'color_purple', 'name' => 'Royal Purple', 'description' => 'A rich purple name color.', 'type' => 'name_color', 'value' => 'text-purple-600', 'price' => 250],
+            ['code' => 'color_red', 'name' => 'Ruby Red', 'description' => 'A shining red name color.', 'type' => 'name_color', 'value' => 'text-red-500', 'price' => 0],
+            ['code' => 'color_blue', 'name' => 'Ocean Blue', 'description' => 'A deep blue name color.', 'type' => 'name_color', 'value' => 'text-blue-500', 'price' => 0],
+            ['code' => 'color_gold', 'name' => 'Golden Legend', 'description' => 'A prestige gold name color.', 'type' => 'name_color', 'value' => 'text-amber-500 font-bold', 'price' => 0],
+            ['code' => 'color_purple', 'name' => 'Royal Purple', 'description' => 'A rich purple name color.', 'type' => 'name_color', 'value' => 'text-purple-600', 'price' => 0],
             
-            // Avatar Frames
-            ['code' => 'frame_01', 'name' => 'Cyber Gear', 'description' => 'A futuristic gear frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_01.svg', 'price' => 500],
-            ['code' => 'frame_02', 'name' => 'Mystic Aura', 'description' => 'A glowing mystical border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_02.svg', 'price' => 500],
-            ['code' => 'frame_03', 'name' => 'Royal Guard', 'description' => 'A simple royal border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_03.svg', 'price' => 300],
-            ['code' => 'frame_04', 'name' => 'Golden Lion', 'description' => 'A majestic golden frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_04.svg', 'price' => 1000],
-            ['code' => 'frame_05', 'name' => 'Silver Edge', 'description' => 'A sharp silver border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_05.svg', 'price' => 400],
-            ['code' => 'frame_06', 'name' => 'Neon Hex', 'description' => 'Hexagonal neon outline.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_06.svg', 'price' => 750],
-            ['code' => 'frame_07', 'name' => 'Flame Ring', 'description' => 'A burning ring of fire.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_07.svg', 'price' => 800],
-            ['code' => 'frame_08', 'name' => 'Ice Crystal', 'description' => 'Frozen crystalline frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_08.svg', 'price' => 800],
-            ['code' => 'frame_09', 'name' => 'Dark Void', 'description' => 'A sinister dark energy frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_09.svg', 'price' => 1200],
-            ['code' => 'frame_10', 'name' => 'Prismatic', 'description' => 'A colorful rainbow border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_10.svg', 'price' => 1500],
+            // Avatar Frames (Free for testing)
+            ['code' => 'frame_01', 'name' => 'Cyber Gear', 'description' => 'A futuristic gear frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_01.svg', 'price' => 0],
+            ['code' => 'frame_02', 'name' => 'Mystic Aura', 'description' => 'A glowing mystical border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_02.svg', 'price' => 0],
+            ['code' => 'frame_03', 'name' => 'Royal Guard', 'description' => 'A simple royal border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_03.svg', 'price' => 0],
+            ['code' => 'frame_04', 'name' => 'Golden Lion', 'description' => 'A majestic golden frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_04.svg', 'price' => 0],
+            ['code' => 'frame_05', 'name' => 'Silver Edge', 'description' => 'A sharp silver border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_05.svg', 'price' => 0],
+            ['code' => 'frame_06', 'name' => 'Neon Hex', 'description' => 'Hexagonal neon outline.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_06.svg', 'price' => 0],
+            ['code' => 'frame_07', 'name' => 'Flame Ring', 'description' => 'A burning ring of fire.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_07.svg', 'price' => 0],
+            ['code' => 'frame_08', 'name' => 'Ice Crystal', 'description' => 'Frozen crystalline frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_08.svg', 'price' => 0],
+            ['code' => 'frame_09', 'name' => 'Dark Void', 'description' => 'A sinister dark energy frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_09.svg', 'price' => 0],
+            ['code' => 'frame_10', 'name' => 'Prismatic', 'description' => 'A colorful rainbow border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_10.svg', 'price' => 0],
         ];
 
         foreach ($storeItems as $item) {

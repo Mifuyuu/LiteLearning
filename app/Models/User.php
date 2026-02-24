@@ -23,6 +23,7 @@ class User extends Authenticatable
         'tos_accepted_at',
         'setup_completed_at',
         'avatar',
+        'cover_image',
         'bio',
         'locale',
         'ui_scale',
@@ -146,8 +147,16 @@ class User extends Authenticatable
         if ($this->avatar) {
             return asset('storage/' . $this->avatar);
         }
-
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=4F46E5&color=fff';
+    }
+
+    public function getCoverImageUrlAttribute(): ?string
+    {
+        if ($this->cover_image) {
+            return asset('storage/' . $this->cover_image);
+        }
+
+        return null;
     }
 
     public function getInitialsAttribute(): string

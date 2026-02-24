@@ -78,9 +78,7 @@ Route::middleware('auth')->group(function () {
     })->name('to-review');
 
     // Profile & Settings
-    Route::get('/profile', function () {
-        return view('pages.profile');
-    })->name('profile');
+    Route::get('/profile', \App\Livewire\Profile::class)->name('profile');
 
     Route::get('/settings', Settings::class)->name('settings');
 
