@@ -1,7 +1,7 @@
 <div x-data>
     @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
         <button wire:click="openModal"
-            class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+            class="btn-3d btn-3d--indigo inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors">
             <i class="fas fa-plus mr-2"></i> {{ __('Create Class') }}
         </button>
     @endif
@@ -71,7 +71,7 @@
                                 {{ __('Cancel') }}
                             </button>
                             <button type="submit"
-                                class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+                                class="btn-3d btn-3d--indigo px-6 py-2.5 text-sm font-medium rounded-lg transition-colors">
                                 <span wire:loading.remove wire:target="create">{{ __('Create Class') }}</span>
                                 <span wire:loading wire:target="create"><i class="fas fa-spinner fa-spin mr-1"></i>
                                     {{ __('Creating...') }}</span>

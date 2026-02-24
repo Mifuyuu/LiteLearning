@@ -59,7 +59,7 @@ class Show extends Component
             $this->submissionContent = $this->userSubmission?->content ?? '';
         }
 
-        if ($classroom->isOwnedBy($user) || $user->isAdmin()) {
+        if ($classroom->isOwnedBy($user)) {
             $this->submissions = $assignment->submissions()->with('user')->get();
 
             // Auto-open edit tab if ?edit=1
@@ -76,7 +76,7 @@ class Show extends Component
     public function updatedUploadedFiles(): void
     {
         $this->validate([
-            'uploadedFiles.*' => 'file|max:25600', // 25MB
+            'uploadedFiles.*' => 'file|max:25600|mimes:' . Assignment::allowedSubmissionMimes(),
         ]);
 
         foreach ($this->uploadedFiles as $file) {
@@ -203,6 +203,8 @@ class Show extends Component
 
     public function saveAssignment(): void
     {
+        abort_unless($this->classroom->isOwnedBy(auth()->user()), 403);
+
         $this->validate([
             'editTitle' => 'required|string|max:255',
             'editDescription' => 'nullable|string',
@@ -255,6 +257,8 @@ class Show extends Component
 
     public function deleteAssignment(): void
     {
+        abort_unless($this->classroom->isOwnedBy(auth()->user()), 403);
+
         $this->assignment->delete();
 
         $this->redirect(route('classroom.show', $this->classroom->slug), navigate: true);

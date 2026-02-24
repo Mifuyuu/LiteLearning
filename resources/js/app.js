@@ -1,5 +1,8 @@
 import './bootstrap';
 import Sortable from 'sortablejs';
+import Cropper from 'cropperjs';
+
+window.Cropper = Cropper;
 
 // Alpine.js is loaded by Livewire automatically
 

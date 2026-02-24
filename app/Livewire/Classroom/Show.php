@@ -33,11 +33,39 @@ class Show extends Component
         }
 
         $this->classroom = $classroom;
-        $this->name = $classroom->name;
-        $this->section = $classroom->section ?? '';
-        $this->subject = $classroom->subject ?? '';
+        $this->name        = $classroom->name;
+        $this->section     = $classroom->section ?? '';
+        $this->subject     = $classroom->subject ?? '';
         $this->description = $classroom->description ?? '';
         $this->theme_color = $classroom->theme_color;
+
+        // Fix #3: eager-load all relationships once in mount() instead of on every render()
+        $this->loadClassroomRelations();
+    }
+
+    /**
+     * Eager-load all relationships needed by the view.
+     * Called once in mount() and selectively after mutations.
+     */
+    private function loadClassroomRelations(): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $this->classroom->load([
+            'teacher',
+            'announcements.user',
+            'announcements.comments.user',
+            'assignments' => function ($q) use ($user) {
+                if ($user->isAdmin() || $this->classroom->isOwnedBy($user)) {
+                    return $q;
+                }
+                return $q->published();
+            },
+            'assignments.submissions',
+            'students',
+            'topics',
+        ]);
     }
 
     public function setTab(string $tab)
@@ -46,7 +74,7 @@ class Show extends Component
 
         /** @var User $user */
         $user = Auth::user();
-        if ($this->classroom->isOwnedBy($user) || $user->isAdmin()) {
+        if ($this->classroom->isOwnedBy($user)) {
             $allowedTabs[] = 'grades';
             $allowedTabs[] = 'settings';
         }
@@ -62,7 +90,7 @@ class Show extends Component
     {
         /** @var User $user */
         $user = Auth::user();
-        if (!$this->classroom->hasAccess($user)) {
+        if (!$this->classroom->isOwnedBy($user)) {
             abort(403);
         }
 
@@ -72,19 +100,20 @@ class Show extends Component
 
         Announcement::create([
             'classroom_id' => $this->classroom->id,
-            'user_id' => Auth::id(),
-            'content' => $this->newAnnouncement,
+            'user_id'      => Auth::id(),
+            'content'      => $this->newAnnouncement,
         ]);
 
         $this->reset('newAnnouncement');
-        $this->classroom->refresh();
+        // Reload only announcements after posting
+        $this->classroom->load(['announcements.user', 'announcements.comments.user']);
     }
 
     protected function canManageClassroom(): bool
     {
         /** @var User $user */
         $user = Auth::user();
-        return $this->classroom->isOwnedBy($user) || $user->isAdmin();
+        return $this->classroom->isOwnedBy($user);
     }
 
     public function saveSettings()
@@ -94,17 +123,17 @@ class Show extends Component
         }
 
         $this->validate([
-            'name' => 'required|string|max:255',
-            'section' => 'nullable|string|max:255',
-            'subject' => 'nullable|string|max:255',
+            'name'        => 'required|string|max:255',
+            'section'     => 'nullable|string|max:255',
+            'subject'     => 'nullable|string|max:255',
             'description' => 'nullable|string|max:2000',
             'theme_color' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ]);
 
         $this->classroom->update([
-            'name' => $this->name,
-            'section' => $this->section,
-            'subject' => $this->subject,
+            'name'        => $this->name,
+            'section'     => $this->section,
+            'subject'     => $this->subject,
             'description' => $this->description,
             'theme_color' => $this->theme_color,
         ]);
@@ -112,9 +141,9 @@ class Show extends Component
         $this->classroom->refresh();
 
         $this->dispatch('classroom-updated', [
-            'id' => $this->classroom->id,
-            'name' => $this->name,
-            'color' => $this->theme_color
+            'id'    => $this->classroom->id,
+            'name'  => $this->name,
+            'color' => $this->theme_color,
         ]);
 
         session()->flash('message', __('Classroom settings saved successfully.'));
@@ -155,13 +184,13 @@ class Show extends Component
         }
 
         $announcement->delete();
-        $this->classroom->refresh();
+        // Reload only announcements after deletion
+        $this->classroom->load(['announcements.user', 'announcements.comments.user']);
     }
 
     public function deleteAssignment(int $id)
     {
-        /** @var User $user */
-        $user = Auth::user();
+        // Fix #12: removed unused $user variable
         if (!$this->canManageClassroom()) {
             abort(403);
         }
@@ -170,26 +199,13 @@ class Show extends Component
             ->findOrFail($id);
 
         $assignment->delete();
-        $this->classroom->refresh();
+        // Reload only assignments after deletion
+        $this->classroom->load(['assignments.submissions', 'topics']);
     }
 
     public function render()
     {
-        $this->classroom->load([
-            'teacher',
-            'announcements.user',
-            'announcements.comments.user',
-            'assignments' => function ($q) {
-                if (Auth::user()->isAdmin() || $this->classroom->isOwnedBy(Auth::user())) {
-                    return $q;
-                }
-                return $q->published();
-            },
-            'assignments.submissions',
-            'students',
-            'topics',
-        ]);
-
+        // Fix #3: no relationship loading here — all done in mount() and targeted refreshes
         return view('livewire.classroom.show');
     }
 }

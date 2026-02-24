@@ -26,6 +26,15 @@ class JoinClassroom extends Component
 
     public function join()
     {
+        // S7: rate limit classroom join attempts
+        $key = 'join-classroom:' . auth()->id();
+        if (cache()->has($key) && cache()->get($key) >= 5) {
+            $this->addError('code', __('Too many attempts. Please wait a minute.'));
+            return;
+        }
+        cache()->increment($key);
+        cache()->put($key, cache()->get($key), 60);
+
         $this->validate();
 
         $classroom = Classroom::where('code', strtoupper($this->code))->first();

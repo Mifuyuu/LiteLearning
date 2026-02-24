@@ -104,7 +104,7 @@ class Index extends Component
                 ->where('is_archived', true)
                 ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->get();
-            $classrooms = $owned->merge($enrolled);
+            $classrooms = $owned->merge($enrolled)->unique('id')->values();
         } else {
             $classrooms = collect();
             if ($user->isTeacher() || $user->isAdmin()) {
@@ -117,7 +117,7 @@ class Index extends Component
                 ->where('is_archived', false)
                 ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->get();
-            $classrooms = $classrooms->merge($enrolled);
+            $classrooms = $classrooms->merge($enrolled)->unique('id')->values();
         }
 
         $pinnedIds = ClassroomSidebarPreference::query()

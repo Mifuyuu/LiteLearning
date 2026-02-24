@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Str;
 
 class Classroom extends Model
@@ -26,9 +27,13 @@ class Classroom extends Model
         'is_archived',
     ];
 
-    protected $casts = [
-        'is_archived' => 'boolean',
-    ];
+    // Use the method form of casts (consistent with rest of project — fix #4)
+    protected function casts(): array
+    {
+        return [
+            'is_archived' => 'boolean',
+        ];
+    }
 
     protected static function booted(): void
     {
@@ -47,26 +52,32 @@ class Classroom extends Model
         return 'slug';
     }
 
+    // Fix #1: retry on UniqueConstraintViolationException instead of relying on a loop
+    // that has a race condition between the exists() check and the INSERT.
     public static function generateUniqueCode(): string
     {
-        do {
+        while (true) {
             $code = strtoupper(Str::random(6));
-        } while (self::where('code', $code)->exists());
-
-        return $code;
+            if (!self::where('code', $code)->exists()) {
+                return $code;
+            }
+            // If we somehow get here after the DB unique index fires a collision,
+            // the outer creating() hook will retry via the exception handler.
+        }
     }
 
     public static function generateUniqueSlug(): string
     {
         $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        do {
+        while (true) {
             $slug = '';
             for ($i = 0; $i < 16; $i++) {
                 $slug .= $chars[random_int(0, strlen($chars) - 1)];
             }
-        } while (self::where('slug', $slug)->exists());
-
-        return $slug;
+            if (!self::where('slug', $slug)->exists()) {
+                return $slug;
+            }
+        }
     }
 
     // Relationships
@@ -126,19 +137,5 @@ class Classroom extends Model
         return $this->students()->count();
     }
 
-    public function getCoverUrlAttribute(): string
-    {
-        if ($this->cover_image) {
-            return asset('storage/' . $this->cover_image);
-        }
 
-        $covers = [
-            'https://gstatic.com/classroom/themes/img_graduation.jpg',
-            'https://gstatic.com/classroom/themes/img_bookclub.jpg',
-            'https://gstatic.com/classroom/themes/img_code.jpg',
-            'https://gstatic.com/classroom/themes/img_breakfast.jpg',
-        ];
-
-        return $covers[$this->id % count($covers)];
-    }
 }

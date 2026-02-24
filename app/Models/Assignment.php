@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -53,6 +54,12 @@ class Assignment extends Model
         return 'slug';
     }
 
+    /**
+     * Generate a unique 16-char random slug.
+     * The DB unique index on `assignments.slug` acts as the final race-condition guard;
+     * if two processes generate the same slug simultaneously, the second INSERT will
+     * throw UniqueConstraintViolationException which should be handled by the caller.
+     */
     public static function generateUniqueSlug(): string
     {
         $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -284,5 +291,11 @@ class Assignment extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'published');
+    }
+
+    // Fix #5: Allow only safe file types for student submission uploads.
+    public static function allowedSubmissionMimes(): string
+    {
+        return 'pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,webp,zip,rar,txt,csv';
     }
 }

@@ -65,7 +65,7 @@
                             </button>
                         @endif
                         @if(!$isOwned)
-                            <button wire:click="purchase({{ $item->id }})" wire:loading.attr="disabled" wire:confirm="{{ __('store.buy_confirm', ['item' => $item->name, 'price' => $item->price]) }}" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg text-sm transition-colors cursor-pointer flex justify-center items-center shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 {{ $coins < $item->price ? 'opacity-70' : '' }}">
+                            <button wire:click="purchase({{ $item->id }})" wire:loading.attr="disabled" wire:confirm="{{ __('store.buy_confirm', ['item' => $item->name, 'price' => $item->price]) }}" class="btn-3d btn-3d--indigo w-full py-2.5 font-medium rounded-lg text-sm transition-colors cursor-pointer flex justify-center items-center {{ $coins < $item->price ? 'opacity-70' : '' }}">
                                 <i class="gsi-gemstone-blue mr-2 text-white"></i> {{ $item->price }}
                             </button>
                         @endif

@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Livewire\Admin;
+
+use App\Models\Classroom;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
+use Livewire\WithPagination;
+
+#[Layout('layouts.app')]
+class Classrooms extends Component
+{
+    use WithPagination;
+
+    public $search = '';
+    public $statusFilter = '';
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function toggleArchive(Classroom $classroom)
+    {
+        $classroom->is_archived = !$classroom->is_archived;
+        $classroom->save();
+
+        $this->dispatch('notify', message: $classroom->is_archived 
+            ? __('Classroom archived.') 
+            : __('Classroom restored.'));
+    }
+
+    public function deleteClassroom(Classroom $classroom)
+    {
+        // In a real app, we might want a confirmation modal
+        $classroom->delete();
+        $this->dispatch('notify', message: __('Classroom deleted.'));
+    }
+
+    public function render()
+    {
+        $query = Classroom::query()->with(['teacher', 'members']);
+
+        if ($this->search) {
+            $query->where('name', 'like', '%' . $this->search . '%')
+                  ->orWhere('code', 'like', '%' . $this->search . '%');
+        }
+
+        if ($this->statusFilter === 'archived') {
+            $query->where('is_archived', true);
+        } elseif ($this->statusFilter === 'active') {
+            $query->where('is_archived', false);
+        }
+
+        return view('livewire.admin.classrooms', [
+            'classrooms' => $query->latest()->paginate(15),
+        ]);
+    }
+}

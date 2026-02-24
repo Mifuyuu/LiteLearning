@@ -68,7 +68,7 @@
                         {{ __('Cancel') }}
                     </button>
                     <button type="submit" wire:loading.attr="disabled"
-                        class="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition cursor-pointer disabled:opacity-60">
+                        class="btn-3d btn-3d--indigo flex-1 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer disabled:opacity-60">
                         <span wire:loading.remove>{{ __('report.submit') }}</span>
                         <span wire:loading><i class="fas fa-circle-notch fa-spin mr-1"></i>{{ __('report.submitting') }}</span>
                     </button>

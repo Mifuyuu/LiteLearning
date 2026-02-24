@@ -1,5 +1,6 @@
-@import 'tailwindcss';
-@import './gamestyleicons.css';
+@import "tailwindcss";
+@import "cropperjs/dist/cropper.css";
+@import "./gamestyleicons.css";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -7,8 +8,10 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Google Sans', 'Google Sans Text', 'Noto Sans Thai', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        "Google Sans", "Google Sans Text", "Noto Sans Thai", ui-sans-serif,
+        system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 :root {
@@ -75,70 +78,58 @@ select:focus {
     outline: none;
 }
 
-/* Reusable 3D button */
-.btn-3d,
-button.bg-indigo-600,
-a.bg-indigo-600,
-button.bg-blue-600,
-a.bg-blue-600,
-button.bg-green-600,
-a.bg-green-600,
-button.bg-red-600,
-a.bg-red-600,
-button.bg-amber-600,
-a.bg-amber-600,
-button.bg-pink-600,
-a.bg-pink-600 {
+/*
+ * Reusable 3D button — apply `.btn-3d` explicitly on the element.
+ *
+ * Fix #11: Removed overly broad `button.bg-indigo-600`, `a.bg-blue-600`, etc.
+ * selectors that unintentionally styled badge chips and other bg-*-600 elements
+ * that are not buttons. Use `.btn-3d` + `.btn-3d--*` variant classes only.
+ */
+.btn-3d {
     position: relative;
     border: 1px solid var(--btn-3d-border);
-    background: linear-gradient(to bottom, var(--btn-3d-top), var(--btn-3d-bottom));
+    background: linear-gradient(
+        to bottom,
+        var(--btn-3d-top),
+        var(--btn-3d-bottom)
+    );
     color: var(--btn-3d-text);
     font-weight: 700;
     letter-spacing: 0.02em;
     text-transform: uppercase;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 0 var(--btn-3d-base), 0 10px 14px rgba(178, 134, 154, 0.35);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 6px 0 var(--btn-3d-base),
+        0 10px 14px rgba(178, 134, 154, 0.35);
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
 }
 
-.btn-3d:hover,
-button.bg-indigo-600:hover,
-a.bg-indigo-600:hover,
-button.bg-blue-600:hover,
-a.bg-blue-600:hover,
-button.bg-green-600:hover,
-a.bg-green-600:hover,
-button.bg-red-600:hover,
-a.bg-red-600:hover,
-button.bg-amber-600:hover,
-a.bg-amber-600:hover,
-button.bg-pink-600:hover,
-a.bg-pink-600:hover {
-    background: linear-gradient(to bottom, color-mix(in oklab, var(--btn-3d-top) 86%, white), color-mix(in oklab, var(--btn-3d-bottom) 92%, white));
+.btn-3d:hover {
+    background: linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--btn-3d-top) 86%, white),
+        color-mix(in oklab, var(--btn-3d-bottom) 92%, white)
+    );
     transform: translateY(2px);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 4px 0 var(--btn-3d-base), 0 8px 12px rgba(178, 134, 154, 0.33);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.88),
+        0 4px 0 var(--btn-3d-base),
+        0 8px 12px rgba(178, 134, 154, 0.33);
 }
 
-.btn-3d:active,
-button.bg-indigo-600:active,
-a.bg-indigo-600:active,
-button.bg-blue-600:active,
-a.bg-blue-600:active,
-button.bg-green-600:active,
-a.bg-green-600:active,
-button.bg-red-600:active,
-a.bg-red-600:active,
-button.bg-amber-600:active,
-a.bg-amber-600:active,
-button.bg-pink-600:active,
-a.bg-pink-600:active {
+.btn-3d:active {
     transform: translateY(4px);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 2px 0 var(--btn-3d-base), 0 4px 8px rgba(178, 134, 154, 0.28);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        0 2px 0 var(--btn-3d-base),
+        0 4px 8px rgba(178, 134, 154, 0.28);
 }
 
-/* Color variants: use .btn-3d btn-3d--* or rely on existing bg-*-600 classes */
-.btn-3d--rose,
-button.bg-pink-600,
-a.bg-pink-600 {
+/* Color variants */
+.btn-3d--rose {
     --btn-3d-top: #f8f0f2;
     --btn-3d-bottom: #f0e3e8;
     --btn-3d-base: #efbfd2;
@@ -146,9 +137,7 @@ a.bg-pink-600 {
     --btn-3d-text: #181222;
 }
 
-.btn-3d--indigo,
-button.bg-indigo-600,
-a.bg-indigo-600 {
+.btn-3d--indigo {
     --btn-3d-top: #eef1ff;
     --btn-3d-bottom: #e3e8ff;
     --btn-3d-base: #bfcaff;
@@ -156,9 +145,7 @@ a.bg-indigo-600 {
     --btn-3d-text: #1f2a66;
 }
 
-.btn-3d--blue,
-button.bg-blue-600,
-a.bg-blue-600 {
+.btn-3d--blue {
     --btn-3d-top: #eaf6ff;
     --btn-3d-bottom: #dcefff;
     --btn-3d-base: #b9dcff;
@@ -166,9 +153,7 @@ a.bg-blue-600 {
     --btn-3d-text: #153f68;
 }
 
-.btn-3d--green,
-button.bg-green-600,
-a.bg-green-600 {
+.btn-3d--green {
     --btn-3d-top: #eaf9ef;
     --btn-3d-bottom: #dff3e6;
     --btn-3d-base: #bfe8cc;
@@ -176,9 +161,7 @@ a.bg-green-600 {
     --btn-3d-text: #124a2b;
 }
 
-.btn-3d--amber,
-button.bg-amber-600,
-a.bg-amber-600 {
+.btn-3d--amber {
     --btn-3d-top: #fff8e9;
     --btn-3d-bottom: #ffefcf;
     --btn-3d-base: #f6d89f;
@@ -186,9 +169,7 @@ a.bg-amber-600 {
     --btn-3d-text: #5c3e08;
 }
 
-.btn-3d--red,
-button.bg-red-600,
-a.bg-red-600 {
+.btn-3d--red {
     --btn-3d-top: #ffeef0;
     --btn-3d-bottom: #ffdfe3;
     --btn-3d-base: #f6b9c3;

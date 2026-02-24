@@ -34,6 +34,7 @@ The project is built with a focus on Thai educational institutions but supports 
 - `livewire/livewire` - Reactive components
 - `league/flysystem-aws-s3-v3` - S3 storage support
 - `sortablejs` - Drag-and-drop sidebar ordering
+- `cropperjs` - Image cropping for avatars
 
 ## Project Structure
 
@@ -42,7 +43,7 @@ The project is built with a focus on Thai educational institutions but supports 
 │   ├── Http/
 │   │   ├── Controllers/        # Standard HTTP controllers (minimal)
 │   │   │   └── SidebarClassroomPreferenceController.php
-│   │   └── Middleware/         # Custom middleware (auth, setup, locale)
+│   │   └── Middleware/         # Custom middleware
 │   │       ├── EnsureUserHasCompletedSetup.php
 │   │       ├── EnsureUserIsAdmin.php
 │   │       ├── EnsureUserIsTeacher.php
@@ -51,8 +52,11 @@ The project is built with a focus on Thai educational institutions but supports 
 │   │   ├── Auth/               # Login, Register, Setup
 │   │   ├── Classroom/          # Index, Show, Create, Join, People, StreamComment
 │   │   ├── Assignment/         # Create, Show, Grade, Attendance
+│   │   ├── Admin/              # Dashboard, Users, Classrooms, Store, Achievements, Badges, BugReports
 │   │   ├── Student/            # Store, Achievements, Leaderboard
 │   │   ├── Dashboard.php
+│   │   ├── Profile.php
+│   │   ├── ReportBug.php
 │   │   └── Settings.php
 │   ├── Models/                 # Eloquent models with relationships
 │   │   ├── User.php
@@ -88,26 +92,25 @@ The project is built with a focus on Thai educational institutions but supports 
 │   └── seeders/                # Database seeders
 ├── resources/
 │   ├── views/
-│   │   ├── layouts/            # app.blade.php (sidebar + top navbar)
+│   │   ├── layouts/            # app.blade.php (sidebar + top navbar), guest.blade.php
 │   │   ├── livewire/           # Livewire component views
-│   │   ├── components/         # Blade components
-│   │   └── pages/              # Static pages (calendar, profile, settings, etc.)
+│   │   ├── components/         # Blade components (student/achievements, leaderboard, store, user-avatar)
+│   │   └── pages/              # Static pages (calendar, to-review, tos)
 │   ├── css/app.css             # Tailwind v4 with custom 3D button styles
 │   ├── js/app.js               # Sidebar sortable, Livewire event handlers
 │   └── gamestyleicons.css      # Game-style icon font
 ├── routes/
-│   ├── web.php                 # All web routes (Livewire components)
-│   └── console.php             # Artisan commands
+│   └── web.php                 # All web routes (Livewire components)
 ├── tests/
 │   ├── Feature/                # Feature tests (security, flows)
 │   │   ├── SecurityTest.php
-│   │   └── SetupFlowTest.php
+│   │   ├── SetupFlowTest.php
+│   │   └── ProfileUploadTest.php
 │   └── Unit/                   # Unit tests
 ├── lang/                       # Localization (Thai default)
 │   └── th/
 │       └── validation.php
-├── config/                     # Laravel configuration
-└── docs/                       # Additional documentation
+└── config/                     # Laravel configuration
 ```
 
 ## Core Models & Relationships
@@ -126,7 +129,7 @@ The project is built with a focus on Thai educational institutions but supports 
   - `badges` - Earned badges (pivot: earned_at)
   - `storeItems` - Purchased store items
   - `bugReports` - Submitted bug reports
-- **Customizations**: `ui_scale`, `active_name_color`, `active_avatar_frame`
+- **Customizations**: `ui_scale`, `active_name_color`, `active_avatar_frame`, `avatar`, `cover_image`
 - **Setup flow**: `setup_completed_at`, `tos_accepted_at`, onboarding fields (school_name, study_year, birth_date)
 
 ### Classroom
@@ -140,7 +143,7 @@ The project is built with a focus on Thai educational institutions but supports 
 - **Status**: `draft`, `published`
 - Unique `slug` (16-char alphanumeric, route key)
 - **Relationships**: `classroom`, `user` (creator), `submissions`, `quizQuestions`, `attendanceSession`, `comments`, `attachments`
-- **Helpers**: `typeIcon()`, `typeColor()`, `typeLabel()`, `isOverdue()`, `canAcceptSubmission()`, `submissionFor()`
+- **Helpers**: `typeIcon()`, `typeColor()`, `typeLabel()`, `isOverdue()`, `canAcceptSubmission()`, `submissionFor()`, `requiresSubmission()`
 
 ### Submission
 - **Status**: `assigned`, `turned_in`, `graded`, `returned`
@@ -154,9 +157,12 @@ The project is built with a focus on Thai educational institutions but supports 
 ### Gamification Models
 - **UserGamification**: coins, xp, level (linked to users)
 - **CoinTransaction**: Tracks all coin earnings/spending with source and reference
-- **Achievement**: coin_reward, xp_reward, is_active, code
-- **Badge**: Visual rewards with colors and codes
+- **Achievement**: coin_reward, xp_reward, is_active, code, target_role
+- **Badge**: Visual rewards with colors and codes, target_role
 - **StoreItem**: Purchasable items (name_color, avatar_frame types)
+
+### Sidebar Preferences
+- **ClassroomSidebarPreference**: Tracks pinned classrooms with drag-and-drop ordering
 
 ## Development Commands
 
@@ -221,6 +227,9 @@ Access MinIO Console at http://localhost:9001 (minioadmin/minioadmin)
 - Redirect to setup for incomplete users
 - Complete setup process validation
 
+### Profile Upload Tests (`tests/Feature/ProfileUploadTest.php`)
+- Avatar upload functionality
+
 ## Code Style Guidelines
 
 ### PHP / Laravel
@@ -230,6 +239,7 @@ Access MinIO Console at http://localhost:9001 (minioadmin/minioadmin)
 - Prefer Eloquent relationships over raw queries
 - Use `$fillable` on models (not `$guarded`)
 - Strict model property typing with casts
+- Return 404 (not 403) for unauthorized resource access to prevent ID enumeration
 
 ### Livewire Components
 - Use `#[Layout('layouts.app')]` attribute for page components
@@ -237,30 +247,31 @@ Access MinIO Console at http://localhost:9001 (minioadmin/minioadmin)
 - Emit events for cross-component communication: `sidebar-classroom-pinned-updated`, `classroom-updated`
 - Use `mount()` for initialization, `render()` for view data
 - Security: Validate parent-child relationships in mount()
+- UI scale applied via inline style: `style="zoom: {{ auth()->user()->ui_scale }}%;"`
 
 ### Blade Templates
 - Use TailwindCSS utility classes
 - Component-based organization
 - Localization: `{{ __('Key Name') }}`
 - Icons: FontAwesome classes `<i class="fas fa-icon"></i>`
-- Game icons: `<i class="gsi-icon-name"></i>`
+- Game icons: `<i class="gsi-icon-name"></i>` (custom font in gamestyleicons.css)
 
 ### CSS (Tailwind v4)
 - Custom theme in `app.css`: fonts (Google Sans, Noto Sans Thai)
 - 3D button styles: `btn-3d`, color variants (`btn-3d--indigo`, etc.)
 - Custom scrollbar styling
 - Alpine.js cloak: `[x-cloak] { display: none !important; }`
-- UI scale: applied via inline style `style="zoom: {{ auth()->user()->ui_scale }}%;"`
 
 ### JavaScript
-- Vanilla JS with SortableJS for drag-and-drop
+- Vanilla JS with SortableJS for drag-and-drop sidebar
 - Livewire event listeners in `app.js`
+- Cropper.js for image cropping functionality
 - No jQuery dependency
 
 ## Security Considerations
 
 ### Authorization Patterns
-- **Middleware**: `auth`, `setup` (custom - ensures onboarding complete)
+- **Middleware**: `auth`, `setup` (custom - ensures onboarding complete), `admin`
 - **Role Checks**: `$user->isTeacher()`, `$user->isStudent()`, `$user->isAdmin()`
 - **Ownership**: Always verify `classroom->isOwnedBy($user)` or `classroom->hasAccess($user)`
 - **IDOR Prevention**: Validate parent-child relationships (e.g., assignment belongs to classroom)
@@ -290,16 +301,19 @@ public function mount(Classroom $classroom, Assignment $assignment): void
 
 ### Rate Limiting
 - Login rate limited to 5 attempts
-- Configured in `RouteServiceProvider` or Login Livewire component
+- Configured in Login Livewire component
 
 ## Gamification System
 
 Managed via `GamificationService`:
 
+### Eligibility
+- **Only students are eligible** for gamification rewards
+- Teachers and admins do not receive coins, XP, or achievements
+
 ### Coins
 - Awarded for: creating classrooms (30), joining classrooms (15), creating assignments (20), turning in assignments (10)
 - Source tracking via `coin_transactions` table with reference_type/reference_id
-- Only students are eligible for gamification rewards
 
 ### XP & Levels
 - XP awarded for various activities
@@ -307,8 +321,8 @@ Managed via `GamificationService`:
 - Level up bonuses: 20 coins per level gained
 
 ### Achievements & Badges
-- `achievements`: coin_reward, xp_reward, is_active, code
-- `badges`: Visual rewards with colors, code-based
+- `achievements`: coin_reward, xp_reward, is_active, code, target_role
+- `badges`: Visual rewards with colors, code-based, target_role
 - Tracked via pivot tables with timestamps
 
 ### Store
@@ -345,6 +359,16 @@ Key `.env` settings:
 - Supports drag-and-drop ordering with SortableJS
 - Events: `sidebar-classroom-pinned-updated`
 
+## Assignment Types Reference
+
+| Type | Description | Icon | Color | Requires Submission |
+|------|-------------|------|-------|---------------------|
+| `attendance` | Attendance check-in | fa-clipboard-check | amber | Yes |
+| `file` | File upload assignment | fa-cloud-arrow-up | blue | Yes |
+| `question` | Short answer question | fa-pen-to-square | green | Yes |
+| `quiz` | Multiple choice quiz | fa-circle-question | purple | Yes |
+| `material` | Reading material (no submission) | fa-book-open | slate | No |
+
 ## Common Development Tasks
 
 ### Adding a New Livewire Component
@@ -357,20 +381,10 @@ Key `.env` settings:
 ```bash
 php artisan make:migration add_column_to_table
 ```
-Follow Laravel migration conventions. Existing migrations show the evolution of the schema.
+Follow Laravel migration conventions.
 
 ### Adding a New Factory
 Place in `database/factories/`, extend `Illuminate\Database\Eloquent\Factories\Factory`
-
-## Assignment Types Reference
-
-| Type | Description | Icon | Color |
-|------|-------------|------|-------|
-| `attendance` | Attendance check-in | fa-clipboard-check | amber |
-| `file` | File upload assignment | fa-cloud-arrow-up | blue |
-| `question` | Short answer question | fa-pen-to-square | green |
-| `quiz` | Multiple choice quiz | fa-circle-question | purple |
-| `material` | Reading material (no submission) | fa-book-open | slate |
 
 ## Troubleshooting
 
@@ -385,6 +399,21 @@ Place in `database/factories/`, extend `Illuminate\Database\Eloquent\Factories\F
 - Telescope/Tinker: Available if installed
 - Debug mode: Set `APP_DEBUG=true` in `.env`
 
+## Deployment
+
+### Docker
+The project includes a `Dockerfile` for containerized deployment:
+- Based on PHP 8.2 FPM Alpine
+- Installs dependencies and builds assets
+- Runs migrations on startup
+
+### Cloud Deployment
+The application can be deployed to platforms supporting PHP applications:
+- Configure environment variables for production
+- Set `APP_FORCE_HTTPS=true` for production
+- Use PostgreSQL or MySQL for production database
+- Configure S3 or similar for file storage
+
 ---
 
-*Last updated: Based on codebase analysis as of 2026-02-23*
+*Last updated: Based on codebase analysis as of 2026-02-24*

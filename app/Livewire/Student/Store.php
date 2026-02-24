@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Student;
 
+use App\Exceptions\GamificationException;
 use App\Models\StoreItem;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,7 @@ class Store extends Component
         try {
             $gamificationService->purchaseItem($user, $item);
             $this->dispatch('notify', message: __('Item purchased successfully!'), type: 'success');
-        } catch (\Exception $e) {
+        } catch (GamificationException $e) {
             $this->dispatch('notify', message: __($e->getMessage()), type: 'error');
         }
     }

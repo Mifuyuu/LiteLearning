@@ -7,13 +7,16 @@ use App\Models\AttendanceSession as AttendanceSessionModel;
 use App\Models\Classroom;
 use App\Models\Submission;
 use App\Services\GamificationService;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('layouts.app')]
 class Attendance extends Component
 {
     public Classroom $classroom;
     public Assignment $assignment;
     public ?AttendanceSessionModel $session = null;
+    public bool $sessionIsActive = false;
 
     // Student
     public string $enteredCode = '';

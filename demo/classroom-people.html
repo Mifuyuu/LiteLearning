@@ -1,30 +1,509 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Classroom People Demo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People - Mathematics 101 - LiteLearning</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./assets.css">
+  <style>
+    .people-section {
+      margin-bottom: 32px;
+    }
+    .people-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .people-section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-gray-800);
+    }
+    .people-section-title i {
+      color: var(--color-primary-600);
+    }
+    .people-count {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--color-gray-500);
+    }
+    .people-list-card {
+      background: white;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--border-radius-lg);
+      overflow: hidden;
+    }
+    .people-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-gray-100);
+      transition: background var(--transition-fast);
+    }
+    .people-item:last-child {
+      border-bottom: none;
+    }
+    .people-item:hover {
+      background: var(--color-gray-50);
+    }
+    .people-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .people-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .people-name {
+      font-weight: 500;
+      color: var(--color-gray-800);
+    }
+    .people-email {
+      font-size: 13px;
+      color: var(--color-gray-500);
+    }
+    .menu-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--border-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-gray-400);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+    }
+    .menu-btn:hover {
+      background: var(--color-gray-100);
+      color: var(--color-gray-600);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-primary-600);
+      font-weight: 500;
+      margin-bottom: 16px;
+      transition: color var(--transition-fast);
+    }
+    .back-link:hover {
+      color: var(--color-primary-700);
+      text-decoration: underline;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-gray-500);
+      font-size: 14px;
+    }
+    .breadcrumb a {
+      color: var(--color-gray-600);
+    }
+    .breadcrumb a:hover {
+      color: var(--color-primary-600);
+    }
+    .breadcrumb-current {
+      color: var(--color-gray-800);
+      font-weight: 500;
+    }
+    .dropdown-item-danger {
+      color: var(--color-red-600);
+    }
+    .dropdown-item-danger:hover {
+      background: var(--color-red-50);
+    }
+  </style>
 </head>
-<body class="h-screen overflow-hidden bg-gray-50" style="font-family:'Google Sans Text','Google Sans','Noto Sans Thai',sans-serif;">
-<div class="flex h-screen overflow-hidden">
-  <aside class="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
-    <div class="flex h-16 items-center border-b border-gray-200 px-6"><div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"><i class="fa-solid fa-graduation-cap text-sm"></i></div><span class="text-lg font-bold text-gray-900">LiteLearning</span></div>
-    <nav class="space-y-1 p-4 text-sm"><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-arrow-left mr-3 w-5 text-center"></i>Back to classroom</a><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./classroom-people.html"><i class="fa-solid fa-users mr-3 w-5 text-center"></i>People</a><p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wider text-gray-400">Classes</p><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Mathematics 101</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Physics Advanced</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>English Literature</a></nav>
-  </aside>
-  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
-    <header class="h-16 shrink-0 border-b border-gray-200 bg-white px-6"><div class="flex h-full items-center justify-between"><h1 class="text-lg font-semibold text-gray-800">People</h1><div class="flex gap-2 text-xs"><span class="rounded-full bg-gray-100 px-3 py-1.5 text-gray-600">2 Teachers</span><span class="rounded-full bg-gray-100 px-3 py-1.5 text-gray-600">28 Students</span></div></div></header>
-    <main class="min-h-0 flex-1 overflow-y-auto p-6">
-      <div class="mx-auto max-w-3xl space-y-8">
-        <div><h2 class="mb-4 flex items-center text-lg font-semibold text-gray-900"><i class="fa-solid fa-chalkboard-teacher mr-2 text-indigo-600"></i>Teacher</h2><div class="overflow-hidden rounded-xl border border-gray-200 bg-white"><div class="flex items-center justify-between border-b border-gray-100 p-4"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">John Smith</p><p class="text-xs text-gray-500">john@example.com</p></div></div></div><div class="flex items-center justify-between p-4"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">Jane Doe</p><p class="text-xs text-gray-500">jane@example.com</p></div></div></div></div></div>
-        <div><h2 class="mb-4 flex items-center text-lg font-semibold text-gray-900"><i class="fa-solid fa-users mr-2 text-indigo-600"></i>Students <span class="ml-2 text-sm font-normal text-gray-500">(28)</span></h2><div class="overflow-hidden rounded-xl border border-gray-200 bg-white"><div class="flex items-center justify-between border-b border-gray-100 p-4"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">Student A</p><p class="text-xs text-gray-500">a@example.com</p></div></div><span class="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700">Active</span></div><div class="flex items-center justify-between border-b border-gray-100 p-4"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">Student B</p><p class="text-xs text-gray-500">b@example.com</p></div></div><span class="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700">Active</span></div><div class="flex items-center justify-between p-4"><div class="flex items-center"><div class="mr-3 h-10 w-10 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">Student C</p><p class="text-xs text-gray-500">c@example.com</p></div></div><span class="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">Pending</span></div></div></div>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="./dashboard.html" class="sidebar-brand">
+          <div class="sidebar-brand-icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <span>LiteLearning</span>
+        </a>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="./classroom-show.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-arrow-left"></i></span>
+          Back to classroom
+        </a>
+        <div class="nav-section">Classroom</div>
+        <a href="./classroom-show.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-stream"></i></span>
+          Stream
+        </a>
+        <a href="./assignment-show.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-book-open"></i></span>
+          Classwork
+        </a>
+        <a href="./classroom-people.html" class="nav-link active">
+          <span class="nav-icon"><i class="fas fa-users"></i></span>
+          People
+        </a>
+        
+        <div class="nav-section">Classes</div>
+        <a href="./classroom-show.html" class="nav-link active">
+          <span class="nav-icon"><i class="fas fa-book-open"></i></span>
+          Mathematics 101
+        </a>
+        <a href="./classroom-show.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-book-open"></i></span>
+          Physics Advanced
+        </a>
+        <a href="./classroom-show.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-book-open"></i></span>
+          English Literature
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="./settings.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-cog"></i></span>
+          Settings
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="btn btn-ghost btn-icon mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+            <i class="fas fa-bars"></i>
+          </button>
+          <nav class="breadcrumb">
+            <a href="./classrooms.html">Classrooms</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <a href="./classroom-show.html">Mathematics 101</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="breadcrumb-current">People</span>
+          </nav>
+        </div>
+        <div class="topbar-right">
+          <a href="#" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i>
+            <span>Invite</span>
+          </a>
+          <div class="dropdown">
+            <div class="user-menu">
+              <div class="avatar avatar-initials">JD</div>
+              <div class="user-info">
+                <div class="user-name">John Doe</div>
+                <div class="user-role">Teacher</div>
+              </div>
+              <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+            </div>
+            <div class="dropdown-menu">
+              <div class="dropdown-header">John Doe</div>
+              <div class="dropdown-divider"></div>
+              <a href="./profile.html" class="dropdown-item">
+                <i class="fas fa-user"></i>
+                Profile
+              </a>
+              <a href="./settings.html" class="dropdown-item">
+                <i class="fas fa-cog"></i>
+                Settings
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="./login.html" class="dropdown-item dropdown-item-danger">
+                <i class="fas fa-sign-out-alt"></i>
+                Sign out
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="content">
+        <div class="content-narrow">
+          <!-- Back Link -->
+          <a href="./classroom-show.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to classroom
+          </a>
+
+          <!-- Teachers Section -->
+          <div class="people-section">
+            <div class="people-section-header">
+              <div class="people-section-title">
+                <i class="fas fa-chalkboard-teacher"></i>
+                Teacher
+              </div>
+            </div>
+            <div class="people-list-card">
+              <div class="people-item">
+                <div class="people-info">
+                  <div class="avatar avatar-lg avatar-initials" style="background: var(--color-primary-100); color: var(--color-primary-700);">JS</div>
+                  <div class="people-details">
+                    <div class="people-name">Prof. John Smith</div>
+                    <div class="people-email">john.smith@school.edu</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Students Section -->
+          <div class="people-section">
+            <div class="people-section-header">
+              <div class="people-section-title">
+                <i class="fas fa-users"></i>
+                Students <span class="people-count">(24)</span>
+              </div>
+              <div class="dropdown">
+                <button class="menu-btn">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="dropdown-menu">
+                  <button class="dropdown-item dropdown-item-danger">
+                    <i class="fas fa-user-times"></i>
+                    Remove all students
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="people-list-card">
+              <!-- Student 1 -->
+              <div class="people-item">
+                <div class="people-info">
+                  <div class="avatar avatar-initials" style="background: var(--color-green-100); color: var(--color-green-700);">AJ</div>
+                  <div class="people-details">
+                    <div class="people-name">Alice Johnson</div>
+                    <div class="people-email">alice.j@student.edu</div>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">
+                      <i class="fas fa-envelope"></i>
+                      Send email
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item dropdown-item-danger">
+                      <i class="fas fa-user-minus"></i>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student 2 -->
+              <div class="people-item">
+                <div class="people-info">
+                  <div class="avatar avatar-initials" style="background: var(--color-blue-100); color: var(--color-blue-700);">BB</div>
+                  <div class="people-details">
+                    <div class="people-name">Bob Brown</div>
+                    <div class="people-email">bob.b@student.edu</div>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">
+                      <i class="fas fa-envelope"></i>
+                      Send email
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item dropdown-item-danger">
+                      <i class="fas fa-user-minus"></i>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student 3 -->
+              <div class="people-item">
+                <div class="people-info">
+                  <div class="avatar avatar-initials" style="background: var(--color-amber-100); color: var(--color-amber-700);">CD</div>
+                  <div class="people-details">
+                    <div class="people-name">Carol Davis</div>
+                    <div class="people-email">carol.d@student.edu</div>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">
+                      <i class="fas fa-envelope"></i>
+                      Send email
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item dropdown-item-danger">
+                      <i class="fas fa-user-minus"></i>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student 4 -->
+              <div class="people-item">
+                <div class="people-info">
+                  <div class="avatar avatar-initials" style="background: var(--color-purple-100); color: var(--color-purple-700);">DE</div>
+                  <div class="people-details">
+                    <div class="people-name">David Evans</div>
+                    <div class="people-email">david.e@student.edu</div>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">
+                      <i class="fas fa-envelope"></i>
+                      Send email
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item dropdown-item-danger">
+                      <i class="fas fa-user-minus"></i>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student 5 -->
+              <div class="people-item">
+                <div class="people-info">
+                  <div class="avatar avatar-initials" style="background: var(--color-red-100); color: var(--color-red-700);">EF</div>
+                  <div class="people-details">
+                    <div class="people-name">Emma Foster</div>
+                    <div class="people-email">emma.f@student.edu</div>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">
+                      <i class="fas fa-envelope"></i>
+                      Send email
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item dropdown-item-danger">
+                      <i class="fas fa-user-minus"></i>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student 6 -->
+              <div class="people-item">
+                <div class="people-info">
+                  <div class="avatar avatar-initials" style="background: var(--color-green-100); color: var(--color-green-700);">FG</div>
+                  <div class="people-details">
+                    <div class="people-name">Frank Green</div>
+                    <div class="people-email">frank.g@student.edu</div>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">
+                      <i class="fas fa-envelope"></i>
+                      Send email
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item dropdown-item-danger">
+                      <i class="fas fa-user-minus"></i>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student 7 -->
+              <div class="people-item">
+                <div class="people-info">
+                  <div class="avatar avatar-initials" style="background: var(--color-blue-100); color: var(--color-blue-700);">GH</div>
+                  <div class="people-details">
+                    <div class="people-name">Grace Hill</div>
+                    <div class="people-email">grace.h@student.edu</div>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">
+                      <i class="fas fa-envelope"></i>
+                      Send email
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item dropdown-item-danger">
+                      <i class="fas fa-user-minus"></i>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student 8 -->
+              <div class="people-item">
+                <div class="people-info">
+                  <div class="avatar avatar-initials" style="background: var(--color-amber-100); color: var(--color-amber-700);">HI</div>
+                  <div class="people-details">
+                    <div class="people-name">Henry Irving</div>
+                    <div class="people-email">henry.i@student.edu</div>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item">
+                      <i class="fas fa-envelope"></i>
+                      Send email
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item dropdown-item-danger">
+                      <i class="fas fa-user-minus"></i>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
-</div>
 </body>
 </html>

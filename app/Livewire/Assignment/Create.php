@@ -34,7 +34,7 @@ class Create extends Component
     {
         $this->classroom = $classroom;
         abort_unless(
-            $classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin(),
+            $classroom->isOwnedBy(auth()->user()),
             403
         );
     }
@@ -47,7 +47,7 @@ class Create extends Component
     public function updatedFile(): void
     {
         $this->validate([
-            'file' => 'file|max:25600',
+            'file' => 'file|max:25600|mimes:' . Assignment::allowedSubmissionMimes(),
         ]);
 
         if ($this->file) {

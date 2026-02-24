@@ -3,52 +3,271 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Assignment Show Demo</title>
+  <title>Assignment - Linear Equations Quiz - LiteLearning</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./assets.css">
 </head>
-<body class="h-screen overflow-hidden bg-gray-50" style="font-family:'Google Sans Text','Google Sans','Noto Sans Thai',sans-serif;">
-<div class="flex h-screen overflow-hidden">
-  <aside class="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
-    <div class="flex h-16 items-center border-b border-gray-200 px-6"><div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"><i class="fa-solid fa-graduation-cap text-sm"></i></div><span class="text-lg font-bold text-gray-900">LiteLearning</span></div>
-    <nav class="space-y-1 p-4 text-sm"><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classrooms.html"><i class="fa-solid fa-chalkboard mr-3 w-5 text-center"></i>Classrooms</a><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./assignment-show.html"><i class="fa-solid fa-file-lines mr-3 w-5 text-center"></i>Quiz #2</a><p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wider text-gray-400">Classes</p><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Mathematics 101</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Physics Advanced</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>English Literature</a></nav>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand-icon">L</div>
+      <span class="sidebar-brand">LiteLearning</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="./dashboard.html" class="nav-link">
+        <i class="fas fa-house nav-icon"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="./classrooms.html" class="nav-link">
+        <i class="fas fa-chalkboard nav-icon"></i>
+        <span>Classrooms</span>
+      </a>
+      <a href="./classroom-show.html" class="nav-link">
+        <i class="fas fa-arrow-left nav-icon"></i>
+        <span>Back to Class</span>
+      </a>
+      <div class="nav-section">Classes</div>
+      <a href="./classroom-show.html" class="nav-link active">
+        <i class="fas fa-book-open nav-icon"></i>
+        <span>Mathematics 101</span>
+      </a>
+      <a href="./classroom-show.html" class="nav-link">
+        <i class="fas fa-book-open nav-icon"></i>
+        <span>Physics Advanced</span>
+      </a>
+      <a href="./classroom-show.html" class="nav-link">
+        <i class="fas fa-book-open nav-icon"></i>
+        <span>English Literature</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="./settings.html" class="nav-link">
+        <i class="fas fa-cog nav-icon"></i>
+        <span>Settings</span>
+      </a>
+    </div>
   </aside>
-  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
-    <header class="h-16 shrink-0 border-b border-gray-200 bg-white px-6"><div class="flex h-full items-center justify-between"><h1 class="text-lg font-semibold text-gray-800">Classrooms / Mathematics 101 / Quiz #2</h1><div class="flex items-center gap-3"><button class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><i class="fa-solid fa-pen mr-1"></i>Edit</button><div class="h-8 w-8 rounded-full bg-gray-200"></div></div></div></header>
-    <main class="min-h-0 flex-1 overflow-y-auto p-6">
-      <a href="./classroom-show.html" class="mb-6 inline-flex items-center text-sm text-gray-500 hover:text-gray-700"><i class="fa-solid fa-arrow-left mr-2"></i>Back to Mathematics 101</a>
-      <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div class="lg:col-span-2">
-          <div class="overflow-hidden rounded-xl border border-gray-200 bg-white">
-            <div class="border-b border-gray-200 p-6">
-              <div class="flex items-start justify-between">
-                <div class="flex items-start"><div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600 text-white"><i class="fa-solid fa-question-circle text-lg"></i></div><div class="ml-4"><h2 class="text-xl font-bold text-gray-900">Quiz #2</h2><div class="mt-1 flex items-center gap-3"><span class="text-sm text-gray-500">John Smith</span><span class="text-xs text-gray-400">16 Feb 2026</span></div></div></div>
-                <span class="rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700">Quiz</span>
-              </div>
-              <div class="mt-4 flex flex-wrap items-center gap-3 text-sm"><span class="text-gray-500"><i class="fa-solid fa-clock mr-1"></i>Due: 17 Feb 2026, 09:00</span><span class="text-gray-500"><i class="fa-solid fa-star mr-1"></i>20 Points</span><span class="rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-500">Overdue</span></div>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="topbar-title">Linear Equations Quiz</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="dropdown">
+          <div class="user-menu">
+            <div class="avatar avatar-initials">ST</div>
+            <div class="user-info">
+              <div class="user-name">Student Name</div>
+              <div class="user-role">Student</div>
             </div>
-            <div class="p-6">
-              <p class="text-sm text-gray-700">Answer all multiple-choice questions in your notebook and upload photos as PDF.</p>
-              <div class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4"><h3 class="mb-2 text-sm font-semibold text-gray-900"><i class="fa-solid fa-list-ul mr-1"></i>Instructions</h3><p class="text-sm text-gray-700">Submit before the deadline. Late submission will be marked overdue.</p></div>
-            </div>
+            <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
           </div>
-          <div class="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
-            <div class="border-b border-gray-200 p-4"><h3 class="text-lg font-semibold text-gray-900">Student Work</h3><div class="mt-2 flex gap-4 text-sm text-gray-500"><span><i class="fa-solid fa-check-circle mr-1 text-green-500"></i>32 Turned in</span><span><i class="fa-solid fa-star mr-1 text-amber-500"></i>25 Graded</span></div></div>
-            <div class="divide-y divide-gray-100"><div class="flex items-center justify-between p-4"><div class="flex items-center"><div class="mr-3 h-9 w-9 rounded-full bg-gray-200"></div><div><p class="text-sm font-medium text-gray-900">Student A</p><p class="text-xs text-blue-600">Turned in 20 minutes ago</p></div></div><a href="./assignment-grade.html" class="rounded-lg bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100">Grade</a></div></div>
-          </div>
-        </div>
-        <div>
-          <div class="sticky top-0 overflow-hidden rounded-xl border border-gray-200 bg-white">
-            <div class="border-b border-gray-200 p-4"><div class="flex items-center justify-between"><h3 class="text-lg font-semibold text-gray-900">Your Work</h3><span class="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">Assigned</span></div></div>
-            <div class="p-4"><textarea rows="6" class="mb-3 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm" placeholder="Type your answer here..."></textarea><div class="flex flex-col gap-2"><button class="w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white hover:bg-indigo-700">Turn In</button><button class="w-full rounded-lg border border-gray-300 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">Save Draft</button></div></div>
+          <div class="dropdown-menu">
+            <div class="dropdown-header">Student Name</div>
+            <a href="./profile.html" class="dropdown-item">
+              <i class="fas fa-user"></i>
+              <span>Profile</span>
+            </a>
+            <a href="./settings.html" class="dropdown-item">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="./login.html" class="dropdown-item dropdown-item-danger">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
           </div>
         </div>
       </div>
-    </main>
-  </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center space-x-1 text-sm mb-4">
+        <a href="./classrooms.html" class="text-gray-500 hover:text-primary transition-colors">Classrooms</a>
+        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+        <a href="./classroom-show.html" class="text-gray-500 hover:text-primary transition-colors">Mathematics 101</a>
+        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+        <span class="text-gray-800 font-semibold truncate" style="max-width: 200px;">Linear Equations Quiz</span>
+      </nav>
+
+      <!-- Back Link -->
+      <a href="./classroom-show.html" class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
+        <i class="fas fa-arrow-left mr-2"></i> Back to Mathematics 101
+      </a>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Content -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <!-- Header -->
+            <div class="p-4 sm:p-6 border-b border-gray-200">
+              <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                <div class="flex items-start min-w-0">
+                  <!-- Type Icon -->
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0" style="background-color: #4f46e520; color: #4f46e5;">
+                    <i class="fas fa-circle-question text-base sm:text-lg"></i>
+                  </div>
+                  <div class="ml-3 sm:ml-4 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <h1 class="text-lg sm:text-xl font-bold text-gray-900">Linear Equations Quiz</h1>
+                      <span class="px-2.5 py-0.5 rounded-full text-xs font-medium shrink-0" style="background-color: #4f46e520; color: #4f46e5;">Quiz</span>
+                    </div>
+                    <div class="flex items-center gap-3 mt-1">
+                      <span class="text-sm text-gray-500">Mr. John Smith</span>
+                      <span class="text-xs text-gray-400">24 Feb 2026</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- 3-dot Menu -->
+                <div class="relative ml-auto sm:ml-0">
+                  <button type="button" class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-ellipsis-vertical"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Meta Info -->
+              <div class="mt-4 flex items-center gap-4 text-sm flex-wrap">
+                <span class="text-gray-500">
+                  <i class="fas fa-clock mr-1"></i>
+                  Due: 28 Feb 2026, 23:59
+                </span>
+                <span class="text-gray-500">
+                  <i class="fas fa-star mr-1"></i> 100 Points
+                </span>
+                <!-- Overdue Warning -->
+                <span class="text-red-500 font-medium text-xs px-2 py-0.5 bg-red-50 rounded-full">
+                  <i class="fas fa-exclamation-triangle mr-1"></i>
+                  Overdue by 2 days
+                </span>
+                <span class="text-amber-600 text-xs px-2 py-0.5 bg-amber-50 rounded-full">
+                  Late submission allowed
+                </span>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="p-6">
+              <div class="text-gray-700 text-sm leading-relaxed">
+                <p class="mb-4">This quiz will test your understanding of linear equations. Please complete all questions carefully.</p>
+                <ul class="list-disc list-inside space-y-1 mb-4">
+                  <li>Read each question carefully before answering</li>
+                  <li>Show your work for partial credit</li>
+                  <li>You have 60 minutes to complete the quiz</li>
+                </ul>
+                <p>Good luck!</p>
+              </div>
+
+              <!-- Attachments -->
+              <div class="mt-6">
+                <h3 class="text-sm font-semibold text-gray-700 mb-3">Attachments</h3>
+                <div class="space-y-3">
+                  <!-- File Item -->
+                  <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <a href="#" target="_blank" class="flex items-center p-3 bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <i class="fas fa-file-pdf text-red-500 mr-3 text-lg"></i>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-700 truncate">Quiz_Instructions.pdf</p>
+                        <p class="text-xs text-gray-400">245 KB</p>
+                      </div>
+                      <i class="fas fa-arrow-up-right-from-square text-gray-400 ml-2"></i>
+                    </a>
+                  </div>
+                  <!-- Image Item -->
+                  <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <a href="#" target="_blank" class="block">
+                      <img src="https://via.placeholder.com/600x200/f3f4f6/6b7280?text=Reference+Diagram" alt="Reference Diagram" class="w-full max-h-48 object-contain bg-gray-50">
+                    </a>
+                    <a href="#" target="_blank" class="flex items-center p-3 bg-gray-50 hover:bg-gray-100 transition-colors border-t border-gray-200">
+                      <i class="fas fa-image text-green-500 mr-3 text-lg"></i>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-700 truncate">reference_diagram.png</p>
+                        <p class="text-xs text-gray-400">1.2 MB</p>
+                      </div>
+                      <i class="fas fa-arrow-up-right-from-square text-gray-400 ml-2"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attendance Component Placeholder (for attendance type assignments) -->
+          <div class="mt-6 bg-white rounded-xl border border-gray-200 overflow-hidden hidden">
+            <div class="p-4 border-b border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-900">Attendance Check-in</h3>
+            </div>
+            <div class="p-6 text-center">
+              <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-clipboard-check text-amber-600 text-2xl"></i>
+              </div>
+              <p class="text-gray-600 mb-4">Click the button below to mark your attendance</p>
+              <button class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+                <i class="fas fa-check mr-2"></i>Check In
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar: Student Work -->
+        <div>
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-4">
+            <div class="p-4 border-b border-gray-200">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Your Work</h3>
+                <span class="text-xs px-2.5 py-1 rounded-full font-medium bg-gray-100 text-gray-600">Assigned</span>
+              </div>
+              <!-- Overdue Warning in Sidebar -->
+              <div class="mt-2 p-2 rounded-lg bg-amber-50 border border-amber-200">
+                <p class="text-xs font-medium text-amber-700">
+                  <i class="fas fa-exclamation-triangle mr-1"></i>
+                  Overdue by 2 days
+                </p>
+              </div>
+            </div>
+
+            <div class="p-4">
+              <!-- File Upload Dropzone -->
+              <div class="mb-3">
+                <label class="flex flex-col items-center justify-center w-full py-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors bg-gray-50">
+                  <i class="fas fa-cloud-arrow-up text-gray-400 text-2xl mb-2"></i>
+                  <p class="text-sm text-gray-500">Drag files here or click to upload</p>
+                  <p class="text-xs text-gray-400 mt-1">Max file size: 25MB</p>
+                  <input type="file" class="hidden" multiple>
+                </label>
+              </div>
+
+              <!-- OR Textarea for question type -->
+              <div class="mb-3 hidden">
+                <textarea rows="6" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Type your answer here..."></textarea>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex flex-col gap-2">
+                <button class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+                  Turn In
+                </button>
+                <button class="w-full py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                  Save Draft
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>
 </body>
 </html>

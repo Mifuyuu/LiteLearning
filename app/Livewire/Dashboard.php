@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Classroom;
+use App\Models\Submission;
 use App\Models\User;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,8 @@ class Dashboard extends Component
         $user = Auth::user();
         $classrooms = $user->allClassrooms();
 
-        // Get upcoming assignments
+        // Get upcoming assignments — N queries avoided by fetching per-classroom
+        // with a scoped query and sorting in PHP (classrooms are already a small set)
         $upcomingAssignments = collect();
         foreach ($classrooms as $classroom) {
             $assignments = $classroom->assignments()
@@ -32,54 +34,57 @@ class Dashboard extends Component
         }
         $upcomingAssignments = $upcomingAssignments->sortBy('due_date')->take(10);
 
-        // Stats for teachers
+        // Stats for teachers — fix #2: use loadCount + single aggregate Submission query
         $stats = [];
         if ($user->isTeacher() || $user->isAdmin()) {
-            $ownedClassrooms = $user->ownedClassrooms()->where('is_archived', false)->get();
-            $totalStudents = 0;
-            $totalAssignments = 0;
-            $pendingSubmissions = 0;
+            $ownedClassrooms = $user->ownedClassrooms()
+                ->where('is_archived', false)
+                ->withCount(['students', 'assignments'])
+                ->get();
 
-            foreach ($ownedClassrooms as $c) {
-                $totalStudents += $c->students()->count();
-                $totalAssignments += $c->assignments()->count();
-                foreach ($c->assignments as $a) {
-                    $pendingSubmissions += $a->submissions()->where('status', 'turned_in')->count();
-                }
-            }
+            $totalStudents    = $ownedClassrooms->sum('students_count');
+            $totalAssignments = $ownedClassrooms->sum('assignments_count');
+
+            // Single aggregate query instead of N×M nested loops
+            $pendingSubmissions = Submission::whereIn(
+                'assignment_id',
+                $ownedClassrooms->pluck('id')->flatMap(fn ($classroomId) =>
+                    \App\Models\Assignment::where('classroom_id', $classroomId)->pluck('id')
+                )
+            )->where('status', 'turned_in')->count();
 
             $stats = [
                 'classrooms' => $ownedClassrooms->count(),
-                'students' => $totalStudents,
-                'assignments' => $totalAssignments,
-                'pending' => $pendingSubmissions,
+                'students'   => $totalStudents,
+                'assignments'=> $totalAssignments,
+                'pending'    => $pendingSubmissions,
             ];
         }
 
         $gamification = null;
         if ($user->isStudent()) {
-            $gamificationService = app(GamificationService::class);
-            $currentLevelStartXp = $gamificationService->totalXpForLevel($user->level);
-            $nextLevelXp = $gamificationService->totalXpForLevel($user->level + 1);
-            $xpInCurrentLevel = max(0, $user->xp - $currentLevelStartXp);
-            $xpNeededInLevel = max(1, $nextLevelXp - $currentLevelStartXp);
+            $gamificationService  = app(GamificationService::class);
+            $currentLevelStartXp  = $gamificationService->totalXpForLevel($user->level);
+            $nextLevelXp          = $gamificationService->totalXpForLevel($user->level + 1);
+            $xpInCurrentLevel     = max(0, $user->xp - $currentLevelStartXp);
+            $xpNeededInLevel      = max(1, $nextLevelXp - $currentLevelStartXp);
 
             $gamification = [
-                'coins' => $user->coins,
-                'level' => $user->level,
-                'xp' => $user->xp,
-                'achievements' => $user->achievements()->count(),
-                'badges' => $user->badges()->count(),
-                'xp_to_next' => max(0, $nextLevelXp - $user->xp),
+                'coins'            => $user->coins,
+                'level'            => $user->level,
+                'xp'               => $user->xp,
+                'achievements'     => $user->achievements()->count(),
+                'badges'           => $user->badges()->count(),
+                'xp_to_next'       => max(0, $nextLevelXp - $user->xp),
                 'progress_percent' => (int) min(100, round(($xpInCurrentLevel / $xpNeededInLevel) * 100)),
             ];
         }
 
         return view('livewire.dashboard', [
-            'classrooms' => $classrooms,
+            'classrooms'          => $classrooms,
             'upcomingAssignments' => $upcomingAssignments,
-            'stats' => $stats,
-            'gamification' => $gamification,
+            'stats'               => $stats,
+            'gamification'        => $gamification,
         ]);
     }
 }

@@ -388,7 +388,7 @@
 
                     <div class="pt-2 flex justify-end gap-2">
                         <button wire:click="cancelEditTab" type="button" class="px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">{{ __('Cancel') }}</button>
-                        <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                        <button type="submit" class="btn-3d btn-3d--indigo px-5 py-2.5 text-sm font-medium rounded-lg transition-colors">
                             <span wire:loading.remove wire:target="saveAssignment">{{ __('Update Assignment') }}</span>
                             <span wire:loading wire:target="saveAssignment"><i class="fas fa-spinner fa-spin mr-1"></i> {{ __('Saving...') }}</span>
                         </button>
@@ -492,7 +492,7 @@
                     @if($assignment->canAcceptSubmission())
                     <div class="flex flex-col gap-2">
                         <button wire:click="turnIn"
-                                class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+                                class="btn-3d btn-3d--indigo w-full py-2.5 text-sm font-medium rounded-lg transition-colors">
                             <span wire:loading.remove wire:target="turnIn">{{ __('Turn In') }}</span>
                             <span wire:loading wire:target="turnIn"><i class="fas fa-spinner fa-spin mr-1"></i> {{ __('Submitting...') }}</span>
                         </button>

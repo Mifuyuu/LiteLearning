@@ -3,46 +3,258 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Create Assignment Demo</title>
+  <title>Create Assignment - LiteLearning</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./assets.css">
 </head>
-<body class="h-screen overflow-hidden bg-gray-50" style="font-family:'Google Sans Text','Google Sans','Noto Sans Thai',sans-serif;">
-<div class="flex h-screen overflow-hidden">
-  <aside class="hidden w-64 shrink-0 border-r border-gray-200 bg-white lg:flex lg:flex-col">
-    <div class="flex h-16 items-center border-b border-gray-200 px-6"><div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white"><i class="fa-solid fa-graduation-cap text-sm"></i></div><span class="text-lg font-bold text-gray-900">LiteLearning</span></div>
-    <nav class="space-y-1 p-4 text-sm"><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classrooms.html"><i class="fa-solid fa-chalkboard mr-3 w-5 text-center"></i>Classrooms</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./assignment-create.html"><i class="fa-solid fa-file-circle-plus mr-3 w-5 text-center"></i>Create Assignment</a><p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wider text-gray-400">Classes</p><a class="flex items-center rounded-lg bg-indigo-50 px-3 py-2.5 font-medium text-indigo-700" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Mathematics 101</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>Physics Advanced</a><a class="flex items-center rounded-lg px-3 py-2.5 font-medium text-gray-700 hover:bg-gray-100" href="./classroom-show.html"><i class="fa-solid fa-book-open mr-3 w-5 text-center"></i>English Literature</a></nav>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand-icon">L</div>
+      <span class="sidebar-brand">LiteLearning</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="./dashboard.html" class="nav-link">
+        <i class="fas fa-house nav-icon"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="./classrooms.html" class="nav-link">
+        <i class="fas fa-chalkboard nav-icon"></i>
+        <span>Classrooms</span>
+      </a>
+      <a href="./classroom-show.html" class="nav-link">
+        <i class="fas fa-arrow-left nav-icon"></i>
+        <span>Back to Class</span>
+      </a>
+      <div class="nav-section">Classes</div>
+      <a href="./classroom-show.html" class="nav-link active">
+        <i class="fas fa-book-open nav-icon"></i>
+        <span>Mathematics 101</span>
+      </a>
+      <a href="./classroom-show.html" class="nav-link">
+        <i class="fas fa-book-open nav-icon"></i>
+        <span>Physics Advanced</span>
+      </a>
+      <a href="./classroom-show.html" class="nav-link">
+        <i class="fas fa-book-open nav-icon"></i>
+        <span>English Literature</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="./settings.html" class="nav-link">
+        <i class="fas fa-cog nav-icon"></i>
+        <span>Settings</span>
+      </a>
+    </div>
   </aside>
-  <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
-    <header class="h-16 shrink-0 border-b border-gray-200 bg-white px-6"><div class="flex h-full items-center"><h1 class="text-lg font-semibold text-gray-800">Create Assignment</h1></div></header>
-    <main class="min-h-0 flex-1 overflow-y-auto p-6">
-      <div class="mx-auto max-w-3xl">
-        <a href="./classroom-show.html" class="mb-6 inline-flex items-center text-sm text-gray-500 hover:text-gray-700"><i class="fa-solid fa-arrow-left mr-2"></i>Back to Mathematics 101</a>
-        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white">
-          <div class="border-b border-gray-200 p-6"><h2 class="text-xl font-bold text-gray-900">Create Assignment</h2><p class="mt-1 text-sm text-gray-500">Mathematics 101</p></div>
-          <form class="space-y-5 p-6">
-            <div>
-              <label class="mb-2 block text-sm font-medium text-gray-700">Type</label>
-              <div class="grid grid-cols-3 gap-3">
-                <label class="cursor-pointer"><input type="radio" checked class="peer sr-only"><div class="flex flex-col items-center rounded-xl border-2 border-indigo-600 bg-indigo-50 p-4"><i class="fa-solid fa-file-alt mb-2 text-xl"></i><span class="text-sm font-medium">Assignment</span></div></label>
-                <label class="cursor-pointer"><input type="radio" class="peer sr-only"><div class="flex flex-col items-center rounded-xl border-2 border-gray-200 p-4 hover:bg-gray-50"><i class="fa-solid fa-question-circle mb-2 text-xl"></i><span class="text-sm font-medium">Quiz</span></div></label>
-                <label class="cursor-pointer"><input type="radio" class="peer sr-only"><div class="flex flex-col items-center rounded-xl border-2 border-gray-200 p-4 hover:bg-gray-50"><i class="fa-solid fa-book mb-2 text-xl"></i><span class="text-sm font-medium">Material</span></div></label>
-              </div>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="topbar-title">Create Assignment</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="dropdown">
+          <div class="user-menu">
+            <div class="avatar avatar-initials">JS</div>
+            <div class="user-info">
+              <div class="user-name">John Smith</div>
+              <div class="user-role">Teacher</div>
             </div>
-            <div><label class="mb-1 block text-sm font-medium text-gray-700">Title *</label><input class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500" value="Worksheet #6"></div>
-            <div><label class="mb-1 block text-sm font-medium text-gray-700">Description</label><textarea rows="3" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm">Practice equations and show all steps.</textarea></div>
-            <div><label class="mb-1 block text-sm font-medium text-gray-700">Instructions</label><textarea rows="4" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm">Solve all problems and include final answers clearly.</textarea></div>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2"><div><label class="mb-1 block text-sm font-medium text-gray-700">Points</label><input class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm" value="100"></div><div><label class="mb-1 block text-sm font-medium text-gray-700">Due Date</label><input type="datetime-local" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm"></div></div>
-            <div><label class="mb-1 block text-sm font-medium text-gray-700">Topic</label><input class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm" value="Algebra"></div>
-            <div class="flex items-center justify-between border-t border-gray-200 pt-4"><button type="button" class="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">Save as Draft</button><button type="button" class="rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700">Assign</button></div>
-          </form>
+            <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+          </div>
+          <div class="dropdown-menu">
+            <div class="dropdown-header">John Smith</div>
+            <a href="./profile.html" class="dropdown-item">
+              <i class="fas fa-user"></i>
+              <span>Profile</span>
+            </a>
+            <a href="./settings.html" class="dropdown-item">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="./login.html" class="dropdown-item dropdown-item-danger">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </div>
         </div>
       </div>
-    </main>
-  </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content">
+      <div class="content-narrow">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center space-x-1 text-sm mb-4">
+          <a href="./classrooms.html" class="text-gray-500 hover:text-primary transition-colors">Classrooms</a>
+          <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+          <a href="./classroom-show.html" class="text-gray-500 hover:text-primary transition-colors">Mathematics 101</a>
+          <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+          <span class="text-gray-800 font-semibold">Create Assignment</span>
+        </nav>
+
+        <!-- Back Link -->
+        <a href="./classroom-show.html" class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Mathematics 101
+        </a>
+
+        <form class="space-y-5">
+          <!-- Type Selection -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white p-4 rounded-xl border border-gray-200">
+            <!-- Question -->
+            <label class="relative flex flex-col items-center p-3 cursor-pointer rounded-lg border-2 border-indigo-500 bg-indigo-50/50 transition-all">
+              <input type="radio" name="type" value="question" class="sr-only" checked>
+              <div class="w-10 h-10 rounded-full flex items-center justify-center mb-2 bg-indigo-100 text-indigo-600">
+                <i class="fas fa-pen-to-square text-lg"></i>
+              </div>
+              <span class="text-sm font-medium text-indigo-700">Question</span>
+              <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500"></div>
+            </label>
+            <!-- File Upload -->
+            <label class="relative flex flex-col items-center p-3 cursor-pointer rounded-lg border-2 border-gray-100 hover:border-gray-200 bg-gray-50/50 hover:bg-gray-50 transition-all">
+              <input type="radio" name="type" value="file" class="sr-only">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center mb-2 bg-white text-gray-400 shadow-sm">
+                <i class="fas fa-cloud-arrow-up text-lg"></i>
+              </div>
+              <span class="text-sm font-medium text-gray-600">File Upload</span>
+            </label>
+            <!-- Attendance -->
+            <label class="relative flex flex-col items-center p-3 cursor-pointer rounded-lg border-2 border-gray-100 hover:border-gray-200 bg-gray-50/50 hover:bg-gray-50 transition-all">
+              <input type="radio" name="type" value="attendance" class="sr-only">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center mb-2 bg-white text-gray-400 shadow-sm">
+                <i class="fas fa-clipboard-check text-lg"></i>
+              </div>
+              <span class="text-sm font-medium text-gray-600">Attendance</span>
+            </label>
+            <!-- Material -->
+            <label class="relative flex flex-col items-center p-3 cursor-pointer rounded-lg border-2 border-gray-100 hover:border-gray-200 bg-gray-50/50 hover:bg-gray-50 transition-all">
+              <input type="radio" name="type" value="material" class="sr-only">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center mb-2 bg-white text-gray-400 shadow-sm">
+                <i class="fas fa-book-open text-lg"></i>
+              </div>
+              <span class="text-sm font-medium text-gray-600">Material</span>
+            </label>
+          </div>
+
+          <!-- Title Card -->
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+              <h3 class="text-sm font-semibold text-gray-700">Title *</h3>
+            </div>
+            <div class="p-6">
+              <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter assignment title">
+            </div>
+          </div>
+
+          <!-- Description Card -->
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+              <h3 class="text-sm font-semibold text-gray-700">Description</h3>
+            </div>
+            <div class="p-6">
+              <div class="border border-gray-300 rounded-lg overflow-hidden">
+                <!-- Quill Toolbar Placeholder -->
+                <div class="bg-gray-50 border-b border-gray-200 p-2 flex gap-2">
+                  <button type="button" class="px-2 py-1 text-sm text-gray-600 hover:bg-gray-200 rounded"><i class="fas fa-bold"></i></button>
+                  <button type="button" class="px-2 py-1 text-sm text-gray-600 hover:bg-gray-200 rounded"><i class="fas fa-italic"></i></button>
+                  <button type="button" class="px-2 py-1 text-sm text-gray-600 hover:bg-gray-200 rounded"><i class="fas fa-underline"></i></button>
+                  <span class="border-r border-gray-300 mx-1"></span>
+                  <button type="button" class="px-2 py-1 text-sm text-gray-600 hover:bg-gray-200 rounded"><i class="fas fa-list-ul"></i></button>
+                  <button type="button" class="px-2 py-1 text-sm text-gray-600 hover:bg-gray-200 rounded"><i class="fas fa-list-ol"></i></button>
+                  <span class="border-r border-gray-300 mx-1"></span>
+                  <button type="button" class="px-2 py-1 text-sm text-gray-600 hover:bg-gray-200 rounded"><i class="fas fa-link"></i></button>
+                </div>
+                <textarea class="w-full border-0 px-3 py-2.5 text-sm min-h-[150px] resize-y" placeholder="Add a description or instructions for this assignment..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attachments Card -->
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+              <h3 class="text-sm font-semibold text-gray-700">Attachments</h3>
+            </div>
+            <div class="p-6">
+              <!-- Dropzone Area -->
+              <label for="file-upload" class="relative flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                  <i class="fas fa-cloud-arrow-up text-gray-400 text-3xl mb-3"></i>
+                  <p class="mb-1 text-sm text-gray-500">
+                    <span class="font-semibold">Click to upload</span> or drag and drop
+                  </p>
+                  <p class="text-xs text-gray-400">PDF, DOCX, PPTX, JPG, PNG (Max. 25MB)</p>
+                </div>
+                <input id="file-upload" type="file" class="hidden" />
+              </label>
+            </div>
+          </div>
+
+          <!-- Options Card -->
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div class="p-6 space-y-4">
+              <!-- Topic -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                  <i class="fas fa-folder mr-1.5 text-gray-400"></i>Topic
+                </label>
+                <input type="text" list="topics-list" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Select or create a topic">
+                <datalist id="topics-list">
+                  <option value="Week 1">
+                  <option value="Week 2">
+                  <option value="Homework">
+                  <option value="Quiz">
+                </datalist>
+              </div>
+
+              <!-- Due Date + Points Row -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                    <i class="fas fa-clock mr-1.5 text-gray-400"></i>Due Date
+                  </label>
+                  <input type="datetime-local" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                    <i class="fas fa-star mr-1.5 text-gray-400"></i>Points
+                  </label>
+                  <input type="number" min="0" max="1000" value="100" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+              </div>
+
+              <!-- Allow Late Submission Toggle -->
+              <div class="flex items-center gap-3 pt-2">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer">
+                  <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+                <span class="text-sm text-gray-700">Allow late submission</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Actions -->
+          <div class="flex items-center justify-between">
+            <button type="button" class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <i class="fas fa-file-lines mr-1.5"></i>Save as Draft
+            </button>
+            <button type="submit" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+              <i class="fas fa-paper-plane mr-1.5"></i>Assign
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
 </div>
 </body>
 </html>

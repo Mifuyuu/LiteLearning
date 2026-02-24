@@ -35,7 +35,7 @@ class Login extends Component
 
         RateLimiter::hit($throttleKey, 60);
 
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        if (Auth::attempt(['email' => $this->email, 'password' => $this->password, 'is_active' => true], $this->remember)) {
             RateLimiter::clear($throttleKey);
             session()->regenerate();
 

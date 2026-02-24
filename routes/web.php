@@ -53,39 +53,43 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
     // Gamification (Student only)
-    Route::get('/store', \App\Livewire\Student\Store::class)->name('store');
-    Route::get('/leaderboard', \App\Livewire\Student\Leaderboard::class)->name('leaderboard');
-    Route::get('/achievements', \App\Livewire\Student\Achievements::class)->name('achievements');
+    Route::middleware('student')->group(function () {
+        Route::get('/store', \App\Livewire\Student\Store::class)->name('store');
+        Route::get('/leaderboard', \App\Livewire\Student\Leaderboard::class)->name('leaderboard');
+        Route::get('/achievements', \App\Livewire\Student\Achievements::class)->name('achievements');
+    });
 
     // Classrooms
     Route::get('/classrooms', ClassroomIndex::class)->name('classrooms');
     Route::get('/c/{classroom}', ClassroomShow::class)->name('classroom.show');
     Route::get('/c/{classroom}/people', People::class)->name('classroom.people');
 
-    // Assignments
-    Route::get('/c/{classroom}/a/create', AssignmentCreate::class)->name('assignment.create');
+    // Assignments — create route MUST come before {assignment} wildcard
+    Route::middleware('teacher')->group(function () {
+        Route::get('/c/{classroom}/a/create', AssignmentCreate::class)->name('assignment.create');
+    });
     Route::get('/c/{classroom}/a/{assignment}', AssignmentShow::class)->name('assignment.show');
     Route::get('/c/{classroom}/a/{assignment}/g/{submission}', Grade::class)->name('assignment.grade');
 
-    // Calendar
-    Route::get('/calendar', function () {
-        return view('pages.calendar');
-    })->name('calendar');
-
-    // To Review
-    Route::get('/to-review', function () {
-        return view('pages.to-review');
-    })->name('to-review');
+    // Calendar & To-Review (placeholder pages — sidebar navigation depends on these routes)
+    Route::view('/calendar', 'pages.calendar')->name('calendar');
+    Route::view('/to-review', 'pages.to-review')->name('to-review');
 
     // Profile & Settings
     Route::get('/profile', \App\Livewire\Profile::class)->name('profile');
 
     Route::get('/settings', Settings::class)->name('settings');
 
-    // Bug Reports (Admin only)
-    Route::get('/admin/reports', \App\Livewire\Admin\BugReports::class)
-        ->name('admin.reports')
-        ->middleware('admin');
+    // Admin Routes
+    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', \App\Livewire\Admin\Dashboard::class)->name('dashboard');
+        Route::get('/users', \App\Livewire\Admin\Users::class)->name('users');
+        Route::get('/classrooms', \App\Livewire\Admin\Classrooms::class)->name('classrooms');
+        Route::get('/store', \App\Livewire\Admin\Store::class)->name('store');
+        Route::get('/achievements', \App\Livewire\Admin\Achievements::class)->name('achievements');
+        Route::get('/badges', \App\Livewire\Admin\Badges::class)->name('badges');
+        Route::get('/reports', \App\Livewire\Admin\BugReports::class)->name('reports');
+    });
 
     // Sidebar classroom preferences
     Route::post('/sidebar/classrooms/reorder', [SidebarClassroomPreferenceController::class, 'reorder'])

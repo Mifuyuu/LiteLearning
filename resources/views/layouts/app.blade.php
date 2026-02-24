@@ -61,148 +61,193 @@
                     $isStoreActive = request()->routeIs('store');
                     $isLeaderboardActive = request()->routeIs('leaderboard');
                     $isAchievementsActive = request()->routeIs('achievements');
+
+                    // Admin routes
+                    $isAdminDashboardActive = request()->routeIs('admin.dashboard');
+                    $isAdminUsersActive = request()->routeIs('admin.users');
+                    $isAdminClassroomsActive = request()->routeIs('admin.classrooms');
+                    $isAdminStoreActive = request()->routeIs('admin.store');
+                    $isAdminAchievementsActive = request()->routeIs('admin.achievements');
+                    $isAdminBadgesActive = request()->routeIs('admin.badges');
+                    $isAdminReportsActive = request()->routeIs('admin.reports');
                 @endphp
-                <a href="{{ route('dashboard') }}"
-                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isDashboardActive) }}">
-                    <i class="fas fa-home w-5 mr-3 text-center"></i>
-                    {{ __('Dashboard') }}
-                </a>
-
-                @if(!auth()->user()->isTeacher())
-                    <a href="{{ route('classrooms') }}"
-                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isClassroomsActive) }}">
-                        <i class="fas fa-chalkboard w-5 mr-3 text-center"></i>
-                        {{ __('Classrooms') }}
+                @if(!auth()->user()->isAdmin())
+                    <a href="{{ route('dashboard') }}"
+                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isDashboardActive) }}">
+                        <i class="fas fa-home w-5 mr-3 text-center"></i>
+                        {{ __('Dashboard') }}
                     </a>
-                @endif
 
-                <a href="{{ route('calendar') }}"
-                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isCalendarActive) }}">
-                    <i class="fas fa-calendar-alt w-5 mr-3 text-center"></i>
-                    {{ __('Calendar') }}
-                </a>
+                    @if(!auth()->user()->isTeacher())
+                        <a href="{{ route('classrooms') }}"
+                            class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isClassroomsActive) }}">
+                            <i class="fas fa-chalkboard w-5 mr-3 text-center"></i>
+                            {{ __('Classrooms') }}
+                        </a>
+                    @endif
 
-                @if(auth()->user()->isStudent())
-                    <a href="{{ route('achievements') }}"
-                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAchievementsActive) }}">
-                        <i class="fas fa-medal w-5 mr-3 text-center"></i>
-                        {{ __('Achievements & Badges') }}
+                    <a href="{{ route('calendar') }}"
+                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isCalendarActive) }}">
+                        <i class="fas fa-calendar-alt w-5 mr-3 text-center"></i>
+                        {{ __('Calendar') }}
                     </a>
-                    <a href="{{ route('leaderboard') }}"
-                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isLeaderboardActive) }}">
-                        <i class="fas fa-trophy w-5 mr-3 text-center"></i>
-                        {{ __('Leaderboard') }}
-                    </a>
-                    <a href="{{ route('store') }}"
-                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isStoreActive) }}">
-                        <i class="fas fa-store w-5 mr-3 text-center"></i>
-                        {{ __('store.title') }}
-                    </a>
-                @endif
 
-                @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
-                    <div class="pt-4">
-                        <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Teaching') }}
-                        </p>
+                    @if(auth()->user()->isStudent())
+                        <a href="{{ route('achievements') }}"
+                            class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAchievementsActive) }}">
+                            <i class="fas fa-medal w-5 mr-3 text-center"></i>
+                            {{ __('Achievements & Badges') }}
+                        </a>
+                        <a href="{{ route('leaderboard') }}"
+                            class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isLeaderboardActive) }}">
+                            <i class="fas fa-trophy w-5 mr-3 text-center"></i>
+                            {{ __('Leaderboard') }}
+                        </a>
+                        <a href="{{ route('store') }}"
+                            class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isStoreActive) }}">
+                            <i class="fas fa-store w-5 mr-3 text-center"></i>
+                            {{ __('store.title') }}
+                        </a>
+                    @endif
+
+                    @if(auth()->user()->isTeacher())
+                        <div class="pt-4">
+                            <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Teaching') }}
+                            </p>
+                            <div class="mt-2 space-y-1">
+                                @php
+                                    $isMyClassesActive = request()->routeIs('classrooms') && request()->query('filter') === 'teaching';
+                                @endphp
+                                <a href="{{ route('classrooms') }}?filter=teaching"
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isMyClassesActive) }}">
+                                    <i class="fas fa-chalkboard-teacher w-5 mr-3 text-center"></i>
+                                    {{ __('My Classes') }}
+                                </a>
+                                <a href="{{ route('to-review') }}"
+                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isToReviewActive) }}">
+                                    <i class="fas fa-tasks w-5 mr-3 text-center"></i>
+                                    {{ __('To Review') }}
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Classes') }}</p>
+                            <div class="mt-2 space-y-1" data-sortable-sidebar data-sidebar-list="teaching">
+                                @php
+                                    $pinnedTeachingIds = \App\Models\ClassroomSidebarPreference::query()
+                                        ->where('user_id', auth()->id())
+                                        ->where('is_pinned', true)
+                                        ->whereIn('classroom_id', auth()->user()->ownedClassrooms()->where('is_archived', false)->pluck('id'))
+                                        ->orderBy('position')
+                                        ->pluck('classroom_id')
+                                        ->all();
+
+                                    $pinnedTeachingMap = \App\Models\Classroom::query()
+                                        ->whereIn('id', $pinnedTeachingIds)
+                                        ->get()
+                                        ->keyBy('id');
+
+                                    $teachingClasses = collect($pinnedTeachingIds)
+                                        ->map(fn($id) => $pinnedTeachingMap->get($id))
+                                        ->filter();
+                                @endphp
+                                @foreach($teachingClasses as $tc)
+                                    <a href="{{ route('classroom.show', $tc) }}" data-classroom-id="{{ $tc->id }}"
+                                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $tc->id) }}">
+                                        <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $tc->theme_color }}">
+                                        </div>
+                                        <span class="truncate">{{ $tc->name }}</span>
+                                    </a>
+                                @endforeach
+                                <p data-empty-pinned
+                                    class="px-3 py-2 text-xs text-gray-400 {{ $teachingClasses->isEmpty() ? '' : 'hidden' }}">
+                                    {{ __('No pinned classrooms.') }}
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if(auth()->user()->isStudent())
+                        <div class="pt-4">
+                            <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Enrolled') }}
+                            </p>
+                            <div class="mt-2 space-y-1" data-sortable-sidebar data-sidebar-list="enrolled">
+                                @php
+                                    $pinnedEnrolledIds = \App\Models\ClassroomSidebarPreference::query()
+                                        ->where('user_id', auth()->id())
+                                        ->where('is_pinned', true)
+                                        ->whereIn('classroom_id', auth()->user()->enrolledClassrooms()->where('is_archived', false)->pluck('classrooms.id'))
+                                        ->orderBy('position')
+                                        ->pluck('classroom_id')
+                                        ->all();
+
+                                    $pinnedEnrolledMap = \App\Models\Classroom::query()
+                                        ->whereIn('id', $pinnedEnrolledIds)
+                                        ->get()
+                                        ->keyBy('id');
+
+                                    $enrolledClasses = collect($pinnedEnrolledIds)
+                                        ->map(fn($id) => $pinnedEnrolledMap->get($id))
+                                        ->filter();
+                                @endphp
+                                @foreach($enrolledClasses as $ec)
+                                    <a href="{{ route('classroom.show', $ec) }}" data-classroom-id="{{ $ec->id }}"
+                                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $ec->id) }}">
+                                        <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $ec->theme_color }}">
+                                        </div>
+                                        <span class="truncate">{{ $ec->name }}</span>
+                                    </a>
+                                @endforeach
+                                <p data-empty-pinned
+                                    class="px-3 py-2 text-xs text-gray-400 {{ $enrolledClasses->isEmpty() ? '' : 'hidden' }}">
+                                    {{ __('No pinned classrooms.') }}
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+
+                @else
+                    {{-- Admin-only navigation --}}
+                    <div class="pt-2">
+                        <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                            {{ __('Administration') }}</p>
                         <div class="mt-2 space-y-1">
-                            @php
-                                $isMyClassesActive = request()->routeIs('classrooms') && request()->query('filter') === 'teaching';
-                                $isBugReportsActive = request()->routeIs('admin.reports');
-                            @endphp
-                            <a href="{{ route('classrooms') }}?filter=teaching"
-                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isMyClassesActive) }}">
-                                <i class="fas fa-chalkboard-teacher w-5 mr-3 text-center"></i>
-                                {{ __('My Classes') }}
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminDashboardActive) }}">
+                                <i class="fas fa-chart-pie w-5 mr-3 text-center"></i>
+                                {{ __('Admin Dashboard') }}
                             </a>
-                            <a href="{{ route('to-review') }}"
-                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isToReviewActive) }}">
-                                <i class="fas fa-tasks w-5 mr-3 text-center"></i>
-                                {{ __('To Review') }}
+                            <a href="{{ route('admin.users') }}"
+                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminUsersActive) }}">
+                                <i class="fas fa-users-cog w-5 mr-3 text-center"></i>
+                                {{ __('User Management') }}
                             </a>
-                            @if(auth()->user()->isAdmin())
-                                <a href="{{ route('admin.reports') }}"
-                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isBugReportsActive) }}">
-                                    <i class="fas fa-flag w-5 mr-3 text-center"></i>
-                                    {{ __('Bug Reports') }}
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                @endif
-
-                @if(auth()->user()->isStudent())
-                    <div class="pt-4">
-                        <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Enrolled') }}
-                        </p>
-                        <div class="mt-2 space-y-1" data-sortable-sidebar data-sidebar-list="enrolled">
-                            @php
-                                $pinnedEnrolledIds = \App\Models\ClassroomSidebarPreference::query()
-                                    ->where('user_id', auth()->id())
-                                    ->where('is_pinned', true)
-                                    ->whereIn('classroom_id', auth()->user()->enrolledClassrooms()->where('is_archived', false)->pluck('classrooms.id'))
-                                    ->orderBy('position')
-                                    ->pluck('classroom_id')
-                                    ->all();
-
-                                $pinnedEnrolledMap = \App\Models\Classroom::query()
-                                    ->whereIn('id', $pinnedEnrolledIds)
-                                    ->get()
-                                    ->keyBy('id');
-
-                                $enrolledClasses = collect($pinnedEnrolledIds)
-                                    ->map(fn($id) => $pinnedEnrolledMap->get($id))
-                                    ->filter();
-                            @endphp
-                            @foreach($enrolledClasses as $ec)
-                                <a href="{{ route('classroom.show', $ec) }}" data-classroom-id="{{ $ec->id }}"
-                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $ec->id) }}">
-                                    <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $ec->theme_color }}">
-                                    </div>
-                                    <span class="truncate">{{ $ec->name }}</span>
-                                </a>
-                            @endforeach
-                            <p data-empty-pinned
-                                class="px-3 py-2 text-xs text-gray-400 {{ $enrolledClasses->isEmpty() ? '' : 'hidden' }}">
-                                {{ __('No pinned classrooms.') }}
-                            </p>
-                        </div>
-                    </div>
-                @endif
-
-                @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
-                    <div class="pt-4">
-                        <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Classes') }}</p>
-                        <div class="mt-2 space-y-1" data-sortable-sidebar data-sidebar-list="teaching">
-                            @php
-                                $pinnedTeachingIds = \App\Models\ClassroomSidebarPreference::query()
-                                    ->where('user_id', auth()->id())
-                                    ->where('is_pinned', true)
-                                    ->whereIn('classroom_id', auth()->user()->ownedClassrooms()->where('is_archived', false)->pluck('id'))
-                                    ->orderBy('position')
-                                    ->pluck('classroom_id')
-                                    ->all();
-
-                                $pinnedTeachingMap = \App\Models\Classroom::query()
-                                    ->whereIn('id', $pinnedTeachingIds)
-                                    ->get()
-                                    ->keyBy('id');
-
-                                $teachingClasses = collect($pinnedTeachingIds)
-                                    ->map(fn($id) => $pinnedTeachingMap->get($id))
-                                    ->filter();
-                            @endphp
-                            @foreach($teachingClasses as $tc)
-                                <a href="{{ route('classroom.show', $tc) }}" data-classroom-id="{{ $tc->id }}"
-                                    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $tc->id) }}">
-                                    <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $tc->theme_color }}">
-                                    </div>
-                                    <span class="truncate">{{ $tc->name }}</span>
-                                </a>
-                            @endforeach
-                            <p data-empty-pinned
-                                class="px-3 py-2 text-xs text-gray-400 {{ $teachingClasses->isEmpty() ? '' : 'hidden' }}">
-                                {{ __('No pinned classrooms.') }}
-                            </p>
+                            <a href="{{ route('admin.classrooms') }}"
+                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminClassroomsActive) }}">
+                                <i class="fas fa-university w-5 mr-3 text-center"></i>
+                                {{ __('Classroom Management') }}
+                            </a>
+                            <a href="{{ route('admin.store') }}"
+                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminStoreActive) }}">
+                                <i class="fas fa-shopping-bag w-5 mr-3 text-center"></i>
+                                {{ __('Store Management') }}
+                            </a>
+                            <a href="{{ route('admin.achievements') }}"
+                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminAchievementsActive) }}">
+                                <i class="fas fa-award w-5 mr-3 text-center"></i>
+                                {{ __('Achievements') }}
+                            </a>
+                            <a href="{{ route('admin.badges') }}"
+                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminBadgesActive) }}">
+                                <i class="fas fa-id-badge w-5 mr-3 text-center"></i>
+                                {{ __('Badges') }}
+                            </a>
+                            <a href="{{ route('admin.reports') }}"
+                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminReportsActive) }}">
+                                <i class="fas fa-flag w-5 mr-3 text-center"></i>
+                                {{ __('Bug Reports') }}
+                            </a>
                         </div>
                     </div>
                 @endif
@@ -237,7 +282,7 @@
 
                     <div class="flex items-center space-x-3">
                         <!-- Create / Join buttons -->
-                        @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
+                        @if(auth()->user()->isTeacher())
                             @livewire('classroom.create')
                         @endif
                         @if(auth()->user()->isStudent())
@@ -323,14 +368,13 @@
         </div>
     </div>
 
-    <div x-data="{ show: {{ session()->has('message') ? 'true' : 'false' }}, message: '{{ session('message') }}' }" 
-         @notify.window="message = $event.detail.message; show = true; setTimeout(() => show = false, 3000)"
-         x-init="if(show) setTimeout(() => show = false, 3000)" 
-         x-show="show" x-cloak
-         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
-         x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2"
-         class="fixed bottom-4 right-4 z-[100] w-[calc(100%-2rem)] max-w-sm rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 shadow-lg">
+    <div x-data="{ show: {{ session()->has('message') ? 'true' : 'false' }}, message: '{{ session('message') }}' }"
+        @notify.window="message = $event.detail.message; show = true; setTimeout(() => show = false, 3000)"
+        x-init="if(show) setTimeout(() => show = false, 3000)" x-show="show" x-cloak
+        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2"
+        class="fixed bottom-4 right-4 z-[100] w-[calc(100%-2rem)] max-w-sm rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 shadow-lg">
         <div class="flex items-start gap-2">
             <i class="fas fa-check-circle mt-0.5"></i>
             <p class="flex-1" x-text="message"></p>

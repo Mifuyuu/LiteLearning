@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\GamificationException;
 use App\Models\Achievement;
 use App\Models\Badge;
 use App\Models\CoinTransaction;
@@ -26,14 +27,14 @@ class GamificationService
         }
 
         CoinTransaction::create([
-            'user_id' => $user->id,
-            'amount' => $amount,
-            'type' => $amount > 0 ? 'earn' : 'spend',
-            'source' => $source,
+            'user_id'        => $user->id,
+            'amount'         => $amount,
+            'type'           => $amount > 0 ? 'earn' : 'spend',
+            'source'         => $source,
             'reference_type' => $referenceType,
-            'reference_id' => $referenceId,
-            'metadata' => $metadata,
-            'happened_at' => now(),
+            'reference_id'   => $referenceId,
+            'metadata'       => $metadata,
+            'happened_at'    => now(),
         ]);
 
         $gamification = $user->gamification()->firstOrCreate(
@@ -59,12 +60,12 @@ class GamificationService
             ['coins' => 0, 'xp' => 0, 'level' => 1]
         );
 
-        $newXp = $gamification->xp + $amount;
+        $newXp    = $gamification->xp + $amount;
         $newLevel = $this->resolveLevelFromXp($newXp);
         $levelUps = max(0, $newLevel - $gamification->level);
 
         $gamification->update([
-            'xp' => $newXp,
+            'xp'    => $newXp,
             'level' => $newLevel,
         ]);
 
@@ -72,7 +73,7 @@ class GamificationService
             $bonusCoins = $levelUps * 20;
             $this->awardCoins($user, $bonusCoins, 'level_up', null, null, [
                 'levels_gained' => $levelUps,
-                'new_level' => $newLevel,
+                'new_level'     => $newLevel,
             ]);
         }
     }
@@ -184,10 +185,16 @@ class GamificationService
         }
     }
 
+    /**
+     * Resolve a user's level from their total XP.
+     * Capped at level 100 to prevent an unbounded loop on very high XP values. (fix #10)
+     */
     public function resolveLevelFromXp(int $xp): int
     {
-        $level = 1;
-        while ($xp >= $this->totalXpForLevel($level + 1)) {
+        $maxLevel = 100;
+        $level    = 1;
+
+        while ($level < $maxLevel && $xp >= $this->totalXpForLevel($level + 1)) {
             $level++;
         }
 
@@ -203,18 +210,23 @@ class GamificationService
         return (int) (((($level - 1) * $level) / 2) * 100);
     }
 
+    /**
+     * Purchase a store item for a user.
+     *
+     * @throws GamificationException (fix #9)
+     */
     public function purchaseItem(User $user, StoreItem $item): void
     {
         if (!$this->isEligible($user)) {
-            throw new \Exception(__('Only students can purchase items.'));
+            throw new GamificationException(__('Only students can purchase items.'));
         }
 
         if (!$item->is_active) {
-            throw new \Exception(__('This item is no longer available.'));
+            throw new GamificationException(__('This item is no longer available.'));
         }
 
         if ($user->storeItems()->where('store_item_id', $item->id)->exists()) {
-            throw new \Exception(__('You already own this item.'));
+            throw new GamificationException(__('You already own this item.'));
         }
 
         $gamification = $user->gamification()->firstOrCreate(
@@ -223,7 +235,7 @@ class GamificationService
         );
 
         if ($gamification->coins < $item->price) {
-            throw new \Exception(__('Not enough coins.'));
+            throw new GamificationException(__('Not enough coins.'));
         }
 
         // Deduct coins
@@ -231,27 +243,32 @@ class GamificationService
 
         // Record transaction
         CoinTransaction::create([
-            'user_id' => $user->id,
-            'amount' => -$item->price,
-            'type' => 'spend',
-            'source' => 'store_purchase',
+            'user_id'        => $user->id,
+            'amount'         => -$item->price,
+            'type'           => 'spend',
+            'source'         => 'store_purchase',
             'reference_type' => StoreItem::class,
-            'reference_id' => $item->id,
-            'happened_at' => now(),
+            'reference_id'   => $item->id,
+            'happened_at'    => now(),
         ]);
 
         // Attach item
         $user->storeItems()->attach($item->id);
     }
 
+    /**
+     * Equip a purchased store item.
+     *
+     * @throws GamificationException (fix #9)
+     */
     public function equipItem(User $user, StoreItem $item): void
     {
         if (!$this->isEligible($user)) {
-            throw new \Exception(__('Only students can equip items.'));
+            throw new GamificationException(__('Only students can equip items.'));
         }
 
         if (!$user->storeItems()->where('store_item_id', $item->id)->exists()) {
-            throw new \Exception(__('You do not own this item.'));
+            throw new GamificationException(__('You do not own this item.'));
         }
 
         if ($item->type === 'name_color') {

@@ -13,6 +13,9 @@ class Settings extends Component
 {
     public string $locale = 'th';
     public int $uiScale = 100;
+    public string $name = '';
+
+    const NAME_MAX_LENGTH = 50;
 
     public function setLocale(string $value): void
     {
@@ -24,8 +27,9 @@ class Settings extends Component
     {
         /** @var User $user */
         $user = Auth::user();
-        $this->locale = $user->locale ?? 'th';
+        $this->locale  = $user->locale ?? 'th';
         $this->uiScale = (int) ($user->ui_scale ?? 100);
+        $this->name    = $user->name;
     }
 
     public function updatedLocale(string $value)
@@ -62,6 +66,21 @@ class Settings extends Component
 
         session()->flash('message', __('Changes saved successfully.'));
 
+        $this->redirectRoute('settings', navigate: false);
+    }
+
+    public function updateName(): void
+    {
+        $this->validate([
+            'name' => ['required', 'string', 'max:' . self::NAME_MAX_LENGTH],
+        ]);
+
+        /** @var User $user */
+        $user = Auth::user();
+        $user->update(['name' => trim($this->name)]);
+        $this->name = $user->name;
+
+        session()->flash('message', __('Changes saved successfully.'));
         $this->redirectRoute('settings', navigate: false);
     }
 

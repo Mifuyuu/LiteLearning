@@ -27,6 +27,7 @@ class User extends Authenticatable
         'bio',
         'locale',
         'ui_scale',
+        'is_active',
         'active_name_color',
         'active_avatar_frame',
     ];
@@ -45,6 +46,7 @@ class User extends Authenticatable
             'tos_accepted_at' => 'datetime',
             'setup_completed_at' => 'datetime',
             'ui_scale' => 'integer',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -135,8 +137,11 @@ class User extends Authenticatable
     public function allClassrooms()
     {
         if ($this->isTeacher() || $this->isAdmin()) {
+            // Deduplicate by id: a teacher enrolled in their own classroom would appear twice otherwise.
             return $this->ownedClassrooms()->where('is_archived', false)->get()
-                ->merge($this->enrolledClassrooms()->where('is_archived', false)->get());
+                ->merge($this->enrolledClassrooms()->where('is_archived', false)->get())
+                ->unique('id')
+                ->values();
         }
 
         return $this->enrolledClassrooms()->where('is_archived', false)->get();
@@ -145,7 +150,7 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute(): string
     {
         if ($this->avatar) {
-            return asset('storage/' . $this->avatar);
+            return \Illuminate\Support\Facades\Storage::url($this->avatar);
         }
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=4F46E5&color=fff';
     }
@@ -153,7 +158,7 @@ class User extends Authenticatable
     public function getCoverImageUrlAttribute(): ?string
     {
         if ($this->cover_image) {
-            return asset('storage/' . $this->cover_image);
+            return \Illuminate\Support\Facades\Storage::url($this->cover_image);
         }
 
         return null;

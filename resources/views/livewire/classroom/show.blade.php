@@ -38,7 +38,7 @@
             class="px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap {{ $activeTab === 'people' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
             <i class="fas fa-users mr-2"></i> {{ __('People') }}
         </button>
-        @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
+        @if($classroom->isOwnedBy(auth()->user()))
             <button wire:click="setTab('grades')"
                 class="px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap {{ $activeTab === 'grades' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
                 <i class="fas fa-chart-bar mr-2"></i> {{ __('Grades') }}
@@ -68,7 +68,7 @@
             @endif
 
             <!-- New Announcement -->
-            @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
+            @if($classroom->isOwnedBy(auth()->user()))
                 <div class="bg-white rounded-xl border border-gray-200 p-4 mb-6" x-data="{ expanded: false }">
                     <div @click="expanded = true" class="cursor-text">
                         @if(!$newAnnouncement)
@@ -94,7 +94,7 @@
                                     <button @click="expanded = false" wire:click="$set('newAnnouncement', '')"
                                         class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">{{ __('Cancel') }}</button>
                                     <button wire:click="postAnnouncement"
-                                        class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                                        class="btn-3d btn-3d--indigo px-4 py-2 text-sm font-medium rounded-lg transition-colors">
                                         {{ __('Post') }}
                                     </button>
                                 </div>
@@ -152,9 +152,9 @@
             <!-- Top bar: Create + Filter + View Work -->
             <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
                 <div class="flex items-center gap-3">
-                    @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
+                    @if($classroom->isOwnedBy(auth()->user()))
                         <a href="{{ route('assignment.create', $classroom) }}"
-                            class="inline-flex items-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+                            class="btn-3d btn-3d--indigo inline-flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors">
                             <i class="fas fa-plus mr-2"></i> {{ __('Create') }}
                         </a>
                     @endif
@@ -166,7 +166,7 @@
                 $grouped = $assignments->groupBy(fn($a) => $a->topic ?? '__none__');
                 $topicNames = $grouped->keys()->filter(fn($k) => $k !== '__none__')->sort()->values();
                 $noTopicAssignments = $grouped->get('__none__', collect());
-                $canManage = $classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin();
+                $canManage = $classroom->isOwnedBy(auth()->user());
             @endphp
 
             @if($assignments->isEmpty())
@@ -464,6 +464,13 @@
     <!-- Grades Tab -->
     @if($activeTab === 'grades')
         <div>
+            @if($classroom->students->isEmpty())
+                <div class="bg-white rounded-xl border border-gray-200 p-12 text-center">
+                    <i class="fas fa-chart-bar text-gray-300 text-4xl mb-3"></i>
+                    <p class="text-gray-500">{{ __('No students enrolled yet.') }}</p>
+                    <p class="text-sm text-gray-400 mt-1">{{ __('Share the class code') }} <strong class="text-indigo-600 font-mono">{{ $classroom->code }}</strong> {{ __('with your students.') }}</p>
+                </div>
+            @else
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div class="tabs-scroll overflow-x-auto">
                     <table class="w-full text-sm">
@@ -532,11 +539,12 @@
                     </table>
                 </div>
             </div>
+            @endif
         </div>
     @endif
 
     <!-- Settings Tab -->
-    @if($activeTab === 'settings' && ($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin()))
+    @if($activeTab === 'settings' && $classroom->isOwnedBy(auth()->user()))
         <div class="max-w-3xl mx-auto space-y-6">
             <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ __('Classroom Settings') }}</h3>
@@ -586,7 +594,7 @@
 
                     <div class="pt-2 flex justify-end">
                         <button type="submit"
-                            class="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                            class="btn-3d btn-3d--indigo px-5 py-2.5 text-sm font-medium rounded-lg transition-colors">
                             <span wire:loading.remove wire:target="saveSettings">
                                 <i class="fas fa-save mr-2"></i>{{ __('Save Settings') }}
                             </span>

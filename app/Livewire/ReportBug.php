@@ -29,6 +29,15 @@ class ReportBug extends Component
 
     public function submit(): void
     {
+        // I5: rate limit bug reports (3 per 10 minutes)
+        $key = 'report-bug:' . Auth::id();
+        if (cache()->has($key) && cache()->get($key) >= 3) {
+            $this->dispatch('notify', message: __('Too many reports. Please wait before submitting again.'));
+            return;
+        }
+        cache()->increment($key);
+        cache()->put($key, cache()->get($key), 600);
+
         $this->validate([
             'type'    => 'required|in:bug,suggestion,other',
             'title'   => 'required|string|max:100',

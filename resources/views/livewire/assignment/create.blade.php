@@ -32,11 +32,11 @@
             @foreach($types as $typeKey => $info)
                 <label
                     class="relative flex flex-col items-center p-3 cursor-pointer rounded-lg border-2 transition-all
-                                    {{ $type === $typeKey ? 'border-indigo-500 bg-indigo-50/50' : 'border-gray-100 hover:border-gray-200 bg-gray-50/50 hover:bg-gray-50' }}">
+                                        {{ $type === $typeKey ? 'border-indigo-500 bg-indigo-50/50' : 'border-gray-100 hover:border-gray-200 bg-gray-50/50 hover:bg-gray-50' }}">
                     <input type="radio" wire:model.live="type" value="{{ $typeKey }}" class="sr-only">
                     <div
                         class="w-10 h-10 rounded-full flex items-center justify-center mb-2 
-                                        {{ $type === $typeKey ? 'bg-indigo-100 text-indigo-600' : 'bg-white text-gray-400 shadow-sm' }}">
+                                            {{ $type === $typeKey ? 'bg-indigo-100 text-indigo-600' : 'bg-white text-gray-400 shadow-sm' }}">
                         <i class="fas {{ $info['icon'] }} text-lg"></i>
                     </div>
                     <span class="text-sm font-medium {{ $type === $typeKey ? 'text-indigo-700' : 'text-gray-600' }}">
@@ -72,37 +72,37 @@
                 </div>
                 <div class="p-6">
                     <div x-data="{
-                                    content: @entangle('description'),
-                                    init() {
-                                        const quill = new Quill($refs.editor, {
-                                            theme: 'snow',
-                                            placeholder: '{{ __('Add a description or instructions for this assignment...') }}',
-                                            modules: {
-                                                toolbar: [
-                                                    [{ 'header': [1, 2, 3, false] }],
-                                                    ['bold', 'italic', 'underline', 'strike'],
-                                                    [{ 'color': [] }],
-                                                    [{ 'align': [] }],
-                                                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                                    ['link'],
-                                                    ['clean']
-                                                ]
+                                        content: @entangle('description'),
+                                        init() {
+                                            const quill = new Quill($refs.editor, {
+                                                theme: 'snow',
+                                                placeholder: '{{ __('Add a description or instructions for this assignment...') }}',
+                                                modules: {
+                                                    toolbar: [
+                                                        [{ 'header': [1, 2, 3, false] }],
+                                                        ['bold', 'italic', 'underline', 'strike'],
+                                                        [{ 'color': [] }],
+                                                        [{ 'align': [] }],
+                                                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                                        ['link'],
+                                                        ['clean']
+                                                    ]
+                                                }
+                                            });
+
+                                            // Set initial content if exists
+                                            if (this.content) {
+                                                quill.root.innerHTML = this.content;
                                             }
-                                        });
 
-                                        // Set initial content if exists
-                                        if (this.content) {
-                                            quill.root.innerHTML = this.content;
+                                            // Sync changes to Livewire
+                                            quill.on('text-change', () => {
+                                                let html = quill.root.innerHTML;
+                                                if (html === '<p><br></p>') html = '';
+                                                this.content = html;
+                                            });
                                         }
-
-                                        // Sync changes to Livewire
-                                        quill.on('text-change', () => {
-                                            let html = quill.root.innerHTML;
-                                            if (html === '<p><br></p>') html = '';
-                                            this.content = html;
-                                        });
-                                    }
-                                }" wire:ignore
+                                    }" wire:ignore
                         class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
                         <div x-ref="editor" class="min-h-[150px] text-sm border-0 !border-t border-gray-200"></div>
                     </div>
@@ -296,7 +296,7 @@
                 <i class="fas fa-file-lines mr-1.5"></i>{{ __('Save as Draft') }}
             </button>
             <button type="submit"
-                class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+                class="btn-3d btn-3d--indigo px-6 py-2.5 text-sm font-medium rounded-lg transition-colors">
                 <span wire:loading.remove wire:target="save"><i
                         class="fas fa-paper-plane mr-1.5"></i>{{ __('Assign') }}</span>
                 <span wire:loading wire:target="save"><i
