@@ -1,0 +1,34 @@
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: litelearning_mariadb
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env.docker
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d
+      - litelearning_mariadb_data:/var/lib/mysql
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: litelearning_phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_USER: litelearning_user
+      PMA_PASSWORD: secretpassword
+    depends_on:
+      - mariadb
+    restart: unless-stopped
+
+volumes:
+  litelearning_mariadb_data:
