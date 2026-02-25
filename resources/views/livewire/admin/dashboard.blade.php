@@ -1,6 +1,6 @@
 @section('page-title', __('Admin Dashboard'))
 
-<div class="space-y-6">
+<div class="space-y-6 animate__animated animate__fadeIn">
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Users Card -->

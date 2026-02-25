@@ -555,7 +555,7 @@
                                 <li><a href="#"
                                         class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">ติดต่อทีมงาน</a>
                                 </li>
-                                <li><a href="{{ route('tos') }}"
+                                <li><a href="#"
                                         class="text-slate-400 hover:text-indigo-400 transition-colors text-sm">เงื่อนไขการให้บริการ
                                         (ToS)</a></li>
                                 <li><a href="#"

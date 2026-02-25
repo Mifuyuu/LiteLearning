@@ -9,7 +9,7 @@
     </nav>
 @endsection
 
-<div x-data="{ copiedToast: false }">
+<div class="animate__animated animate__fadeIn" x-data="{ copiedToast: false }">
     <!-- Back -->
     <a href="{{ route('classroom.show', $classroom) }}" class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
         <i class="fas fa-arrow-left mr-2"></i> {{ __('Back to :name', ['name' => $classroom->name]) }}
@@ -570,7 +570,7 @@
     </div>
 
     @if($showDeleteModal)
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" wire:click="closeDeleteModal">
+    <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60" wire:click="closeDeleteModal">
         <div class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden" wire:click.stop>
             <div class="px-6 py-5 border-b border-gray-100">
                 <h4 class="text-base font-semibold text-gray-900">{{ __('Delete Assignment') }}</h4>

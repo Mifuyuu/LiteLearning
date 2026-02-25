@@ -1,4 +1,4 @@
-<div x-data="{
+<div class="animate__animated animate__fadeIn" x-data="{
     showCropper: false,
     cropType: 'avatar',
     imageUrl: null,
@@ -143,37 +143,41 @@
     </div>
 
     <!-- Cropping Modal -->
-    <div x-show="showCropper" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80" x-cloak
-        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-        @keydown.escape.window="closeCropper()">
+    <template x-teleport="body">
+        <div x-show="showCropper" class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/80" x-cloak
+            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+            @keydown.escape.window="closeCropper()">
 
-        <div class="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">
-                    <span x-show="cropType === 'avatar'">{{ __('Crop Profile Picture') }}</span>
-                    <span x-show="cropType === 'cover'">{{ __('Crop Cover Image') }}</span>
-                </h3>
-                <button @click="closeCropper()" class="text-gray-400 hover:text-gray-600 transition-colors">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
+            <div class="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
+                    <h3 class="text-lg font-bold text-gray-900">
+                        <span x-show="cropType === 'avatar'">{{ __('Crop Profile Picture') }}</span>
+                        <span x-show="cropType === 'cover'">{{ __('Crop Cover Image') }}</span>
+                    </h3>
+                    <button @click="closeCropper()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
 
-            <div class="flex-1 bg-gray-900 overflow-hidden flex items-center justify-center p-4 min-h-0">
-                <img x-ref="cropperImage" :src="imageUrl" class="max-w-full max-h-full block">
-            </div>
+                <div class="w-full bg-white p-4 shrink-0" style="height: 60vh;">
+                    <div class="w-full h-full relative">
+                        <img x-ref="cropperImage" :src="imageUrl" class="block max-w-full max-h-full">
+                    </div>
+                </div>
 
-            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 shrink-0">
-                <button @click="closeCropper()"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                    {{ __('Cancel') }}
-                </button>
-                <button @click="saveCrop()"
-                    class="btn-3d btn-3d--indigo px-6 py-2 text-sm font-bold rounded-lg transition-all">
-                    {{ __('Save Changes') }}
-                </button>
+                <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 shrink-0">
+                    <button @click="closeCropper()"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        {{ __('ยกเลิก') }}
+                    </button>
+                    <button @click="saveCrop()"
+                        class="btn-3d btn-3d--indigo px-6 py-2 text-sm font-bold rounded-lg transition-all">
+                        {{ __('บันทึกการเปลี่ยนแปลง') }}
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    </template>
 </div>

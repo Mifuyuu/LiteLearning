@@ -137,7 +137,7 @@ return new class extends Migration {
             $table->integer('max_score')->default(100);
             $table->dateTime('due_date')->nullable();
             $table->enum('status', ['draft', 'published', 'closed'])->default('draft');
-            $table->enum('type', ['assignment', 'quiz', 'material'])->default('assignment');
+            $table->enum('type', ['attendance', 'file', 'question', 'quiz', 'material'])->default('question');
             $table->string('topic')->nullable();
             $table->timestamps();
         });

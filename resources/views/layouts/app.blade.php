@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'LiteLearning' }}</title>
 
-    <!-- Fonts -->
+    <!-- Fonts (preconnect + preload for instant rendering) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -27,18 +27,53 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+
+    {{-- Livewire navigate loading bar --}}
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .livewire-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4f46e5, #818cf8, #4f46e5);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            z-index: 9999;
+            transition: opacity 0.2s;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
 </head>
 
 <body class="h-full overflow-hidden bg-gray-50 font-sans antialiased"
     x-data="{ sidebarOpen: true, mobileSidebar: false }" style="zoom: {{ (int) (auth()->user()->ui_scale ?? 100) }}%;">
-    <div class="h-screen flex overflow-hidden">
+    {{-- Loading bar (shown during wire:navigate transitions) --}}
+    <div x-data x-ref="bar" x-on:livewire:navigate-start.window="$refs.bar.style.opacity = '1'"
+        x-on:livewire:navigate-end.window="$refs.bar.style.opacity = '0'" class="livewire-progress" style="opacity: 0;">
+    </div>
+
+    <div class="h-screen flex overflow-clip">
         <!-- Sidebar -->
         <aside
             class="fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:shrink-0 overflow-hidden flex flex-col"
             :class="{ '-translate-x-full': !mobileSidebar, 'translate-x-0': mobileSidebar }">
             <!-- Logo -->
             <div class="flex items-center h-16 px-6 border-b border-gray-200">
-                <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
+                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center space-x-2">
                     <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
                         <i class="fas fa-graduation-cap text-white text-sm"></i>
                     </div>
@@ -72,38 +107,38 @@
                     $isAdminReportsActive = request()->routeIs('admin.reports');
                 @endphp
                 @if(!auth()->user()->isAdmin())
-                    <a href="{{ route('dashboard') }}"
+                    <a href="{{ route('dashboard') }}" wire:navigate
                         class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isDashboardActive) }}">
                         <i class="fas fa-home w-5 mr-3 text-center"></i>
                         {{ __('Dashboard') }}
                     </a>
 
                     @if(!auth()->user()->isTeacher())
-                        <a href="{{ route('classrooms') }}"
+                        <a href="{{ route('classrooms') }}" wire:navigate
                             class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isClassroomsActive) }}">
                             <i class="fas fa-chalkboard w-5 mr-3 text-center"></i>
                             {{ __('Classrooms') }}
                         </a>
                     @endif
 
-                    <a href="{{ route('calendar') }}"
+                    <a href="{{ route('calendar') }}" wire:navigate
                         class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isCalendarActive) }}">
                         <i class="fas fa-calendar-alt w-5 mr-3 text-center"></i>
                         {{ __('Calendar') }}
                     </a>
 
                     @if(auth()->user()->isStudent())
-                        <a href="{{ route('achievements') }}"
+                        <a href="{{ route('achievements') }}" wire:navigate
                             class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAchievementsActive) }}">
                             <i class="fas fa-medal w-5 mr-3 text-center"></i>
                             {{ __('Achievements & Badges') }}
                         </a>
-                        <a href="{{ route('leaderboard') }}"
+                        <a href="{{ route('leaderboard') }}" wire:navigate
                             class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isLeaderboardActive) }}">
                             <i class="fas fa-trophy w-5 mr-3 text-center"></i>
                             {{ __('Leaderboard') }}
                         </a>
-                        <a href="{{ route('store') }}"
+                        <a href="{{ route('store') }}" wire:navigate
                             class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isStoreActive) }}">
                             <i class="fas fa-store w-5 mr-3 text-center"></i>
                             {{ __('store.title') }}
@@ -118,12 +153,12 @@
                                 @php
                                     $isMyClassesActive = request()->routeIs('classrooms') && request()->query('filter') === 'teaching';
                                 @endphp
-                                <a href="{{ route('classrooms') }}?filter=teaching"
+                                <a href="{{ route('classrooms') }}?filter=teaching" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isMyClassesActive) }}">
                                     <i class="fas fa-chalkboard-teacher w-5 mr-3 text-center"></i>
                                     {{ __('My Classes') }}
                                 </a>
-                                <a href="{{ route('to-review') }}"
+                                <a href="{{ route('to-review') }}" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isToReviewActive) }}">
                                     <i class="fas fa-tasks w-5 mr-3 text-center"></i>
                                     {{ __('To Review') }}
@@ -153,7 +188,7 @@
                                         ->filter();
                                 @endphp
                                 @foreach($teachingClasses as $tc)
-                                    <a href="{{ route('classroom.show', $tc) }}" data-classroom-id="{{ $tc->id }}"
+                                    <a href="{{ route('classroom.show', $tc) }}" wire:navigate data-classroom-id="{{ $tc->id }}"
                                         class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $tc->id) }}">
                                         <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $tc->theme_color }}">
                                         </div>
@@ -192,7 +227,7 @@
                                         ->filter();
                                 @endphp
                                 @foreach($enrolledClasses as $ec)
-                                    <a href="{{ route('classroom.show', $ec) }}" data-classroom-id="{{ $ec->id }}"
+                                    <a href="{{ route('classroom.show', $ec) }}" wire:navigate data-classroom-id="{{ $ec->id }}"
                                         class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $ec->id) }}">
                                         <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $ec->theme_color }}">
                                         </div>
@@ -211,39 +246,40 @@
                     {{-- Admin-only navigation --}}
                     <div class="pt-2">
                         <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                            {{ __('Administration') }}</p>
+                            {{ __('Administration') }}
+                        </p>
                         <div class="mt-2 space-y-1">
-                            <a href="{{ route('admin.dashboard') }}"
+                            <a href="{{ route('admin.dashboard') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminDashboardActive) }}">
                                 <i class="fas fa-chart-pie w-5 mr-3 text-center"></i>
                                 {{ __('Admin Dashboard') }}
                             </a>
-                            <a href="{{ route('admin.users') }}"
+                            <a href="{{ route('admin.users') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminUsersActive) }}">
                                 <i class="fas fa-users-cog w-5 mr-3 text-center"></i>
                                 {{ __('User Management') }}
                             </a>
-                            <a href="{{ route('admin.classrooms') }}"
+                            <a href="{{ route('admin.classrooms') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminClassroomsActive) }}">
                                 <i class="fas fa-university w-5 mr-3 text-center"></i>
                                 {{ __('Classroom Management') }}
                             </a>
-                            <a href="{{ route('admin.store') }}"
+                            <a href="{{ route('admin.store') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminStoreActive) }}">
                                 <i class="fas fa-shopping-bag w-5 mr-3 text-center"></i>
                                 {{ __('Store Management') }}
                             </a>
-                            <a href="{{ route('admin.achievements') }}"
+                            <a href="{{ route('admin.achievements') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminAchievementsActive) }}">
                                 <i class="fas fa-award w-5 mr-3 text-center"></i>
                                 {{ __('Achievements') }}
                             </a>
-                            <a href="{{ route('admin.badges') }}"
+                            <a href="{{ route('admin.badges') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminBadgesActive) }}">
                                 <i class="fas fa-id-badge w-5 mr-3 text-center"></i>
                                 {{ __('Badges') }}
                             </a>
-                            <a href="{{ route('admin.reports') }}"
+                            <a href="{{ route('admin.reports') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminReportsActive) }}">
                                 <i class="fas fa-flag w-5 mr-3 text-center"></i>
                                 {{ __('Bug Reports') }}
@@ -253,6 +289,7 @@
                 @endif
             </nav>
         </aside>
+
 
         <!-- Mobile sidebar overlay -->
         <div x-show="mobileSidebar" x-cloak x-transition:enter="transition-opacity ease-linear duration-300"
@@ -328,11 +365,11 @@
                                                 {{ __(ucfirst(auth()->user()->role)) }}
                                             </span>
                                         </div>
-                                        <a href="{{ route('profile') }}" role="menuitem"
+                                        <a href="{{ route('profile') }}" wire:navigate role="menuitem"
                                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
                                             <i class="fas fa-user-circle w-4 mr-3"></i> {{ __('Profile') }}
                                         </a>
-                                        <a href="{{ route('settings') }}" role="menuitem"
+                                        <a href="{{ route('settings') }}" wire:navigate role="menuitem"
                                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
                                             <i class="fas fa-cog w-4 mr-3"></i> {{ __('Settings') }}
                                         </a>
@@ -368,17 +405,37 @@
         </div>
     </div>
 
-    <div x-data="{ show: {{ session()->has('message') ? 'true' : 'false' }}, message: '{{ session('message') }}' }"
-        @notify.window="message = $event.detail.message; show = true; setTimeout(() => show = false, 3000)"
-        x-init="if(show) setTimeout(() => show = false, 3000)" x-show="show" x-cloak
+    <div x-data="{ 
+            show: {{ session()->has('message') ? 'true' : 'false' }}, 
+            message: '{{ session('message') }}',
+            type: '{{ session('type', 'success') }}'
+        }" @notify.window="
+            message = $event.detail.message; 
+            type = $event.detail.type || 'success';
+            show = true; 
+            setTimeout(() => show = false, 3000);
+        " x-init="if(show) setTimeout(() => show = false, 3000)" x-show="show" x-cloak
         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
         x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2"
-        class="fixed bottom-4 right-4 z-[100] w-[calc(100%-2rem)] max-w-sm rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 shadow-lg">
+        class="fixed bottom-4 right-4 z-[100] w-[calc(100%-2rem)] max-w-sm rounded-lg border p-4 text-sm shadow-lg"
+        :class="{
+            'bg-green-50 border-green-200 text-green-700': type === 'success',
+            'bg-red-50 border-red-200 text-red-700': type === 'error',
+            'bg-blue-50 border-blue-200 text-blue-700': type === 'info'
+        }">
         <div class="flex items-start gap-2">
-            <i class="fas fa-check-circle mt-0.5"></i>
+            <i class="mt-0.5" :class="{
+                'fas fa-check-circle': type === 'success',
+                'fas fa-exclamation-circle': type === 'error' || type === 'warning',
+                'fas fa-info-circle': type === 'info'
+            }"></i>
             <p class="flex-1" x-text="message"></p>
-            <button type="button" @click="show = false" class="text-green-600 hover:text-green-800 cursor-pointer">
+            <button type="button" @click="show = false" class="cursor-pointer transition-colors" :class="{
+                    'text-green-600 hover:text-green-800': type === 'success',
+                    'text-red-600 hover:text-red-800': type === 'error',
+                    'text-blue-600 hover:text-blue-800': type === 'info'
+                }">
                 <i class="fas fa-xmark"></i>
             </button>
         </div>
@@ -403,8 +460,8 @@
                     const nameSpan = el.querySelector('span.truncate');
                     if (nameSpan) nameSpan.textContent = data.name;
                 });
-            });
         });
+ });
     </script>
 
     @livewire('report-bug')

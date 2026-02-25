@@ -1,6 +1,6 @@
 @section('page-title', __('Settings'))
 
-<div>
+<div class="animate__animated animate__fadeIn">
     <div class="max-w-2xl mx-auto">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Settings') }}</h2>
 

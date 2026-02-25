@@ -176,6 +176,8 @@
     "e.g., Section A": "เช่น ห้อง 1/A",
     "e.g., Math": "เช่น คณิต",
     "Add a description...": "เพิ่มคำอธิบาย...",
+    "Crop Profile Picture": "ครอบตัดรูปประจำตัว",
+    "Crop Cover Image": "ครอบตัดรูปหน้าปก",
 
     "Calendar View": "มุมมองปฏิทิน",
     "View all your upcoming assignments and deadlines in one place.": "ดูงานที่กำลังจะถึงและกำหนดส่งทั้งหมดในที่เดียว",
@@ -353,6 +355,12 @@
     "store.equip": "สวมใส่",
     "store.equipped": "สวมใส่แล้ว",
     "store.buy_confirm": "คุณแน่ใจหรือไม่ว่าต้องการซื้อ ':item' ในราคา :price เหรียญ?",
+    "store.modal_title": "ยืนยันการซื้อ",
+    "store.modal_desc_1": "คุณแน่ใจหรือไม่ว่าต้องการซื้อ",
+    "store.modal_desc_2": "ในราคา",
+    "store.modal_desc_3": "เหรียญ?",
+    "store.modal_confirm": "ยืนยันการซื้อ",
+    "store.modal_cancel": "ยกเลิก",
 
 
     "Top Student": "นักเรียนดีเด่น",

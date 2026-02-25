@@ -1,6 +1,6 @@
 @section('page-title', __('Dashboard'))
 
-<div>
+<div class="animate__animated animate__fadeIn">
     @if(auth()->user()->isStudent() && $gamification)
         <div class="flex flex-col xl:flex-row gap-4 xl:h-[calc(100vh-6rem)]">
             <!-- Left Content: Gamification Stats & Classrooms -->
@@ -9,7 +9,7 @@
 
             <!-- Welcome Banner -->
             <div
-                class="bg-linear-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 {{ (!auth()->user()->isStudent() || !$gamification) ? 'mb-6' : '' }} text-white animate__animated animate__fadeIn">
+                class="bg-linear-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 {{ (!auth()->user()->isStudent() || !$gamification) ? 'mb-6' : '' }} text-white">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-2xl font-bold">

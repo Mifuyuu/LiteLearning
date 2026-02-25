@@ -1,6 +1,6 @@
 @section('page-title', __('admin.store.title'))
 
-<div class="space-y-6">
+<div class="space-y-6 animate__animated animate__fadeIn">
     <!-- Header -->
     <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 shadow-sm">
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
@@ -68,7 +68,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <button wire:click="toggleActive({{ $item->id }})"
                                 class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold transition-colors
-                                            {{ $item->is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' }}">
+                                                                {{ $item->is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' }}">
                                 {{ $item->is_active ? __('admin.store.status_active') : __('admin.store.status_inactive') }}
                             </button>
                         </td>
@@ -105,7 +105,7 @@
 
     <!-- Create / Edit Modal -->
     @if($showModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" x-data
+        <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60" x-data
             x-on:keydown.escape.window="$wire.showModal = false">
             <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
                 <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">

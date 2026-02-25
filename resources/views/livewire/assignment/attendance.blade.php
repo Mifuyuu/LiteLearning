@@ -1,4 +1,4 @@
-<div>
+<div class="animate__animated animate__fadeIn">
     @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
         {{-- ──────────────────────────────────────────────
         Teacher: Attendance Session Controls

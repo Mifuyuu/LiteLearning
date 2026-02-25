@@ -28,8 +28,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('landing');
 
-Route::view('/tos', 'pages.tos')->name('tos');
-
 // Auth routes (guest only)
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');

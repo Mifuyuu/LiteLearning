@@ -1,6 +1,6 @@
 @section('page-title', __('Classrooms'))
 
-<div>
+<div class="animate__animated animate__fadeIn">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>

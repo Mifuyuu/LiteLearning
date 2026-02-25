@@ -1,6 +1,6 @@
 @section('page-title', __('report.admin_title'))
 
-<div class="max-w-4xl mx-auto space-y-4">
+<div class="max-w-4xl mx-auto space-y-4 animate__animated animate__fadeIn">
 
     <div class="flex flex-wrap items-center justify-between gap-4">
         <h1 class="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
@@ -74,7 +74,7 @@
 
                     {{-- Toggle button --}}
                     <button wire:click="toggleStatus({{ $report->id }})" class="shrink-0 text-xs font-medium px-3 py-1.5 rounded-lg border transition cursor-pointer
-                                                                    {{ $report->status === 'pending'
+                                                                            {{ $report->status === 'pending'
                     ? 'border-green-300 text-green-700 hover:bg-green-50'
                     : 'border-gray-200 text-gray-500 hover:bg-gray-50' }}">
                         {{ $report->status === 'pending' ? __('report.mark_resolved') : __('report.mark_pending') }}

@@ -10,7 +10,8 @@
             </div>
             <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('Calendar View') }}</h3>
             <p class="text-gray-500 max-w-md mx-auto">
-                {{ __('View all your upcoming assignments and deadlines in one place.') }}</p>
+                {{ __('View all your upcoming assignments and deadlines in one place.') }}
+            </p>
 
             <!-- Upcoming assignments list -->
             <div class="mt-8 text-left">

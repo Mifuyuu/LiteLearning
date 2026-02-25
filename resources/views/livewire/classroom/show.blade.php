@@ -9,7 +9,7 @@
     </nav>
 @endsection
 
-<div>
+<div class="animate__animated animate__fadeIn">
     <!-- Classroom Header -->
     <div class="rounded-2xl overflow-hidden mb-6 relative" style="background-color: {{ $classroom->theme_color }}">
         <div class="absolute inset-0 bg-linear-to-b from-black/10 to-black/40"></div>
@@ -237,9 +237,9 @@
                                         <!-- Expanded Content -->
                                         <div x-show="activeAssignment === {{ $assignment->id }}" x-collapse x-cloak
                                             class="border-t border-gray-100 bg-gray-50">
-                                            <div class="p-4 pl-[4.5rem]">
+                                            <div class="p-4 pl-18">
                                                 <p class="text-sm text-gray-600 mb-3">
-                                                    {{ \Illuminate\Support\Str::limit(strip_tags(html_entity_decode($assignment->description ?? $assignment->instructions)), 200) }}
+                                                    {{ \Illuminate\Support\Str::limit(strip_tags(html_entity_decode($assignment->description)), 200) }}
                                                 </p>
 
                                                 <div class="flex items-center gap-2">
@@ -330,9 +330,9 @@
                                         <!-- Expanded Content -->
                                         <div x-show="activeAssignment === {{ $assignment->id }}" x-collapse x-cloak
                                             class="border-t border-gray-100 bg-gray-50">
-                                            <div class="p-4 pl-[4.5rem]">
+                                            <div class="p-4 pl-18">
                                                 <p class="text-sm text-gray-600 mb-3">
-                                                    {{ \Illuminate\Support\Str::limit(strip_tags(html_entity_decode($assignment->description ?? $assignment->instructions)), 200) }}
+                                                    {{ \Illuminate\Support\Str::limit(strip_tags(html_entity_decode($assignment->description)), 200) }}
                                                 </p>
 
                                                 <div class="flex items-center gap-2">
@@ -366,7 +366,7 @@
 
             <!-- Delete Confirmation Modal -->
             <div x-show="showDeleteModal" x-cloak
-                class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+                class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
                 @click="showDeleteModal = false">
                 <div class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden"
                     @click.stop x-show="showDeleteModal" x-transition:enter="transition ease-out duration-200"
@@ -400,7 +400,7 @@
                 x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
                 x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0"
                 x-transition:leave-end="opacity-0 translate-y-4"
-                class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] px-4 py-2.5 bg-gray-800 text-white text-sm rounded-lg shadow-lg flex items-center gap-2">
+                class="fixed bottom-6 left-1/2 -translate-x-1/2 z-60 px-4 py-2.5 bg-gray-800 text-white text-sm rounded-lg shadow-lg flex items-center gap-2">
                 <i class="fas fa-check-circle text-green-400"></i>
                 {{ __('Link copied!') }}
             </div>
@@ -620,8 +620,9 @@
                     </button>
                 </div>
 
+                <template x-teleport="body">
                 <div x-show="showDeleteModal" x-cloak
-                    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+                    class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
                     @click.self="showDeleteModal = false">
                     <div class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
                         <div class="px-6 py-5 border-b border-gray-100">
@@ -658,6 +659,7 @@
                         </form>
                     </div>
                 </div>
+                </template>
             </div>
         </div>
     @endif

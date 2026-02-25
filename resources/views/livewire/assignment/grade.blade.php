@@ -14,7 +14,7 @@
     </nav>
 @endsection
 
-<div class="max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto animate__animated animate__fadeIn">
     <!-- Back -->
     <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}"
         class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
@@ -116,7 +116,8 @@
                         <div class="mt-2 p-3 bg-green-50 rounded-lg text-center">
                             <i class="fas fa-check-circle text-green-500 text-xl mb-1"></i>
                             <p class="text-sm text-green-700 font-medium">{{ __('Graded') }}
-                                {{ $submission->graded_at?->translatedFormat('j M, H:i') }}</p>
+                                {{ $submission->graded_at?->translatedFormat('j M, H:i') }}
+                            </p>
                         </div>
                     @endif
                 </div>

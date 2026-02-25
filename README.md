@@ -58,6 +58,24 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-docker compose -f docker-compose.tunnel.yml up -d
+## Development Setup
 
-docker compose -f docker-compose.tunnel.yml down
+### 1. Start Infrastructure (Docker)
+
+Start the database, storage, and tunnel services:
+
+```bash
+docker compose up -d
+```
+
+### 2. Start Application (Local)
+
+Ensure your `.env` file is configured to use `localhost` for services:
+- `DB_HOST=127.0.0.1`
+- `AWS_ENDPOINT=http://127.0.0.1:9000`
+
+Then run the development server:
+
+```bash
+composer run dev
+```

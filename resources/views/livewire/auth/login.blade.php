@@ -1,6 +1,11 @@
-<div>
+<div class="animate__animated animate__fadeIn">
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ __('Welcome back') }}</h2>
+        <div class="flex items-center space-x-3 mb-2">
+            <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                <i class="fas fa-graduation-cap text-white text-lg"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900">{{ __('Welcome back') }}</h2>
+        </div>
         <p class="text-gray-500 mb-6">{{ __('Sign in to your account to continue') }}</p>
 
         <form wire:submit="login" class="space-y-5">

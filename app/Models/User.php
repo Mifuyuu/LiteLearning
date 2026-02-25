@@ -17,10 +17,6 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'school_name',
-        'study_year',
-        'birth_date',
-        'tos_accepted_at',
         'setup_completed_at',
         'avatar',
         'cover_image',
@@ -42,8 +38,6 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'birth_date' => 'date',
-            'tos_accepted_at' => 'datetime',
             'setup_completed_at' => 'datetime',
             'ui_scale' => 'integer',
             'is_active' => 'boolean',
@@ -134,7 +128,7 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function allClassrooms()
+    public function allClassrooms(): \Illuminate\Support\Collection
     {
         if ($this->isTeacher() || $this->isAdmin()) {
             // Deduplicate by id: a teacher enrolled in their own classroom would appear twice otherwise.

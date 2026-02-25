@@ -1,6 +1,6 @@
 @section('page-title', __('admin.users.title'))
 
-<div class="space-y-6">
+<div class="space-y-6 animate__animated animate__fadeIn">
     <!-- Filters and Search -->
     <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 shadow-sm">
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
@@ -81,7 +81,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <button wire:click="toggleStatus({{ $user->id }})"
                                     class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold transition-colors
-                                            {{ $user->is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' }}"
+                                                {{ $user->is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' }}"
                                     @if($user->id === auth()->id()) disabled @endif>
                                     <i class="fas fa-circle mr-1.5 text-[6px]"></i>
                                     {{ $user->is_active ? __('admin.users.status_active') : __('admin.users.status_inactive') }}

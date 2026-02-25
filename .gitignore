@@ -29,4 +29,4 @@ Thumbs.db
 *.pem
 624ac4ba-f3dd-4735-bac6-f4cf2a8fb1f1.json
 config.yml
-docker-compose.tunnel.yml
+.env.docker

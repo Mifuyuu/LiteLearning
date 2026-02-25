@@ -39,7 +39,7 @@
                             <span class="font-bold text-gray-600">{{ number_format($topStudents[1]->xp) }}</span>
                         </div>
                         {{-- Podium block --}}
-                        <div class="w-full h-[100px] bg-indigo-300 rounded-t-xl flex flex-col items-center justify-center gap-1 shadow-inner">
+                        <div class="w-full h-[100px] bg-indigo-300 rounded-t-xl flex flex-col items-center justify-center gap-1 shadow-inner animate__animated animate__slideInUp" style="animation-delay: 0.2s;">
                             <span class="text-2xl font-black text-indigo-900">2</span>
                             <span class="text-base text-indigo-900/70">{{ __('Lv.') }} {{ $topStudents[1]->level }}</span>
                         </div>
@@ -49,7 +49,7 @@
                 {{-- 1st Place --}}
                 @if($topStudents->has(0))
                     <div class="flex flex-col items-center w-1/3 max-w-[180px]">
-                        <i class="fas fa-crown text-amber-400 text-lg mb-1"></i>
+                        <i class="fas fa-crown text-amber-400 text-lg mb-1 animate__animated animate__bounceIn animate__delay-1s"></i>
                         <div class="relative inline-block mb-2">
                             <img src="{{ $topStudents[0]->user->avatar_url }}"
                                 class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-2 ring-amber-300 shadow-md bg-white">
@@ -69,7 +69,7 @@
                         </div>
                         {{-- Podium block --}}
                         <div
-                            class="w-full h-[145px] bg-indigo-600 rounded-t-xl flex flex-col items-center justify-center gap-1 shadow-inner">
+                            class="w-full h-[145px] bg-indigo-600 rounded-t-xl flex flex-col items-center justify-center gap-1 shadow-inner animate__animated animate__slideInUp" style="animation-delay: 0.4s;">
                             <span class="text-3xl font-black text-white">1</span>
                             <span class="text-base text-indigo-200">{{ __('Lv.') }} {{ $topStudents[0]->level }}</span>
                         </div>
@@ -97,7 +97,7 @@
                             <span class="font-bold text-gray-600">{{ number_format($topStudents[2]->xp) }}</span>
                         </div>
                         {{-- Podium block --}}
-                        <div class="w-full h-[72px] bg-indigo-100 rounded-t-xl flex flex-col items-center justify-center gap-1">
+                        <div class="w-full h-[72px] bg-indigo-100 rounded-t-xl flex flex-col items-center justify-center gap-1 animate__animated animate__slideInUp" style="animation-delay: 0s;">
                             <span class="text-2xl font-black text-indigo-900">3</span>
                             <span class="text-base text-indigo-900/70">{{ __('Lv.') }} {{ $topStudents[2]->level }}</span>
                         </div>
