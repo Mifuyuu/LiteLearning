@@ -102,13 +102,12 @@ return new class extends Migration {
         });
 
         Schema::create('classroom_user', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->enum('role', ['student', 'co-teacher'])->default('student');
             $table->timestamp('joined_at')->useCurrent();
             $table->timestamps();
-            $table->unique(['classroom_id', 'user_id']);
+            $table->primary(['classroom_id', 'user_id']);
         });
 
         Schema::create('announcements', function (Blueprint $table) {
@@ -221,21 +220,19 @@ return new class extends Migration {
         });
 
         Schema::create('user_achievements', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('achievement_id')->constrained()->cascadeOnDelete();
             $table->timestamp('unlocked_at')->nullable();
             $table->timestamps();
-            $table->unique(['user_id', 'achievement_id']);
+            $table->primary(['user_id', 'achievement_id']);
         });
 
         Schema::create('user_badges', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('badge_id')->constrained()->cascadeOnDelete();
             $table->timestamp('earned_at')->nullable();
             $table->timestamps();
-            $table->unique(['user_id', 'badge_id']);
+            $table->primary(['user_id', 'badge_id']);
         });
 
         Schema::create('coin_transactions', function (Blueprint $table) {
@@ -251,14 +248,13 @@ return new class extends Migration {
         });
 
         Schema::create('classroom_sidebar_preferences', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
             $table->boolean('is_pinned')->default(false);
             $table->integer('position')->nullable();
             $table->timestamp('pinned_at')->nullable();
             $table->timestamps();
-            $table->unique(['user_id', 'classroom_id']);
+            $table->primary(['user_id', 'classroom_id']);
             $table->index(['user_id', 'is_pinned', 'position']);
         });
     }

@@ -135,10 +135,6 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Admin User',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
-                'school_name' => 'LiteLearning HQ',
-                'study_year' => 'Year 1',
-                'birth_date' => now()->subYears(30)->toDateString(),
-                'tos_accepted_at' => now(),
                 'setup_completed_at' => now(),
                 'email_verified_at' => now(),
             ]
@@ -159,10 +155,6 @@ class DatabaseSeeder extends Seeder
                     'name' => $data['name'],
                     'password' => Hash::make('password'),
                     'role' => 'teacher',
-                    'school_name' => 'LiteLearning Academy',
-                    'study_year' => 'Year 1',
-                    'birth_date' => now()->subYears(28)->toDateString(),
-                    'tos_accepted_at' => now(),
                     'setup_completed_at' => now(),
                     'email_verified_at' => now(),
                 ]
@@ -186,10 +178,6 @@ class DatabaseSeeder extends Seeder
                     'name' => $data['name'],
                     'password' => Hash::make('password'),
                     'role' => 'student',
-                    'school_name' => 'LiteLearning Academy',
-                    'study_year' => 'Year 1',
-                    'birth_date' => now()->subYears(18)->toDateString(),
-                    'tos_accepted_at' => now(),
                     'setup_completed_at' => now(),
                     'email_verified_at' => now(),
                 ]

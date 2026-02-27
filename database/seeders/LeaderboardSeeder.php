@@ -41,10 +41,6 @@ class LeaderboardSeeder extends Seeder
                     'name'               => $data['name'],
                     'password'           => Hash::make('password'),
                     'role'               => 'student',
-                    'school_name'        => 'LiteLearning Academy',
-                    'study_year'         => 'Year ' . rand(1, 4),
-                    'birth_date'         => now()->subYears(rand(18, 22))->toDateString(),
-                    'tos_accepted_at'    => now(),
                     'setup_completed_at' => now(),
                     'email_verified_at'  => now(),
                 ]
