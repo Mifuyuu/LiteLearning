@@ -31,12 +31,13 @@ class Register extends Component
             'password' => Hash::make($this->password),
             'role' => 'student',
             'locale' => session('locale', config('app.locale')),
-            'email_verified_at' => now(),
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('setup');
+        $user->sendEmailVerificationNotification();
+
+        return redirect()->route('verification.notice');
     }
 
     public function render()

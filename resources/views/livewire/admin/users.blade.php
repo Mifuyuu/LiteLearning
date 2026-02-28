@@ -104,7 +104,7 @@
 
     <!-- Users Table -->
     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-        <div class="overflow-x-auto table-scroll">
+        <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
                     <tr>

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\Setup;
+use App\Livewire\Auth\VerifyEmail;
 use App\Livewire\Dashboard;
 use App\Livewire\Classroom\Index as ClassroomIndex;
 use App\Livewire\Classroom\Show as ClassroomShow;
@@ -44,9 +45,28 @@ Route::post('/logout', function () {
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
-    Route::get('/setup', Setup::class)->name('setup');
 
-    Route::middleware('setup')->group(function () {
+    // Email verification notice (must NOT require 'verified')
+    Route::get('/verify', VerifyEmail::class)
+        ->name('verification.notice');
+
+    // Email verification handler (signed URL from email link)
+    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect()->route('dashboard');
+    })->middleware('signed')->name('verification.verify');
+
+    // Resend verification email
+    Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('message', __('Verification link sent!'));
+    })->middleware('throttle:6,1')->name('verification.send');
+
+    // All routes below require verified email
+    Route::middleware('verified')->group(function () {
+        Route::get('/setup', Setup::class)->name('setup');
+
+        Route::middleware('setup')->group(function () {
     // Dashboard
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
@@ -93,4 +113,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/sidebar/classrooms/reorder', [SidebarClassroomPreferenceController::class, 'reorder'])
         ->name('sidebar.classrooms.reorder');
     });
+    }); // verified
 });

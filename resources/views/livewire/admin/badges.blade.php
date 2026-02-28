@@ -26,7 +26,7 @@
 
     <!-- Table -->
     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-        <div class="overflow-x-auto table-scroll">
+        <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
                     <tr>
@@ -98,11 +98,9 @@
 
     <!-- Create / Edit Modal -->
     @if($showModal)
-        <template x-teleport="body">
-        <div class="fixed inset-0 z-80 flex items-center justify-center p-4"
-            x-data x-on:keydown.escape.window="$wire.showModal = false">
-            <div class="fixed inset-0 bg-black/60" wire:click="$set('showModal', false)"></div>
-            <div class="relative z-81 bg-white rounded-2xl w-full max-w-lg shadow-2xl">
+        <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60" x-data
+            x-on:keydown.escape.window="$wire.showModal = false">
+            <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
                 <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                     <h3 class="text-lg font-bold text-gray-900">
                         {{ $editingId ? __('admin.badges.edit_title') : __('admin.badges.create_title') }}
@@ -208,6 +206,5 @@
                 </div>
             </div>
         </div>
-        </template>
     @endif
 </div>

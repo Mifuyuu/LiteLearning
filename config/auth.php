@@ -112,4 +112,19 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Email Verification
+    |--------------------------------------------------------------------------
+    |
+    | The expire value is the number of minutes that the email verification
+    | link will be considered valid. This security feature limits the window
+    | of time a user has to confirm their email address.
+    |
+    */
+
+    'verification' => [
+        'expire' => 5,
+    ],
+
 ];
