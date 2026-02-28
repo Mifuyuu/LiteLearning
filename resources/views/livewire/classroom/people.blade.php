@@ -20,7 +20,8 @@
 
     <!-- Teacher -->
     <div class="mb-8">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Teacher') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-900 mb-4"><i
+                class="fas fa-chalkboard-teacher mr-2 text-indigo-500"></i>{{ __('Teacher') }}</h3>
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="flex items-center">
                 <img src="{{ $classroom->teacher->avatar_url }}" class="w-12 h-12 rounded-full mr-4">
@@ -32,14 +33,72 @@
         </div>
     </div>
 
+    <!-- Co-Teachers -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">
+                <i class="fas fa-user-tie mr-2 text-purple-500"></i>{{ __('Co-Teachers') }}
+                <span class="text-gray-400 font-normal">({{ $classroom->coTeachers->count() }})</span>
+            </h3>
+        </div>
+
+        @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
+            <form wire:submit="addCoTeacher" class="mb-4 flex gap-2">
+                <input wire:model="inviteCoTeacherEmail" type="email"
+                    class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    placeholder="{{ __('อีเมลอาจารย์ที่ต้องการเพิ่ม...') }}">
+                <button type="submit"
+                    class="btn-3d btn-3d--indigo px-4 py-2 text-sm font-medium rounded-lg transition-colors">
+                    <i class="fas fa-user-plus mr-1"></i> {{ __('เพิ่ม') }}
+                </button>
+            </form>
+            @error('inviteCoTeacherEmail')
+                <p class="text-sm text-red-500 mb-3">{{ $message }}</p>
+            @enderror
+        @endif
+
+        <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+            @forelse($classroom->coTeachers as $coTeacher)
+                <div class="flex items-center justify-between p-4" wire:key="coteacher-{{ $coTeacher->id }}">
+                    <div class="flex items-center">
+                        <img src="{{ $coTeacher->avatar_url }}" class="w-10 h-10 rounded-full mr-3">
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">{{ $coTeacher->name }}</p>
+                            <p class="text-xs text-gray-500">{{ $coTeacher->email }}</p>
+                        </div>
+                    </div>
+                    @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
+                        <div x-data="{ open: false }" class="relative">
+                            <button @click="open = !open" @click.outside="open = false"
+                                class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                <i class="fas fa-ellipsis-v px-1"></i>
+                            </button>
+                            <div x-show="open" x-transition.opacity.duration.200ms x-cloak
+                                class="absolute right-0 top-10 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10">
+                                <button wire:click="removeCoTeacher({{ $coTeacher->id }})"
+                                    wire:confirm="{{ __('ต้องการลบ Co-Teacher คนนี้ออกจากห้องใช่ไหม?') }}"
+                                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer">
+                                    <i class="fas fa-user-times w-4"></i> {{ __('ลบออก') }}
+                                </button>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @empty
+                <div class="p-8 text-center text-gray-400 text-sm">{{ __('ยังไม่มี Co-Teacher') }}</div>
+            @endforelse
+        </div>
+    </div>
+
     <!-- Students -->
     <div>
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">
-                {{ __('Students') }} <span class="text-gray-400 font-normal">({{ $classroom->members->count() }})</span>
+                <i class="fas fa-users mr-2 text-indigo-500"></i>{{ __('Students') }}
+                <span class="text-gray-400 font-normal">({{ $classroom->students->count() }})</span>
             </h3>
 
-            @if($classroom->members->count() > 0 && ($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin()))
+            @if($classroom->students->count() > 0 && ($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin()))
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open" @click.outside="open = false"
                         class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
@@ -57,7 +116,7 @@
         </div>
 
         <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
-            @forelse($classroom->members as $member)
+            @forelse($classroom->students as $member)
                 <div class="flex items-center justify-between p-4">
                     <div class="flex items-center">
                         <img src="{{ $member->avatar_url }}" class="w-10 h-10 rounded-full mr-3">
@@ -66,7 +125,7 @@
                             <p class="text-xs text-gray-500">{{ $member->email }}</p>
                         </div>
                     </div>
-                    @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
+                    @if($classroom->canManageClassroom(auth()->user()))
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open" @click.outside="open = false"
                                 class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">

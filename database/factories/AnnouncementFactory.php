@@ -14,7 +14,6 @@ class AnnouncementFactory extends Factory
     public function definition(): array
     {
         return [
-            'classroom_id' => Classroom::factory(),
             'user_id' => User::factory(),
             'content' => fake()->paragraphs(rand(1, 3), true),
         ];

@@ -30,6 +30,8 @@ class Show extends Component
     public string $editTitle = '';
     public string $editDescription = '';
     public int $editMaxScore = 100;
+    public int $editExpReward = 0;
+    public int $editCoinReward = 0;
     public ?string $editDueDate = null;
     public string $editStatus = 'published';
     public string $editType = 'question';
@@ -47,8 +49,12 @@ class Show extends Component
         $this->classroom = $classroom;
         $this->assignment = $assignment;
 
-        // Verify assignment belongs to this classroom
-        abort_unless($assignment->classroom_id === $classroom->id, 404);
+        // Verify assignment belongs to this classroom via ClassroomContent
+        $belongsToClassroom = \App\Models\ClassroomContent::where('contentable_type', Assignment::class)
+            ->where('contentable_id', $assignment->id)
+            ->where('classroom_id', $classroom->id)
+            ->exists();
+        abort_unless($belongsToClassroom, 404);
         // Verify access
         abort_unless($classroom->hasAccess(auth()->user()), 403);
 
@@ -59,7 +65,7 @@ class Show extends Component
             $this->submissionContent = $this->userSubmission?->content ?? '';
         }
 
-        if ($classroom->isOwnedBy($user)) {
+        if ($classroom->canManageClassroom($user)) {
             $this->submissions = $assignment->submissions()->with('user')->get();
 
             // Auto-open edit tab if ?edit=1
@@ -194,6 +200,8 @@ class Show extends Component
         $this->editTitle = $this->assignment->title;
         $this->editDescription = $this->assignment->description ?? '';
         $this->editMaxScore = $this->assignment->max_score;
+        $this->editExpReward = $this->assignment->exp_reward;
+        $this->editCoinReward = $this->assignment->coin_reward;
         $this->editDueDate = $this->assignment->due_date?->format('Y-m-d\TH:i');
         $this->editStatus = $this->assignment->status;
         $this->editType = $this->assignment->type;
@@ -203,12 +211,14 @@ class Show extends Component
 
     public function saveAssignment(): void
     {
-        abort_unless($this->classroom->isOwnedBy(auth()->user()), 403);
+        abort_unless($this->classroom->canManageClassroom(auth()->user()), 403);
 
         $this->validate([
             'editTitle' => 'required|string|max:255',
             'editDescription' => 'nullable|string',
-            'editMaxScore' => 'required_unless:editType,material|integer|min:0|max:1000',
+            'editMaxScore'  => 'required_unless:editType,material|integer|min:0|max:1000',
+            'editExpReward'  => 'integer|min:0|max:9999',
+            'editCoinReward' => 'integer|min:0|max:9999',
             'editDueDate' => 'nullable|date',
             'editStatus' => 'required|in:draft,published,closed',
             'editType' => 'required|in:attendance,file,question,material',
@@ -227,7 +237,9 @@ class Show extends Component
         $this->assignment->update([
             'title' => $this->editTitle,
             'description' => $this->editDescription,
-            'max_score' => $this->editMaxScore,
+            'max_score'            => $this->editMaxScore,
+            'exp_reward'           => $this->editExpReward,
+            'coin_reward'          => $this->editCoinReward,
             'due_date' => $this->editDueDate,
             'status' => $this->editStatus,
             'type' => $this->editType,
@@ -257,7 +269,7 @@ class Show extends Component
 
     public function deleteAssignment(): void
     {
-        abort_unless($this->classroom->isOwnedBy(auth()->user()), 403);
+        abort_unless($this->classroom->canManageClassroom(auth()->user()), 403);
 
         $this->assignment->delete();
 

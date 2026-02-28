@@ -26,9 +26,9 @@
 
     <!-- Table -->
     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto table-scroll">
             <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50 uppercase text-[10px] font-bold text-gray-500 tracking-wider">
+                <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
                     <tr>
                         <th class="px-6 py-3 text-left">{{ __('admin.badges.col_badge') }}</th>
                         <th class="px-6 py-3 text-left">{{ __('admin.badges.col_appearance') }}</th>
@@ -98,9 +98,11 @@
 
     <!-- Create / Edit Modal -->
     @if($showModal)
-        <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60" x-data
-            x-on:keydown.escape.window="$wire.showModal = false">
-            <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
+        <template x-teleport="body">
+        <div class="fixed inset-0 z-80 flex items-center justify-center p-4"
+            x-data x-on:keydown.escape.window="$wire.showModal = false">
+            <div class="fixed inset-0 bg-black/60" wire:click="$set('showModal', false)"></div>
+            <div class="relative z-81 bg-white rounded-2xl w-full max-w-lg shadow-2xl">
                 <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                     <h3 class="text-lg font-bold text-gray-900">
                         {{ $editingId ? __('admin.badges.edit_title') : __('admin.badges.create_title') }}
@@ -150,15 +152,46 @@
                                     class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono">
                             </div>
                         </div>
-                        <div>
-                            <label
-                                class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.badges.field_target_role') }}</label>
-                            <select wire:model="form.target_role"
-                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-                                <option value="">{{ __('admin.badges.target_all') }}</option>
-                                <option value="student">{{ __('Student') }}</option>
-                                <option value="teacher">{{ __('Teacher') }}</option>
-                            </select>
+                        <div x-data="{ open: false }">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.badges.field_target_role') }}</label>
+                            <div class="relative">
+                                <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
+                                    class="flex w-full items-center justify-between px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <span>
+                                        @if($form['target_role'] === '' || $form['target_role'] === null) {{ __('admin.badges.target_all') }}
+                                        @elseif($form['target_role'] === 'student') {{ __('Student') }}
+                                        @else {{ __('Teacher') }}
+                                        @endif
+                                    </span>
+                                    <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+                                </button>
+                                <div x-show="open" x-cloak @click.outside="open = false"
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute left-0 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                                    <div role="menu">
+                                        <button type="button" role="menuitem" wire:click="$set('form.target_role', '')" @click="open = false"
+                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['target_role'] ?? '') === '' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                            {{ __('admin.badges.target_all') }}
+                                            @if(($form['target_role'] ?? '') === '') <i class="fas fa-check text-xs"></i> @endif
+                                        </button>
+                                        <button type="button" role="menuitem" wire:click="$set('form.target_role', 'student')" @click="open = false"
+                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['target_role'] ?? '') === 'student' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                            {{ __('Student') }}
+                                            @if(($form['target_role'] ?? '') === 'student') <i class="fas fa-check text-xs"></i> @endif
+                                        </button>
+                                        <button type="button" role="menuitem" wire:click="$set('form.target_role', 'teacher')" @click="open = false"
+                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['target_role'] ?? '') === 'teacher' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                            {{ __('Teacher') }}
+                                            @if(($form['target_role'] ?? '') === 'teacher') <i class="fas fa-check text-xs"></i> @endif
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -175,5 +208,6 @@
                 </div>
             </div>
         </div>
+        </template>
     @endif
 </div>

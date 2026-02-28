@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('page-title', __('Calendar'))
 @section('content')
-    <div class="max-w-4xl mx-auto">
+    <div class="animate__animated animate__fadeIn max-w-4xl mx-auto">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Calendar') }}</h2>
 
         <div class="bg-white rounded-xl border border-gray-200 p-12 text-center">
@@ -35,15 +35,15 @@
                                 @php
                                     $isUrgent = $a->due_date->lt(now()->addDay());
                                 @endphp
-                                <a href="{{ route('assignment.show', ['classroom' => $a->classroom, 'assignment' => $a]) }}"
+                <a href="{{ route('assignment.show', ['classroom' => $a->getClassroom(), 'assignment' => $a]) }}"
                                     class="block p-3 rounded-lg border transition-colors {{ $isUrgent ? 'bg-red-50 border-red-200 hover:bg-red-100' : 'bg-gray-50 border-gray-200 hover:bg-gray-100' }}">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center">
                                             <div class="w-3 h-3 rounded-full mr-3"
-                                                style="background-color: {{ $a->classroom->theme_color }}"></div>
+                                style="background-color: {{ $a->getClassroom()->theme_color }}"></div>
                                             <div>
                                                 <p class="text-sm font-medium text-gray-900">{{ $a->title }}</p>
-                                                <p class="text-xs text-gray-500">{{ $a->classroom->name }}</p>
+                                <p class="text-xs text-gray-500">{{ $a->getClassroom()->name }}</p>
                                             </div>
                                         </div>
                                         <span

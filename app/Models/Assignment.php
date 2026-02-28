@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
 
 class Assignment extends Model
@@ -17,13 +18,14 @@ class Assignment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'classroom_id',
         'user_id',
         'title',
         'slug',
         'description',
         'attachments',
         'max_score',
+        'exp_reward',
+        'coin_reward',
         'due_date',
         'status',
         'type',
@@ -37,6 +39,8 @@ class Assignment extends Model
             'attachments'           => 'array',
             'due_date'              => 'datetime',
             'allow_late_submission' => 'boolean',
+            'exp_reward'            => 'integer',
+            'coin_reward'           => 'integer',
         ];
     }
 
@@ -77,9 +81,17 @@ class Assignment extends Model
     // Relationships
     // ──────────────────────────────────────────────
 
-    public function classroom(): BelongsTo
+    public function classroomContent(): MorphOne
     {
-        return $this->belongsTo(Classroom::class);
+        return $this->morphOne(ClassroomContent::class, 'contentable');
+    }
+
+    /**
+     * Get the classroom via the content hub.
+     */
+    public function getClassroom(): ?Classroom
+    {
+        return $this->classroomContent?->classroom;
     }
 
     public function user(): BelongsTo

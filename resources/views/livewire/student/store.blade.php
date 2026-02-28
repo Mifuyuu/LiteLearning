@@ -3,9 +3,7 @@
 <div class="space-y-6 animate__animated animate__fadeIn">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                <i class="fas fa-store text-indigo-500"></i> {{ __('store.title') }}
-            </h1>
+            <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2"> {{ __('store.title') }}</h1>
             <p class="text-sm text-gray-400 mt-1">{{ __('store.subtitle') }}</p>
         </div>
         <div class="flex items-center space-x-2 bg-indigo-50 px-4 py-2 rounded-full border border-indigo-100">
@@ -77,11 +75,14 @@
                                 </button>
                             @elseif($isOwned)
                                 <button wire:click="equip({{ $item->id }})" wire:loading.attr="disabled" class="w-full py-2.5 bg-white border border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-medium rounded-lg text-sm transition-colors cursor-pointer">
-                                    {{ __('store.equip') }}
+                                    <i class="fas fa-tshirt mr-1"></i> {{ __('store.equip') }}
                                 </button>
                             @endif
+                            @php
+                                $itemDisplayValue = $type === 'name_color' ? $item->value : asset($item->value);
+                            @endphp
                             @if(!$isOwned)
-                                <button @click="confirmPurchase({{ $item->id }}, '{{ addslashes($item->name) }}', {{ $item->price }}, '{{ $item->type }}', '{{ asset($item->value) }}')" class="btn-3d btn-3d--indigo w-full py-2.5 font-medium rounded-lg text-sm transition-colors cursor-pointer flex justify-center items-center {{ $coins < $item->price ? 'opacity-70' : '' }}">
+                                <button @click="confirmPurchase({{ $item->id }}, '{{ addslashes($item->name) }}', {{ $item->price }}, '{{ $item->type }}', '{{ $itemDisplayValue }}')" class="btn-3d btn-3d--indigo w-full py-2.5 font-medium rounded-lg text-sm transition-colors cursor-pointer flex justify-center items-center {{ $coins < $item->price ? 'opacity-70' : '' }}">
                                     <i class="gsi-gemstone-blue mr-2 text-white"></i> {{ $item->price }}
                                 </button>
                             @endif
@@ -116,7 +117,7 @@
 
                             <!-- Avatar Frame Preview -->
                             <template x-if="selectedItemType === 'avatar_frame'">
-                                <div class="relative flex items-center justify-center w-20 h-20 mt-2 mb-2">
+                                <div class="relative flex items-center justify-center mt-2 mb-2">
                                     <img src="{{ auth()->user()->avatar_url }}" class="w-16 h-16 rounded-full object-cover bg-white pointer-events-none border border-gray-100" alt="{{ __('Avatar') }}">
                                     
                                     <template x-if="!selectedItemValue.startsWith('border')">
@@ -142,11 +143,11 @@
                         <div class="flex flex-col gap-3">
                             <button type="button" @click="$wire.purchase(selectedItemId); showModal = false"
                                 class="btn-3d btn-3d--indigo w-full py-2.5 font-bold rounded-lg text-sm transition-all">
-                                {{ __('store.modal_confirm') }}
+                                <i class="fas fa-bag-shopping mr-1"></i> {{ __('store.modal_confirm') }}
                             </button>
                             <button type="button" @click="showModal = false"
                                 class="w-full py-2.5 text-sm font-medium text-gray-600 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors">
-                                {{ __('store.modal_cancel') }}
+                                <i class="fas fa-times mr-1"></i> {{ __('store.modal_cancel') }}
                             </button>
                         </div>
                     </div>

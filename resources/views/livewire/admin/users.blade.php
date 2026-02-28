@@ -3,7 +3,7 @@
 <div class="space-y-6 animate__animated animate__fadeIn">
     <!-- Filters and Search -->
     <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 shadow-sm">
-        <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+        <div class="flex flex-wrap items-center gap-3 justify-between">
             <div class="relative w-full sm:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <i class="fas fa-search"></i>
@@ -12,31 +12,101 @@
                     class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all"
                     placeholder="{{ __('admin.users.search_placeholder') }}">
             </div>
-
             <div class="flex items-center gap-3">
-                <select wire:model.live="roleFilter"
-                    class="px-3 py-2 text-sm border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-lg bg-gray-50">
-                    <option value="">{{ __('admin.users.filter_role') }}</option>
-                    <option value="admin">{{ __('Admin') }}</option>
-                    <option value="teacher">{{ __('Teacher') }}</option>
-                    <option value="student">{{ __('Student') }}</option>
-                </select>
+            <div class="relative" x-data="{ open: false }">
+                    <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
+                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <i class="fas fa-user-tag text-gray-400 text-xs"></i>
+                        <span>
+                            @if($roleFilter === '') {{ __('admin.users.filter_role') }}
+                            @elseif($roleFilter === 'admin') {{ __('Admin') }}
+                            @elseif($roleFilter === 'teacher') {{ __('Teacher') }}
+                            @else {{ __('Student') }}
+                            @endif
+                        </span>
+                        <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+                    </button>
+                    <div x-show="open" x-cloak @click.outside="open = false"
+                        x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-75"
+                        x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="absolute left-0 mt-2 min-w-full bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                        <div role="menu">
+                            <button type="button" role="menuitem" wire:click="$set('roleFilter', '')" @click="open = false"
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $roleFilter === '' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                {{ __('admin.users.filter_role') }}
+                                @if($roleFilter === '') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                            <button type="button" role="menuitem" wire:click="$set('roleFilter', 'admin')" @click="open = false"
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $roleFilter === 'admin' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                {{ __('Admin') }}
+                                @if($roleFilter === 'admin') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                            <button type="button" role="menuitem" wire:click="$set('roleFilter', 'teacher')" @click="open = false"
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $roleFilter === 'teacher' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                {{ __('Teacher') }}
+                                @if($roleFilter === 'teacher') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                            <button type="button" role="menuitem" wire:click="$set('roleFilter', 'student')" @click="open = false"
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $roleFilter === 'student' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                {{ __('Student') }}
+                                @if($roleFilter === 'student') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-                <select wire:model.live="statusFilter"
-                    class="px-3 py-2 text-sm border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-lg bg-gray-50">
-                    <option value="">{{ __('admin.users.filter_status') }}</option>
-                    <option value="active">{{ __('admin.users.status_active') }}</option>
-                    <option value="inactive">{{ __('admin.users.status_inactive') }}</option>
-                </select>
-            </div>
+            <div class="relative" x-data="{ open: false }">
+                    <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
+                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <i class="fas fa-circle text-[6px] {{ $statusFilter === 'active' ? 'text-green-500' : ($statusFilter === 'inactive' ? 'text-red-400' : 'text-gray-400') }}"></i>
+                        <span>
+                            @if($statusFilter === '') {{ __('admin.users.filter_status') }}
+                            @elseif($statusFilter === 'active') {{ __('admin.users.status_active') }}
+                            @else {{ __('admin.users.status_inactive') }}
+                            @endif
+                        </span>
+                        <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+                    </button>
+                    <div x-show="open" x-cloak @click.outside="open = false"
+                        x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-75"
+                        x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="absolute left-0 mt-2 min-w-full bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                        <div role="menu">
+                            <button type="button" role="menuitem" wire:click="$set('statusFilter', '')" @click="open = false"
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === '' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                {{ __('admin.users.filter_status') }}
+                                @if($statusFilter === '') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                            <button type="button" role="menuitem" wire:click="$set('statusFilter', 'active')" @click="open = false"
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'active' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                {{ __('admin.users.status_active') }}
+                                @if($statusFilter === 'active') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                            <button type="button" role="menuitem" wire:click="$set('statusFilter', 'inactive')" @click="open = false"
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'inactive' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                {{ __('admin.users.status_inactive') }}
+                                @if($statusFilter === 'inactive') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </div>
         </div>
     </div>
 
     <!-- Users Table -->
     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto table-scroll">
             <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50 uppercase text-[10px] font-bold text-gray-500 tracking-wider">
+                <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
                     <tr>
                         <th class="px-6 py-3 text-left">{{ __('admin.users.col_user') }}</th>
                         <th class="px-6 py-3 text-left">{{ __('admin.users.col_role') }}</th>
@@ -50,7 +120,7 @@
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <img class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-100 flex-shrink-0"
+                                    <img class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-100 shrink-0"
                                         src="{{ $user->avatar_url }}" alt="">
                                     <div class="ml-3">
                                         <div class="text-sm font-bold text-gray-900 flex items-center gap-1.5">
@@ -65,18 +135,45 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <select wire:change="updateRole({{ $user->id }}, $event.target.value)"
-                                    class="text-xs font-bold border-0 bg-transparent focus:ring-2 focus:ring-indigo-400 rounded py-1"
-                                    @if($user->id === auth()->id()) disabled @endif>
-                                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>{{ __('Admin') }}
-                                    </option>
-                                    <option value="teacher" {{ $user->role === 'teacher' ? 'selected' : '' }}>
-                                        {{ __('Teacher') }}
-                                    </option>
-                                    <option value="student" {{ $user->role === 'student' ? 'selected' : '' }}>
-                                        {{ __('Student') }}
-                                    </option>
-                                </select>
+                                <div class="relative" x-data="{ open: false }">
+                                    <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
+                                        class="flex items-center gap-1.5 text-xs font-bold rounded py-1 px-2 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 {{ $user->id === auth()->id() ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' }}"
+                                        @if($user->id === auth()->id()) disabled @endif>
+                                        <span>
+                                            @if($user->role === 'admin') {{ __('Admin') }}
+                                            @elseif($user->role === 'teacher') {{ __('Teacher') }}
+                                            @else {{ __('Student') }}
+                                            @endif
+                                        </span>
+                                        <i class="fas fa-chevron-down text-[8px] text-gray-400"></i>
+                                    </button>
+                                    <div x-show="open" x-cloak @click.outside="open = false"
+                                        x-transition:enter="transition ease-out duration-100"
+                                        x-transition:enter-start="opacity-0 scale-95"
+                                        x-transition:enter-end="opacity-100 scale-100"
+                                        x-transition:leave="transition ease-in duration-75"
+                                        x-transition:leave-start="opacity-100 scale-100"
+                                        x-transition:leave-end="opacity-0 scale-95"
+                                        class="absolute left-0 mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                                        <div role="menu">
+                                            <button type="button" role="menuitem" wire:click="updateRole({{ $user->id }}, 'admin')" @click="open = false"
+                                                class="flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-gray-50 transition-colors cursor-pointer {{ $user->role === 'admin' ? 'text-indigo-700 bg-indigo-50 font-bold' : 'text-gray-700' }}">
+                                                {{ __('Admin') }}
+                                                @if($user->role === 'admin') <i class="fas fa-check text-[10px]"></i> @endif
+                                            </button>
+                                            <button type="button" role="menuitem" wire:click="updateRole({{ $user->id }}, 'teacher')" @click="open = false"
+                                                class="flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-gray-50 transition-colors cursor-pointer {{ $user->role === 'teacher' ? 'text-indigo-700 bg-indigo-50 font-bold' : 'text-gray-700' }}">
+                                                {{ __('Teacher') }}
+                                                @if($user->role === 'teacher') <i class="fas fa-check text-[10px]"></i> @endif
+                                            </button>
+                                            <button type="button" role="menuitem" wire:click="updateRole({{ $user->id }}, 'student')" @click="open = false"
+                                                class="flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-gray-50 transition-colors cursor-pointer {{ $user->role === 'student' ? 'text-indigo-700 bg-indigo-50 font-bold' : 'text-gray-700' }}">
+                                                {{ __('Student') }}
+                                                @if($user->role === 'student') <i class="fas fa-check text-[10px]"></i> @endif
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <button wire:click="toggleStatus({{ $user->id }})"

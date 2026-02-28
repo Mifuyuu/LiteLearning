@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Classroom;
+use App\Models\ClassroomContent;
 use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -25,17 +26,19 @@ class SecurityTest extends TestCase
         $teacher = User::factory()->create(['role' => 'teacher']);
         $classroomA = Classroom::factory()->create(['teacher_id' => $teacher->id]);
         $classroomB = Classroom::factory()->create(['teacher_id' => $teacher->id]);
-        $assignment = Assignment::factory()->create([
-            'classroom_id' => $classroomB->id,
-            'user_id' => $teacher->id,
+        $assignment = Assignment::factory()->create(['user_id' => $teacher->id]);
+        ClassroomContent::create([
+            'classroom_id'     => $classroomB->id,
+            'contentable_type' => Assignment::class,
+            'contentable_id'   => $assignment->id,
         ]);
 
         // Try to view classroomB's assignment via classroomA's URL
         $this->actingAs($teacher);
 
         $response = $this->get(route('assignment.show', [
-            'classroom' => $classroomA->slug,
-            'assignment' => $assignment->id,
+            'classroom'  => $classroomA->slug,
+            'assignment' => $assignment->slug,
         ]));
 
         $response->assertStatus(404);
@@ -47,13 +50,18 @@ class SecurityTest extends TestCase
         $teacher = User::factory()->create(['role' => 'teacher']);
         $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
 
-        $assignmentA = Assignment::factory()->create([
-            'classroom_id' => $classroom->id,
-            'user_id' => $teacher->id,
+        $assignmentA = Assignment::factory()->create(['user_id' => $teacher->id]);
+        ClassroomContent::create([
+            'classroom_id'     => $classroom->id,
+            'contentable_type' => Assignment::class,
+            'contentable_id'   => $assignmentA->id,
         ]);
-        $assignmentB = Assignment::factory()->create([
-            'classroom_id' => $classroom->id,
-            'user_id' => $teacher->id,
+
+        $assignmentB = Assignment::factory()->create(['user_id' => $teacher->id]);
+        ClassroomContent::create([
+            'classroom_id'     => $classroom->id,
+            'contentable_type' => Assignment::class,
+            'contentable_id'   => $assignmentB->id,
         ]);
 
         /** @var User $student */
@@ -62,17 +70,17 @@ class SecurityTest extends TestCase
 
         $submission = Submission::create([
             'assignment_id' => $assignmentB->id,
-            'user_id' => $student->id,
-            'status' => 'turned_in',
-            'turned_in_at' => now(),
+            'user_id'       => $student->id,
+            'status'        => 'turned_in',
+            'turned_in_at'  => now(),
         ]);
 
         // Try to grade assignmentB's submission through assignmentA's URL
         $this->actingAs($teacher);
 
         $response = $this->get(route('assignment.grade', [
-            'classroom' => $classroom->slug,
-            'assignment' => $assignmentA->id,
+            'classroom'  => $classroom->slug,
+            'assignment' => $assignmentA->slug,
             'submission' => $submission->id,
         ]));
 
@@ -93,9 +101,11 @@ class SecurityTest extends TestCase
         $classroomA = Classroom::factory()->create(['teacher_id' => $teacherA->id]);
         $classroomB = Classroom::factory()->create(['teacher_id' => $teacherB->id]);
 
-        $announcement = Announcement::factory()->create([
-            'classroom_id' => $classroomB->id,
-            'user_id' => $teacherB->id,
+        $announcement = Announcement::factory()->create(['user_id' => $teacherB->id]);
+        ClassroomContent::create([
+            'classroom_id'     => $classroomB->id,
+            'contentable_type' => Announcement::class,
+            'contentable_id'   => $announcement->id,
         ]);
 
         // Teacher A tries to delete an announcement from Classroom B
@@ -118,9 +128,11 @@ class SecurityTest extends TestCase
         $outsider = User::factory()->create(['role' => 'student']);
 
         $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
-        $announcement = Announcement::factory()->create([
-            'classroom_id' => $classroom->id,
-            'user_id' => $teacher->id,
+        $announcement = Announcement::factory()->create(['user_id' => $teacher->id]);
+        ClassroomContent::create([
+            'classroom_id'     => $classroom->id,
+            'contentable_type' => Announcement::class,
+            'contentable_id'   => $announcement->id,
         ]);
 
         // Outsider (not enrolled) tries to comment via tampered announcementId

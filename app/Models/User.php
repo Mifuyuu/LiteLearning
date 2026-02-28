@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Pivots\ClassroomUserPivot;
+use App\Models\Pivots\UserAchievementPivot;
+use App\Models\Pivots\UserBadgePivot;
+use App\Models\Pivots\UserStoreItemPivot;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -58,6 +62,7 @@ class User extends Authenticatable
     public function enrolledClassrooms(): BelongsToMany
     {
         return $this->belongsToMany(Classroom::class)
+            ->using(ClassroomUserPivot::class)
             ->withPivot('role', 'joined_at')
             ->withTimestamps();
     }
@@ -90,6 +95,7 @@ class User extends Authenticatable
     public function achievements(): BelongsToMany
     {
         return $this->belongsToMany(Achievement::class, 'user_achievements')
+            ->using(UserAchievementPivot::class)
             ->withPivot('unlocked_at')
             ->withTimestamps();
     }
@@ -97,6 +103,7 @@ class User extends Authenticatable
     public function badges(): BelongsToMany
     {
         return $this->belongsToMany(Badge::class, 'user_badges')
+            ->using(UserBadgePivot::class)
             ->withPivot('earned_at')
             ->withTimestamps();
     }
@@ -104,6 +111,7 @@ class User extends Authenticatable
     public function storeItems(): BelongsToMany
     {
         return $this->belongsToMany(StoreItem::class, 'user_store_items')
+            ->using(UserStoreItemPivot::class)
             ->withTimestamps();
     }
 

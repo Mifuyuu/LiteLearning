@@ -14,21 +14,54 @@
             </div>
 
             <div class="w-full sm:w-auto">
-                <select wire:model.live="statusFilter"
-                    class="block w-full sm:w-48 pl-3 pr-10 py-2 text-sm border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-lg bg-gray-50">
-                    <option value="">{{ __('admin.classrooms.filter_all') }}</option>
-                    <option value="active">{{ __('admin.classrooms.filter_active') }}</option>
-                    <option value="archived">{{ __('admin.classrooms.filter_archived') }}</option>
-                </select>
+                <div class="relative" x-data="{ open: false }">
+                    <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
+                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-48">
+                        <i class="fas fa-filter text-gray-400 text-xs"></i>
+                        <span>
+                            @if($statusFilter === '') {{ __('admin.classrooms.filter_all') }}
+                            @elseif($statusFilter === 'active') {{ __('admin.classrooms.filter_active') }}
+                            @else {{ __('admin.classrooms.filter_archived') }}
+                            @endif
+                        </span>
+                        <i class="fas fa-chevron-down text-[10px] text-gray-400 ml-auto"></i>
+                    </button>
+                    <div x-show="open" x-cloak @click.outside="open = false"
+                        x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-75"
+                        x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="absolute left-0 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                        <div role="menu">
+                            <button type="button" role="menuitem" wire:click="$set('statusFilter', '')" @click="open = false"
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === '' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                {{ __('admin.classrooms.filter_all') }}
+                                @if($statusFilter === '') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                            <button type="button" role="menuitem" wire:click="$set('statusFilter', 'active')" @click="open = false"
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'active' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                {{ __('admin.classrooms.filter_active') }}
+                                @if($statusFilter === 'active') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                            <button type="button" role="menuitem" wire:click="$set('statusFilter', 'archived')" @click="open = false"
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'archived' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                {{ __('admin.classrooms.filter_archived') }}
+                                @if($statusFilter === 'archived') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Classrooms Table -->
     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto table-scroll">
             <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50 uppercase text-[10px] font-bold text-gray-500 tracking-wider">
+                <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
                     <tr>
                         <th class="px-6 py-3 text-left">{{ __('admin.classrooms.col_classroom') }}</th>
                         <th class="px-6 py-3 text-left">{{ __('admin.classrooms.col_teacher') }}</th>

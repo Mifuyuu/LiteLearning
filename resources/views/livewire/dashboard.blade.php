@@ -82,7 +82,7 @@
                             {{ __('XP to next level') }}</span>
                     </div>
                     <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div class="h-full bg-gradient-to-b from-blue-400 to-blue-600 rounded-full transition-all"
+                        <div class="h-full bg-linear-to-b from-blue-400 to-blue-600 rounded-full transition-all"
                             style="width: {{ $gamification['progress_percent'] }}%"></div>
                     </div>
                     <p class="mt-2 text-xs text-gray-500">{{ __('Total XP') }}: {{ $gamification['xp'] }}</p>
@@ -217,7 +217,11 @@
                         <div class="sticky top-0">
                             <div
                                 class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-                                <div class="h-24 bg-linear-to-r from-indigo-500 to-purple-500"></div>
+                                <div class="h-24 bg-linear-to-r from-indigo-500 to-purple-500 relative overflow-hidden">
+                                    @if(auth()->user()->cover_image_url)
+                                        <img src="{{ auth()->user()->cover_image_url }}" class="w-full h-full object-cover absolute inset-0">
+                                    @endif
+                                </div>
                                 <div class="w-full px-6 flex justify-start -mt-12 mb-4 relative z-10">
                                     <x-user-avatar :user="auth()->user()" size="w-24 h-24" border="border-4 border-white" />
                                 </div>
@@ -233,7 +237,7 @@
 
                                     <a href="{{ route('profile') }}"
                                         class="w-full inline-flex justify-center items-center px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 transition-colors">
-                                        <i class="fas fa-edit mr-2"></i> {{ __('View Profile') }}
+                                        <i class="fas fa-edit mr-2"></i> {{ __('ดูโปรไฟล์') }}
                                     </a>
                                 </div>
                             </div>

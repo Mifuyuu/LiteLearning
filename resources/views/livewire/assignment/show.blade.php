@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
+                        @if($classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin())
                         <div class="relative ml-auto sm:ml-0" x-data="{ open: false }">
                             <button @click.stop="open = !open" type="button"
                                 class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer">
@@ -83,7 +83,10 @@
                         </span>
                         @if($assignment->type !== 'material' && $assignment->type !== 'attendance')
                         <span class="text-gray-500">
-                            <i class="fas fa-star mr-1"></i> {{ $assignment->max_score }} {{ __('Points') }}
+                            <i class="gsi-flash-lime text-green-500 mr-1" style="font-size:1.1em"></i> {{ $assignment->exp_reward }} {{ __('EXP') }}
+                        </span>
+                        <span class="text-gray-500">
+                            <i class="gsi-gemstone-blue text-blue-500 mr-1" style="font-size:1.1em"></i> {{ $assignment->coin_reward }} {{ __('Coins') }}
                         </span>
                         @endif
 
@@ -110,7 +113,7 @@
                 <div class="p-6">
                     @if($assignment->description)
                     <div class="mb-4 ql-snow">
-                        <div class="ql-editor !p-0 text-gray-700">
+                        <div class="ql-editor p-0! text-gray-700">
                             {!! $assignment->description !!}
                         </div>
                     </div>
@@ -192,7 +195,7 @@
             @endif
 
             <!-- Teacher: Submissions Table -->
-            @if($submissions !== null && ($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin()))
+            @if($submissions !== null && ($classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin()))
             <div class="mt-6 bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div class="p-4 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900">{{ __('Student Work') }}</h3>
@@ -324,7 +327,7 @@
                             wire:ignore
                             class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500"
                         >
-                            <div x-ref="editEditor" class="min-h-[150px] text-sm border-0 !border-t border-gray-200"></div>
+                            <div x-ref="editEditor" class="min-h-[150px] text-sm border-0 border-t! border-gray-200"></div>
                         </div>
                         
                         <style>
@@ -340,13 +343,27 @@
                     @endif
 
                     @if(!in_array($editType, ['material']))
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">
                                 {{ $editType === 'attendance' ? __('Attendance Points') : __('Points') }}
                             </label>
                             <input wire:model="editMaxScore" type="number" min="0" max="1000" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             @error('editMaxScore') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="gsi-flash-lime text-green-500 mr-1" style="font-size:1.1em"></i>{{ __('EXP Reward') }}
+                            </label>
+                            <input wire:model="editExpReward" type="number" min="0" max="9999" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            @error('editExpReward') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="gsi-gemstone-blue text-blue-500 mr-1" style="font-size:1.1em"></i>{{ __('Coin Reward') }}
+                            </label>
+                            <input wire:model="editCoinReward" type="number" min="0" max="9999" class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            @error('editCoinReward') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                         </div>
                         
                         @if($editType !== 'attendance')
@@ -528,7 +545,7 @@
         @endif
 
         <!-- Sidebar info for materials or teacher -->
-        @if(!$isEditTab && ($assignment->type === 'material' || ($classroom->isOwnedBy(auth()->user()) && $assignment->requiresSubmission())))
+        @if(!$isEditTab && ($assignment->type === 'material' || ($classroom->canManageClassroom(auth()->user()) && $assignment->requiresSubmission())))
         <div>
             <div class="bg-white rounded-xl border border-gray-200 p-4 sticky top-0">
                 @if($assignment->requiresSubmission())
@@ -536,6 +553,14 @@
                     <div class="flex items-center justify-between">
                         <span class="text-gray-500">{{ __('Max Score') }}</span>
                         <span class="font-semibold text-gray-900">{{ $assignment->max_score }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-500"><i class="gsi-flash-lime text-green-500 mr-1" style="font-size:1.1em"></i>{{ __('EXP Reward') }}</span>
+                        <span class="font-semibold text-green-700">{{ $assignment->exp_reward }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-500"><i class="gsi-gemstone-blue text-blue-500 mr-1" style="font-size:1.1em"></i>{{ __('Coin Reward') }}</span>
+                        <span class="font-semibold text-blue-700">{{ $assignment->coin_reward }}</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-gray-500">{{ __('Turned in') }}</span>
@@ -570,7 +595,7 @@
     </div>
 
     @if($showDeleteModal)
-    <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60" wire:click="closeDeleteModal">
+    <div class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60" wire:click="closeDeleteModal">
         <div class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden" wire:click.stop>
             <div class="px-6 py-5 border-b border-gray-100">
                 <h4 class="text-base font-semibold text-gray-900">{{ __('Delete Assignment') }}</h4>

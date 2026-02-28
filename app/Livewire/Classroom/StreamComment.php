@@ -28,7 +28,7 @@ class StreamComment extends Component
 
         // Verify user has access to the announcement's classroom
         $announcement = \App\Models\Announcement::findOrFail($this->announcementId);
-        $classroom = $announcement->classroom;
+        $classroom = $announcement->getClassroom();
 
         /** @var \App\Models\User $user */
         $user = Auth::user();

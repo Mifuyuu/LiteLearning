@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Assignment;
 use App\Models\Classroom;
+use App\Models\ClassroomContent;
 use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,12 +31,18 @@ class SubmissionTest extends TestCase
         $this->classroom->members()->attach($this->student->id, ['role' => 'student', 'joined_at' => now()]);
 
         $this->assignment = Assignment::factory()->create([
-            'classroom_id'         => $this->classroom->id,
             'user_id'              => $this->teacher->id,
             'type'                 => 'question',
             'status'               => 'published',
             'allow_late_submission'=> true,
             'due_date'             => now()->addDay(),
+        ]);
+
+        // Link assignment to classroom via ClassroomContent
+        ClassroomContent::create([
+            'classroom_id'     => $this->classroom->id,
+            'contentable_type' => Assignment::class,
+            'contentable_id'   => $this->assignment->id,
         ]);
 
         // Pre-create the submission record for the student

@@ -23,12 +23,16 @@ class Grade extends Component
     {
         /** @var User $user */
         $user = Auth::user();
-        if (!$classroom->isOwnedBy($user) && !$user->isAdmin()) {
+        if (!$classroom->canManageClassroom($user) && !$user->isAdmin()) {
             abort(403);
         }
 
         // Ensure assignment belongs to classroom and submission belongs to assignment (prevent IDOR)
-        if ($assignment->classroom_id !== $classroom->id) {
+        $belongsToClassroom = \App\Models\ClassroomContent::where('contentable_type', Assignment::class)
+            ->where('contentable_id', $assignment->id)
+            ->where('classroom_id', $classroom->id)
+            ->exists();
+        if (!$belongsToClassroom) {
             abort(404);
         }
         if ($submission->assignment_id !== $assignment->id) {

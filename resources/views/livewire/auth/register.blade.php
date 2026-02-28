@@ -59,7 +59,7 @@
             <!-- Submit -->
             <button type="submit"
                 class="btn-3d btn-3d--indigo w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors">
-                <span wire:loading.remove wire:target="register">{{ __('Create Account') }}</span>
+                <span wire:loading.remove wire:target="register"><i class="fas fa-user-plus mr-2"></i>{{ __('Create Account') }}</span>
                 <span wire:loading wire:target="register"><i
                         class="fas fa-spinner fa-spin mr-2"></i>{{ __('Creating...') }}</span>
             </button>

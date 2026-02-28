@@ -1,4 +1,4 @@
-@section('page-title', __('Create Assignment'))
+@section('page-title', $type === 'announcement' ? __('Create Announcement') : __('Create Assignment'))
 @section('breadcrumb')
     <nav class="flex items-center space-x-1 text-sm">
         <a href="{{ route('classrooms') }}"
@@ -7,7 +7,7 @@
         <a href="{{ route('classroom.show', $classroom) }}"
             class="text-gray-500 hover:text-indigo-600 transition-colors">{{ $classroom->name }}</a>
         <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-        <span class="text-gray-800 font-semibold">{{ __('Create Assignment') }}</span>
+        <span class="text-gray-800 font-semibold">{{ $type === 'announcement' ? __('Create Announcement') : __('Create Assignment') }}</span>
     </nav>
 @endsection
 
@@ -20,9 +20,10 @@
 
     <form wire:submit="save" class="space-y-5">
         <!-- Type Selection -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white p-4 rounded-xl border border-gray-200">
+        <div class="grid grid-cols-3 md:grid-cols-5 gap-3 bg-white p-4 rounded-xl border border-gray-200">
             @php
                 $types = [
+                    'announcement' => ['icon' => 'fa-bullhorn', 'label' => 'Announcement'],
                     'question' => ['icon' => 'fa-pen-to-square', 'label' => 'Question'],
                     'file' => ['icon' => 'fa-cloud-arrow-up', 'label' => 'File Upload'],
                     'attendance' => ['icon' => 'fa-clipboard-check', 'label' => 'Attendance'],
@@ -50,6 +51,7 @@
         </div>
 
         <!-- Title Card -->
+        @if($type !== 'announcement')
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-100">
                 <h3 class="text-sm font-semibold text-gray-700">{{ __('Title') }} *</h3>
@@ -63,12 +65,13 @@
                 @enderror
             </div>
         </div>
+        @endif
 
         <!-- Description Card -->
         @if($type !== 'attendance')
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100">
-                    <h3 class="text-sm font-semibold text-gray-700">{{ __('Description') }}</h3>
+                    <h3 class="text-sm font-semibold text-gray-700">{{ $type === 'announcement' ? __('Content') : __('Description') }}</h3>
                 </div>
                 <div class="p-6">
                     <div x-data="{
@@ -145,7 +148,7 @@
         @endif
 
         <!-- File Upload Section -->
-        @if(!in_array($type, ['question', 'attendance']))
+        @if(!in_array($type, ['question', 'attendance', 'announcement']))
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                     <h3 class="text-sm font-semibold text-gray-700">{{ __('Attachments') }}</h3>
@@ -236,6 +239,7 @@
                 </div>
             </div>
         @endif
+        @if($type !== 'announcement')
         <!-- Options Card: Topic + Due Date + Points -->
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div class="p-6 space-y-4">
@@ -254,9 +258,9 @@
                     </datalist>
                 </div>
 
-                <!-- Due Date + Points row -->
+                <!-- Due Date + EXP + Coin row -->
                 @if($type !== 'material')
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">
                                 <i class="fas fa-clock mr-1.5 text-gray-400"></i>{{ __('Due Date') }}
@@ -266,12 +270,18 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                                <i class="fas fa-star mr-1.5 text-gray-400"></i>{{ __('Points') }}
+                                <i class="gsi-flash-lime text-green-500 mr-1.5" style="font-size:1.1em"></i>{{ __('EXP Reward') }}
                             </label>
-                            <input wire:model="max_score" type="number" min="0" max="1000"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input wire:model="exp_reward" type="number" min="0" max="9999"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         </div>
-                    </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                <i class="gsi-gemstone-blue text-blue-500 mr-1.5" style="font-size:1.1em"></i>{{ __('Coin Reward') }}
+                            </label>
+                            <input wire:model="coin_reward" type="number" min="0" max="9999"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
 
                     <!-- Allow late submission -->
                     <div class="flex items-center gap-3 pt-2">
@@ -288,20 +298,27 @@
                 @endif
             </div>
         </div>
+        @endif
 
         <!-- Actions -->
-        <div class="flex items-center justify-between">
-            <button type="button" wire:click="$set('status', 'draft')" wire:click="save"
-                class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                <i class="fas fa-file-lines mr-1.5"></i>{{ __('Save as Draft') }}
-            </button>
-            <button type="submit"
-                class="btn-3d btn-3d--indigo px-6 py-2.5 text-sm font-medium rounded-lg transition-colors">
-                <span wire:loading.remove wire:target="save"><i
-                        class="fas fa-paper-plane mr-1.5"></i>{{ __('Assign') }}</span>
-                <span wire:loading wire:target="save"><i
-                        class="fas fa-spinner fa-spin mr-1.5"></i>{{ __('Assigning...') }}</span>
-            </button>
+        <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="flex items-center justify-between">
+                @if($type !== 'announcement')
+                <button type="button" wire:click="$set('status', 'draft')" wire:click="save"
+                    class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-file-lines mr-1.5"></i>{{ __('Save as Draft') }}
+                </button>
+                @else
+                <div></div>
+                @endif
+                <button type="submit"
+                    class="btn-3d btn-3d--indigo px-6 py-2.5 text-sm font-medium rounded-lg transition-colors">
+                    <span wire:loading.remove wire:target="save"><i
+                            class="fas fa-paper-plane mr-1.5"></i>{{ $type === 'announcement' ? __('Post') : __('Assign') }}</span>
+                    <span wire:loading wire:target="save"><i
+                            class="fas fa-spinner fa-spin mr-1.5"></i>{{ $type === 'announcement' ? __('Posting...') : __('Assigning...') }}</span>
+                </button>
+            </div>
         </div>
     </form>
 </div>

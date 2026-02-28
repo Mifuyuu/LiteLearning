@@ -45,7 +45,7 @@
     @if($classrooms->isEmpty())
         <div class="bg-white rounded-xl border border-gray-200 p-16 text-center">
             <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-chalkboard text-gray-400 text-3xl"></i>
+                <i class="fas fa-wind text-gray-300 text-3xl"></i>
             </div>
             <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No classrooms found') }}</h3>
             <p class="text-gray-500 max-w-md mx-auto">

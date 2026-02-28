@@ -84,7 +84,7 @@
                 <label
                     class="absolute bottom-4 right-4 bg-white/80 hover:bg-white text-gray-800 text-sm font-medium px-3 py-1.5 rounded-lg shadow-sm cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-2">
                     <i class="fas fa-camera"></i>
-                    {{ __('Change Cover') }}
+                    {{ __('เปลี่ยนรูปปก') }}
                     <input type="file" @change="initCropper($event, 'cover')" class="hidden" accept="image/*">
                 </label>
 
@@ -104,17 +104,18 @@
                             <i class="fas fa-camera text-white text-xl"></i>
                             <input type="file" @change="initCropper($event, 'avatar')" class="hidden" accept="image/*">
                         </label>
-
-                        <!-- Loading State for Avatar -->
-                        <div wire:loading wire:target="avatar"
-                            class="absolute inset-0 bg-black/50 flex items-center justify-center z-10 rounded-full">
-                            <i class="fas fa-circle-notch fa-spin text-white text-2xl"></i>
-                        </div>
                     </x-user-avatar>
+
+                    <!-- Loading State for Avatar (outside component to avoid overflow-hidden clipping) -->
+                    <div wire:loading wire:target="avatar"
+                        class="absolute inset-0 bg-black/50 flex items-center justify-center z-30 rounded-full">
+                        <i class="fas fa-circle-notch fa-spin text-white text-2xl"></i>
+                    </div>
                 </div>
 
                 <div class="mt-2">
-                    <h3 class="text-2xl font-bold text-gray-900">{{ $user->name }}</h3>
+                    <h3 class="text-2xl font-bold {{ $user->active_name_color ?? 'text-gray-900' }}">{{ $user->name }}
+                    </h3>
                     <p class="text-gray-500">{{ $user->email }}</p>
                     <span
                         class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mt-2 capitalize">
@@ -144,7 +145,7 @@
 
     <!-- Cropping Modal -->
     <template x-teleport="body">
-        <div x-show="showCropper" class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/80" x-cloak
+        <div x-show="showCropper" class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/80" x-cloak
             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"

@@ -38,11 +38,13 @@
             class="px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap {{ $activeTab === 'people' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
             <i class="fas fa-users mr-2"></i> {{ __('People') }}
         </button>
-        @if($classroom->isOwnedBy(auth()->user()))
+        @if($classroom->canManageClassroom(auth()->user()))
             <button wire:click="setTab('grades')"
                 class="px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap {{ $activeTab === 'grades' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
                 <i class="fas fa-chart-bar mr-2"></i> {{ __('Grades') }}
             </button>
+        @endif
+        @if($classroom->isOwnedBy(auth()->user()))
             <button wire:click="setTab('settings')"
                 class="px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap {{ $activeTab === 'settings' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
                 <i class="fas fa-sliders-h mr-2"></i> {{ __('Settings') }}
@@ -54,7 +56,7 @@
     @if($activeTab === 'stream')
         <div class="max-w-3xl mx-auto">
             <!-- Class Code Card (Teacher only) -->
-            @if($classroom->isOwnedBy(auth()->user()))
+            @if($classroom->canManageClassroom(auth()->user()))
                 <div class="bg-white rounded-xl border border-gray-200 p-4 mb-4 flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-500">{{ __('Class code') }}</p>
@@ -67,42 +69,6 @@
                 </div>
             @endif
 
-            <!-- New Announcement -->
-            @if($classroom->isOwnedBy(auth()->user()))
-                <div class="bg-white rounded-xl border border-gray-200 p-4 mb-6" x-data="{ expanded: false }">
-                    <div @click="expanded = true" class="cursor-text">
-                        @if(!$newAnnouncement)
-                            <div x-show="!expanded" class="flex items-center text-gray-400">
-                                <img src="{{ auth()->user()->avatar_url }}" class="w-10 h-10 rounded-full mr-3">
-                                <span class="text-sm">{{ __('Announce something to your class...') }}</span>
-                            </div>
-                        @endif
-                        <div x-show="expanded" x-cloak>
-                            <textarea wire:model="newAnnouncement" rows="3"
-                                class="w-full border-0 focus:ring-0 text-sm resize-none p-0"
-                                placeholder="{{ __('Share something with your class...') }}"></textarea>
-                            <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
-                                <div class="flex gap-2">
-                                    <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
-                                        <i class="fas fa-paperclip"></i>
-                                    </button>
-                                    <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
-                                        <i class="fas fa-image"></i>
-                                    </button>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button @click="expanded = false" wire:click="$set('newAnnouncement', '')"
-                                        class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">{{ __('Cancel') }}</button>
-                                    <button wire:click="postAnnouncement"
-                                        class="btn-3d btn-3d--indigo px-4 py-2 text-sm font-medium rounded-lg transition-colors">
-                                        {{ __('Post') }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
 
             <!-- Announcements -->
             <div class="space-y-4">
@@ -118,7 +84,7 @@
                                         <p class="text-xs text-gray-500">{{ $announcement->created_at->diffForHumans() }}</p>
                                     </div>
                                 </div>
-                                @if($announcement->user_id === auth()->id() || $classroom->isOwnedBy(auth()->user()))
+                                @if($announcement->user_id === auth()->id() || $classroom->canManageClassroom(auth()->user()))
                                     <button wire:click="deleteAnnouncement({{ $announcement->id }})"
                                         wire:confirm="{{ __('Are you sure you want to delete this announcement?') }}"
                                         class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg">
@@ -152,7 +118,7 @@
             <!-- Top bar: Create + Filter + View Work -->
             <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
                 <div class="flex items-center gap-3">
-                    @if($classroom->isOwnedBy(auth()->user()))
+                    @if($classroom->canManageClassroom(auth()->user()))
                         <a href="{{ route('assignment.create', $classroom) }}"
                             class="btn-3d btn-3d--indigo inline-flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors">
                             <i class="fas fa-plus mr-2"></i> {{ __('Create') }}
@@ -166,7 +132,7 @@
                 $grouped = $assignments->groupBy(fn($a) => $a->topic ?? '__none__');
                 $topicNames = $grouped->keys()->filter(fn($k) => $k !== '__none__')->sort()->values();
                 $noTopicAssignments = $grouped->get('__none__', collect());
-                $canManage = $classroom->isOwnedBy(auth()->user());
+                $canManage = $classroom->canManageClassroom(auth()->user());
             @endphp
 
             @if($assignments->isEmpty())
@@ -436,7 +402,7 @@
                 @if($classroom->students->isEmpty())
                     <div class="bg-white rounded-xl border border-gray-200 p-8 text-center">
                         <p class="text-gray-500">{{ __('No students enrolled yet.') }}</p>
-                        @if($classroom->isOwnedBy(auth()->user()))
+                        @if($classroom->canManageClassroom(auth()->user()))
                             <p class="text-sm text-gray-400 mt-1">{{ __('Share the class code') }} <strong
                                     class="text-indigo-600 font-mono">{{ $classroom->code }}</strong>
                                 {{ __('with your students.') }}</p>

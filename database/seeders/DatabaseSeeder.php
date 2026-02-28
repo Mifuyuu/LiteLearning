@@ -7,6 +7,7 @@ use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Badge;
 use App\Models\Classroom;
+use App\Models\ClassroomContent;
 use App\Models\Comment;
 use App\Models\Submission;
 use App\Models\User;
@@ -223,18 +224,22 @@ class DatabaseSeeder extends Seeder
             // Create announcements
             for ($j = 0; $j < rand(2, 4); $j++) {
                 $announcement = Announcement::create([
-                    'classroom_id' => $classroom->id,
                     'user_id' => $teacher->id,
                     'content' => fake()->paragraphs(rand(1, 3), true),
+                ]);
+                ClassroomContent::create([
+                    'classroom_id'     => $classroom->id,
+                    'contentable_type' => Announcement::class,
+                    'contentable_id'   => $announcement->id,
                 ]);
 
                 // Add comments to some announcements
                 foreach ($enrolledStudents->random(rand(0, 3)) as $student) {
                     Comment::create([
                         'commentable_type' => Announcement::class,
-                        'commentable_id' => $announcement->id,
-                        'user_id' => $student->id,
-                        'content' => fake()->sentence(),
+                        'commentable_id'   => $announcement->id,
+                        'user_id'          => $student->id,
+                        'content'          => fake()->sentence(),
                     ]);
                 }
             }
@@ -244,14 +249,18 @@ class DatabaseSeeder extends Seeder
             for ($j = 0; $j < rand(3, 6); $j++) {
                 $type = $assignmentTypes[array_rand($assignmentTypes)];
                 $assignment = Assignment::create([
-                    'classroom_id' => $classroom->id,
-                    'user_id' => $teacher->id,
-                    'title' => fake()->sentence(4),
-                    'description' => fake()->paragraph() . "\n\n" . fake()->paragraphs(2, true),
-                    'max_score' => $type === 'material' ? 0 : fake()->randomElement([10, 20, 50, 100]),
-                    'due_date' => $type === 'material' ? null : fake()->dateTimeBetween('-1 week', '+2 weeks'),
-                    'status' => 'published',
-                    'type' => $type,
+                    'user_id'      => $teacher->id,
+                    'title'        => fake()->sentence(4),
+                    'description'  => fake()->paragraph() . "\n\n" . fake()->paragraphs(2, true),
+                    'max_score'    => $type === 'material' ? 0 : fake()->randomElement([10, 20, 50, 100]),
+                    'due_date'     => $type === 'material' ? null : fake()->dateTimeBetween('-1 week', '+2 weeks'),
+                    'status'       => 'published',
+                    'type'         => $type,
+                ]);
+                ClassroomContent::create([
+                    'classroom_id'     => $classroom->id,
+                    'contentable_type' => Assignment::class,
+                    'contentable_id'   => $assignment->id,
                 ]);
 
                 // Create submissions for assignments (not materials)

@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Str;
+use App\Models\Pivots\ClassroomUserPivot;
 
 class Classroom extends Model
 {
@@ -89,6 +91,7 @@ class Classroom extends Model
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
+            ->using(ClassroomUserPivot::class)
             ->withPivot('role', 'joined_at')
             ->withTimestamps();
     }
@@ -96,19 +99,50 @@ class Classroom extends Model
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
+            ->using(ClassroomUserPivot::class)
             ->wherePivot('role', 'student')
             ->withPivot('role', 'joined_at')
             ->withTimestamps();
     }
 
-    public function announcements(): HasMany
+    public function coTeachers(): BelongsToMany
     {
-        return $this->hasMany(Announcement::class)->latest();
+        return $this->belongsToMany(User::class)
+            ->using(ClassroomUserPivot::class)
+            ->wherePivot('role', 'co-teacher')
+            ->withPivot('role', 'joined_at')
+            ->withTimestamps();
     }
 
-    public function assignments(): HasMany
+    public function contents(): HasMany
     {
-        return $this->hasMany(Assignment::class)->latest();
+        return $this->hasMany(ClassroomContent::class)->latest();
+    }
+
+    public function announcements(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Announcement::class,
+            ClassroomContent::class,
+            'classroom_id',
+            'id',
+            'id',
+            'contentable_id'
+        )->where('classroom_contents.contentable_type', Announcement::class)
+         ->latest('announcements.created_at');
+    }
+
+    public function assignments(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Assignment::class,
+            ClassroomContent::class,
+            'classroom_id',
+            'id',
+            'id',
+            'contentable_id'
+        )->where('classroom_contents.contentable_type', Assignment::class)
+         ->latest('assignments.created_at');
     }
 
     public function topics(): HasMany
@@ -122,6 +156,20 @@ class Classroom extends Model
         return $this->teacher_id === $user->id;
     }
 
+    public function isCoTeacher(User $user): bool
+    {
+        return $this->coTeachers()->where('user_id', $user->id)->exists();
+    }
+
+    /**
+     * Can manage classroom content (create assignments, announcements, grade, etc.)
+     * True for owner, co-teachers, and admins. Does NOT grant settings access.
+     */
+    public function canManageClassroom(User $user): bool
+    {
+        return $this->isOwnedBy($user) || $this->isCoTeacher($user) || $user->isAdmin();
+    }
+
     public function hasMember(User $user): bool
     {
         return $this->members()->where('user_id', $user->id)->exists();
@@ -129,7 +177,7 @@ class Classroom extends Model
 
     public function hasAccess(User $user): bool
     {
-        return $this->isOwnedBy($user) || $this->hasMember($user) || $user->isAdmin();
+        return $this->isOwnedBy($user) || $this->isCoTeacher($user) || $this->hasMember($user) || $user->isAdmin();
     }
 
     public function studentCount(): int

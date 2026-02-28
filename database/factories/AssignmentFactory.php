@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Assignment;
-use App\Models\Classroom;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -14,7 +13,6 @@ class AssignmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'classroom_id' => Classroom::factory(),
             'user_id' => User::factory(),
             'title' => fake()->sentence(4),
             'description' => fake()->paragraph(),

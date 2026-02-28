@@ -50,7 +50,7 @@
             <!-- Submit -->
             <button type="submit"
                 class="btn-3d btn-3d--indigo w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <span wire:loading.remove wire:target="login">{{ __('Sign in') }}</span>
+                <span wire:loading.remove wire:target="login"><i class="fas fa-arrow-right-to-bracket mr-2"></i>{{ __('Sign in') }}</span>
                 <span wire:loading wire:target="login"><i class="fas fa-spinner fa-spin mr-2"></i>
                     {{ __('Signing in...') }}</span>
             </button>

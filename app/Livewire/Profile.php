@@ -92,11 +92,11 @@ class Profile extends Component
                 
                 $this->$field = null;
 
-                $message = $field === 'avatar' ? __('Profile picture updated successfully.') : __('Cover image updated successfully.');
+                $message = $field === 'avatar' ? __('อัปเดตรูปโปรไฟล์เรียบร้อยแล้ว') : __('อัปเดตรูปปกเรียบร้อยแล้ว');
                 $this->dispatch('notify', message: $message);
             }
         } catch (\Exception $e) {
-            $this->dispatch('notify', message: 'Upload failed: ' . $e->getMessage());
+            $this->dispatch('notify', message: __('อัปโหลดไม่สำเร็จ: ') . $e->getMessage());
         }
     }
 

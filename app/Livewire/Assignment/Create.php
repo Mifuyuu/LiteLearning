@@ -2,13 +2,15 @@
 
 namespace App\Livewire\Assignment;
 
+use App\Models\Announcement;
+use App\Models\Assignment;
 use App\Models\Classroom;
+use App\Models\ClassroomContent;
 use App\Models\Topic;
 use App\Services\GamificationService;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Models\Assignment;
-use Illuminate\Support\Facades\Storage;
 
 class Create extends Component
 {
@@ -20,6 +22,8 @@ class Create extends Component
     public string $title = '';
     public string $description = '';
     public int $max_score = 100;
+    public int $exp_reward = 0;
+    public int $coin_reward = 0;
     public ?string $due_date = null;
     public string $status = 'published';
     public string $topic = '';
@@ -34,9 +38,16 @@ class Create extends Component
     {
         $this->classroom = $classroom;
         abort_unless(
-            $classroom->isOwnedBy(auth()->user()),
+            $classroom->canManageClassroom(auth()->user()),
             403
         );
+
+        // Allow pre-selecting a type via query string (e.g. ?type=announcement)
+        $requestType = request()->query('type');
+        $allowed = ['announcement', 'attendance', 'file', 'question', 'material'];
+        if ($requestType && in_array($requestType, $allowed, true)) {
+            $this->type = $requestType;
+        }
     }
 
     public function getTopicsProperty()
@@ -71,15 +82,33 @@ class Create extends Component
     public function save(): void
     {
         $this->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required_unless:type,announcement|string|max:255',
             'description' => 'nullable|string',
-            'max_score' => 'required_unless:type,material|integer|min:0|max:1000',
-            'type' => 'required|in:attendance,file,question,material',
+            'max_score'  => 'required_unless:type,material,announcement|integer|min:0|max:1000',
+            'exp_reward'  => 'integer|min:0|max:9999',
+            'coin_reward' => 'integer|min:0|max:9999',
+            'type' => 'required|in:announcement,attendance,file,question,material',
             'due_date' => 'nullable|date',
             'status' => 'required|in:draft,published',
             'topic' => 'nullable|string|max:255',
             'allow_late_submission' => 'boolean',
         ]);
+
+        $user = auth()->user();
+
+        if ($this->type === 'announcement') {
+            $announcement = Announcement::create([
+                'user_id' => $user->id,
+                'content' => $this->description,
+            ]);
+            ClassroomContent::create([
+                'classroom_id'     => $this->classroom->id,
+                'contentable_type' => Announcement::class,
+                'contentable_id'   => $announcement->id,
+            ]);
+            $this->redirect(route('classroom.show', $this->classroom), navigate: true);
+            return;
+        }
 
         if ($this->type === 'material') {
             $this->max_score = 0;
@@ -90,7 +119,6 @@ class Create extends Component
             $this->description = '';
         }
 
-        $user = auth()->user();
 
         // Handle topic
         $topicName = trim($this->topic);
@@ -117,17 +145,25 @@ class Create extends Component
         }
 
         $assignment = Assignment::create([
-            'classroom_id' => $this->classroom->id,
             'user_id' => $user->id,
             'title' => $this->title,
             'description' => $this->description ?: null,
             'attachments' => !empty($attachments) ? $attachments : null,
-            'max_score' => $this->max_score,
+            'max_score'            => $this->max_score,
+            'exp_reward'           => $this->exp_reward,
+            'coin_reward'          => $this->coin_reward,
             'due_date' => $this->due_date,
             'status' => $this->status,
             'type' => $this->type,
             'topic' => $topicName ?: null,
             'allow_late_submission' => $this->allow_late_submission,
+        ]);
+
+        // Link to the classroom via ClassroomContent
+        ClassroomContent::create([
+            'classroom_id'     => $this->classroom->id,
+            'contentable_type' => Assignment::class,
+            'contentable_id'   => $assignment->id,
         ]);
 
         // Create submissions for all enrolled students

@@ -6,20 +6,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Announcement extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'classroom_id',
         'user_id',
         'content',
     ];
 
-    public function classroom(): BelongsTo
+    public function classroomContent(): MorphOne
     {
-        return $this->belongsTo(Classroom::class);
+        return $this->morphOne(ClassroomContent::class, 'contentable');
+    }
+
+    /**
+     * Get the classroom this announcement belongs to via the content hub.
+     */
+    public function getClassroom(): ?Classroom
+    {
+        return $this->classroomContent?->classroom;
     }
 
     public function user(): BelongsTo

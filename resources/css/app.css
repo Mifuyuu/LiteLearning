@@ -71,6 +71,28 @@
     }
 }
 
+/* Admin table horizontal scroll — thin scrollbar */
+.table-scroll {
+    scrollbar-width: thin;
+}
+
+.table-scroll::-webkit-scrollbar {
+    height: 4px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 9999px;
+}
+
+.table-scroll::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
 /* Prevent double focus border (browser outline + Tailwind ring) */
 input:focus,
 textarea:focus,
@@ -175,6 +197,21 @@ select:focus {
     --btn-3d-base: #f6b9c3;
     --btn-3d-border: #c35a6c;
     --btn-3d-text: #6a1527;
+}
+.btn-3d--white {
+    --btn-3d-top: #ffffff;
+    --btn-3d-bottom: #f3f4f6;
+    --btn-3d-base: #d1d5db;
+    --btn-3d-border: #9ca3af;
+    --btn-3d-text: #374151;
+}
+
+.btn-3d--dark {
+    --btn-3d-top: #ffffff22;
+    --btn-3d-bottom: #ffffff11;
+    --btn-3d-base: #ffffff33;
+    --btn-3d-border: #ffffff55;
+    --btn-3d-text: #ffffff;
 }
 
 /* Auth page animation stability */

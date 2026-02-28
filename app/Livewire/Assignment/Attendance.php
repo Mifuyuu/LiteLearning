@@ -43,7 +43,7 @@ class Attendance extends Component
     public function startSession(): void
     {
         abort_unless(
-            $this->classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin(),
+            $this->classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin(),
             403
         );
 
@@ -60,7 +60,7 @@ class Attendance extends Component
     public function stopSession(): void
     {
         abort_unless(
-            $this->classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin(),
+            $this->classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin(),
             403
         );
 
@@ -78,7 +78,7 @@ class Attendance extends Component
         }
 
         // Only teacher can trigger rotation
-        if ($this->classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin()) {
+        if ($this->classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin()) {
             if ($this->session->isCodeExpired()) {
                 $this->session->generateNewCode();
             }

@@ -206,9 +206,8 @@
                             เริ่มสร้างห้องเรียนฟรี <i class="fa-solid fa-rocket ml-2"></i>
                         </a>
                         <a href="#features"
-                            class="inline-flex items-center justify-center rounded-2xl bg-white border border-gray-200 px-8 py-4 text-base font-bold text-gray-700 w-full sm:w-auto hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm group">
-                            ดูฟีเจอร์ทั้งหมด <i
-                                class="fa-solid fa-arrow-down ml-2 text-gray-400 group-hover:translate-y-1 transition-transform"></i>
+                            class="btn-3d btn-3d--white rounded-2xl px-8 py-4 text-base font-bold text-gray-700 w-full sm:w-auto">
+                            ดูฟีเจอร์ <i class="fa-solid fa-arrow-down ml-2"></i>
                         </a>
                     </div>
 
@@ -249,12 +248,12 @@
                                             <div class="h-6 w-2/3 bg-green-50 rounded"></div>
                                         </div>
                                         <div
-                                            class="h-24 bg-white rounded-xl shadow-sm border border-gray-100 p-4 shrink-0 flex flex-col justify-between hidden sm:flex">
+                                            class="h-24 bg-white rounded-xl shadow-sm border border-gray-100 p-4 shrink-0 flex flex-col justify-between sm:flex">
                                             <div class="h-4 w-1/2 bg-gray-100 rounded"></div>
                                             <div class="h-6 w-3/4 bg-amber-50 rounded"></div>
                                         </div>
                                         <div
-                                            class="h-24 bg-white rounded-xl shadow-sm border border-gray-100 p-4 shrink-0 flex flex-col justify-between hidden lg:flex">
+                                            class="h-24 bg-white rounded-xl shadow-sm border border-gray-100 p-4 shrink-0 flex flex-col justify-between lg:flex">
                                             <div class="h-4 w-1/2 bg-gray-100 rounded"></div>
                                             <div class="h-6 w-1/2 bg-purple-50 rounded"></div>
                                         </div>
@@ -434,7 +433,7 @@
 
                         <!-- Image / Graphic representaton -->
                         <div
-                            class="fade-up-enter delay-200 relative lg:h-[500px] rounded-3xl bg-gradient-to-tr from-slate-800 to-slate-700 border border-slate-600 shadow-2xl overflow-hidden p-8 flex flex-col justify-center items-center">
+                            class="fade-up-enter delay-200 relative lg:h-[500px] rounded-3xl bg-linear-to-tr from-slate-800 to-slate-700 border border-slate-600 shadow-2xl overflow-hidden p-8 flex flex-col justify-center items-center">
                             <i class="fa-solid fa-chart-pie text-9xl text-slate-600 mb-6 drop-shadow-lg"></i>
                             <div class="w-full space-y-4 max-w-sm">
                                 <div class="h-12 w-full bg-slate-600/50 rounded-xl animate-pulse"></div>
@@ -442,7 +441,7 @@
                                 <div class="h-12 w-3/4 bg-slate-600/50 rounded-xl animate-pulse delay-150"></div>
                             </div>
                             <div
-                                class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-80">
+                                class="absolute inset-0 bg-linear-to-t from-slate-900 via-transparent to-transparent opacity-80">
                             </div>
                             <p class="absolute bottom-8 left-0 right-0 text-center text-slate-300 font-medium">Dashboard
                                 Preview</p>
@@ -471,11 +470,11 @@
 
                             <div class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
                                 <a href="{{ route('register') }}"
-                                    class="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-indigo-600 font-bold text-lg shadow-lg hover:bg-gray-50 hover:scale-105 transition-all">
+                                    class="btn-3d btn-3d--white w-full sm:w-auto px-8 py-4 rounded-xl text-indigo-600 font-bold text-lg">
                                     สมัครสมาชิกฟรี <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
                                 </a>
                                 <a href="{{ route('login') }}"
-                                    class="w-full sm:w-auto px-8 py-4 rounded-xl border border-white/30 text-white font-bold text-lg hover:bg-white/10 transition-all">
+                                    class="btn-3d btn-3d--dark w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg">
                                     เข้าสู่ระบบ
                                 </a>
                             </div>
