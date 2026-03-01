@@ -49,12 +49,8 @@ class Show extends Component
         $this->classroom = $classroom;
         $this->assignment = $assignment;
 
-        // Verify assignment belongs to this classroom via ClassroomContent
-        $belongsToClassroom = \App\Models\ClassroomContent::where('contentable_type', Assignment::class)
-            ->where('contentable_id', $assignment->id)
-            ->where('classroom_id', $classroom->id)
-            ->exists();
-        abort_unless($belongsToClassroom, 404);
+        // Verify assignment belongs to this classroom
+        abort_unless($assignment->classroom_id === $classroom->id, 404);
         // Verify access
         abort_unless($classroom->hasAccess(auth()->user()), 403);
 
@@ -221,7 +217,7 @@ class Show extends Component
             'editCoinReward' => 'integer|min:0|max:9999',
             'editDueDate' => 'nullable|date',
             'editStatus' => 'required|in:draft,published,closed',
-            'editType' => 'required|in:attendance,file,question,material',
+            'editType' => 'required|in:attendance,file,question,project,announcement,material',
             'editTopic' => 'nullable|string|max:255',
             'editAllowLateSubmission' => 'boolean',
         ]);

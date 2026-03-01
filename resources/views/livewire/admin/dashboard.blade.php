@@ -21,7 +21,7 @@
         <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-university text-indigo-600 text-xl"></i>
+                    <i class="fas fa-chalkboard-teacher text-indigo-600 text-xl"></i>
                 </div>
                 <span class="text-xs font-medium text-gray-400">
                     {{ $stats['active_classrooms'] }} {{ __('active') }}

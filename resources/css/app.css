@@ -26,13 +26,16 @@
 ::-webkit-scrollbar {
     width: 6px;
 }
+
 ::-webkit-scrollbar-track {
     background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
 }
@@ -73,7 +76,10 @@
 
 /* Prevent double focus border (browser outline + Tailwind ring) */
 input:focus,
-textarea:focus,
+textarea:focus {
+    outline: none;
+}
+
 select:focus {
     outline: none;
 }
@@ -88,11 +94,9 @@ select:focus {
 .btn-3d {
     position: relative;
     border: 1px solid var(--btn-3d-border);
-    background: linear-gradient(
-        to bottom,
-        var(--btn-3d-top),
-        var(--btn-3d-bottom)
-    );
+    background: linear-gradient(to bottom,
+            var(--btn-3d-top),
+            var(--btn-3d-bottom));
     color: var(--btn-3d-text);
     font-weight: 700;
     letter-spacing: 0.02em;
@@ -108,11 +112,9 @@ select:focus {
 }
 
 .btn-3d:hover {
-    background: linear-gradient(
-        to bottom,
-        color-mix(in oklab, var(--btn-3d-top) 86%, white),
-        color-mix(in oklab, var(--btn-3d-bottom) 92%, white)
-    );
+    background: linear-gradient(to bottom,
+            color-mix(in oklab, var(--btn-3d-top) 86%, white),
+            color-mix(in oklab, var(--btn-3d-bottom) 92%, white));
     transform: translateY(2px);
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.88),
@@ -176,6 +178,7 @@ select:focus {
     --btn-3d-border: #c35a6c;
     --btn-3d-text: #6a1527;
 }
+
 .btn-3d--white {
     --btn-3d-top: #ffffff;
     --btn-3d-bottom: #f3f4f6;
@@ -205,4 +208,14 @@ select:focus {
     will-change: transform, opacity;
     transform: translateZ(0);
     backface-visibility: hidden;
+}
+.ql-toolbar.ql-snow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+}
+
+.ql-toolbar.ql-snow .ql-formats {
+    display: contents;
 }

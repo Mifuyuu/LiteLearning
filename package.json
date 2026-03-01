@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "cropperjs": "^1.6.2",
+        "quill": "^2.0.3",
         "sortablejs": "^1.15.7"
     }
 }

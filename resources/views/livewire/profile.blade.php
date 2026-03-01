@@ -114,7 +114,9 @@
                 </div>
 
                 <div class="mt-2">
-                    <h3 class="text-2xl font-bold {{ $user->active_name_color ?? 'text-gray-900' }}">{{ $user->name }}
+                    <h3
+                        class="text-2xl font-bold {{ $user->active_name_color ?? 'text-gray-900 truncate max-w-[300px]' }}">
+                        {{ $user->name }}
                     </h3>
                     <p class="text-gray-500">{{ $user->email }}</p>
                     <span

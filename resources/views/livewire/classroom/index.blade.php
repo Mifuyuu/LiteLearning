@@ -91,7 +91,9 @@
                             <div class="flex items-center mb-3">
                                 <img src="{{ $classroom->teacher->avatar_url }}" class="w-8 h-8 rounded-full mr-2" alt="">
                                 <div>
-                                    <p class="text-sm font-medium text-gray-900">{{ $classroom->teacher->name }}</p>
+                                    <p class="text-sm font-medium text-gray-900 truncate max-w-[100px]">
+                                        {{ $classroom->teacher->name }}
+                                    </p>
                                     <p class="text-xs text-gray-500">{{ $classroom->subject }}</p>
                                 </div>
                             </div>

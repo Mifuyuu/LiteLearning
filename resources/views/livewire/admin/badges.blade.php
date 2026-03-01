@@ -2,7 +2,7 @@
 
 <div class="space-y-6 animate__animated animate__fadeIn">
     <!-- Header -->
-    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
             <div class="relative w-full sm:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -25,7 +25,7 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
@@ -41,12 +41,13 @@
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
-                                    <div class="w-12 h-12 rounded-lg flex items-center justify-center text-xl shadow-inner border border-gray-100 flex-shrink-0"
+                                    <div class="w-12 h-12 rounded-lg flex items-center justify-center text-xl shadow-inner border border-gray-100 shrink-0"
                                         style="background-color: {{ $badge->color }}20; color: {{ $badge->color }}">
                                         <i class="{{ $badge->icon ?: 'fas fa-id-badge' }}"></i>
                                     </div>
                                     <div class="ml-4">
-                                        <div class="text-sm font-bold text-gray-900">{{ $badge->name }}</div>
+                                        <div class="text-sm font-bold text-gray-900 truncate max-w-48">{{ $badge->name }}
+                                        </div>
                                         <div class="text-xs text-gray-500">{{ $badge->description }}</div>
                                     </div>
                                 </div>
@@ -97,9 +98,13 @@
     </div>
 
     <!-- Create / Edit Modal -->
-    @if($showModal)
-        <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60" x-data
-            x-on:keydown.escape.window="$wire.showModal = false">
+    <template x-teleport="body">
+        <div x-data x-show="$wire.showModal" x-cloak x-on:keydown.escape.window="$wire.showModal = false"
+            x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
+            @click.self="$wire.showModal = false">
             <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
                 <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                     <h3 class="text-lg font-bold text-gray-900">
@@ -151,12 +156,14 @@
                             </div>
                         </div>
                         <div x-data="{ open: false }">
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.badges.field_target_role') }}</label>
+                            <label
+                                class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.badges.field_target_role') }}</label>
                             <div class="relative">
                                 <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
                                     class="flex w-full items-center justify-between px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <span>
-                                        @if($form['target_role'] === '' || $form['target_role'] === null) {{ __('admin.badges.target_all') }}
+                                        @if($form['target_role'] === '' || $form['target_role'] === null)
+                                            {{ __('admin.badges.target_all') }}
                                         @elseif($form['target_role'] === 'student') {{ __('Student') }}
                                         @else {{ __('Teacher') }}
                                         @endif
@@ -172,20 +179,27 @@
                                     x-transition:leave-end="opacity-0 scale-95"
                                     class="absolute left-0 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
                                     <div role="menu">
-                                        <button type="button" role="menuitem" wire:click="$set('form.target_role', '')" @click="open = false"
+                                        <button type="button" role="menuitem" wire:click="$set('form.target_role', '')"
+                                            @click="open = false"
                                             class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['target_role'] ?? '') === '' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
                                             {{ __('admin.badges.target_all') }}
-                                            @if(($form['target_role'] ?? '') === '') <i class="fas fa-check text-xs"></i> @endif
+                                            @if(($form['target_role'] ?? '') === '') <i
+                                                class="fas fa-check text-xs"></i>
+                                            @endif
                                         </button>
-                                        <button type="button" role="menuitem" wire:click="$set('form.target_role', 'student')" @click="open = false"
+                                        <button type="button" role="menuitem"
+                                            wire:click="$set('form.target_role', 'student')" @click="open = false"
                                             class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['target_role'] ?? '') === 'student' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
                                             {{ __('Student') }}
-                                            @if(($form['target_role'] ?? '') === 'student') <i class="fas fa-check text-xs"></i> @endif
+                                            @if(($form['target_role'] ?? '') === 'student') <i
+                                            class="fas fa-check text-xs"></i> @endif
                                         </button>
-                                        <button type="button" role="menuitem" wire:click="$set('form.target_role', 'teacher')" @click="open = false"
+                                        <button type="button" role="menuitem"
+                                            wire:click="$set('form.target_role', 'teacher')" @click="open = false"
                                             class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['target_role'] ?? '') === 'teacher' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
                                             {{ __('Teacher') }}
-                                            @if(($form['target_role'] ?? '') === 'teacher') <i class="fas fa-check text-xs"></i> @endif
+                                            @if(($form['target_role'] ?? '') === 'teacher') <i
+                                            class="fas fa-check text-xs"></i> @endif
                                         </button>
                                     </div>
                                 </div>
@@ -206,5 +220,5 @@
                 </div>
             </div>
         </div>
-    @endif
+    </template>
 </div>

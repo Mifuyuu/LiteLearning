@@ -235,6 +235,7 @@
     "Assignment updated successfully.": "อัปเดตงานเรียบร้อยแล้ว",
     "Assignment deleted successfully.": "ลบงานเรียบร้อยแล้ว",
     "Are you sure you want to delete this assignment?": "คุณแน่ใจหรือไม่ว่าต้องการลบงานนี้?",
+    "Are you sure you want to delete this assignment? This action cannot be undone.": "คุณแน่ใจหรือไม่ว่าต้องการลบงานนี้? การกระทำนี้ไม่สามารถย้อนกลับได้",
     "Link copied!": "คัดลอกลิงก์แล้ว!",
     "Delete Assignment": "ลบงาน",
     "Deleting...": "กำลังลบ...",

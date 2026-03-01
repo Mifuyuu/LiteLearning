@@ -14,11 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
 
         $middleware->alias([
-            'teacher'  => \App\Http\Middleware\EnsureUserIsTeacher::class,
-            'admin'    => \App\Http\Middleware\EnsureUserIsAdmin::class,
-            'student'  => \App\Http\Middleware\EnsureUserIsStudent::class,
-            'setup'    => \App\Http\Middleware\EnsureUserHasCompletedSetup::class,
-            'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+            'teacher'   => \App\Http\Middleware\EnsureUserIsTeacher::class,
+            'admin'     => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'not_admin' => \App\Http\Middleware\EnsureUserIsNotAdmin::class,
+            'student'   => \App\Http\Middleware\EnsureUserIsStudent::class,
+            'setup'     => \App\Http\Middleware\EnsureUserHasCompletedSetup::class,
+            'verified'  => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         ]);
 
         $middleware->web(append: [

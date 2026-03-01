@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Assignment;
 
-use App\Models\Announcement;
 use App\Models\Assignment;
+use App\Models\Announcement;
 use App\Models\Classroom;
-use App\Models\ClassroomContent;
+
 use App\Models\Topic;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\Storage;
@@ -44,7 +44,7 @@ class Create extends Component
 
         // Allow pre-selecting a type via query string (e.g. ?type=announcement)
         $requestType = request()->query('type');
-        $allowed = ['announcement', 'attendance', 'file', 'question', 'material'];
+        $allowed = ['announcement', 'attendance', 'file', 'question', 'material', 'topic', 'project'];
         if ($requestType && in_array($requestType, $allowed, true)) {
             $this->type = $requestType;
         }
@@ -82,12 +82,12 @@ class Create extends Component
     public function save(): void
     {
         $this->validate([
-            'title' => 'required_unless:type,announcement|string|max:255',
+            'title' => 'required|string|max:30',
             'description' => 'nullable|string',
-            'max_score'  => 'required_unless:type,material,announcement|integer|min:0|max:1000',
+            'max_score'  => 'required_unless:type,material,topic,announcement|integer|min:0|max:1000',
             'exp_reward'  => 'integer|min:0|max:9999',
             'coin_reward' => 'integer|min:0|max:9999',
-            'type' => 'required|in:announcement,attendance,file,question,material',
+            'type' => 'required|in:announcement,attendance,file,question,material,topic,project',
             'due_date' => 'nullable|date',
             'status' => 'required|in:draft,published',
             'topic' => 'nullable|string|max:255',
@@ -96,24 +96,11 @@ class Create extends Component
 
         $user = auth()->user();
 
-        if ($this->type === 'announcement') {
-            $announcement = Announcement::create([
-                'user_id' => $user->id,
-                'content' => $this->description,
-            ]);
-            ClassroomContent::create([
-                'classroom_id'     => $this->classroom->id,
-                'contentable_type' => Announcement::class,
-                'contentable_id'   => $announcement->id,
-            ]);
-            $this->redirect(route('classroom.show', $this->classroom), navigate: true);
-            return;
-        }
-
-        if ($this->type === 'material') {
+        if (in_array($this->type, ['announcement', 'material', 'topic'])) {
             $this->max_score = 0;
             $this->due_date = null;
         }
+
 
         if ($this->type === 'attendance') {
             $this->description = '';
@@ -144,8 +131,22 @@ class Create extends Component
             }
         }
 
+        // Announcement → save to announcements table, not assignments
+        if ($this->type === 'announcement') {
+            Announcement::create([
+                'user_id'      => $user->id,
+                'classroom_id' => $this->classroom->id,
+                'title'        => $this->title,
+                'content'      => $this->description ?: null,
+            ]);
+
+            $this->redirect(route('classroom.show', $this->classroom), navigate: true);
+            return;
+        }
+
         $assignment = Assignment::create([
             'user_id' => $user->id,
+            'classroom_id' => $this->classroom->id,
             'title' => $this->title,
             'description' => $this->description ?: null,
             'attachments' => !empty($attachments) ? $attachments : null,
@@ -159,15 +160,9 @@ class Create extends Component
             'allow_late_submission' => $this->allow_late_submission,
         ]);
 
-        // Link to the classroom via ClassroomContent
-        ClassroomContent::create([
-            'classroom_id'     => $this->classroom->id,
-            'contentable_type' => Assignment::class,
-            'contentable_id'   => $assignment->id,
-        ]);
 
         // Create submissions for all enrolled students
-        if ($this->status === 'published') {
+        if ($this->status === 'published' && !in_array($this->type, ['material', 'topic'])) {
             foreach ($this->classroom->students as $student) {
                 $assignment->submissions()->create([
                     'user_id' => $student->id,

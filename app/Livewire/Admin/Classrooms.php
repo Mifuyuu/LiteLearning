@@ -20,15 +20,6 @@ class Classrooms extends Component
         $this->resetPage();
     }
 
-    public function toggleArchive(Classroom $classroom)
-    {
-        $classroom->is_archived = !$classroom->is_archived;
-        $classroom->save();
-
-        $this->dispatch('notify', message: $classroom->is_archived 
-            ? __('Classroom archived.') 
-            : __('Classroom restored.'));
-    }
 
     public function deleteClassroom(Classroom $classroom)
     {

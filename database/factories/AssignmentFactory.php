@@ -14,6 +14,7 @@ class AssignmentFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
+            'classroom_id' => \App\Models\Classroom::factory(),
             'title' => fake()->sentence(4),
             'description' => fake()->paragraph(),
             'max_score' => fake()->randomElement([10, 20, 50, 100]),
@@ -22,6 +23,14 @@ class AssignmentFactory extends Factory
             'type' => 'question',
             'allow_late_submission' => true,
         ];
+    }
+
+    public function announcement(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'type' => 'announcement',
+            'max_score' => 0,
+        ]);
     }
 
     public function attendance(): static
@@ -46,10 +55,18 @@ class AssignmentFactory extends Factory
         ]);
     }
 
-    public function quiz(): static
+    public function topic(): static
     {
         return $this->state(fn(array $attributes) => [
-            'type' => 'quiz',
+            'type' => 'topic',
+            'max_score' => 0,
+        ]);
+    }
+
+    public function project(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'type' => 'project',
         ]);
     }
 

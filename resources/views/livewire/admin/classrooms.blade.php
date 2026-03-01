@@ -2,7 +2,7 @@
 
 <div class="space-y-6 animate__animated animate__fadeIn">
     <!-- Filters and Search -->
-    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
             <div class="relative w-full sm:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -28,24 +28,25 @@
                     </button>
                     <div x-show="open" x-cloak @click.outside="open = false"
                         x-transition:enter="transition ease-out duration-100"
-                        x-transition:enter-start="opacity-0 scale-95"
-                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
                         x-transition:leave="transition ease-in duration-75"
-                        x-transition:leave-start="opacity-100 scale-100"
-                        x-transition:leave-end="opacity-0 scale-95"
+                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
                         class="absolute left-0 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
                         <div role="menu">
-                            <button type="button" role="menuitem" wire:click="$set('statusFilter', '')" @click="open = false"
+                            <button type="button" role="menuitem" wire:click="$set('statusFilter', '')"
+                                @click="open = false"
                                 class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === '' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
                                 {{ __('admin.classrooms.filter_all') }}
                                 @if($statusFilter === '') <i class="fas fa-check text-xs"></i> @endif
                             </button>
-                            <button type="button" role="menuitem" wire:click="$set('statusFilter', 'active')" @click="open = false"
+                            <button type="button" role="menuitem" wire:click="$set('statusFilter', 'active')"
+                                @click="open = false"
                                 class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'active' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
                                 {{ __('admin.classrooms.filter_active') }}
                                 @if($statusFilter === 'active') <i class="fas fa-check text-xs"></i> @endif
                             </button>
-                            <button type="button" role="menuitem" wire:click="$set('statusFilter', 'archived')" @click="open = false"
+                            <button type="button" role="menuitem" wire:click="$set('statusFilter', 'archived')"
+                                @click="open = false"
                                 class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'archived' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
                                 {{ __('admin.classrooms.filter_archived') }}
                                 @if($statusFilter === 'archived') <i class="fas fa-check text-xs"></i> @endif
@@ -58,7 +59,7 @@
     </div>
 
     <!-- Classrooms Table -->
-    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
@@ -75,21 +76,24 @@
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center text-white font-bold text-lg"
+                                    <div class="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center text-white font-bold text-lg"
                                         style="background-color: {{ $classroom->theme_color }}">
                                         {{ substr($classroom->name, 0, 1) }}
                                     </div>
                                     <div class="ml-4">
-                                        <div class="text-sm font-bold text-gray-900">{{ $classroom->name }}</div>
+                                        <div class="text-sm font-bold text-gray-900 truncate max-w-48">
+                                            {{ $classroom->name }}
+                                        </div>
                                         <div class="text-xs text-gray-500">#{{ $classroom->code }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <img class="h-6 w-6 rounded-full object-cover mr-2 flex-shrink-0"
+                                    <img class="h-6 w-6 rounded-full object-cover mr-2 shrink-0"
                                         src="{{ $classroom->teacher->avatar_url }}" alt="">
-                                    <span class="text-sm text-gray-700">{{ $classroom->teacher->name }}</span>
+                                    <span
+                                        class="text-sm text-gray-700 truncate max-w-48">{{ $classroom->teacher->name }}</span>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -102,28 +106,22 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold
-                                                {{ $classroom->is_archived ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }}">
+                                                                            {{ $classroom->is_archived ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }}">
                                     {{ $classroom->is_archived ? __('admin.classrooms.status_archived') : __('admin.classrooms.status_active') }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <td class="px-6 py-4 whitespace-nowrap text-right font-medium">
                                 <div class="flex justify-end gap-3 text-gray-400">
                                     <a href="{{ route('classroom.show', $classroom) }}"
                                         class="hover:text-indigo-600 transition-colors p-1"
                                         title="{{ __('admin.classrooms.view') }}">
-                                        <i class="fas fa-external-link-alt text-xs"></i>
+                                        <i class="fas fa-external-link-alt"></i>
                                     </a>
-                                    <button wire:click="toggleArchive({{ $classroom->id }})"
-                                        class="hover:text-amber-600 transition-colors p-1"
-                                        title="{{ $classroom->is_archived ? __('admin.classrooms.restore') : __('admin.classrooms.archive') }}">
-                                        <i
-                                            class="fas fa-{{ $classroom->is_archived ? 'box-open' : 'archive' }} text-xs"></i>
-                                    </button>
                                     <button wire:click="deleteClassroom({{ $classroom->id }})"
                                         wire:confirm="{{ __('admin.classrooms.delete_confirm') }}"
                                         class="hover:text-red-600 transition-colors p-1"
                                         title="{{ __('admin.classrooms.delete') }}">
-                                        <i class="fas fa-trash-alt text-xs"></i>
+                                        <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </div>
                             </td>

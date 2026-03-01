@@ -2,7 +2,7 @@
 
 <div class="space-y-6 animate__animated animate__fadeIn">
     <!-- Header -->
-    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
             <div class="relative w-full sm:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -25,7 +25,7 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
@@ -42,11 +42,11 @@
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
-                                    <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 text-lg flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 text-lg shrink-0">
                                         <i class="{{ $achievement->icon ?: 'fas fa-award' }}"></i>
                                     </div>
                                     <div class="ml-4">
-                                        <div class="text-sm font-bold text-gray-900">{{ $achievement->name }}</div>
+                                        <div class="text-sm font-bold text-gray-900 truncate max-w-48">{{ $achievement->name }}</div>
                                         <div class="text-xs text-gray-500 line-clamp-1">{{ $achievement->description }}</div>
                                     </div>
                                 </div>
@@ -105,9 +105,17 @@
     </div>
 
     <!-- Create / Edit Modal -->
-    @if($showModal)
-    <div class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60"
-         x-data x-on:keydown.escape.window="$wire.showModal = false">
+    <template x-teleport="body">
+        <div x-data x-show="$wire.showModal" x-cloak
+            x-on:keydown.escape.window="$wire.showModal = false"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
+            @click.self="$wire.showModal = false">
         <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
             <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <h3 class="text-lg font-bold text-gray-900">
@@ -207,6 +215,6 @@
                 </button>
             </div>
         </div>
-    </div>
-    @endif
+        </div>
+    </template>
 </div>

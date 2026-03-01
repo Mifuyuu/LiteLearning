@@ -7,8 +7,7 @@
             <i class="fas fa-flag text-indigo-500"></i>
             {{ __('report.admin_title') }}
         </h1>
-        <div
-            class="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-600 shadow-sm">
+        <div class="inline-flex items-center justify-center px-3 py-1.5text-sm font-medium text-gray-600">
             {{ $reports->count() }} {{ __('report.admin_subtitle') }}
         </div>
     </div>
@@ -74,7 +73,7 @@
 
                     {{-- Toggle button --}}
                     <button wire:click="toggleStatus({{ $report->id }})" class="shrink-0 text-xs font-medium px-3 py-1.5 rounded-lg border transition cursor-pointer
-                                                                            {{ $report->status === 'pending'
+                                                                                    {{ $report->status === 'pending'
                     ? 'border-green-300 text-green-700 hover:bg-green-50'
                     : 'border-gray-200 text-gray-500 hover:bg-gray-50' }}">
                         {{ $report->status === 'pending' ? __('report.mark_resolved') : __('report.mark_pending') }}

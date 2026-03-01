@@ -20,8 +20,6 @@
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
-    <!-- Quill.js Theme (Snow) -->
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
 
 
@@ -57,6 +55,9 @@
             }
         }
     </style>
+    <!-- Quill CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 </head>
 
 <body class="h-full overflow-hidden bg-gray-50 font-sans antialiased"
@@ -261,7 +262,7 @@
                             </a>
                             <a href="{{ route('admin.classrooms') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminClassroomsActive) }}">
-                                <i class="fas fa-university w-5 mr-3 text-center"></i>
+                                <i class="fas fa-chalkboard-teacher w-5 mr-3 text-center"></i>
                                 {{ __('Classroom Management') }}
                             </a>
                             <a href="{{ route('admin.store') }}" wire:navigate
@@ -340,7 +341,7 @@
                                 <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
                                     class="w-8 h-8 rounded-full object-cover">
                                 <span
-                                    class="hidden sm:block text-sm font-medium text-gray-700">{{ auth()->user()->name }}</span>
+                                    class="hidden sm:block text-sm font-medium text-gray-700 truncate max-w-[120px]">{{ auth()->user()->name }}</span>
                                 <i class="fas fa-chevron-down text-xs text-gray-400 hidden sm:block"></i>
                             </button>
 
@@ -358,8 +359,12 @@
                                     <div role="group" aria-labelledby="user-menu-account">
                                         <div class="px-4 py-3 border-b border-gray-100" role="heading"
                                             id="user-menu-account">
-                                            <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
-                                            <p class="text-xs text-gray-500">{{ auth()->user()->email }}</p>
+                                            <p class="text-sm font-medium text-gray-900 truncate max-w-[200px]">
+                                                {{ auth()->user()->name }}
+                                            </p>
+                                            <p class="text-xs text-gray-500 truncate max-w-[200px]">
+                                                {{ auth()->user()->email }}
+                                            </p>
                                             <span
                                                 class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mt-1 capitalize">
                                                 {{ __(ucfirst(auth()->user()->role)) }}
@@ -418,7 +423,7 @@
         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
         x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2"
-        class="fixed bottom-4 right-4 z-[100] w-[calc(100%-2rem)] max-w-sm rounded-lg border p-4 text-sm shadow-lg"
+        class="fixed bottom-4 right-4 z-100 w-[calc(100%-2rem)] max-w-sm rounded-lg border p-4 text-sm shadow-lg"
         :class="{
             'bg-green-50 border-green-200 text-green-700': type === 'success',
             'bg-red-50 border-red-200 text-red-700': type === 'error',
@@ -443,8 +448,6 @@
 
     @livewireScripts
 
-    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
 
 
     <script>
@@ -460,8 +463,8 @@
                     const nameSpan = el.querySelector('span.truncate');
                     if (nameSpan) nameSpan.textContent = data.name;
                 });
+            });
         });
- });
     </script>
 
     @livewire('report-bug')

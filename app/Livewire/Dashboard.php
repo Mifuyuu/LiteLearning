@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Classroom;
-use App\Models\ClassroomContent;
 use App\Models\Submission;
 use App\Models\User;
 use App\Services\GamificationService;
@@ -46,10 +45,9 @@ class Dashboard extends Component
             $totalStudents    = $ownedClassrooms->sum('students_count');
             $totalAssignments = $ownedClassrooms->sum('assignments_count');
 
-            // Single aggregate query via ClassroomContent
-            $assignmentIds = ClassroomContent::where('contentable_type', \App\Models\Assignment::class)
-                ->whereIn('classroom_id', $ownedClassrooms->pluck('id'))
-                ->pluck('contentable_id');
+            // Single aggregate query via direct classroom_id
+            $assignmentIds = \App\Models\Assignment::whereIn('classroom_id', $ownedClassrooms->pluck('id'))
+                ->pluck('id');
 
             $pendingSubmissions = Submission::whereIn('assignment_id', $assignmentIds)
                 ->where('status', 'turned_in')->count();

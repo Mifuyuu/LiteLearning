@@ -9,7 +9,7 @@ use Livewire\Component;
 
 class StreamComment extends Component
 {
-    public int $announcementId;
+    public int $announcementId = 0;
     public string $commentText = '';
     public bool $showComments = false;
 
@@ -28,7 +28,7 @@ class StreamComment extends Component
 
         // Verify user has access to the announcement's classroom
         $announcement = \App\Models\Announcement::findOrFail($this->announcementId);
-        $classroom = $announcement->getClassroom();
+        $classroom = $announcement->classroom;
 
         /** @var \App\Models\User $user */
         $user = Auth::user();

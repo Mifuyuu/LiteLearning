@@ -4,7 +4,6 @@ namespace App\Livewire\Classroom;
 
 use App\Models\Classroom;
 use App\Models\Announcement;
-use App\Models\ClassroomContent;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -19,7 +18,6 @@ class Show extends Component
     public string $activeTab = 'stream';
     public string $name = '';
     public string $section = '';
-    public string $subject = '';
     public string $description = '';
     public string $theme_color = '#4F46E5';
     public string $deleteConfirm = '';
@@ -35,7 +33,6 @@ class Show extends Component
         $this->classroom = $classroom;
         $this->name        = $classroom->name;
         $this->section     = $classroom->section ?? '';
-        $this->subject     = $classroom->subject ?? '';
         $this->description = $classroom->description ?? '';
         $this->theme_color = $classroom->theme_color;
 
@@ -54,43 +51,21 @@ class Show extends Component
 
         $this->classroom->load([
             'teacher',
-            'contents.contentable.user',
-            'contents.contentable.comments.user',
             'students',
             'topics',
         ]);
 
-        // Eager-load submissions on assignment contents
-        $this->classroom->contents
-            ->filter(fn ($c) => $c->contentable_type === \App\Models\Assignment::class)
-            ->each(fn ($c) => $c->contentable?->load('submissions'));
-
-        // For teacher: load all assignments; for student: only published
-        if (!$user->isAdmin() && !$this->classroom->isOwnedBy($user)) {
-            $filtered = $this->classroom->contents->filter(function ($c) {
-                if ($c->contentable_type === \App\Models\Assignment::class) {
-                    return $c->contentable?->status === 'published';
-                }
-                return true;
-            })->values();
-            $this->classroom->setRelation('contents', $filtered);
-        }
-
-        // Derive announcements and assignments collections from loaded contents
-        // and set them as virtual relations so the view can use $classroom->announcements
-        // and $classroom->assignments without triggering Eloquent's magic-method resolution.
-        $announcements = $this->classroom->contents
-            ->filter(fn ($c) => $c->contentable_type === Announcement::class)
-            ->map(fn ($c) => $c->contentable)
-            ->filter()
-            ->values();
+        // Load announcements with comments and users
+        $announcementsQuery = $this->classroom->announcements()->with(['user', 'comments.user']);
+        $announcements = $announcementsQuery->latest()->get();
         $this->classroom->setRelation('announcements', $announcements);
 
-        $assignments = $this->classroom->contents
-            ->filter(fn ($c) => $c->contentable_type === \App\Models\Assignment::class)
-            ->map(fn ($c) => $c->contentable)
-            ->filter()
-            ->values();
+        // Load assignments with submissions and users — filter for students
+        $assignmentsQuery = $this->classroom->assignments()->with(['user', 'submissions']);
+        if (!$user->isAdmin() && !$this->classroom->isOwnedBy($user)) {
+            $assignmentsQuery->where('status', 'published');
+        }
+        $assignments = $assignmentsQuery->latest()->get();
         $this->classroom->setRelation('assignments', $assignments);
     }
 
@@ -128,7 +103,6 @@ class Show extends Component
         $this->validate([
             'name'        => 'required|string|max:255',
             'section'     => 'nullable|string|max:255',
-            'subject'     => 'nullable|string|max:255',
             'description' => 'nullable|string|max:2000',
             'theme_color' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ]);
@@ -136,7 +110,6 @@ class Show extends Component
         $this->classroom->update([
             'name'        => $this->name,
             'section'     => $this->section,
-            'subject'     => $this->subject,
             'description' => $this->description,
             'theme_color' => $this->theme_color,
         ]);
@@ -150,6 +123,18 @@ class Show extends Component
         ]);
 
         session()->flash('message', __('Classroom settings saved successfully.'));
+    }
+
+    public function toggleArchive(): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        abort_unless($this->classroom->isOwnedBy($user), 403);
+
+        $this->classroom->is_archived = !$this->classroom->is_archived;
+        $this->classroom->save();
+
+        session()->flash('message', $this->classroom->is_archived ? __('Classroom archived.') : __('Classroom restored.'));
     }
 
     public function deleteClassroom()
@@ -176,11 +161,7 @@ class Show extends Component
         $announcement = Announcement::findOrFail($id);
 
         // Ensure announcement belongs to this classroom (prevent cross-classroom deletion)
-        $content = ClassroomContent::where('contentable_type', Announcement::class)
-            ->where('contentable_id', $id)
-            ->where('classroom_id', $this->classroom->id)
-            ->first();
-        abort_unless($content !== null, 404);
+        abort_unless($announcement->classroom_id === $this->classroom->id, 404);
 
         /** @var User $user */
         $user = Auth::user();
@@ -188,7 +169,6 @@ class Show extends Component
             abort(403);
         }
 
-        $content->delete();
         $announcement->delete();
         // Reload all relations after deletion
         $this->loadClassroomRelations();
@@ -201,17 +181,10 @@ class Show extends Component
             abort(403);
         }
 
-        $content = ClassroomContent::where('contentable_type', \App\Models\Assignment::class)
-            ->where('contentable_id', $id)
-            ->where('classroom_id', $this->classroom->id)
-            ->first();
-        abort_unless($content !== null, 404);
-
-        $assignment = $content->contentable;
-        $content->delete();
+        $assignment = \App\Models\Assignment::where('classroom_id', $this->classroom->id)
+            ->where('id', $id)
+            ->firstOrFail();
         $assignment->delete();
-        // Reload all relations after deletion
-        $this->loadClassroomRelations();
     }
 
     public function render()

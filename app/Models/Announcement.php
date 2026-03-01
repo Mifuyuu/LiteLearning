@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+
 
 class Announcement extends Model
 {
@@ -14,20 +14,14 @@ class Announcement extends Model
 
     protected $fillable = [
         'user_id',
+        'classroom_id',
+        'title',
         'content',
     ];
 
-    public function classroomContent(): MorphOne
+    public function classroom(): BelongsTo
     {
-        return $this->morphOne(ClassroomContent::class, 'contentable');
-    }
-
-    /**
-     * Get the classroom this announcement belongs to via the content hub.
-     */
-    public function getClassroom(): ?Classroom
-    {
-        return $this->classroomContent?->classroom;
+        return $this->belongsTo(Classroom::class);
     }
 
     public function user(): BelongsTo

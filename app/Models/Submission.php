@@ -42,11 +42,6 @@ class Submission extends Model
         return $this->morphMany(Attachment::class, 'attachable');
     }
 
-    public function quizResponses()
-    {
-        return $this->hasMany(QuizResponse::class);
-    }
-
     // Helpers
     public function isTurnedIn(): bool
     {

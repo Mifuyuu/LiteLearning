@@ -20,7 +20,6 @@ class ClassroomFactory extends Factory
             'teacher_id' => User::factory(),
             'name' => fake()->randomElement($subjects) . ' ' . fake()->numberBetween(101, 499),
             'section' => fake()->randomElement($sections),
-            'subject' => fake()->randomElement($subjects),
             'description' => fake()->paragraph(),
             'theme_color' => fake()->randomElement($colors),
             'is_archived' => false,

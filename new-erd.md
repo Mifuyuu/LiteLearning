@@ -13,15 +13,10 @@ erDiagram
         varchar cover_image
         text bio
         varchar locale "default: en"
-        varchar theme "default: system"
         int ui_scale "default: 100"
         varchar active_name_color
         varchar active_avatar_frame
         boolean is_active "default: true"
-        varchar school_name
-        varchar study_year
-        date birth_date
-        datetime tos_accepted_at
         datetime setup_completed_at
         varchar remember_token
         datetime created_at
@@ -34,10 +29,8 @@ erDiagram
         varchar name
         varchar slug UK
         varchar section
-        varchar subject
         text description
         varchar code UK
-        varchar cover_image
         varchar theme_color "default: #4F46E5"
         boolean is_archived "default: false"
         datetime created_at
@@ -45,7 +38,6 @@ erDiagram
     }
 
     classroom_user {
-        int id PK
         int classroom_id FK
         int user_id FK
         varchar role "student | co-teacher"
@@ -61,13 +53,43 @@ erDiagram
         varchar title
         varchar slug UK
         text description
-        text attachments "JSON"
         int max_score "default: 100"
+        int exp_reward "default: 0"
+        int coin_reward "default: 0"
         datetime due_date
         varchar status "draft | published | closed"
-        varchar type "attendance | file | question | quiz | material"
-        varchar topic
+        varchar type "attendance | file | question | project"
         boolean allow_late_submission "default: true"
+        datetime created_at
+        datetime updated_at
+    }
+
+    announcements {
+        int id PK
+        int classroom_id FK
+        int user_id FK
+        varchar title
+        text content
+        datetime created_at
+        datetime updated_at
+    }
+
+    materials {
+        int id PK
+        int classroom_id FK
+        int user_id FK
+        varchar title
+        varchar slug UK
+        text description
+        datetime created_at
+        datetime updated_at
+    }
+
+    topics {
+        int id PK
+        int classroom_id FK
+        varchar name
+        int order "default: 0"
         datetime created_at
         datetime updated_at
     }
@@ -86,11 +108,15 @@ erDiagram
         datetime updated_at
     }
 
-    announcements {
+    attachments {
         int id PK
-        int classroom_id FK
-        int user_id FK
-        text content
+        varchar attachable_type
+        int attachable_id
+        varchar file_name
+        varchar file_path
+        varchar file_type
+        int file_size
+        int uploaded_by FK
         datetime created_at
         datetime updated_at
     }
@@ -105,52 +131,6 @@ erDiagram
         datetime updated_at
     }
 
-    attachments {
-        int id PK
-        varchar attachable_type
-        int attachable_id
-        varchar file_name
-        varchar file_path
-        varchar file_type
-        int file_size
-        int uploaded_by FK
-        datetime created_at
-        datetime updated_at
-    }
-
-    topics {
-        int id PK
-        int classroom_id FK
-        varchar name
-        int order "default: 0"
-        datetime created_at
-        datetime updated_at
-    }
-
-    quiz_questions {
-        int id PK
-        int assignment_id FK
-        text question
-        varchar type "multiple_choice | true_false | short_answer | essay"
-        text options "JSON"
-        text correct_answer
-        int points "default: 1"
-        int order "default: 0"
-        datetime created_at
-        datetime updated_at
-    }
-
-    quiz_responses {
-        int id PK
-        int quiz_question_id FK
-        int submission_id FK
-        int user_id FK
-        text answer
-        boolean is_correct
-        int points_earned "default: 0"
-        datetime created_at
-        datetime updated_at
-    }
 
     attendance_sessions {
         int id PK
@@ -165,7 +145,7 @@ erDiagram
 
     user_gamifications {
         int id PK
-        int user_id FK
+        int user_id FK "UK"
         int coins "default: 0"
         int xp "default: 0"
         int level "default: 1"
@@ -200,7 +180,6 @@ erDiagram
     }
 
     user_achievements {
-        int id PK
         int user_id FK
         int achievement_id FK
         datetime unlocked_at
@@ -209,7 +188,6 @@ erDiagram
     }
 
     user_badges {
-        int id PK
         int user_id FK
         int badge_id FK
         datetime earned_at
@@ -255,15 +233,15 @@ erDiagram
     bug_reports {
         int id PK
         int user_id FK
+        varchar type "bug | suggestion | other"
         varchar title
-        text description
-        varchar status
+        text message
+        varchar status "pending | resolved"
         datetime created_at
         datetime updated_at
     }
 
     classroom_sidebar_preferences {
-        int id PK
         int user_id FK
         int classroom_id FK
         boolean is_pinned "default: false"
@@ -283,15 +261,12 @@ erDiagram
     users ||--o{ assignments : "creates"
     classrooms ||--o{ announcements : "has"
     users ||--o{ announcements : "posts"
+    classrooms ||--o{ materials : "has"
+    users ||--o{ materials : "creates"
     classrooms ||--o{ topics : "organizes"
 
     assignments ||--o{ submissions : "receives"
     users ||--o{ submissions : "submits"
-
-    assignments ||--o{ quiz_questions : "contains"
-    quiz_questions ||--o{ quiz_responses : "receives"
-    submissions ||--o{ quiz_responses : "links"
-    users ||--o{ quiz_responses : "answers"
 
     assignments ||--|| attendance_sessions : "has session"
 

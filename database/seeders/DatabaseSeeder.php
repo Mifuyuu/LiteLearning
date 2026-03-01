@@ -245,15 +245,15 @@ class DatabaseSeeder extends Seeder
             }
 
             // Create assignments
-            $assignmentTypes = ['question', 'attendance', 'material'];
+            $assignmentTypes = ['announcement', 'question', 'attendance', 'material', 'topic', 'project'];
             for ($j = 0; $j < rand(3, 6); $j++) {
                 $type = $assignmentTypes[array_rand($assignmentTypes)];
                 $assignment = Assignment::create([
                     'user_id'      => $teacher->id,
                     'title'        => fake()->sentence(4),
                     'description'  => fake()->paragraph() . "\n\n" . fake()->paragraphs(2, true),
-                    'max_score'    => $type === 'material' ? 0 : fake()->randomElement([10, 20, 50, 100]),
-                    'due_date'     => $type === 'material' ? null : fake()->dateTimeBetween('-1 week', '+2 weeks'),
+                    'max_score'    => in_array($type, ['announcement', 'material', 'topic']) ? 0 : fake()->randomElement([10, 20, 50, 100]),
+                    'due_date'     => in_array($type, ['announcement', 'material', 'topic']) ? null : fake()->dateTimeBetween('-1 week', '+2 weeks'),
                     'status'       => 'published',
                     'type'         => $type,
                 ]);
@@ -264,7 +264,7 @@ class DatabaseSeeder extends Seeder
                 ]);
 
                 // Create submissions for assignments (not materials)
-                if ($type !== 'material') {
+                if (!in_array($type, ['announcement', 'material', 'topic'])) {
                     foreach ($enrolledStudents->random(rand(3, 8)) as $student) {
                         $statuses = ['turned_in', 'graded', 'assigned'];
                         $status = $statuses[array_rand($statuses)];

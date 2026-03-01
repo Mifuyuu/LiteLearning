@@ -7,7 +7,8 @@
         <a href="{{ route('classroom.show', $classroom) }}"
             class="text-gray-500 hover:text-indigo-600 transition-colors">{{ $classroom->name }}</a>
         <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-        <span class="text-gray-800 font-semibold">{{ $type === 'announcement' ? __('Create Announcement') : __('Create Assignment') }}</span>
+        <span
+            class="text-gray-800 font-semibold">{{ $type === 'announcement' ? __('Create Announcement') : __('Create Assignment') }}</span>
     </nav>
 @endsection
 
@@ -19,45 +20,37 @@
     </a>
 
     <form wire:submit="save" class="space-y-5">
-        <!-- Type Selection -->
-        <div class="grid grid-cols-3 md:grid-cols-5 gap-3 bg-white p-4 rounded-xl border border-gray-200">
-            @php
-                $types = [
-                    'announcement' => ['icon' => 'fa-bullhorn', 'label' => 'Announcement'],
-                    'question' => ['icon' => 'fa-pen-to-square', 'label' => 'Question'],
-                    'file' => ['icon' => 'fa-cloud-arrow-up', 'label' => 'File Upload'],
-                    'attendance' => ['icon' => 'fa-clipboard-check', 'label' => 'Attendance'],
-                    'material' => ['icon' => 'fa-book-open', 'label' => 'Material'],
-                ];
-            @endphp
-            @foreach($types as $typeKey => $info)
-                <label
-                    class="relative flex flex-col items-center p-3 cursor-pointer rounded-lg border-2 transition-all
-                                                    {{ $type === $typeKey ? 'border-indigo-500 bg-indigo-50/50' : 'border-gray-100 hover:border-gray-200 bg-gray-50/50 hover:bg-gray-50' }}">
-                    <input type="radio" wire:model.live="type" value="{{ $typeKey }}" class="sr-only">
-                    <div
-                        class="w-10 h-10 rounded-full flex items-center justify-center mb-2 
-                                                        {{ $type === $typeKey ? 'bg-indigo-100 text-indigo-600' : 'bg-white text-gray-400 shadow-sm' }}">
-                        <i class="fas {{ $info['icon'] }} text-lg"></i>
-                    </div>
-                    <span class="text-sm font-medium {{ $type === $typeKey ? 'text-indigo-700' : 'text-gray-600' }}">
-                        {{ __($info['label']) }}
-                    </span>
-                    @if($type === $typeKey)
-                        <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500"></div>
-                    @endif
-                </label>
-            @endforeach
+        <!-- Type Badge (read-only) -->
+        @php
+            $typeInfo = [
+                'announcement' => ['icon' => 'fa-bullhorn', 'label' => 'Announcement', 'bg' => 'bg-blue-100', 'text' => 'text-blue-700'],
+                'question' => ['icon' => 'fa-pen-to-square', 'label' => 'Question', 'bg' => 'bg-indigo-100', 'text' => 'text-indigo-700'],
+                'file' => ['icon' => 'fa-cloud-arrow-up', 'label' => 'File Upload', 'bg' => 'bg-teal-100', 'text' => 'text-teal-700'],
+                'attendance' => ['icon' => 'fa-clipboard-check', 'label' => 'Attendance', 'bg' => 'bg-green-100', 'text' => 'text-green-700'],
+                'material' => ['icon' => 'fa-book-open', 'label' => 'Material', 'bg' => 'bg-orange-100', 'text' => 'text-orange-700'],
+                'topic' => ['icon' => 'fa-layer-group', 'label' => 'Topic', 'bg' => 'bg-gray-100', 'text' => 'text-gray-700'],
+                'project' => ['icon' => 'fa-diagram-project', 'label' => 'Project', 'bg' => 'bg-purple-100', 'text' => 'text-purple-700'],
+            ];
+            $current = $typeInfo[$type] ?? ['icon' => 'fa-pen-to-square', 'label' => ucfirst($type), 'bg' => 'bg-gray-100', 'text' => 'text-gray-700'];
+        @endphp
+        <div class="flex items-center gap-3 bg-white px-5 py-3.5 rounded-xl border border-gray-200">
+            <div
+                class="w-9 h-9 rounded-full flex items-center justify-center {{ $current['bg'] }} {{ $current['text'] }}">
+                <i class="fas {{ $current['icon'] }}"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 leading-none mb-0.5">{{ __('Type') }}</p>
+                <p class="text-sm font-semibold {{ $current['text'] }}">{{ __($current['label']) }}</p>
+            </div>
         </div>
 
         <!-- Title Card -->
-        @if($type !== 'announcement')
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-100">
                 <h3 class="text-sm font-semibold text-gray-700">{{ __('Title') }} *</h3>
             </div>
             <div class="p-6">
-                <input wire:model="title" type="text"
+                <input wire:model="title" type="text" maxlength="30"
                     class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="{{ __('Title') }} *">
                 @error('title')
@@ -65,80 +58,20 @@
                 @enderror
             </div>
         </div>
-        @endif
 
         <!-- Description Card -->
         @if($type !== 'attendance')
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100">
-                    <h3 class="text-sm font-semibold text-gray-700">{{ $type === 'announcement' ? __('Content') : __('Description') }}</h3>
+                    <h3 class="text-sm font-semibold text-gray-700">
+                        {{ $type === 'announcement' ? __('Content') : __('Description') }}
+                    </h3>
                 </div>
                 <div class="p-6">
-                    <div x-data="{
-                                                    content: @entangle('description'),
-                                                    init() {
-                                                        const quill = new Quill($refs.editor, {
-                                                            theme: 'snow',
-                                                            placeholder: '{{ __('Add a description or instructions for this assignment...') }}',
-                                                            modules: {
-                                                                toolbar: [
-                                                                    [{ 'header': [1, 2, 3, false] }],
-                                                                    ['bold', 'italic', 'underline', 'strike'],
-                                                                    [{ 'color': [] }],
-                                                                    [{ 'align': [] }],
-                                                                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                                                    ['link'],
-                                                                    ['clean']
-                                                                ]
-                                                            }
-                                                        });
-
-                                                        // Set initial content if exists
-                                                        if (this.content) {
-                                                            quill.root.innerHTML = this.content;
-                                                        }
-
-                                                        // Sync changes to Livewire
-                                                        quill.on('text-change', () => {
-                                                            let html = quill.root.innerHTML;
-                                                            if (html === '<p><br></p>') html = '';
-                                                            this.content = html;
-                                                        });
-                                                    }
-                                                }" wire:ignore
-                        class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
-                        <div x-ref="editor" class="min-h-[150px] text-sm border-0 !border-t border-gray-200"></div>
+                    <div wire:ignore
+                        x-data="quillEditor({ wireModel: 'description', placeholder: '{{ __('Add a description or instructions for this assignment...') }}' })">
+                        <div x-ref="editorEl" class="min-h-[150px]"></div>
                     </div>
-
-                    <style>
-                        /* Custom Quill styling to better fit Tailwind */
-                        .ql-toolbar.ql-snow {
-                            border: none !important;
-                            background-color: #f9fafb;
-                            padding: 10px;
-                        }
-
-                        .ql-toolbar.ql-snow .ql-formats {
-                            margin-right: 4px !important;
-                        }
-
-                        .ql-container.ql-snow {
-                            border: none !important;
-                        }
-
-                        .ql-editor {
-                            font-family: inherit !important;
-                            font-size: 0.875rem;
-                            color: #374151;
-                            min-height: 150px;
-                        }
-
-                        .ql-editor:focus {
-                            border: none;
-                            outline: none;
-                            box-shadow: none;
-                        }
-                    </style>
 
                     @error('description')
                         <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
@@ -148,7 +81,7 @@
         @endif
 
         <!-- File Upload Section -->
-        @if(!in_array($type, ['question', 'attendance', 'announcement']))
+        @if(!in_array($type, ['question', 'attendance']))
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                     <h3 class="text-sm font-semibold text-gray-700">{{ __('Attachments') }}</h3>
@@ -201,7 +134,7 @@
                                     class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm group hover:border-indigo-300 transition-colors">
                                     <div class="flex items-center space-x-3 overflow-hidden">
                                         <div
-                                            class="flex-shrink-0 w-10 h-10 rounded bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                            class="shrink-0 w-10 h-10 rounded bg-indigo-50 flex items-center justify-center text-indigo-600">
                                             @php
                                                 $mime = $uploadedFile['mime'];
                                                 $icon = 'fa-file';
@@ -228,7 +161,7 @@
                                         </div>
                                     </div>
                                     <button type="button" wire:click="removeFile({{ $index }})"
-                                        class="text-gray-400 hover:text-red-500 flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"
+                                        class="text-gray-400 hover:text-red-500 shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"
                                         title="{{ __('Remove') }}">
                                         <i class="fas fa-xmark"></i>
                                     </button>
@@ -240,76 +173,79 @@
             </div>
         @endif
         @if($type !== 'announcement')
-        <!-- Options Card: Topic + Due Date + Points -->
-        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div class="p-6 space-y-4">
-                <!-- Topic -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                        <i class="fas fa-folder mr-1.5 text-gray-400"></i>{{ __('Topic') }}
-                    </label>
-                    <input wire:model="topic" type="text" list="topics-list"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="{{ __('Select or create a topic') }}">
-                    <datalist id="topics-list">
-                        @foreach($this->topics as $t)
-                            <option value="{{ $t->name }}">
-                        @endforeach
-                    </datalist>
-                </div>
-
-                <!-- Due Date + EXP + Coin row -->
-                @if($type !== 'material')
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                                <i class="fas fa-clock mr-1.5 text-gray-400"></i>{{ __('Due Date') }}
-                            </label>
-                            <input wire:model="due_date" type="datetime-local"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                                <i class="gsi-flash-lime text-green-500 mr-1.5" style="font-size:1.1em"></i>{{ __('EXP Reward') }}
-                            </label>
-                            <input wire:model="exp_reward" type="number" min="0" max="9999"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                                <i class="gsi-gemstone-blue text-blue-500 mr-1.5" style="font-size:1.1em"></i>{{ __('Coin Reward') }}
-                            </label>
-                            <input wire:model="coin_reward" type="number" min="0" max="9999"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-
-                    <!-- Allow late submission -->
-                    <div class="flex items-center gap-3 pt-2">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input wire:model="allow_late_submission" type="checkbox" class="sr-only peer">
-                            <div
-                                class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600">
-                            </div>
+            <!-- Options Card: Topic + Due Date + Points -->
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div class="p-6 space-y-4">
+                    <!-- Topic -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            <i class="fas fa-folder mr-1.5 text-gray-400"></i>{{ __('Topic') }}
                         </label>
-                        <span class="text-sm text-gray-700">
-                            {{ $type === 'attendance' ? __('Allow late attendance') : __('Allow late submission') }}
-                        </span>
+                        <input wire:model="topic" type="text" list="topics-list"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="{{ __('Select or create a topic') }}">
+                        <datalist id="topics-list">
+                            @foreach($this->topics as $t)
+                                <option value="{{ $t->name }}">
+                            @endforeach
+                        </datalist>
                     </div>
-                @endif
+
+                    <!-- Due Date + EXP + Coin row -->
+                    @if(!in_array($type, ['material', 'topic']))
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                    <i class="fas fa-clock mr-1.5 text-gray-400"></i>{{ __('Due Date') }}
+                                </label>
+                                <input wire:model="due_date" type="datetime-local"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                    <i class="gsi-flash-lime text-green-500 mr-1.5"
+                                        style="font-size:1.1em"></i>{{ __('EXP Reward') }}
+                                </label>
+                                <input wire:model="exp_reward" type="number" min="0" max="9999"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                    <i class="gsi-gemstone-blue text-blue-500 mr-1.5"
+                                        style="font-size:1.1em"></i>{{ __('Coin Reward') }}
+                                </label>
+                                <input wire:model="coin_reward" type="number" min="0" max="9999"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+
+                            <!-- Allow late submission -->
+                            <div class="flex items-center gap-3 pt-2">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input wire:model="allow_late_submission" type="checkbox" class="sr-only peer">
+                                    <div
+                                        class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600">
+                                    </div>
+                                </label>
+                                <span class="text-sm text-gray-700">
+                                    {{ $type === 'attendance' ? __('Allow late attendance') : __('Allow late submission') }}
+                                </span>
+                            </div>
+                    @endif
+                    </div>
+                </div>
             </div>
-        </div>
         @endif
 
         <!-- Actions -->
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="flex items-center justify-between">
                 @if($type !== 'announcement')
-                <button type="button" wire:click="$set('status', 'draft')" wire:click="save"
-                    class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                    <i class="fas fa-file-lines mr-1.5"></i>{{ __('Save as Draft') }}
-                </button>
+                    <button type="button" wire:click="$set('status', 'draft')" wire:click="save"
+                        class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-file-lines mr-1.5"></i>{{ __("Save as Draft") }}
+                    </button>
                 @else
-                <div></div>
+                    <div></div>
                 @endif
                 <button type="submit"
                     class="btn-3d btn-3d--indigo px-6 py-2.5 text-sm font-medium rounded-lg transition-colors">

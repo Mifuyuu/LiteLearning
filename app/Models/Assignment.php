@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+
 use Illuminate\Support\Str;
 
 class Assignment extends Model
@@ -22,8 +22,7 @@ class Assignment extends Model
         'title',
         'slug',
         'description',
-        'attachments',
-        'max_score',
+        'classroom_id',
         'exp_reward',
         'coin_reward',
         'due_date',
@@ -81,17 +80,9 @@ class Assignment extends Model
     // Relationships
     // ──────────────────────────────────────────────
 
-    public function classroomContent(): MorphOne
+    public function classroom(): BelongsTo
     {
-        return $this->morphOne(ClassroomContent::class, 'contentable');
-    }
-
-    /**
-     * Get the classroom via the content hub.
-     */
-    public function getClassroom(): ?Classroom
-    {
-        return $this->classroomContent?->classroom;
+        return $this->belongsTo(Classroom::class);
     }
 
     public function user(): BelongsTo
@@ -112,11 +103,6 @@ class Assignment extends Model
     public function attachments(): MorphMany
     {
         return $this->morphMany(Attachment::class, 'attachable');
-    }
-
-    public function quizQuestions(): HasMany
-    {
-        return $this->hasMany(QuizQuestion::class);
     }
 
     public function attendanceSession(): HasOne
@@ -143,11 +129,20 @@ class Assignment extends Model
         return $this->type === 'question';
     }
 
-    public function isQuiz(): bool
+    public function isAnnouncement(): bool
     {
-        return $this->type === 'quiz';
+        return $this->type === 'announcement';
     }
 
+    public function isTopic(): bool
+    {
+        return $this->type === 'topic';
+    }
+
+    public function isProject(): bool
+    {
+        return $this->type === 'project';
+    }
     public function isMaterial(): bool
     {
         return $this->type === 'material';
@@ -159,11 +154,13 @@ class Assignment extends Model
     public function typeIcon(): string
     {
         return match ($this->type) {
+            'announcement' => 'fa-bullhorn',
             'attendance' => 'fa-clipboard-check',
             'file'       => 'fa-cloud-arrow-up',
             'question'   => 'fa-pen-to-square',
-            'quiz'       => 'fa-circle-question',
+            'topic'      => 'fa-layer-group',
             'material'   => 'fa-book-open',
+            'project'    => 'fa-diagram-project',
             default      => 'fa-file-alt',
         };
     }
@@ -178,8 +175,10 @@ class Assignment extends Model
             'attendance' => ['bg-amber-100', 'text-amber-700'],
             'file'       => ['bg-blue-100', 'text-blue-700'],
             'question'   => ['bg-green-100', 'text-green-700'],
-            'quiz'       => ['bg-purple-100', 'text-purple-700'],
+            'topic'      => ['bg-cyan-100', 'text-cyan-700'],
             'material'   => ['bg-slate-100', 'text-slate-700'],
+            'announcement' => ['bg-orange-100', 'text-orange-700'],
+            'project'    => ['bg-rose-100', 'text-rose-700'],
             default      => ['bg-gray-100', 'text-gray-700'],
         };
     }
@@ -193,8 +192,10 @@ class Assignment extends Model
             'attendance' => __('Attendance'),
             'file'       => __('File Upload'),
             'question'   => __('Question'),
-            'quiz'       => __('Quiz'),
+            'topic'      => __('Topic'),
             'material'   => __('Material'),
+            'announcement' => __('Announcement'),
+            'project'    => __('Project'),
             default      => __(ucfirst($this->type)),
         };
     }

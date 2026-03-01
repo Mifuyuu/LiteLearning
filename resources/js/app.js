@@ -6,6 +6,59 @@ window.Cropper = Cropper;
 
 // Alpine.js is loaded by Livewire automatically
 
+document.addEventListener('alpine:init', () => {
+	Alpine.data('quillEditor', ({ wireModel, placeholder = '' }) => ({
+		_quill: null,
+
+		init() {
+			const self = this;
+			const el = self.$refs.editorEl;
+
+		self._quill = new window.Quill(el, {
+				theme: 'snow',
+				modules: {
+					toolbar: [
+						[{ header: [1, 2, 3, false] }],
+						['bold', 'italic', 'underline', 'strike'],
+						[{ align: [] }],
+						[{ list: 'ordered' }, { list: 'bullet' }],
+						['link'],
+						['clean'],
+					],
+					clipboard: { matchVisual: false },
+				},
+				placeholder,
+			});
+
+			// Load initial content
+			const initial = self.$wire.get(wireModel) || '';
+			if (initial) {
+				self._quill.root.innerHTML = initial;
+			}
+
+			// Sync to Livewire on blur
+			self._quill.root.addEventListener('blur', () => self.flush());
+
+			// Also flush when the parent form submits (before Livewire sends the request)
+			const form = self.$el.closest('form');
+			if (form) {
+				form.addEventListener('submit', () => self.flush(), { capture: true });
+			}
+		},
+
+		flush() {
+			if (!this._quill) return;
+			const html = this._quill.root.innerHTML;
+			const clean = html === '<p><br></p>' ? '' : html;
+			this.$wire.set(wireModel, clean);
+		},
+
+		destroy() {
+			this._quill = null;
+		},
+	}));
+});
+
 function setSidebarEmptyState(list) {
 	const placeholder = list.querySelector('[data-empty-pinned]');
 	if (!placeholder) return;

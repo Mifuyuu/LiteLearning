@@ -11,7 +11,6 @@ class Create extends Component
 {
     public string $name = '';
     public string $section = '';
-    public string $subject = '';
     public string $description = '';
     public string $theme_color = '#4F46E5';
     public bool $showModal = false;
@@ -19,7 +18,6 @@ class Create extends Component
     protected $rules = [
         'name' => 'required|string|max:255',
         'section' => 'nullable|string|max:255',
-        'subject' => 'nullable|string|max:255',
         'description' => 'nullable|string|max:1000',
         'theme_color' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
     ];
@@ -27,7 +25,7 @@ class Create extends Component
     public function openModal()
     {
         $this->resetValidation();
-        $this->reset(['name', 'section', 'subject', 'description']);
+        $this->reset(['name', 'section', 'description']);
         $this->theme_color = '#4F46E5';
         $this->showModal = true;
     }
@@ -47,7 +45,6 @@ class Create extends Component
             'teacher_id' => Auth::id(),
             'name' => $this->name,
             'section' => $this->section,
-            'subject' => $this->subject,
             'description' => $this->description,
             'theme_color' => $this->theme_color,
         ]);

@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Classroom;
-use App\Models\ClassroomContent;
 use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,12 +25,7 @@ class SecurityTest extends TestCase
         $teacher = User::factory()->create(['role' => 'teacher']);
         $classroomA = Classroom::factory()->create(['teacher_id' => $teacher->id]);
         $classroomB = Classroom::factory()->create(['teacher_id' => $teacher->id]);
-        $assignment = Assignment::factory()->create(['user_id' => $teacher->id]);
-        ClassroomContent::create([
-            'classroom_id'     => $classroomB->id,
-            'contentable_type' => Assignment::class,
-            'contentable_id'   => $assignment->id,
-        ]);
+        $assignment = Assignment::factory()->create(['user_id' => $teacher->id, 'classroom_id' => $classroomB->id]);
 
         // Try to view classroomB's assignment via classroomA's URL
         $this->actingAs($teacher);
@@ -50,19 +44,9 @@ class SecurityTest extends TestCase
         $teacher = User::factory()->create(['role' => 'teacher']);
         $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
 
-        $assignmentA = Assignment::factory()->create(['user_id' => $teacher->id]);
-        ClassroomContent::create([
-            'classroom_id'     => $classroom->id,
-            'contentable_type' => Assignment::class,
-            'contentable_id'   => $assignmentA->id,
-        ]);
+        $assignmentA = Assignment::factory()->create(['user_id' => $teacher->id, 'classroom_id' => $classroom->id]);
 
-        $assignmentB = Assignment::factory()->create(['user_id' => $teacher->id]);
-        ClassroomContent::create([
-            'classroom_id'     => $classroom->id,
-            'contentable_type' => Assignment::class,
-            'contentable_id'   => $assignmentB->id,
-        ]);
+        $assignmentB = Assignment::factory()->create(['user_id' => $teacher->id, 'classroom_id' => $classroom->id]);
 
         /** @var User $student */
         $student = User::factory()->create(['role' => 'student']);
@@ -101,12 +85,7 @@ class SecurityTest extends TestCase
         $classroomA = Classroom::factory()->create(['teacher_id' => $teacherA->id]);
         $classroomB = Classroom::factory()->create(['teacher_id' => $teacherB->id]);
 
-        $announcement = Announcement::factory()->create(['user_id' => $teacherB->id]);
-        ClassroomContent::create([
-            'classroom_id'     => $classroomB->id,
-            'contentable_type' => Announcement::class,
-            'contentable_id'   => $announcement->id,
-        ]);
+        $announcement = Announcement::factory()->create(['user_id' => $teacherB->id, 'classroom_id' => $classroomB->id]);
 
         // Teacher A tries to delete an announcement from Classroom B
         // by calling deleteAnnouncement on their own Classroom A component
@@ -128,12 +107,7 @@ class SecurityTest extends TestCase
         $outsider = User::factory()->create(['role' => 'student']);
 
         $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
-        $announcement = Announcement::factory()->create(['user_id' => $teacher->id]);
-        ClassroomContent::create([
-            'classroom_id'     => $classroom->id,
-            'contentable_type' => Announcement::class,
-            'contentable_id'   => $announcement->id,
-        ]);
+        $announcement = Announcement::factory()->create(['user_id' => $teacher->id, 'classroom_id' => $classroom->id]);
 
         // Outsider (not enrolled) tries to comment via tampered announcementId
         Livewire::actingAs($outsider)

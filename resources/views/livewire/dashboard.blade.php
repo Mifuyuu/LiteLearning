@@ -177,7 +177,7 @@
                                                 <h4 class="text-white font-bold text-lg leading-tight truncate max-w-50">
                                                     {{ $classroom->name }}
                                                 </h4>
-                                                <p class="text-white/80 text-sm">{{ $classroom->section }}</p>
+                                                <p class="text-white/80 text-sm truncate max-w-50">{{ $classroom->section }}</p>
                                             </div>
                                             @if($classroom->isOwnedBy(auth()->user()))
                                                 <span
@@ -188,7 +188,7 @@
                                         </div>
                                         <!-- Info -->
                                         <div class="p-4">
-                                            <p class="text-sm text-gray-500 truncate">{{ $classroom->teacher->name }}</p>
+                                            <p class="text-sm text-gray-500 truncate max-w-[200px]">{{ $classroom->teacher->name }}</p>
                                             <div class="flex items-center justify-between mt-3">
                                                 <div class="flex items-center text-xs text-gray-400">
                                                     <i class="fas fa-users mr-1"></i>

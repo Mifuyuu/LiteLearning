@@ -27,12 +27,8 @@ class Grade extends Component
             abort(403);
         }
 
-        // Ensure assignment belongs to classroom and submission belongs to assignment (prevent IDOR)
-        $belongsToClassroom = \App\Models\ClassroomContent::where('contentable_type', Assignment::class)
-            ->where('contentable_id', $assignment->id)
-            ->where('classroom_id', $classroom->id)
-            ->exists();
-        if (!$belongsToClassroom) {
+        // Ensure assignment belongs to classroom (prevent IDOR)
+        if ($assignment->classroom_id !== $classroom->id) {
             abort(404);
         }
         if ($submission->assignment_id !== $assignment->id) {

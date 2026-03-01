@@ -2,7 +2,7 @@
 
 <div class="space-y-6 animate__animated animate__fadeIn">
     <!-- Filters and Search -->
-    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
         <div class="flex flex-wrap items-center gap-3 justify-between">
             <div class="relative w-full sm:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -103,7 +103,7 @@
     </div>
 
     <!-- Users Table -->
-    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
@@ -123,7 +123,7 @@
                                     <img class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-100 shrink-0"
                                         src="{{ $user->avatar_url }}" alt="">
                                     <div class="ml-3">
-                                        <div class="text-sm font-bold text-gray-900 flex items-center gap-1.5">
+                                        <div class="text-sm font-bold text-gray-900 truncate max-w-48 flex items-center gap-1.5">
                                             {{ $user->name }}
                                             @if($user->id === auth()->id())
                                                 <span
@@ -191,14 +191,14 @@
                                 <div class="flex justify-end gap-3 text-gray-400">
                                     <a href="{{ route('profile') }}" class="hover:text-indigo-600 transition-colors p-1"
                                         title="{{ __('admin.users.view_profile') }}">
-                                        <i class="fas fa-external-link-alt text-xs"></i>
+                                        <i class="fas fa-external-link-alt"></i>
                                     </a>
                                     @if($user->id !== auth()->id())
                                         <button wire:click="deleteUser({{ $user->id }})"
                                             wire:confirm="{{ __('admin.users.delete_confirm') }}"
                                             class="hover:text-red-600 transition-colors p-1"
                                             title="{{ __('admin.users.delete_user') }}">
-                                            <i class="fas fa-trash-alt text-xs"></i>
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                     @endif
                                 </div>

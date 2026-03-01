@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Str;
 use App\Models\Pivots\ClassroomUserPivot;
@@ -114,35 +114,14 @@ class Classroom extends Model
             ->withTimestamps();
     }
 
-    public function contents(): HasMany
+    public function announcements(): HasMany
     {
-        return $this->hasMany(ClassroomContent::class)->latest();
+        return $this->hasMany(Announcement::class)->latest();
     }
 
-    public function announcements(): HasManyThrough
+    public function assignments(): HasMany
     {
-        return $this->hasManyThrough(
-            Announcement::class,
-            ClassroomContent::class,
-            'classroom_id',
-            'id',
-            'id',
-            'contentable_id'
-        )->where('classroom_contents.contentable_type', Announcement::class)
-         ->latest('announcements.created_at');
-    }
-
-    public function assignments(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            Assignment::class,
-            ClassroomContent::class,
-            'classroom_id',
-            'id',
-            'id',
-            'contentable_id'
-        )->where('classroom_contents.contentable_type', Assignment::class)
-         ->latest('assignments.created_at');
+        return $this->hasMany(Assignment::class)->latest();
     }
 
     public function topics(): HasMany
