@@ -104,7 +104,7 @@
 
     <!-- Users Table -->
     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto [scrollbar-width:thin]">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
                     <tr>
@@ -194,12 +194,12 @@
                                         <i class="fas fa-external-link-alt"></i>
                                     </a>
                                     @if($user->id !== auth()->id())
-                                        <button wire:click="deleteUser({{ $user->id }})"
-                                            wire:confirm="{{ __('admin.users.delete_confirm') }}"
-                                            class="hover:text-red-600 transition-colors p-1"
-                                            title="{{ __('admin.users.delete_user') }}">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
+                        <button type="button"
+                            @click="$dispatch('open-delete-user', { id: {{ $user->id }}, name: '{{ addslashes($user->name) }}' })"
+                            class="hover:text-red-600 transition-colors p-1"
+                            title="{{ __('admin.users.delete_user') }}">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
                                     @endif
                                 </div>
                             </td>
@@ -223,5 +223,49 @@
                 {{ $users->links() }}
             </div>
         @endif
+    <div x-data="{ showDeleteModal: false, deleteId: null, deleteName: '' }"
+        @open-delete-user.window="deleteId = $event.detail.id; deleteName = $event.detail.name; showDeleteModal = true"
+        @keydown.escape.window="showDeleteModal = false">
+        <template x-teleport="body">
+            <div x-show="showDeleteModal" x-cloak
+                class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
+                @click.self="showDeleteModal = false">
+                <div x-show="showDeleteModal"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-100"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95"
+                    class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                        <div>
+                            <h4 class="text-base font-semibold text-gray-900">{{ __('ยืนยันการลบ') }}</h4>
+                            <p class="text-sm font-medium text-gray-700 mt-1" x-text="deleteName"></p>
+                        </div>
+                        <button type="button" @click="showDeleteModal = false"
+                            class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <i class="fas fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+                    <div class="px-6 py-5">
+                        <p class="text-sm text-gray-500 mb-4">
+                            {{ __('คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? การกระทำนี้ไม่สามารถย้อนกลับได้') }}
+                        </p>
+                        <div class="flex justify-end gap-2">
+                            <button type="button" @click="showDeleteModal = false"
+                                class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-xmark mr-1.5"></i>{{ __('ยกเลิก') }}
+                            </button>
+                            <button type="button"
+                                @click="$wire.deleteUser(deleteId); showDeleteModal = false"
+                                class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
+                                <i class="fas fa-trash-alt mr-1.5"></i>{{ __('ลบ') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
     </div>
 </div>

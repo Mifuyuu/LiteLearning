@@ -21,6 +21,8 @@ class Show extends Component
     public string $description = '';
     public string $theme_color = '#4F46E5';
     public string $deleteConfirm = '';
+    public bool $showDeleteAnnouncementModal = false;
+    public ?int $deleteAnnouncementId = null;
 
     public function mount(Classroom $classroom)
     {
@@ -156,9 +158,21 @@ class Show extends Component
         return redirect()->route('classrooms');
     }
 
-    public function deleteAnnouncement(int $id)
+    public function confirmDeleteAnnouncement(int $id): void
     {
-        $announcement = Announcement::findOrFail($id);
+        $this->deleteAnnouncementId = $id;
+        $this->showDeleteAnnouncementModal = true;
+    }
+
+    public function deleteAnnouncement(?int $id = null): void
+    {
+        $announcementId = $id ?? $this->deleteAnnouncementId;
+
+        if (!$announcementId) {
+            return;
+        }
+
+        $announcement = Announcement::findOrFail($announcementId);
 
         // Ensure announcement belongs to this classroom (prevent cross-classroom deletion)
         abort_unless($announcement->classroom_id === $this->classroom->id, 404);
@@ -170,6 +184,8 @@ class Show extends Component
         }
 
         $announcement->delete();
+        $this->showDeleteAnnouncementModal = false;
+        $this->deleteAnnouncementId = null;
         // Reload all relations after deletion
         $this->loadClassroomRelations();
     }

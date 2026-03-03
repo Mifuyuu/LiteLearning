@@ -30,6 +30,7 @@ class Assignment extends Model
         'type',
         'topic',
         'allow_late_submission',
+        'max_score',
     ];
 
     protected function casts(): array
@@ -40,6 +41,7 @@ class Assignment extends Model
             'allow_late_submission' => 'boolean',
             'exp_reward'            => 'integer',
             'coin_reward'           => 'integer',
+            'max_score'             => 'integer',
         ];
     }
 

@@ -7,6 +7,7 @@ use App\Models\Material;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Mews\Purifier\Facades\Purifier;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -90,7 +91,7 @@ class Show extends Component
 
         $this->material->update([
             'title' => $this->editTitle,
-            'description' => $this->editDescription ?: null,
+            'description' => $this->editDescription ? Purifier::clean($this->editDescription) : null,
         ]);
 
         $this->isEditTab = false;

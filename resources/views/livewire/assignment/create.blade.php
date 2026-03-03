@@ -50,12 +50,18 @@
                 <h3 class="text-sm font-semibold text-gray-700">{{ __('Title') }} *</h3>
             </div>
             <div class="p-6">
-                <input wire:model="title" type="text" maxlength="30"
+                <input wire:model="title" type="text" maxlength="50"
                     class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="{{ __('Title') }} *">
-                @error('title')
-                    <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
-                @enderror
+                <div class="mt-1 flex justify-between items-center">
+                    @error('title')
+                        <p class="text-sm text-red-500">{{ $message }}</p>
+                    @else
+                        <span></span>
+                    @enderror
+                    <span class="text-xs" :class="$wire.title.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
+                        <span x-text="$wire.title.length">0</span>/50
+                    </span>
             </div>
         </div>
 

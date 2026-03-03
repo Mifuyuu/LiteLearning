@@ -9,7 +9,7 @@
             $pendingSubmissions = collect();
             foreach ($classrooms as $c) {
                 foreach ($c->assignments as $a) {
-                    $subs = $a->submissions()->where('status', 'turned_in')->with('user', 'assignment.classroomContent.classroom')->get();
+                    $subs = $a->submissions()->where('status', 'turned_in')->with('user', 'assignment.classroom')->get();
                     $pendingSubmissions = $pendingSubmissions->merge($subs);
                 }
             }
@@ -27,7 +27,7 @@
         @else
             <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
                 @foreach($pendingSubmissions as $sub)
-                    <a href="{{ route('assignment.grade', ['classroom' => $sub->assignment->classroomContent?->classroom, 'assignment' => $sub->assignment, 'submission' => $sub]) }}"
+                    <a href="{{ route('assignment.grade', ['classroom' => $sub->assignment->classroom, 'assignment' => $sub->assignment, 'submission' => $sub]) }}"
                         class="block p-4 hover:bg-gray-50 transition-colors">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
@@ -35,7 +35,7 @@
                                 <div>
                                     <p class="text-sm font-medium text-gray-900">{{ $sub->user->name }}</p>
                                     <p class="text-xs text-gray-500">{{ $sub->assignment->title }} &middot;
-                                        {{ $sub->assignment->classroomContent?->classroom?->name }}
+                                        {{ $sub->assignment->classroom?->name }}
                                     </p>
                                 </div>
                             </div>

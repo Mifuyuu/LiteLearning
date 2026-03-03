@@ -8,6 +8,7 @@ use App\Models\Submission;
 use App\Models\Topic;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\Storage;
+use Mews\Purifier\Facades\Purifier;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -210,7 +211,7 @@ class Show extends Component
         abort_unless($this->classroom->canManageClassroom(auth()->user()), 403);
 
         $this->validate([
-            'editTitle' => 'required|string|max:255',
+            'editTitle' => 'required|string|max:50',
             'editDescription' => 'nullable|string',
             'editMaxScore'  => 'required_unless:editType,material|integer|min:0|max:1000',
             'editExpReward'  => 'integer|min:0|max:9999',
@@ -232,7 +233,7 @@ class Show extends Component
 
         $this->assignment->update([
             'title' => $this->editTitle,
-            'description' => $this->editDescription,
+            'description' => $this->editDescription ? Purifier::clean($this->editDescription) : null,
             'max_score'            => $this->editMaxScore,
             'exp_reward'           => $this->editExpReward,
             'coin_reward'          => $this->editCoinReward,

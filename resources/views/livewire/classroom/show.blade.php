@@ -93,8 +93,7 @@
                                     </div>
                                 </div>
                                 @if($announcement->user_id === auth()->id() || $classroom->canManageClassroom(auth()->user()))
-                                    <button wire:click="deleteAnnouncement({{ $announcement->id }})"
-                                        wire:confirm="{{ __('Are you sure you want to delete this announcement?') }}"
+                                    <button wire:click="confirmDeleteAnnouncement({{ $announcement->id }})"
                                         class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg">
                                         <i class="fas fa-trash-alt text-sm"></i>
                                     </button>
@@ -104,7 +103,7 @@
                             </div>
 
                         <!-- Comments -->
-                        @livewire('classroom.stream-comment', ['announcementId' => $announcement->id], key('comment-' . $announcement->id))
+                        @livewire('classroom.stream-comment', ['announcementId' => $announcement->id], "comment-{$announcement->id}")
                     </div>
                 @endforeach
             </div>
@@ -951,6 +950,43 @@
                 </div>
             </div>
         </template>
+<template x-teleport="body">
+    <div x-data x-show="$wire.showDeleteAnnouncementModal" x-cloak
+        x-on:keydown.escape.window="$wire.set('showDeleteAnnouncementModal', false)"
+        class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
+        @click.self="$wire.set('showDeleteAnnouncementModal', false)">
+        <div x-show="$wire.showDeleteAnnouncementModal" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-100"
+            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+            class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden"
+            @click.stop>
+            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                <div>
+                    <h4 class="text-base font-semibold text-gray-900">{{ __('Delete Announcement') }}</h4>
+                    <p class="text-sm text-gray-500 mt-1">
+                        {{ __('Are you sure you want to delete this announcement? This action cannot be undone.') }}
+                    </p>
+                </div>
+                <button type="button" @click="$wire.set('showDeleteAnnouncementModal', false)"
+                    class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="px-6 py-5">
+                <div class="flex justify-end gap-2">
+                    <button type="button" @click="$wire.set('showDeleteAnnouncementModal', false)"
+                        class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-xmark mr-1.5"></i>{{ __('Cancel') }}
+                    </button>
+                    <button type="button" wire:click="deleteAnnouncement"
+                        class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
+                        <i class="fas fa-trash-alt mr-1.5"></i>{{ __('Delete') }}
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+</template>
 </div>
 </div>

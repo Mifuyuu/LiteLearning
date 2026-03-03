@@ -294,9 +294,13 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Title *') }}</label>
-                            <input wire:model="editTitle" type="text"
+                            <input wire:model="editTitle" type="text" maxlength="50"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            @error('editTitle') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                            <div class="mt-1 flex justify-between items-center">
+                                @error('editTitle') <p class="text-sm text-red-500">{{ $message }}</p> @else <span></span> @enderror
+                                <span class="text-xs" :class="$wire.editTitle.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
+                                    <span x-text="$wire.editTitle.length">0</span>/50
+                                </span>
                         </div>
 
                         @if($editType !== 'attendance')

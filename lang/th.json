@@ -85,6 +85,8 @@
     "Announce something to your class...": "ประกาศบางอย่างให้ห้องเรียนของคุณ...",
     "Share something with your class...": "แชร์บางอย่างกับห้องเรียนของคุณ...",
     "Are you sure you want to delete this announcement?": "คุณแน่ใจหรือไม่ว่าต้องการลบประกาศนี้?",
+    "Are you sure you want to delete this announcement? This action cannot be undone.": "คุณแน่ใจหรือไม่ว่าต้องการลบประกาศนี้? การกระทำนี้ไม่สามารถย้อนกลับได้",
+    "Delete Announcement": "ลบประกาศ",
     "No announcements yet. Start the conversation!": "ยังไม่มีประกาศ เริ่มสนทนาเลย!",
     "Class Settings": "ตั้งค่าห้องเรียน",
     "Add class comment...": "เพิ่มความคิดเห็น...",

@@ -8,6 +8,7 @@ use App\Models\Classroom;
 
 use App\Models\Topic;
 use App\Services\GamificationService;
+use Mews\Purifier\Facades\Purifier;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -82,7 +83,7 @@ class Create extends Component
     public function save(): void
     {
         $this->validate([
-            'title' => 'required|string|max:30',
+            'title' => 'required|string|max:50',
             'description' => 'nullable|string',
             'max_score'  => 'required_unless:type,material,topic,announcement|integer|min:0|max:1000',
             'exp_reward'  => 'integer|min:0|max:9999',
@@ -137,7 +138,7 @@ class Create extends Component
                 'user_id'      => $user->id,
                 'classroom_id' => $this->classroom->id,
                 'title'        => $this->title,
-                'content'      => $this->description ?: null,
+                'content'      => $this->description ? Purifier::clean($this->description) : null,
             ]);
 
             $this->redirect(route('classroom.show', $this->classroom), navigate: true);
@@ -148,7 +149,7 @@ class Create extends Component
             'user_id' => $user->id,
             'classroom_id' => $this->classroom->id,
             'title' => $this->title,
-            'description' => $this->description ?: null,
+            'description' => $this->description ? Purifier::clean($this->description) : null,
             'attachments' => !empty($attachments) ? $attachments : null,
             'max_score'            => $this->max_score,
             'exp_reward'           => $this->exp_reward,

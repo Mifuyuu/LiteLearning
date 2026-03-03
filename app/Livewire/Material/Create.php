@@ -7,6 +7,7 @@ use App\Models\Material;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Mews\Purifier\Facades\Purifier;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -87,6 +88,14 @@ class Create extends Component
             ]);
         }
 
+        // Create material
+        $material = Material::create([
+            'user_id' => $user->id,
+            'classroom_id' => $this->classroom->id,
+            'title' => $this->title,
+            'description' => $this->description ? Purifier::clean($this->description) : null,
+        ]);
+
         // Upload files to S3 and persist to polymorphic attachments table
         foreach ($this->uploadedFiles as $uploaded) {
             $path = $uploaded['file']->store(
@@ -102,23 +111,14 @@ class Create extends Component
             ]);
         }
 
-        // Create material
-        $material = Material::create([
-            'user_id' => $user->id,
-            'classroom_id' => $this->classroom->id,
-            'title' => $this->title,
-            'description' => $this->description ?: null,
-        ]);
-
         session()->flash('message', __('Material created successfully.'));
 
         $this->redirect(
             route('material.show', ['classroom' => $this->classroom, 'material' => $material]),
             navigate: true
         );
+
     }
-
-
     public function render()
     {
         return view('livewire.material.create');
