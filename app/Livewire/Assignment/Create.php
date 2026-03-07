@@ -10,6 +10,8 @@ use App\Models\Topic;
 use App\Services\GamificationService;
 use Mews\Purifier\Facades\Purifier;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -17,6 +19,7 @@ class Create extends Component
 {
     use WithFileUploads;
 
+    #[Locked]
     public Classroom $classroom;
 
     // Form fields
@@ -51,7 +54,7 @@ class Create extends Component
         }
     }
 
-    public function getTopicsProperty()
+    public function getTopicsProperty(): \Illuminate\Database\Eloquent\Collection
     {
         return Topic::where('classroom_id', $this->classroom->id)->get();
     }
@@ -74,7 +77,7 @@ class Create extends Component
         }
     }
 
-    public function removeFile($index): void
+    public function removeFile(int $index): void
     {
         unset($this->uploadedFiles[$index]);
         $this->uploadedFiles = array_values($this->uploadedFiles);
@@ -95,7 +98,9 @@ class Create extends Component
             'allow_late_submission' => 'boolean',
         ]);
 
+        /** @var \App\Models\User $user */
         $user = auth()->user();
+        abort_unless($this->classroom->canManageClassroom($user), 403);
 
         if (in_array($this->type, ['announcement', 'material', 'topic'])) {
             $this->max_score = 0;
@@ -145,42 +150,45 @@ class Create extends Component
             return;
         }
 
-        $assignment = Assignment::create([
-            'user_id' => $user->id,
-            'classroom_id' => $this->classroom->id,
-            'title' => $this->title,
-            'description' => $this->description ? Purifier::clean($this->description) : null,
-            'attachments' => !empty($attachments) ? $attachments : null,
-            'max_score'            => $this->max_score,
-            'exp_reward'           => $this->exp_reward,
-            'coin_reward'          => $this->coin_reward,
-            'due_date' => $this->due_date,
-            'status' => $this->status,
-            'type' => $this->type,
-            'topic' => $topicName ?: null,
-            'allow_late_submission' => $this->allow_late_submission,
-        ]);
+        DB::transaction(function () use ($user, $topicName, $attachments): void {
+            $assignment = Assignment::create([
+                'user_id' => $user->id,
+                'classroom_id' => $this->classroom->id,
+                'title' => $this->title,
+                'description' => $this->description ? Purifier::clean($this->description) : null,
+                'attachments' => !empty($attachments) ? $attachments : null,
+                'max_score'            => $this->max_score,
+                'exp_reward'           => $this->exp_reward,
+                'coin_reward'          => $this->coin_reward,
+                'due_date' => $this->due_date,
+                'status' => $this->status,
+                'type' => $this->type,
+                'topic' => $topicName ?: null,
+                'allow_late_submission' => $this->allow_late_submission,
+            ]);
 
 
-        // Create submissions for all enrolled students
-        if ($this->status === 'published' && !in_array($this->type, ['material', 'topic'])) {
-            foreach ($this->classroom->students as $student) {
-                $assignment->submissions()->create([
-                    'user_id' => $student->id,
-                    'status' => 'assigned',
-                ]);
+            // Create submissions for all enrolled students
+            if ($this->status === 'published' && !in_array($this->type, ['material', 'topic'])) {
+                foreach ($this->classroom->students as $student) {
+                    $assignment->submissions()->create([
+                        'user_id' => $student->id,
+                        'status' => 'assigned',
+                    ]);
+                }
             }
-        }
 
-        app(GamificationService::class)->awardForAssignmentCreated($user, $assignment->id);
+            app(GamificationService::class)->awardForAssignmentCreated($user, $assignment->id);
 
-        $this->redirect(route('assignment.show', [
-            'classroom' => $this->classroom,
-            'assignment' => $assignment,
-        ]), navigate: true);
+            $this->redirect(route('assignment.show', [
+                'classroom' => $this->classroom,
+                'assignment' => $assignment,
+            ]), navigate: true);
+        });
+
     }
 
-    public function render()
+    public function render(): \Illuminate\View\View
     {
         return view('livewire.assignment.create');
     }

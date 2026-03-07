@@ -21,10 +21,13 @@ class CoinTransaction extends Model
         'happened_at',
     ];
 
-    protected $casts = [
-        'metadata' => 'array',
-        'happened_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'metadata' => 'array',
+            'happened_at' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {

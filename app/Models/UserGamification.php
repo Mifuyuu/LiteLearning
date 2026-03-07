@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserGamification extends Model
 {
@@ -13,13 +14,16 @@ class UserGamification extends Model
         'level',
     ];
 
-    protected $casts = [
-        'coins' => 'integer',
-        'xp' => 'integer',
-        'level' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'coins' => 'integer',
+            'xp' => 'integer',
+            'level' => 'integer',
+        ];
+    }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

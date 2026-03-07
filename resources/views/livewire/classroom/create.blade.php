@@ -65,6 +65,33 @@
                             </div>
                         </div>
 
+                        {{-- Planet / Theme Picker --}}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('เลือกธีมห้องเรียน') }}</label>
+                            <div class="grid grid-cols-7 gap-2">
+                                @foreach($themes as $theme)
+                                    @php $pn = str_pad($theme->planet_number, 2, '0', STR_PAD_LEFT); @endphp
+                                    <button type="button" wire:click="$set('theme_category_id', {{ $theme->id }})"
+                                        title="{{ $theme->name }}"
+                                        @class([
+                                            'aspect-square rounded-xl border-2 p-1.5 transition-all',
+                                            'border-indigo-500 bg-indigo-50 shadow-md scale-105' => $theme_category_id == $theme->id,
+                                            'border-gray-200 hover:border-indigo-300 hover:bg-gray-50' => $theme_category_id != $theme->id,
+                                        ])>
+                                        <img src="/images/planets/planet_{{ $pn }}.svg"
+                                            alt="{{ $theme->name }}" class="w-full h-full object-contain" />
+                                    </button>
+                                @endforeach
+                            </div>
+                            @if($theme_category_id)
+                                @php $selected = $themes->find($theme_category_id); @endphp
+                                @if($selected)
+                                    <p class="mt-1.5 text-xs text-indigo-600 font-medium">
+                                        <i class="fas fa-check-circle mr-1"></i>{{ $selected->name }}
+                                    </p>
+                                @endif
+                            @endif
+                        </div>
                         <div class="flex justify-end gap-3 pt-4">
                             <button type="button" wire:click="$set('showModal', false)"
                                 class="px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Mews\Purifier\Facades\Purifier;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -17,6 +18,7 @@ class Create extends Component
 {
     use WithFileUploads;
 
+    #[Locked]
     public Classroom $classroom;
 
     public string $title = '';
@@ -38,7 +40,7 @@ class Create extends Component
         $this->classroom = $classroom;
     }
 
-    public function getTopicsProperty()
+    public function getTopicsProperty(): \Illuminate\Database\Eloquent\Collection
     {
         return Topic::where('classroom_id', $this->classroom->id)->get();
     }
@@ -46,7 +48,7 @@ class Create extends Component
     public function updatedFile(): void
     {
         $this->validate([
-            'file' => 'file|max:25600',
+            'file' => 'file|max:25600|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,zip,rar,txt,mp4,mp3',
         ]);
 
         $this->uploadedFiles[] = [
@@ -119,7 +121,7 @@ class Create extends Component
         );
 
     }
-    public function render()
+    public function render(): \Illuminate\View\View
     {
         return view('livewire.material.create');
     }

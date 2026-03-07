@@ -8,13 +8,17 @@ use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 #[Layout('layouts.app')]
 class Grade extends Component
 {
+    #[Locked]
     public Classroom $classroom;
+    #[Locked]
     public Assignment $assignment;
+    #[Locked]
     public Submission $submission;
     public int $score = 0;
     public string $feedback = '';

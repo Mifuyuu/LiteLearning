@@ -6,11 +6,13 @@ use App\Models\Classroom;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 #[Layout('layouts.app')]
 class People extends Component
 {
+    #[Locked]
     public Classroom $classroom;
     public string $inviteEmail = '';
     public string $inviteCoTeacherEmail = '';

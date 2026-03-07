@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\User;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -11,44 +10,17 @@ use Livewire\Component;
 #[Layout('layouts.app')]
 class Settings extends Component
 {
-    public string $locale = 'th';
+    const NAME_MAX_LENGTH = 50;
+
     public int $uiScale = 100;
     public string $name = '';
 
-    const NAME_MAX_LENGTH = 50;
-
-    public function setLocale(string $value): void
-    {
-        $this->locale = $value;
-        $this->updatedLocale($value);
-    }
-
-    public function mount()
+    public function mount(): void
     {
         /** @var User $user */
         $user = Auth::user();
-        $this->locale  = $user->locale ?? 'th';
-        $this->uiScale = (int) ($user->ui_scale ?? 100);
-        $this->name    = $user->name;
-    }
-
-    public function updatedLocale(string $value)
-    {
-        if (!in_array($value, ['en', 'th'])) {
-            return;
-        }
-
-        /** @var User $user */
-        $user = Auth::user();
-        $user->update(['locale' => $value]);
-
-        // Apply immediately
-        App::setLocale($value);
-        session()->put('locale', $value);
-
-        session()->flash('message', __('Changes saved successfully.'));
-
-        return $this->redirectRoute('settings', navigate: false);
+        $this->uiScale = $user->ui_scale ?? 100;
+        $this->name = $user->name;
     }
 
     public function setUiScale(string|int $value): void

@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(ClassroomThemeCategorySeeder::class);
         $this->call(GamificationFeaturesSeeder::class);
         $this->call(LeaderboardSeeder::class);
 

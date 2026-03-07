@@ -26,6 +26,7 @@ class Classroom extends Model
         'code',
         'cover_image',
         'theme_color',
+        'theme_category_id',
         'is_archived',
     ];
 
@@ -86,6 +87,11 @@ class Classroom extends Model
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
+    }
+
+    public function themeCategory(): BelongsTo
+    {
+        return $this->belongsTo(ClassroomThemeCategory::class, 'theme_category_id');
     }
 
     public function members(): BelongsToMany

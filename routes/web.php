@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('teacher')->group(function () {
             Route::get('/c/{classroom}/a/create', AssignmentCreate::class)->name('assignment.create');
             Route::get('/c/{classroom}/m/create', MaterialCreate::class)->name('material.create');
+            Route::get('/c/{classroom}/a/{assignment}/g/{submission}', Grade::class)->name('assignment.grade');
         });
         Route::get('/c/{classroom}/a/{assignment}', AssignmentShow::class)->name('assignment.show');
         Route::get('/c/{classroom}/a/{assignment}/g/{submission}', Grade::class)->name('assignment.grade');
@@ -98,6 +99,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/achievements', \App\Livewire\Admin\Achievements::class)->name('achievements');
             Route::get('/badges', \App\Livewire\Admin\Badges::class)->name('badges');
             Route::get('/reports', \App\Livewire\Admin\BugReports::class)->name('reports');
+            Route::get('/theme-categories', \App\Livewire\Admin\ThemeCategories::class)->name('theme-categories');
         });
 
         // Sidebar classroom preferences

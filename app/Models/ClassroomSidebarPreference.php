@@ -67,7 +67,5 @@ class ClassroomSidebarPreference extends Model
 
         $this->syncOriginal();
         return true;
-        $this->syncOriginal();
-        return true;
     }
 }

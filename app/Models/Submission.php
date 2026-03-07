@@ -22,10 +22,13 @@ class Submission extends Model
         'graded_at',
     ];
 
-    protected $casts = [
-        'turned_in_at' => 'datetime',
-        'graded_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'turned_in_at' => 'datetime',
+            'graded_at' => 'datetime',
+        ];
+    }
 
     public function assignment(): BelongsTo
     {

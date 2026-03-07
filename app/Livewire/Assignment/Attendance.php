@@ -8,12 +8,15 @@ use App\Models\Classroom;
 use App\Models\Submission;
 use App\Services\GamificationService;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 #[Layout('layouts.app')]
 class Attendance extends Component
 {
+    #[Locked]
     public Classroom $classroom;
+    #[Locked]
     public Assignment $assignment;
     public ?AttendanceSessionModel $session = null;
     public bool $sessionIsActive = false;

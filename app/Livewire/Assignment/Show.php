@@ -8,6 +8,7 @@ use App\Models\Submission;
 use App\Models\Topic;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\Locked;
 use Mews\Purifier\Facades\Purifier;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -16,7 +17,9 @@ class Show extends Component
 {
     use WithFileUploads;
 
+    #[Locked]
     public Classroom $classroom;
+    #[Locked]
     public Assignment $assignment;
 
     // Student submission
@@ -218,7 +221,7 @@ class Show extends Component
             'editCoinReward' => 'integer|min:0|max:9999',
             'editDueDate' => 'nullable|date',
             'editStatus' => 'required|in:draft,published,closed',
-            'editType' => 'required|in:attendance,file,question,project,announcement,material',
+            'editType' => 'required|in:attendance,file,question,project,announcement,material,topic',
             'editTopic' => 'nullable|string|max:255',
             'editAllowLateSubmission' => 'boolean',
         ]);

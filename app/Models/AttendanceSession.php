@@ -15,11 +15,14 @@ class AttendanceSession extends Model
         'code_rotated_at',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-        'started_at' => 'datetime',
-        'code_rotated_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'started_at' => 'datetime',
+            'code_rotated_at' => 'datetime',
+        ];
+    }
 
     public function assignment(): BelongsTo
     {

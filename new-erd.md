@@ -26,6 +26,7 @@ erDiagram
     classrooms {
         int id PK
         int teacher_id FK
+        int theme_category_id FK
         varchar name
         varchar slug UK
         varchar section
@@ -33,6 +34,19 @@ erDiagram
         varchar code UK
         varchar theme_color "default: #4F46E5"
         boolean is_archived "default: false"
+        datetime created_at
+        datetime updated_at
+    }
+
+    classroom_theme_categories {
+        int id PK
+        varchar name
+        varchar slug UK
+        text description
+        varchar preview_color "7 chars, default: #6B3FBF"
+        tinyint planet_number "default: 1"
+        boolean is_active "default: true"
+        int sort_order "default: 0"
         datetime created_at
         datetime updated_at
     }
@@ -53,6 +67,7 @@ erDiagram
         varchar title
         varchar slug UK
         text description
+        varchar topic
         int max_score "default: 100"
         int exp_reward "default: 0"
         int coin_reward "default: 0"
@@ -131,7 +146,6 @@ erDiagram
         datetime updated_at
     }
 
-
     attendance_sessions {
         int id PK
         int assignment_id FK
@@ -162,7 +176,7 @@ erDiagram
         int coin_reward "default: 0"
         int xp_reward "default: 0"
         boolean is_active "default: true"
-        varchar target_role
+        varchar target_role "default: student"
         datetime created_at
         datetime updated_at
     }
@@ -174,7 +188,7 @@ erDiagram
         varchar description
         varchar icon
         varchar color
-        varchar target_role
+        varchar target_role "default: student"
         datetime created_at
         datetime updated_at
     }
@@ -223,7 +237,6 @@ erDiagram
     }
 
     user_store_items {
-        int id PK
         int user_id FK
         int store_item_id FK
         datetime created_at
@@ -251,11 +264,22 @@ erDiagram
         datetime updated_at
     }
 
+    email_otp_verifications {
+        int id PK
+        varchar email
+        varchar otp
+        json user_data
+        datetime expires_at
+        datetime created_at
+        datetime updated_at
+    }
+
     %% ─── Relationships ───
 
     users ||--o{ classrooms : "owns (teacher_id)"
     users ||--o{ classroom_user : "enrolls"
     classrooms ||--o{ classroom_user : "has members"
+    classroom_theme_categories ||--o{ classrooms : "styles"
 
     classrooms ||--o{ assignments : "contains"
     users ||--o{ assignments : "creates"

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Mews\Purifier\Facades\Purifier;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -17,6 +18,7 @@ class Show extends Component
 {
     use WithFileUploads;
 
+    #[Locked]
     public Classroom $classroom;
 
     public Material $material;

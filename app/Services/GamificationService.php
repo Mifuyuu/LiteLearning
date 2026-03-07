@@ -8,6 +8,7 @@ use App\Models\Badge;
 use App\Models\CoinTransaction;
 use App\Models\StoreItem;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class GamificationService
 {
@@ -26,22 +27,24 @@ class GamificationService
             return;
         }
 
-        CoinTransaction::create([
-            'user_id'        => $user->id,
-            'amount'         => $amount,
-            'type'           => $amount > 0 ? 'earn' : 'spend',
-            'source'         => $source,
-            'reference_type' => $referenceType,
-            'reference_id'   => $referenceId,
-            'metadata'       => $metadata,
-            'happened_at'    => now(),
-        ]);
+        DB::transaction(function () use ($user, $amount, $source, $referenceType, $referenceId, $metadata) {
+            CoinTransaction::create([
+                'user_id'        => $user->id,
+                'amount'         => $amount,
+                'type'           => $amount > 0 ? 'earn' : 'spend',
+                'source'         => $source,
+                'reference_type' => $referenceType,
+                'reference_id'   => $referenceId,
+                'metadata'       => $metadata,
+                'happened_at'    => now(),
+            ]);
 
-        $gamification = $user->gamification()->firstOrCreate(
-            ['user_id' => $user->id],
-            ['coins' => 0, 'xp' => 0, 'level' => 1]
-        );
-        $gamification->increment('coins', $amount);
+            $gamification = $user->gamification()->firstOrCreate(
+                ['user_id' => $user->id],
+                ['coins' => 0, 'xp' => 0, 'level' => 1]
+            );
+            $gamification->increment('coins', $amount);
+        });
     }
 
     public function awardXp(User $user, int $amount): void
@@ -136,12 +139,14 @@ class GamificationService
         $this->awardCoins($user, 30, 'classroom_created', 'classroom', $classroomId);
         $this->awardXp($user, 40);
 
-        if ($user->ownedClassrooms()->count() >= 1) {
+        $count = $user->ownedClassrooms()->count();
+
+        if ($count >= 1) {
             $this->unlockAchievement($user, 'first_classroom_created');
             $this->awardBadge($user, 'class-starter');
         }
 
-        if ($user->ownedClassrooms()->count() >= 5) {
+        if ($count >= 5) {
             $this->unlockAchievement($user, 'classroom_builder');
             $this->awardBadge($user, 'master-teacher');
         }
@@ -229,31 +234,33 @@ class GamificationService
             throw new GamificationException(__('You already own this item.'));
         }
 
-        $gamification = $user->gamification()->firstOrCreate(
-            ['user_id' => $user->id],
-            ['coins' => 0, 'xp' => 0, 'level' => 1]
-        );
+        DB::transaction(function () use ($user, $item) {
+            $gamification = $user->gamification()->firstOrCreate(
+                ['user_id' => $user->id],
+                ['coins' => 0, 'xp' => 0, 'level' => 1]
+            );
 
-        if ($gamification->coins < $item->price) {
-            throw new GamificationException(__('Not enough coins.'));
-        }
+            if ($gamification->coins < $item->price) {
+                throw new GamificationException(__('Not enough coins.'));
+            }
 
-        // Deduct coins
-        $gamification->decrement('coins', $item->price);
+            // Deduct coins
+            $gamification->decrement('coins', $item->price);
 
-        // Record transaction
-        CoinTransaction::create([
-            'user_id'        => $user->id,
-            'amount'         => -$item->price,
-            'type'           => 'spend',
-            'source'         => 'store_purchase',
-            'reference_type' => StoreItem::class,
-            'reference_id'   => $item->id,
-            'happened_at'    => now(),
-        ]);
+            // Record transaction
+            CoinTransaction::create([
+                'user_id'        => $user->id,
+                'amount'         => -$item->price,
+                'type'           => 'spend',
+                'source'         => 'store_purchase',
+                'reference_type' => StoreItem::class,
+                'reference_id'   => $item->id,
+                'happened_at'    => now(),
+            ]);
 
-        // Attach item
-        $user->storeItems()->attach($item->id);
+            // Attach item
+            $user->storeItems()->attach($item->id);
+        });
     }
 
     /**

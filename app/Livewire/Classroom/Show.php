@@ -7,12 +7,14 @@ use App\Models\Announcement;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('layouts.app')]
 class Show extends Component
 {
+    #[Locked]
     public Classroom $classroom;
     #[Url(as: 'tab', except: 'stream')]
     public string $activeTab = 'stream';
@@ -141,9 +143,9 @@ class Show extends Component
 
     public function deleteClassroom()
     {
-        if (!$this->canManageClassroom()) {
-            abort(403);
-        }
+        /** @var User $user */
+        $user = Auth::user();
+        abort_unless($this->classroom->isOwnedBy($user), 403);
 
         if (trim($this->deleteConfirm) !== $this->classroom->name) {
             $this->addError('deleteConfirm', __('Please type the classroom name exactly to confirm deletion.'));

@@ -267,7 +267,7 @@ class Assignment extends Model
      */
     public function requiresSubmission(): bool
     {
-        return !$this->isMaterial();
+        return !in_array($this->type, ['material', 'announcement', 'topic']);
     }
 
     // ──────────────────────────────────────────────
