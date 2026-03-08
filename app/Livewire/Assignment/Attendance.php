@@ -16,13 +16,17 @@ class Attendance extends Component
 {
     #[Locked]
     public Classroom $classroom;
+
     #[Locked]
     public Assignment $assignment;
+
     public ?AttendanceSessionModel $session = null;
+
     public bool $sessionIsActive = false;
 
     // Student
     public string $enteredCode = '';
+
     public bool $alreadyCheckedIn = false;
 
     public function mount(Classroom $classroom, Assignment $assignment): void
@@ -50,7 +54,7 @@ class Attendance extends Component
             403
         );
 
-        if (!$this->session) {
+        if (! $this->session) {
             $this->session = AttendanceSessionModel::create([
                 'assignment_id' => $this->assignment->id,
                 'is_active' => false,
@@ -76,7 +80,7 @@ class Attendance extends Component
      */
     public function rotateCode(): void
     {
-        if (!$this->session?->is_active) {
+        if (! $this->session?->is_active) {
             return;
         }
 
@@ -102,14 +106,16 @@ class Attendance extends Component
         abort_unless($user->isStudent(), 403);
 
         // Session must be active
-        if (!$this->session?->is_active) {
+        if (! $this->session?->is_active) {
             session()->flash('attendance_error', __('Attendance session is not active'));
+
             return;
         }
 
         // Already checked in
         if ($this->alreadyCheckedIn) {
             session()->flash('attendance_error', __('Already checked in'));
+
             return;
         }
 
@@ -118,12 +124,13 @@ class Attendance extends Component
         if ($this->enteredCode !== $this->session->current_code) {
             session()->flash('attendance_error', __('Invalid code'));
             $this->enteredCode = '';
+
             return;
         }
 
         // Create or update submission
         $submission = $this->assignment->submissionFor($user);
-        if (!$submission) {
+        if (! $submission) {
             $submission = $this->assignment->submissions()->create([
                 'user_id' => $user->id,
                 'status' => 'assigned',

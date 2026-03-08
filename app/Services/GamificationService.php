@@ -18,7 +18,7 @@ class GamificationService
 
     public function awardCoins(User $user, int $amount, string $source, ?string $referenceType = null, ?int $referenceId = null, array $metadata = []): void
     {
-        if (!$this->isEligible($user)) {
+        if (! $this->isEligible($user)) {
             return;
         }
 
@@ -28,14 +28,14 @@ class GamificationService
 
         DB::transaction(function () use ($user, $amount, $source, $referenceType, $referenceId, $metadata) {
             CoinTransaction::create([
-                'user_id'        => $user->id,
-                'amount'         => $amount,
-                'type'           => $amount > 0 ? 'earn' : 'spend',
-                'source'         => $source,
+                'user_id' => $user->id,
+                'amount' => $amount,
+                'type' => $amount > 0 ? 'earn' : 'spend',
+                'source' => $source,
                 'reference_type' => $referenceType,
-                'reference_id'   => $referenceId,
-                'metadata'       => $metadata,
-                'happened_at'    => now(),
+                'reference_id' => $referenceId,
+                'metadata' => $metadata,
+                'happened_at' => now(),
             ]);
 
             $gamification = $user->gamification()->firstOrCreate(
@@ -48,7 +48,7 @@ class GamificationService
 
     public function awardXp(User $user, int $amount): void
     {
-        if (!$this->isEligible($user)) {
+        if (! $this->isEligible($user)) {
             return;
         }
 
@@ -62,12 +62,12 @@ class GamificationService
             ['coins' => 0, 'xp' => 0, 'level' => 1]
         );
 
-        $newXp    = $gamification->xp + $amount;
+        $newXp = $gamification->xp + $amount;
         $newLevel = $this->resolveLevelFromXp($newXp);
         $levelUps = max(0, $newLevel - $gamification->level);
 
         $gamification->update([
-            'xp'    => $newXp,
+            'xp' => $newXp,
             'level' => $newLevel,
         ]);
 
@@ -75,14 +75,14 @@ class GamificationService
             $bonusCoins = $levelUps * 20;
             $this->awardCoins($user, $bonusCoins, 'level_up', null, null, [
                 'levels_gained' => $levelUps,
-                'new_level'     => $newLevel,
+                'new_level' => $newLevel,
             ]);
         }
     }
 
     public function unlockAchievement(User $user, string $code): void
     {
-        if (!$this->isEligible($user)) {
+        if (! $this->isEligible($user)) {
             return;
         }
 
@@ -90,7 +90,7 @@ class GamificationService
             ->where('is_active', true)
             ->first();
 
-        if (!$achievement) {
+        if (! $achievement) {
             return;
         }
 
@@ -112,7 +112,6 @@ class GamificationService
             $this->awardXp($user, (int) $achievement->xp_reward);
         }
     }
-
 
     public function awardForClassroomCreated(User $user, int $classroomId): void
     {
@@ -173,7 +172,7 @@ class GamificationService
     public function resolveLevelFromXp(int $xp): int
     {
         $maxLevel = 100;
-        $level    = 1;
+        $level = 1;
 
         while ($level < $maxLevel && $xp >= $this->totalXpForLevel($level + 1)) {
             $level++;
@@ -198,11 +197,11 @@ class GamificationService
      */
     public function purchaseItem(User $user, StoreItem $item): void
     {
-        if (!$this->isEligible($user)) {
+        if (! $this->isEligible($user)) {
             throw new GamificationException(__('Only students can purchase items.'));
         }
 
-        if (!$item->is_active) {
+        if (! $item->is_active) {
             throw new GamificationException(__('This item is no longer available.'));
         }
 
@@ -225,13 +224,13 @@ class GamificationService
 
             // Record transaction
             CoinTransaction::create([
-                'user_id'        => $user->id,
-                'amount'         => -$item->price,
-                'type'           => 'spend',
-                'source'         => 'store_purchase',
+                'user_id' => $user->id,
+                'amount' => -$item->price,
+                'type' => 'spend',
+                'source' => 'store_purchase',
                 'reference_type' => StoreItem::class,
-                'reference_id'   => $item->id,
-                'happened_at'    => now(),
+                'reference_id' => $item->id,
+                'happened_at' => now(),
             ]);
 
             // Attach item
@@ -246,11 +245,11 @@ class GamificationService
      */
     public function equipItem(User $user, StoreItem $item): void
     {
-        if (!$this->isEligible($user)) {
+        if (! $this->isEligible($user)) {
             throw new GamificationException(__('Only students can equip items.'));
         }
 
-        if (!$user->storeItems()->where('store_item_id', $item->id)->exists()) {
+        if (! $user->storeItems()->where('store_item_id', $item->id)->exists()) {
             throw new GamificationException(__('You do not own this item.'));
         }
 

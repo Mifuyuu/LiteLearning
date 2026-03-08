@@ -15,8 +15,11 @@ class SubmissionTest extends TestCase
     use RefreshDatabase;
 
     private User $teacher;
+
     private User $student;
+
     private Classroom $classroom;
+
     private Assignment $assignment;
 
     protected function setUp(): void
@@ -30,20 +33,19 @@ class SubmissionTest extends TestCase
         $this->classroom->members()->attach($this->student->id, ['role' => 'student', 'joined_at' => now()]);
 
         $this->assignment = Assignment::factory()->create([
-            'user_id'              => $this->teacher->id,
-            'classroom_id'         => $this->classroom->id,
-            'type'                 => 'question',
-            'status'               => 'published',
-            'allow_late_submission'=> true,
-            'due_date'             => now()->addDay(),
+            'user_id' => $this->teacher->id,
+            'classroom_id' => $this->classroom->id,
+            'type' => 'question',
+            'status' => 'published',
+            'allow_late_submission' => true,
+            'due_date' => now()->addDay(),
         ]);
-
 
         // Pre-create the submission record for the student
         Submission::create([
             'assignment_id' => $this->assignment->id,
-            'user_id'       => $this->student->id,
-            'status'        => 'assigned',
+            'user_id' => $this->student->id,
+            'status' => 'assigned',
         ]);
     }
 
@@ -55,7 +57,7 @@ class SubmissionTest extends TestCase
     {
         Livewire::actingAs($this->student)
             ->test(\App\Livewire\Assignment\Show::class, [
-                'classroom'  => $this->classroom,
+                'classroom' => $this->classroom,
                 'assignment' => $this->assignment,
             ])
             ->set('submissionContent', 'My answer here')
@@ -64,8 +66,8 @@ class SubmissionTest extends TestCase
 
         $this->assertDatabaseHas('submissions', [
             'assignment_id' => $this->assignment->id,
-            'user_id'       => $this->student->id,
-            'status'        => 'turned_in',
+            'user_id' => $this->student->id,
+            'status' => 'turned_in',
         ]);
     }
 
@@ -77,7 +79,7 @@ class SubmissionTest extends TestCase
     {
         Livewire::actingAs($this->student)
             ->test(\App\Livewire\Assignment\Show::class, [
-                'classroom'  => $this->classroom,
+                'classroom' => $this->classroom,
                 'assignment' => $this->assignment,
             ])
             ->set('submissionContent', 'Draft content')
@@ -86,9 +88,9 @@ class SubmissionTest extends TestCase
 
         $this->assertDatabaseHas('submissions', [
             'assignment_id' => $this->assignment->id,
-            'user_id'       => $this->student->id,
-            'content'       => 'Draft content',
-            'status'        => 'assigned',
+            'user_id' => $this->student->id,
+            'content' => 'Draft content',
+            'status' => 'assigned',
         ]);
     }
 
@@ -104,7 +106,7 @@ class SubmissionTest extends TestCase
 
         Livewire::actingAs($this->student)
             ->test(\App\Livewire\Assignment\Show::class, [
-                'classroom'  => $this->classroom,
+                'classroom' => $this->classroom,
                 'assignment' => $this->assignment,
             ])
             ->call('unsubmit')
@@ -112,8 +114,8 @@ class SubmissionTest extends TestCase
 
         $this->assertDatabaseHas('submissions', [
             'assignment_id' => $this->assignment->id,
-            'user_id'       => $this->student->id,
-            'status'        => 'assigned',
+            'user_id' => $this->student->id,
+            'status' => 'assigned',
         ]);
     }
 
@@ -124,13 +126,13 @@ class SubmissionTest extends TestCase
     public function test_submission_is_rejected_when_assignment_is_overdue_and_late_not_allowed(): void
     {
         $this->assignment->update([
-            'due_date'              => now()->subHour(),
+            'due_date' => now()->subHour(),
             'allow_late_submission' => false,
         ]);
 
         Livewire::actingAs($this->student)
             ->test(\App\Livewire\Assignment\Show::class, [
-                'classroom'  => $this->classroom,
+                'classroom' => $this->classroom,
                 'assignment' => $this->assignment,
             ])
             ->call('turnIn');
@@ -138,8 +140,8 @@ class SubmissionTest extends TestCase
         // Status should still be 'assigned', not 'turned_in'
         $this->assertDatabaseHas('submissions', [
             'assignment_id' => $this->assignment->id,
-            'user_id'       => $this->student->id,
-            'status'        => 'assigned',
+            'user_id' => $this->student->id,
+            'status' => 'assigned',
         ]);
     }
 
@@ -150,13 +152,13 @@ class SubmissionTest extends TestCase
     public function test_late_submission_allowed_when_flag_is_set(): void
     {
         $this->assignment->update([
-            'due_date'              => now()->subHour(),
+            'due_date' => now()->subHour(),
             'allow_late_submission' => true,
         ]);
 
         Livewire::actingAs($this->student)
             ->test(\App\Livewire\Assignment\Show::class, [
-                'classroom'  => $this->classroom,
+                'classroom' => $this->classroom,
                 'assignment' => $this->assignment,
             ])
             ->set('submissionContent', 'Late but allowed')
@@ -165,8 +167,8 @@ class SubmissionTest extends TestCase
 
         $this->assertDatabaseHas('submissions', [
             'assignment_id' => $this->assignment->id,
-            'user_id'       => $this->student->id,
-            'status'        => 'turned_in',
+            'user_id' => $this->student->id,
+            'status' => 'turned_in',
         ]);
     }
 
@@ -182,7 +184,7 @@ class SubmissionTest extends TestCase
         $this->actingAs($outsider);
 
         $response = $this->get(route('assignment.show', [
-            'classroom'  => $this->classroom->slug,
+            'classroom' => $this->classroom->slug,
             'assignment' => $this->assignment->slug,
         ]));
 

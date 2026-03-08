@@ -13,13 +13,13 @@ class Classrooms extends Component
     use WithPagination;
 
     public $search = '';
+
     public $statusFilter = '';
 
     public function updatingSearch()
     {
         $this->resetPage();
     }
-
 
     public function deleteClassroom(Classroom $classroom)
     {
@@ -33,8 +33,8 @@ class Classrooms extends Component
         $query = Classroom::query()->with(['teacher', 'members']);
 
         if ($this->search) {
-            $query->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('code', 'like', '%' . $this->search . '%');
+            $query->where('name', 'like', '%'.$this->search.'%')
+                ->orWhere('code', 'like', '%'.$this->search.'%');
         }
 
         if ($this->statusFilter === 'archived') {

@@ -42,7 +42,7 @@ class ClassroomContent extends Model
     /**
      * Override delete to use composite PK (no id column on this table).
      */
-    public function delete(): bool|null
+    public function delete(): ?bool
     {
         static::query()
             ->where('classroom_id', $this->classroom_id)

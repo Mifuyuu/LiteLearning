@@ -11,7 +11,7 @@
 
 <div class="animate__animated animate__fadeIn">
     <!-- Classroom Header -->
-    <div class="rounded-2xl overflow-hidden mb-6 relative" style="background-color: {{ $classroom->theme_color }}">
+    <div class="rounded-2xl overflow-hidden mb-6 relative" style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
         <div class="absolute inset-0 bg-linear-to-b from-black/10 to-black/40"></div>
         <div class="relative p-6 sm:p-8">
             <div class="flex items-start justify-between">
@@ -130,7 +130,7 @@
                             <button @click="open = !open"
                                 class="inline-flex items-center px-4 py-2.5 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
                                 <i class="fas fa-plus mr-2"></i> {{ __('Create Assignment') }}
-                                <i class="fas fa-chevron-down ml-2 text-xs opacity-70" :class="open ? 'rotate-180' : ''"></i>
+                                <i class="fas fa-chevron-down ml-2 text-xs opacity-70" :class="open ? 'rotate-180' : '"></i>
                             </button>
 
                             <!-- Popover panel -->
@@ -156,9 +156,9 @@
                                         @click="open = false"
                                         class="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 transition-colors group">
                                         <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                                            style="background-color: {{ $classroom->theme_color }}20;">
+                                            style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20;">
                                             <i class="fas {{ $info['icon'] }} text-sm"
-                                                style="color: {{ $classroom->theme_color }}"></i>
+                                                style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
                                         </div>
                                         <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ __($info['label']) }}</span>
                                     </a>
@@ -169,9 +169,9 @@
                                     @click="open = false"
                                     class="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 transition-colors group">
                                     <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                                        style="background-color: {{ $classroom->theme_color }}20;">
+                                        style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20;">
                                         <i class="fas fa-bullhorn text-sm"
-                                            style="color: {{ $classroom->theme_color }}"></i>
+                                            style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
                                     </div>
                                     <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ __('Announcement') }}</span>
                                 </a>
@@ -181,9 +181,9 @@
                                     @click="open = false"
                                     class="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 transition-colors group">
                                     <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                                        style="background-color: {{ $classroom->theme_color }}20;">
+                                        style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20;">
                                         <i class="fas fa-book-open text-sm"
-                                            style="color: {{ $classroom->theme_color }}"></i>
+                                            style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
                                     </div>
                                     <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ __('Material') }}</span>
                                 </a>
@@ -231,9 +231,9 @@
                                         class="flex items-center p-4 cursor-pointer group">
                                             <!-- Type Icon -->
                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mr-3"
-                                                style="background-color: {{ $classroom->theme_color }}15;">
+                                                style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}15;">
                                                 <i class="fas {{ $assignment->typeIcon() }}"
-                                                    style="color: {{ $classroom->theme_color }}"></i>
+                                                    style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
                                             </div>
 
                                             <!-- Title & Info -->
@@ -281,7 +281,7 @@
                                                 <div class="flex items-center gap-2">
                                                     <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}"
                                                         class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white rounded-md transition-colors"
-                                                        style="background-color: {{ $classroom->theme_color }}">
+                                                        style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
                                                         {{ __('View') }}
                                                     </a>
 
@@ -325,9 +325,9 @@
                                         class="flex items-center p-4 cursor-pointer group">
                                             <!-- Type Icon -->
                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mr-3"
-                                                style="background-color: {{ $classroom->theme_color }}15;">
+                                                style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}15;">
                                                 <i class="fas {{ $assignment->typeIcon() }}"
-                                                    style="color: {{ $classroom->theme_color }}"></i>
+                                                    style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
                                             </div>
 
                                             <!-- Title & Info -->
@@ -375,7 +375,7 @@
                                                 <div class="flex items-center gap-2">
                                                     <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}"
                                                         class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white rounded-md transition-colors"
-                                                        style="background-color: {{ $classroom->theme_color }}">
+                                                        style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
                                                         {{ __('View') }}
                                                     </a>
 
@@ -414,8 +414,8 @@
                                 class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-gray-300 transition-all duration-200 flex items-center p-4 group"
                                 wire:key="material-{{ $material->id }}">
                                 <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mr-3"
-                                    style="background-color: {{ $classroom->theme_color }}15;">
-                                    <i class="fas fa-book-open" style="color: {{ $classroom->theme_color }}"></i>
+                                    style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}15;">
+                                    <i class="fas fa-book-open" style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors">{{ $material->title }}</p>
@@ -795,15 +795,30 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Banner Color') }}</label>
-                        <div class="flex flex-wrap gap-2">
-                            @foreach(['#DC2626', '#F97316', '#F59E0B', '#059669', '#0891B2', '#2563EB', '#4F46E5', '#9333EA', '#DB2777', '#475569'] as $color)
-                                <button type="button" wire:click="$set('theme_color', '{{ $color }}')"
-                                    class="w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 {{ $theme_color === $color ? 'border-gray-900 scale-110' : 'border-transparent' }}"
-                                    style="background-color: {{ $color }}" title="{{ $color }}"></button>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('เลือกธีมห้องเรียน') }}</label>
+                        <div class="grid grid-cols-7 gap-2">
+                            @foreach($themes as $theme)
+                                @php $pn = str_pad($theme->planet_number, 2, '0', STR_PAD_LEFT); @endphp
+                                <button type="button" wire:click="$set('theme_category_id', {{ $theme->id }})"
+                                    title="{{ $theme->name }}"
+                                    @class([
+                                        'aspect-square rounded-xl border-2 p-1.5 transition-all',
+                                        'border-indigo-500 bg-indigo-50 shadow-md scale-105' => $theme_category_id == $theme->id,
+                                        'border-gray-200 hover:border-indigo-300 hover:bg-gray-50' => $theme_category_id != $theme->id,
+                                    ])>
+                                    <img src="/images/planets/planet_{{ $pn }}.svg"
+                                        alt="{{ $theme->name }}" class="w-full h-full object-contain" />
+                                </button>
                             @endforeach
                         </div>
-                        @error('theme_color') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                        @if($theme_category_id)
+                            @php $selected = $themes->find($theme_category_id); @endphp
+                            @if($selected)
+                                <p class="mt-1.5 text-xs text-indigo-600 font-medium">
+                                    <i class="fas fa-check-circle mr-1"></i>{{ $selected->name }}
+                                </p>
+                            @endif
+                        @endif
                     </div>
 
                     <div class="pt-2 flex justify-end">
@@ -909,7 +924,7 @@
     @endif
 
     <!-- Delete Assignment Modal (page-level, outside all tabs) -->
-    <div x-data="{ showDeleteModal: false, deleteAssignmentId: null, deleteAssignmentTitle: '' }"
+    <div x-data="{ showDeleteModal: false, deleteAssignmentId: null, deleteAssignmentTitle: ' }"
         @open-delete-assignment.window="deleteAssignmentId = $event.detail.id; deleteAssignmentTitle = $event.detail.title; showDeleteModal = true"
         @keydown.escape.window="showDeleteModal = false">
         <template x-teleport="body">

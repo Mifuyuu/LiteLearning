@@ -2,18 +2,16 @@
 
 namespace App\Livewire\Assignment;
 
-use App\Models\Assignment;
 use App\Models\Announcement;
+use App\Models\Assignment;
 use App\Models\Classroom;
-
 use App\Models\Topic;
 use App\Services\GamificationService;
-use Mews\Purifier\Facades\Purifier;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Mews\Purifier\Facades\Purifier;
 
 class Create extends Component
 {
@@ -24,18 +22,28 @@ class Create extends Component
 
     // Form fields
     public string $title = '';
+
     public string $description = '';
+
     public int $max_score = 100;
+
     public int $exp_reward = 0;
+
     public int $coin_reward = 0;
+
     public ?string $due_date = null;
+
     public string $status = 'published';
+
     public string $topic = '';
+
     public bool $allow_late_submission = true;
+
     public string $type = 'question';
 
     // File upload - single file at a time, accumulated into uploadedFiles
     public $file = null;
+
     public array $uploadedFiles = [];
 
     public function mount(Classroom $classroom): void
@@ -62,7 +70,7 @@ class Create extends Component
     public function updatedFile(): void
     {
         $this->validate([
-            'file' => 'file|max:25600|mimes:' . Assignment::allowedSubmissionMimes(),
+            'file' => 'file|max:25600|mimes:'.Assignment::allowedSubmissionMimes(),
         ]);
 
         if ($this->file) {
@@ -88,8 +96,8 @@ class Create extends Component
         $this->validate([
             'title' => 'required|string|max:50',
             'description' => 'nullable|string',
-            'max_score'  => 'required_unless:type,material,topic,announcement|integer|min:0|max:1000',
-            'exp_reward'  => 'integer|min:0|max:9999',
+            'max_score' => 'required_unless:type,material,topic,announcement|integer|min:0|max:1000',
+            'exp_reward' => 'integer|min:0|max:9999',
             'coin_reward' => 'integer|min:0|max:9999',
             'type' => 'required|in:announcement,attendance,file,question,material,topic,project',
             'due_date' => 'nullable|date',
@@ -107,11 +115,9 @@ class Create extends Component
             $this->due_date = null;
         }
 
-
         if ($this->type === 'attendance') {
             $this->description = '';
         }
-
 
         // Handle topic
         $topicName = trim($this->topic);
@@ -126,7 +132,7 @@ class Create extends Component
         $attachments = [];
         foreach ($this->uploadedFiles as $uploaded) {
             if (isset($uploaded['file']) && $uploaded['file']) {
-                $path = $uploaded['file']->store('assignments/attachments/' . $this->classroom->id, 's3');
+                $path = $uploaded['file']->store('assignments/attachments/'.$this->classroom->id, 's3');
                 $attachments[] = [
                     'id' => $this->generateAttachmentId(),
                     'name' => $uploaded['name'],
@@ -140,13 +146,14 @@ class Create extends Component
         // Announcement → save to announcements table, not assignments
         if ($this->type === 'announcement') {
             Announcement::create([
-                'user_id'      => $user->id,
+                'user_id' => $user->id,
                 'classroom_id' => $this->classroom->id,
-                'title'        => $this->title,
-                'content'      => $this->description ? Purifier::clean($this->description) : null,
+                'title' => $this->title,
+                'content' => $this->description ? Purifier::clean($this->description) : null,
             ]);
 
             $this->redirect(route('classroom.show', $this->classroom), navigate: true);
+
             return;
         }
 
@@ -156,10 +163,10 @@ class Create extends Component
                 'classroom_id' => $this->classroom->id,
                 'title' => $this->title,
                 'description' => $this->description ? Purifier::clean($this->description) : null,
-                'attachments' => !empty($attachments) ? $attachments : null,
-                'max_score'            => $this->max_score,
-                'exp_reward'           => $this->exp_reward,
-                'coin_reward'          => $this->coin_reward,
+                'attachments' => ! empty($attachments) ? $attachments : null,
+                'max_score' => $this->max_score,
+                'exp_reward' => $this->exp_reward,
+                'coin_reward' => $this->coin_reward,
                 'due_date' => $this->due_date,
                 'status' => $this->status,
                 'type' => $this->type,
@@ -167,9 +174,8 @@ class Create extends Component
                 'allow_late_submission' => $this->allow_late_submission,
             ]);
 
-
             // Create submissions for all enrolled students
-            if ($this->status === 'published' && !in_array($this->type, ['material', 'topic'])) {
+            if ($this->status === 'published' && ! in_array($this->type, ['material', 'topic'])) {
                 foreach ($this->classroom->students as $student) {
                     $assignment->submissions()->create([
                         'user_id' => $student->id,
@@ -200,6 +206,7 @@ class Create extends Component
         for ($i = 0; $i < 8; $i++) {
             $id .= $chars[random_int(0, strlen($chars) - 1)];
         }
+
         return $id;
     }
 }

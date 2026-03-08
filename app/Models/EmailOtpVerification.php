@@ -20,7 +20,7 @@ class EmailOtpVerification extends Model
     protected function casts(): array
     {
         return [
-            'user_data'  => 'array',
+            'user_data' => 'array',
             'expires_at' => 'datetime',
         ];
     }

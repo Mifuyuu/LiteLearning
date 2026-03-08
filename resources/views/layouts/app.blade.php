@@ -196,7 +196,7 @@
                                 @foreach($teachingClasses as $tc)
                                     <a href="{{ route('classroom.show', $tc) }}" wire:navigate data-classroom-id="{{ $tc->id }}"
                                         class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $tc->id) }}">
-                                        <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $tc->theme_color }}">
+                                        <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $tc->themeCategory?->color ?? '#8B5CF6' }}">
                                         </div>
                                         <span class="truncate">{{ $tc->name }}</span>
                                     </a>
@@ -235,7 +235,7 @@
                                 @foreach($enrolledClasses as $ec)
                                     <a href="{{ route('classroom.show', $ec) }}" wire:navigate data-classroom-id="{{ $ec->id }}"
                                         class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $ec->id) }}">
-                                        <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $ec->theme_color }}">
+                                        <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $ec->themeCategory?->color ?? '#8B5CF6' }}">
                                         </div>
                                         <span class="truncate">{{ $ec->name }}</span>
                                     </a>

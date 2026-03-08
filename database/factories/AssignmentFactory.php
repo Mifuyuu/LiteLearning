@@ -27,7 +27,7 @@ class AssignmentFactory extends Factory
 
     public function announcement(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => 'announcement',
             'max_score' => 0,
         ]);
@@ -35,7 +35,7 @@ class AssignmentFactory extends Factory
 
     public function attendance(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => 'attendance',
             'max_score' => 1,
         ]);
@@ -43,21 +43,21 @@ class AssignmentFactory extends Factory
 
     public function file(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => 'file',
         ]);
     }
 
     public function question(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => 'question',
         ]);
     }
 
     public function topic(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => 'topic',
             'max_score' => 0,
         ]);
@@ -65,14 +65,14 @@ class AssignmentFactory extends Factory
 
     public function project(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => 'project',
         ]);
     }
 
     public function material(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => 'material',
             'max_score' => 0,
         ]);
@@ -80,14 +80,14 @@ class AssignmentFactory extends Factory
 
     public function draft(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'status' => 'draft',
         ]);
     }
 
     public function noLateSubmission(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'allow_late_submission' => false,
         ]);
     }

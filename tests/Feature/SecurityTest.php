@@ -31,7 +31,7 @@ class SecurityTest extends TestCase
         $this->actingAs($teacher);
 
         $response = $this->get(route('assignment.show', [
-            'classroom'  => $classroomA->slug,
+            'classroom' => $classroomA->slug,
             'assignment' => $assignment->slug,
         ]));
 
@@ -54,16 +54,16 @@ class SecurityTest extends TestCase
 
         $submission = Submission::create([
             'assignment_id' => $assignmentB->id,
-            'user_id'       => $student->id,
-            'status'        => 'turned_in',
-            'turned_in_at'  => now(),
+            'user_id' => $student->id,
+            'status' => 'turned_in',
+            'turned_in_at' => now(),
         ]);
 
         // Try to grade assignmentB's submission through assignmentA's URL
         $this->actingAs($teacher);
 
         $response = $this->get(route('assignment.grade', [
-            'classroom'  => $classroom->slug,
+            'classroom' => $classroom->slug,
             'assignment' => $assignmentA->slug,
             'submission' => $submission->id,
         ]));

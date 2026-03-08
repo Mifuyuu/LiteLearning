@@ -7,11 +7,11 @@ use App\Models\Material;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Mews\Purifier\Facades\Purifier;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Mews\Purifier\Facades\Purifier;
 
 #[Layout('layouts.app')]
 class Show extends Component

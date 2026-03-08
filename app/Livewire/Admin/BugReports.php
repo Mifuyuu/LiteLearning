@@ -3,8 +3,8 @@
 namespace App\Livewire\Admin;
 
 use App\Models\BugReport;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('layouts.app')]
 class BugReports extends Component

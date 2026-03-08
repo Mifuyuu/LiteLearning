@@ -12,7 +12,9 @@ use Livewire\Component;
 class Login extends Component
 {
     public string $email = '';
+
     public string $password = '';
+
     public bool $remember = false;
 
     protected $rules = [
@@ -25,11 +27,12 @@ class Login extends Component
         $this->validate();
 
         // Rate-limit login attempts: 5 per minute per email+IP
-        $throttleKey = strtolower($this->email) . '|' . request()->ip();
+        $throttleKey = strtolower($this->email).'|'.request()->ip();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             $this->addError('email', "Too many login attempts. Please try again in {$seconds} seconds.");
+
             return;
         }
 

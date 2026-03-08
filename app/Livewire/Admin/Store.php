@@ -13,7 +13,9 @@ class Store extends Component
     use WithPagination;
 
     public $search = '';
+
     public $showModal = false;
+
     public $editingId = null;
 
     // Form fields
@@ -72,9 +74,9 @@ class Store extends Component
         // S1: validate code uniqueness (ignore current item when editing)
         $uniqueRule = 'unique:store_items,code';
         if ($this->editingId) {
-            $uniqueRule .= ',' . $this->editingId;
+            $uniqueRule .= ','.$this->editingId;
         }
-        $this->rules['form.code'] = 'required|string|max:100|' . $uniqueRule;
+        $this->rules['form.code'] = 'required|string|max:100|'.$uniqueRule;
 
         $this->validate();
 
@@ -93,7 +95,7 @@ class Store extends Component
 
     public function toggleActive(StoreItem $item)
     {
-        $item->is_active = !$item->is_active;
+        $item->is_active = ! $item->is_active;
         $item->save();
 
         $this->dispatch('notify', message: __('admin.store.status_updated'));
@@ -110,8 +112,8 @@ class Store extends Component
         $query = StoreItem::query();
 
         if ($this->search) {
-            $query->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('code', 'like', '%' . $this->search . '%');
+            $query->where('name', 'like', '%'.$this->search.'%')
+                ->orWhere('code', 'like', '%'.$this->search.'%');
         }
 
         return view('livewire.admin.store', [

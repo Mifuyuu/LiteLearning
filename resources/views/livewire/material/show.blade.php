@@ -30,8 +30,8 @@
                             <div class="flex items-start justify-between gap-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-lg flex items-center justify-center"
-                                        style="background-color: {{ $classroom->theme_color }}15;">
-                                        <i class="fas fa-book-open text-lg" style="color: {{ $classroom->theme_color }}"></i>
+                                        style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}15;">
+                                        <i class="fas fa-book-open text-lg" style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
                                     </div>
                                     <div>
                                         <h1 class="text-xl font-semibold text-gray-900">{{ $material->title }}</h1>

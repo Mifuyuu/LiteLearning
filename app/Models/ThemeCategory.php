@@ -4,15 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
 
-class ClassroomThemeCategory extends Model
+class ThemeCategory extends Model
 {
     protected $fillable = [
         'name',
-        'slug',
-        'description',
-        'preview_color',
+        'color',
         'is_active',
         'sort_order',
         'planet_number',
@@ -25,16 +22,6 @@ class ClassroomThemeCategory extends Model
             'sort_order' => 'integer',
             'planet_number' => 'integer',
         ];
-    }
-
-    protected static function booted(): void
-    {
-        static::creating(function (ClassroomThemeCategory $category) {
-            if (empty($category->slug)) {
-                $base = 'planet-' . $category->planet_number;
-                $category->slug = $base;
-            }
-        });
     }
 
     public function classrooms(): HasMany

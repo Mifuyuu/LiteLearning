@@ -43,7 +43,7 @@ class Store extends Component
         $user = Auth::user();
         $storeItems = StoreItem::where('is_active', true)->get();
         $ownedItemIds = $user->storeItems()->pluck('store_items.id')->toArray();
-        
+
         return view('livewire.student.store', [
             'storeItems' => $storeItems,
             'ownedItemIds' => $ownedItemIds,

@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Pivots\ClassroomUserPivot;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Str;
-use App\Models\Pivots\ClassroomUserPivot;
 
 class Classroom extends Model
 {
@@ -21,11 +20,8 @@ class Classroom extends Model
         'name',
         'slug',
         'section',
-        'subject',
         'description',
         'code',
-        'cover_image',
-        'theme_color',
         'theme_category_id',
         'is_archived',
     ];
@@ -61,7 +57,7 @@ class Classroom extends Model
     {
         while (true) {
             $code = strtoupper(Str::random(6));
-            if (!self::where('code', $code)->exists()) {
+            if (! self::where('code', $code)->exists()) {
                 return $code;
             }
             // If we somehow get here after the DB unique index fires a collision,
@@ -77,7 +73,7 @@ class Classroom extends Model
             for ($i = 0; $i < 16; $i++) {
                 $slug .= $chars[random_int(0, strlen($chars) - 1)];
             }
-            if (!self::where('slug', $slug)->exists()) {
+            if (! self::where('slug', $slug)->exists()) {
                 return $slug;
             }
         }
@@ -91,7 +87,7 @@ class Classroom extends Model
 
     public function themeCategory(): BelongsTo
     {
-        return $this->belongsTo(ClassroomThemeCategory::class, 'theme_category_id');
+        return $this->belongsTo(ThemeCategory::class, 'theme_category_id');
     }
 
     public function members(): BelongsToMany
@@ -169,6 +165,4 @@ class Classroom extends Model
     {
         return $this->students()->count();
     }
-
-
 }

@@ -38,11 +38,11 @@ class LeaderboardSeeder extends Seeder
             $user = User::updateOrCreate(
                 ['email' => $data['email']],
                 [
-                    'name'               => $data['name'],
-                    'password'           => Hash::make('password'),
-                    'role'               => 'student',
+                    'name' => $data['name'],
+                    'password' => Hash::make('password'),
+                    'role' => 'student',
                     'setup_completed_at' => now(),
-                    'email_verified_at'  => now(),
+                    'email_verified_at' => now(),
                 ]
             );
 
@@ -50,12 +50,12 @@ class LeaderboardSeeder extends Seeder
                 ['user_id' => $user->id],
                 [
                     'coins' => $data['coins'],
-                    'xp'    => $data['xp'],
+                    'xp' => $data['xp'],
                     'level' => $data['level'],
                 ]
             );
         }
 
-        $this->command->info('✅ Leaderboard dummy data seeded: ' . count($students) . ' students');
+        $this->command->info('✅ Leaderboard dummy data seeded: '.count($students).' students');
     }
 }

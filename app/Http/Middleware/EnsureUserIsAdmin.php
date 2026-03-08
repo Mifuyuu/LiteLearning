@@ -15,7 +15,7 @@ class EnsureUserIsAdmin
         /** @var User|null $user */
         $user = Auth::user();
 
-        if (!$user || !$user->isAdmin()) {
+        if (! $user || ! $user->isAdmin()) {
             abort(403, 'Only administrators can access this resource.');
         }
 

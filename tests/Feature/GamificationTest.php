@@ -2,13 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\GamificationException;
 use App\Models\Achievement;
-use App\Models\Classroom;
 use App\Models\StoreItem;
 use App\Models\User;
-use App\Models\UserGamification;
 use App\Services\GamificationService;
-use App\Exceptions\GamificationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,6 +15,7 @@ class GamificationTest extends TestCase
     use RefreshDatabase;
 
     private GamificationService $svc;
+
     private User $student;
 
     protected function setUp(): void
@@ -25,7 +24,7 @@ class GamificationTest extends TestCase
         $this->svc = app(GamificationService::class);
 
         $this->student = User::factory()->create([
-            'role'               => 'student',
+            'role' => 'student',
             'setup_completed_at' => now(),
         ]);
     }
@@ -91,11 +90,11 @@ class GamificationTest extends TestCase
     public function test_achievement_is_only_unlocked_once(): void
     {
         Achievement::create([
-            'code'       => 'first_test',
-            'name'       => 'First Test',
-            'coin_reward'=> 0,
-            'xp_reward'  => 0,
-            'is_active'  => true,
+            'code' => 'first_test',
+            'name' => 'First Test',
+            'coin_reward' => 0,
+            'xp_reward' => 0,
+            'is_active' => true,
         ]);
 
         $this->svc->unlockAchievement($this->student, 'first_test');
@@ -113,11 +112,11 @@ class GamificationTest extends TestCase
         $this->svc->awardCoins($this->student, 100, 'test');
 
         $item = StoreItem::create([
-            'code'      => 'frame-gold',
-            'name'      => 'Test Frame',
-            'type'      => 'avatar_frame',
-            'value'     => 'frame-gold',
-            'price'     => 50,
+            'code' => 'frame-gold',
+            'name' => 'Test Frame',
+            'type' => 'avatar_frame',
+            'value' => 'frame-gold',
+            'price' => 50,
             'is_active' => true,
         ]);
 
@@ -134,11 +133,11 @@ class GamificationTest extends TestCase
     public function test_purchase_fails_with_insufficient_coins(): void
     {
         $item = StoreItem::create([
-            'code'      => 'frame-diamond',
-            'name'      => 'Expensive Frame',
-            'type'      => 'avatar_frame',
-            'value'     => 'frame-diamond',
-            'price'     => 500,
+            'code' => 'frame-diamond',
+            'name' => 'Expensive Frame',
+            'type' => 'avatar_frame',
+            'value' => 'frame-diamond',
+            'price' => 500,
             'is_active' => true,
         ]);
 
@@ -152,11 +151,11 @@ class GamificationTest extends TestCase
         $this->svc->awardCoins($this->student, 200, 'test');
 
         $item = StoreItem::create([
-            'code'      => 'color-red',
-            'name'      => 'Color',
-            'type'      => 'name_color',
-            'value'     => '#ff0000',
-            'price'     => 50,
+            'code' => 'color-red',
+            'name' => 'Color',
+            'type' => 'name_color',
+            'value' => '#ff0000',
+            'price' => 50,
             'is_active' => true,
         ]);
 

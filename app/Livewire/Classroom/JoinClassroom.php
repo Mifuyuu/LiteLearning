@@ -11,6 +11,7 @@ use Livewire\Component;
 class JoinClassroom extends Component
 {
     public string $code = '';
+
     public bool $showModal = false;
 
     protected $rules = [
@@ -27,9 +28,10 @@ class JoinClassroom extends Component
     public function join()
     {
         // S7: rate limit classroom join attempts
-        $key = 'join-classroom:' . auth()->id();
+        $key = 'join-classroom:'.auth()->id();
         if (cache()->has($key) && cache()->get($key) >= 5) {
             $this->addError('code', __('Too many attempts. Please wait a minute.'));
+
             return;
         }
         cache()->increment($key);
@@ -39,8 +41,9 @@ class JoinClassroom extends Component
 
         $classroom = Classroom::where('code', strtoupper($this->code))->first();
 
-        if (!$classroom) {
+        if (! $classroom) {
             $this->addError('code', __('No classroom found with this code.'));
+
             return;
         }
 
@@ -49,11 +52,13 @@ class JoinClassroom extends Component
 
         if ($classroom->isOwnedBy($user)) {
             $this->addError('code', __('You are the teacher of this classroom.'));
+
             return;
         }
 
         if ($classroom->hasMember($user)) {
             $this->addError('code', __('You are already a member of this classroom.'));
+
             return;
         }
 

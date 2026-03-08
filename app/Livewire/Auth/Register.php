@@ -17,21 +17,26 @@ class Register extends Component
 {
     // Step 1 — registration form
     public string $name = '';
+
     public string $email = '';
+
     public string $password = '';
+
     public string $password_confirmation = '';
 
     // Step 2 — OTP verification
     public string $otp = '';
+
     public bool $otpSent = false;
+
     public int $resendCooldown = 0;
 
     public function register(): void
     {
         $this->validate([
-            'name'                  => 'required|string|max:255',
-            'email'                 => 'required|email|unique:users,email',
-            'password'              => 'required|min:8|confirmed',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
             'password_confirmation' => 'required',
         ]);
 
@@ -40,11 +45,12 @@ class Register extends Component
 
     public function sendOtp(): void
     {
-        $throttleKey = 'otp-resend:' . $this->email;
+        $throttleKey = 'otp-resend:'.$this->email;
 
         if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             $this->addError('otp', __('ส่งรหัสบ่อยเกินไป กรุณารอ :seconds วินาที', ['seconds' => $seconds]));
+
             return;
         }
 
@@ -55,11 +61,11 @@ class Register extends Component
         EmailOtpVerification::where('email', $this->email)->delete();
 
         EmailOtpVerification::create([
-            'email'     => $this->email,
-            'otp'       => Hash::make($code),
+            'email' => $this->email,
+            'otp' => Hash::make($code),
             'user_data' => [
-                'name'   => $this->name,
-                'email'  => $this->email,
+                'name' => $this->name,
+                'email' => $this->email,
                 'password' => Hash::make($this->password),
             ],
             'expires_at' => now()->addMinutes(10),
@@ -79,11 +85,12 @@ class Register extends Component
             'otp' => 'required|digits:6',
         ]);
 
-        $throttleKey = 'otp-verify:' . $this->email;
+        $throttleKey = 'otp-verify:'.$this->email;
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             $this->addError('otp', __('ลองผิดบ่อยเกินไป กรุณารอ :seconds วินาที', ['seconds' => $seconds]));
+
             return;
         }
 
@@ -92,12 +99,14 @@ class Register extends Component
         if (! $record || $record->isExpired()) {
             $this->addError('otp', __('รหัสหมดอายุแล้ว กรุณาขอรหัสใหม่'));
             $this->otpSent = false;
+
             return;
         }
 
         if (! Hash::check($this->otp, $record->otp)) {
             RateLimiter::hit($throttleKey, 300);
             $this->addError('otp', __('รหัสไม่ถูกต้อง'));
+
             return;
         }
 
@@ -107,11 +116,11 @@ class Register extends Component
         $record->delete();
 
         $user = User::create([
-            'name'              => $userData['name'],
-            'email'             => $userData['email'],
-            'password'          => $userData['password'],
-            'role'              => 'student',
-            'locale'            => session('locale', 'th'),
+            'name' => $userData['name'],
+            'email' => $userData['email'],
+            'password' => $userData['password'],
+            'role' => 'student',
+            'locale' => session('locale', 'th'),
             'email_verified_at' => now(),
         ]);
 

@@ -48,7 +48,7 @@
                     $planetNum = $tc
                         ? str_pad($tc->planet_number, 2, '0', STR_PAD_LEFT)
                         : str_pad(($index % 21) + 1, 2, '0', STR_PAD_LEFT);
-                    $color = $tc ? $tc->preview_color : ($classroom->theme_color ?? '#8B5CF6');
+                    $color = $tc?->color ?? '#8B5CF6';
                 @endphp
 
                 {{-- ── Card wrapper — extra top padding so planet has room to overflow ── --}}
@@ -100,16 +100,6 @@
                                 <span class="text-xs text-gray-500 truncate">{{ $classroom->teacher->name }}</span>
                             </div>
 
-                            {{-- Subject --}}
-                            @if($classroom->subject)
-                                <div class="flex items-center gap-2 mb-3">
-                                    <div class="w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
-                                        style="background: {{ $color }}18;">
-                                        <i class="fas fa-book-open text-[10px]" style="color: {{ $color }};"></i>
-                                    </div>
-                                    <span class="text-xs text-gray-500 truncate">{{ $classroom->subject }}</span>
-                                </div>
-                            @endif
 
                             {{-- Stats --}}
                             <div class="grid grid-cols-2 gap-2 mt-1">

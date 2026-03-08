@@ -55,7 +55,7 @@ class ProfileUploadTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
         ]);
-        
+
         $user->refresh();
         $this->assertNotNull($user->cover_image);
         $this->assertStringContainsString('covers/', $user->cover_image);

@@ -15,7 +15,7 @@ class EnsureUserHasCompletedSetup
         /** @var User|null $user */
         $user = Auth::user();
 
-        if ($user && $user->needsSetup() && !$request->routeIs('setup')) {
+        if ($user && $user->needsSetup() && ! $request->routeIs('setup')) {
             return redirect()->route('setup');
         }
 

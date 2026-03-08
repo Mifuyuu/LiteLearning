@@ -2,16 +2,13 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-
-use Illuminate\Support\Str;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 class Assignment extends Model
 {
@@ -36,12 +33,12 @@ class Assignment extends Model
     protected function casts(): array
     {
         return [
-            'attachments'           => 'array',
-            'due_date'              => 'datetime',
+            'attachments' => 'array',
+            'due_date' => 'datetime',
             'allow_late_submission' => 'boolean',
-            'exp_reward'            => 'integer',
-            'coin_reward'           => 'integer',
-            'max_score'             => 'integer',
+            'exp_reward' => 'integer',
+            'coin_reward' => 'integer',
+            'max_score' => 'integer',
         ];
     }
 
@@ -145,6 +142,7 @@ class Assignment extends Model
     {
         return $this->type === 'project';
     }
+
     public function isMaterial(): bool
     {
         return $this->type === 'material';
@@ -158,12 +156,12 @@ class Assignment extends Model
         return match ($this->type) {
             'announcement' => 'fa-bullhorn',
             'attendance' => 'fa-clipboard-check',
-            'file'       => 'fa-cloud-arrow-up',
-            'question'   => 'fa-pen-to-square',
-            'topic'      => 'fa-layer-group',
-            'material'   => 'fa-book-open',
-            'project'    => 'fa-diagram-project',
-            default      => 'fa-file-alt',
+            'file' => 'fa-cloud-arrow-up',
+            'question' => 'fa-pen-to-square',
+            'topic' => 'fa-layer-group',
+            'material' => 'fa-book-open',
+            'project' => 'fa-diagram-project',
+            default => 'fa-file-alt',
         };
     }
 
@@ -175,13 +173,13 @@ class Assignment extends Model
     {
         return match ($this->type) {
             'attendance' => ['bg-amber-100', 'text-amber-700'],
-            'file'       => ['bg-blue-100', 'text-blue-700'],
-            'question'   => ['bg-green-100', 'text-green-700'],
-            'topic'      => ['bg-cyan-100', 'text-cyan-700'],
-            'material'   => ['bg-slate-100', 'text-slate-700'],
+            'file' => ['bg-blue-100', 'text-blue-700'],
+            'question' => ['bg-green-100', 'text-green-700'],
+            'topic' => ['bg-cyan-100', 'text-cyan-700'],
+            'material' => ['bg-slate-100', 'text-slate-700'],
             'announcement' => ['bg-orange-100', 'text-orange-700'],
-            'project'    => ['bg-rose-100', 'text-rose-700'],
-            default      => ['bg-gray-100', 'text-gray-700'],
+            'project' => ['bg-rose-100', 'text-rose-700'],
+            default => ['bg-gray-100', 'text-gray-700'],
         };
     }
 
@@ -192,13 +190,13 @@ class Assignment extends Model
     {
         return match ($this->type) {
             'attendance' => __('Attendance'),
-            'file'       => __('File Upload'),
-            'question'   => __('Question'),
-            'topic'      => __('Topic'),
-            'material'   => __('Material'),
+            'file' => __('File Upload'),
+            'question' => __('Question'),
+            'topic' => __('Topic'),
+            'material' => __('Material'),
             'announcement' => __('Announcement'),
-            'project'    => __('Project'),
-            default      => __(ucfirst($this->type)),
+            'project' => __('Project'),
+            default => __(ucfirst($this->type)),
         };
     }
 
@@ -217,7 +215,7 @@ class Assignment extends Model
      */
     public function overdueDescription(): ?string
     {
-        if (!$this->isOverdue()) {
+        if (! $this->isOverdue()) {
             return null;
         }
 
@@ -225,14 +223,14 @@ class Assignment extends Model
 
         if ($diff->days >= 1) {
             return __('Overdue by :days days :hours hours', [
-                'days'  => $diff->days,
+                'days' => $diff->days,
                 'hours' => $diff->h,
             ]);
         }
 
         if ($diff->h >= 1) {
             return __('Overdue by :hours hours :minutes minutes', [
-                'hours'   => $diff->h,
+                'hours' => $diff->h,
                 'minutes' => $diff->i,
             ]);
         }
@@ -255,7 +253,7 @@ class Assignment extends Model
      */
     public function canAcceptSubmission(): bool
     {
-        if (!$this->isOverdue()) {
+        if (! $this->isOverdue()) {
             return true;
         }
 
@@ -267,7 +265,7 @@ class Assignment extends Model
      */
     public function requiresSubmission(): bool
     {
-        return !in_array($this->type, ['material', 'announcement', 'topic']);
+        return ! in_array($this->type, ['material', 'announcement', 'topic']);
     }
 
     // ──────────────────────────────────────────────

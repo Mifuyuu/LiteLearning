@@ -1,21 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SidebarClassroomPreferenceController;
+use App\Livewire\Assignment\Create as AssignmentCreate;
+use App\Livewire\Assignment\Grade;
+use App\Livewire\Assignment\Show as AssignmentShow;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\Setup;
-use App\Livewire\Dashboard;
 use App\Livewire\Classroom\Index as ClassroomIndex;
-use App\Livewire\Classroom\Show as ClassroomShow;
 use App\Livewire\Classroom\People;
-use App\Livewire\Assignment\Create as AssignmentCreate;
-use App\Livewire\Assignment\Show as AssignmentShow;
-use App\Livewire\Assignment\Grade;
+use App\Livewire\Classroom\Show as ClassroomShow;
+use App\Livewire\Dashboard;
 use App\Livewire\Material\Create as MaterialCreate;
 use App\Livewire\Material\Show as MaterialShow;
 use App\Livewire\Settings;
-use App\Http\Controllers\SidebarClassroomPreferenceController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 // Landing page
 Route::get('/', function () {
@@ -27,6 +27,7 @@ Route::get('/', function () {
             ? redirect()->route('setup')
             : ($user->isAdmin() ? redirect()->route('admin.dashboard') : redirect()->route('dashboard'));
     }
+
     return view('welcome');
 })->name('landing');
 
@@ -41,9 +42,9 @@ Route::post('/logout', function () {
     Auth::logout();
     session()->invalidate();
     session()->regenerateToken();
+
     return redirect()->route('login');
 })->name('logout');
-
 
 // ─── Authenticated routes ──────────────────────────────────────────────────────
 Route::middleware('auth')->group(function () {

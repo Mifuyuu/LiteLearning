@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Classroom;
 
-use App\Models\Classroom;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -12,6 +11,7 @@ use Livewire\Component;
 class Index extends Component
 {
     public string $search = '';
+
     public string $filter = 'all';
 
     public function render()
@@ -22,24 +22,24 @@ class Index extends Component
         if ($this->filter === 'teaching') {
             $classrooms = $user->ownedClassrooms()
                 ->where('is_archived', false)
-                ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+                ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->with('teacher', 'themeCategory')
                 ->get();
         } elseif ($this->filter === 'enrolled') {
             $classrooms = $user->enrolledClassrooms()
                 ->where('is_archived', false)
-                ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+                ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->with('teacher', 'themeCategory')
                 ->get();
         } elseif ($this->filter === 'archived') {
             $owned = $user->ownedClassrooms()
                 ->where('is_archived', true)
-                ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+                ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->with('teacher', 'themeCategory')
                 ->get();
             $enrolled = $user->enrolledClassrooms()
                 ->where('is_archived', true)
-                ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+                ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->with('teacher', 'themeCategory')
                 ->get();
             $classrooms = $owned->merge($enrolled)->unique('id')->values();
@@ -48,13 +48,13 @@ class Index extends Component
             if ($user->isTeacher() || $user->isAdmin()) {
                 $classrooms = $user->ownedClassrooms()
                     ->where('is_archived', false)
-                    ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+                    ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                     ->with('teacher', 'themeCategory')
                     ->get();
             }
             $enrolled = $user->enrolledClassrooms()
                 ->where('is_archived', false)
-                ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+                ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->with('teacher', 'themeCategory')
                 ->get();
             $classrooms = $classrooms->merge($enrolled)->unique('id')->values();

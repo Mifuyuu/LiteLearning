@@ -17,8 +17,9 @@ class Setup extends Component
         /** @var User $user */
         $user = Auth::user();
 
-        if (!$user->needsSetup()) {
+        if (! $user->needsSetup()) {
             $this->redirectRoute('dashboard', navigate: true);
+
             return;
         }
 

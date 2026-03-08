@@ -15,7 +15,7 @@ class EnsureUserIsTeacher
         /** @var User|null $user */
         $user = Auth::user();
 
-        if (!$user || (!$user->isTeacher() && !$user->isAdmin())) {
+        if (! $user || (! $user->isTeacher() && ! $user->isAdmin())) {
             abort(403, 'Only teachers can access this resource.');
         }
 

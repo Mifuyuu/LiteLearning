@@ -14,14 +14,16 @@ class People extends Component
 {
     #[Locked]
     public Classroom $classroom;
+
     public string $inviteEmail = '';
+
     public string $inviteCoTeacherEmail = '';
 
     public function mount(Classroom $classroom)
     {
         /** @var User $user */
         $user = Auth::user();
-        if (!$classroom->hasAccess($user)) {
+        if (! $classroom->hasAccess($user)) {
             abort(403);
         }
 
@@ -32,7 +34,7 @@ class People extends Component
     {
         /** @var User $user */
         $user = Auth::user();
-        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
+        if (! $this->classroom->isOwnedBy($user) && ! $user->isAdmin()) {
             abort(403);
         }
 
@@ -40,24 +42,28 @@ class People extends Component
 
         $target = User::where('email', $this->inviteCoTeacherEmail)->first();
 
-        if (!$target) {
+        if (! $target) {
             $this->addError('inviteCoTeacherEmail', __('ไม่พบผู้ใช้งานนี้ในระบบ'));
+
             return;
         }
 
         if ($this->classroom->isOwnedBy($target)) {
             $this->addError('inviteCoTeacherEmail', __('ผู้ใช้นี้เป็นเจ้าของห้องอยู่แล้ว'));
+
             return;
         }
 
-        if (!$target->isTeacher() && !$target->isAdmin()) {
+        if (! $target->isTeacher() && ! $target->isAdmin()) {
             $this->addError('inviteCoTeacherEmail', __('สามารถเพิ่ม Co-Teacher ได้เฉพาะบัญชีอาจารย์เท่านั้น'));
+
             return;
         }
 
         // If already a co-teacher, skip
         if ($this->classroom->isCoTeacher($target)) {
             $this->addError('inviteCoTeacherEmail', __('ผู้ใช้นี้เป็น Co-Teacher อยู่แล้ว'));
+
             return;
         }
 
@@ -77,7 +83,7 @@ class People extends Component
     {
         /** @var User $user */
         $user = Auth::user();
-        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
+        if (! $this->classroom->isOwnedBy($user) && ! $user->isAdmin()) {
             abort(403);
         }
 
@@ -90,7 +96,7 @@ class People extends Component
     {
         /** @var User $user */
         $user = Auth::user();
-        if (!$this->classroom->canManageClassroom($user)) {
+        if (! $this->classroom->canManageClassroom($user)) {
             abort(403);
         }
 
@@ -109,7 +115,7 @@ class People extends Component
     {
         /** @var User $user */
         $user = Auth::user();
-        if (!$this->classroom->isOwnedBy($user) && !$user->isAdmin()) {
+        if (! $this->classroom->isOwnedBy($user) && ! $user->isAdmin()) {
             abort(403);
         }
 

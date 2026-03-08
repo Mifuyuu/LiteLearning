@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Classroom;
 
-use App\Models\Classroom;
 use App\Models\Announcement;
+use App\Models\Classroom;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -16,29 +16,37 @@ class Show extends Component
 {
     #[Locked]
     public Classroom $classroom;
+
     #[Url(as: 'tab', except: 'stream')]
     public string $activeTab = 'stream';
+
     public string $name = '';
+
     public string $section = '';
+
     public string $description = '';
-    public string $theme_color = '#4F46E5';
+
+    public ?int $theme_category_id = null;
+
     public string $deleteConfirm = '';
+
     public bool $showDeleteAnnouncementModal = false;
+
     public ?int $deleteAnnouncementId = null;
 
     public function mount(Classroom $classroom)
     {
         /** @var User $user */
         $user = Auth::user();
-        if (!$classroom->hasAccess($user)) {
+        if (! $classroom->hasAccess($user)) {
             abort(403);
         }
 
         $this->classroom = $classroom;
-        $this->name        = $classroom->name;
-        $this->section     = $classroom->section ?? '';
+        $this->name = $classroom->name;
+        $this->section = $classroom->section ?? '';
         $this->description = $classroom->description ?? '';
-        $this->theme_color = $classroom->theme_color;
+        $this->theme_category_id = $classroom->theme_category_id;
 
         // Fix #3: eager-load all relationships once in mount() instead of on every render()
         $this->loadClassroomRelations();
@@ -66,7 +74,7 @@ class Show extends Component
 
         // Load assignments with submissions and users — filter for students
         $assignmentsQuery = $this->classroom->assignments()->with(['user', 'submissions']);
-        if (!$user->isAdmin() && !$this->classroom->isOwnedBy($user)) {
+        if (! $user->isAdmin() && ! $this->classroom->isOwnedBy($user)) {
             $assignmentsQuery->where('status', 'published');
         }
         $assignments = $assignmentsQuery->latest()->get();
@@ -84,7 +92,7 @@ class Show extends Component
             $allowedTabs[] = 'settings';
         }
 
-        if (!in_array($tab, $allowedTabs, true)) {
+        if (! in_array($tab, $allowedTabs, true)) {
             $tab = 'stream';
         }
 
@@ -95,37 +103,37 @@ class Show extends Component
     {
         /** @var User $user */
         $user = Auth::user();
+
         return $this->classroom->canManageClassroom($user);
     }
 
     public function saveSettings()
     {
-        if (!$this->canManageClassroom()) {
+        if (! $this->canManageClassroom()) {
             abort(403);
         }
 
         $this->validate([
-            'name'        => 'required|string|max:255',
-            'section'     => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'section' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:2000',
-            'theme_color' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'theme_category_id' => 'nullable|integer|exists:theme_categories,id',
         ]);
 
         $this->classroom->update([
-            'name'        => $this->name,
-            'section'     => $this->section,
+            'name' => $this->name,
+            'section' => $this->section,
             'description' => $this->description,
-            'theme_color' => $this->theme_color,
+            'theme_category_id' => $this->theme_category_id,
         ]);
 
         $this->classroom->refresh();
 
         $this->dispatch('classroom-updated', [
-            'id'    => $this->classroom->id,
-            'name'  => $this->name,
-            'color' => $this->theme_color,
+            'id' => $this->classroom->id,
+            'name' => $this->name,
+            'color' => $this->classroom->themeCategory?->color ?? '#8B5CF6',
         ]);
-
         session()->flash('message', __('Classroom settings saved successfully.'));
     }
 
@@ -135,7 +143,7 @@ class Show extends Component
         $user = Auth::user();
         abort_unless($this->classroom->isOwnedBy($user), 403);
 
-        $this->classroom->is_archived = !$this->classroom->is_archived;
+        $this->classroom->is_archived = ! $this->classroom->is_archived;
         $this->classroom->save();
 
         session()->flash('message', $this->classroom->is_archived ? __('Classroom archived.') : __('Classroom restored.'));
@@ -149,6 +157,7 @@ class Show extends Component
 
         if (trim($this->deleteConfirm) !== $this->classroom->name) {
             $this->addError('deleteConfirm', __('Please type the classroom name exactly to confirm deletion.'));
+
             return;
         }
 
@@ -170,7 +179,7 @@ class Show extends Component
     {
         $announcementId = $id ?? $this->deleteAnnouncementId;
 
-        if (!$announcementId) {
+        if (! $announcementId) {
             return;
         }
 
@@ -181,7 +190,7 @@ class Show extends Component
 
         /** @var User $user */
         $user = Auth::user();
-        if ($announcement->user_id !== $user->id && !$this->classroom->canManageClassroom($user)) {
+        if ($announcement->user_id !== $user->id && ! $this->classroom->canManageClassroom($user)) {
             abort(403);
         }
 
@@ -195,7 +204,7 @@ class Show extends Component
     public function deleteAssignment(int $id)
     {
         // Fix #12: removed unused $user variable
-        if (!$this->canManageClassroom()) {
+        if (! $this->canManageClassroom()) {
             abort(403);
         }
 
@@ -208,6 +217,8 @@ class Show extends Component
     public function render()
     {
         // Fix #3: no relationship loading here — all done in mount() and targeted refreshes
-        return view('livewire.classroom.show');
+        $themes = \App\Models\ThemeCategory::active()->orderBy('sort_order')->get();
+
+        return view('livewire.classroom.show', compact('themes'));
     }
 }

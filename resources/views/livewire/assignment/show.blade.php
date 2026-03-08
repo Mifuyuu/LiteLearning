@@ -29,7 +29,7 @@
                         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                             <div class="flex items-start min-w-0">
                                 <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0"
-                                    style="background-color: {{ $classroom->theme_color }}20; color: {{ $classroom->theme_color }}">
+                                    style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20; color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
                                     <i class="fas {{ $assignment->typeIcon() }} text-base sm:text-lg"></i>
                                 </div>
                                 <div class="ml-3 sm:ml-4 min-w-0">
@@ -37,7 +37,7 @@
                                         <h1 class="text-lg sm:text-xl font-bold text-gray-900 wrap-break-word">
                                             {{ $assignment->title }}</h1>
                                         <span class="px-2.5 py-0.5 rounded-full text-xs font-medium shrink-0"
-                                            style="background-color: {{ $classroom->theme_color }}20; color: {{ $classroom->theme_color }}">
+                                            style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20; color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
                                             {{ $assignment->typeLabel() }}
                                         </span>
                                     </div>
@@ -282,12 +282,12 @@
                         @endphp
                         <div class="flex items-center gap-3 bg-white px-5 py-3.5 rounded-xl border border-gray-200">
                             <div class="w-9 h-9 rounded-full flex items-center justify-center"
-                                style="background-color: {{ $classroom->theme_color }}20; color: {{ $classroom->theme_color }}">
+                                style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20; color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
                                 <i class="fas {{ $current['icon'] }}"></i>
                             </div>
                             <div>
                                 <p class="text-xs text-gray-400 leading-none mb-0.5">{{ __('Type') }}</p>
-                                <p class="text-sm font-semibold" style="color: {{ $classroom->theme_color }}">
+                                <p class="text-sm font-semibold" style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
                                     {{ __($current['label']) }}</p>
                             </div>
                         </div>

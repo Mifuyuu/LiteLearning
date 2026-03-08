@@ -3,7 +3,7 @@
 namespace App\Livewire\Classroom;
 
 use App\Models\Classroom;
-use App\Models\ClassroomThemeCategory;
+use App\Models\ThemeCategory;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -11,27 +11,26 @@ use Livewire\Component;
 class Create extends Component
 {
     public string $name = '';
+
     public string $section = '';
-    public string $subject = '';
+
     public string $description = '';
-    public string $theme_color = '#4F46E5';
+
     public ?int $theme_category_id = null;
+
     public bool $showModal = false;
 
     protected $rules = [
-        'name'               => 'required|string|max:255',
-        'section'            => 'nullable|string|max:255',
-        'subject'            => 'nullable|string|max:255',
-        'description'        => 'nullable|string|max:1000',
-        'theme_color'        => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
-        'theme_category_id'  => 'nullable|integer|exists:classroom_theme_categories,id',
+        'name' => 'required|string|max:255',
+        'section' => 'nullable|string|max:255',
+        'description' => 'nullable|string|max:1000',
+        'theme_category_id' => 'nullable|integer|exists:theme_categories,id',
     ];
 
     public function openModal(): void
     {
         $this->resetValidation();
-        $this->reset(['name', 'section', 'subject', 'description']);
-        $this->theme_color = '#4F46E5';
+        $this->reset(['name', 'section', 'description']);
         $this->theme_category_id = null;
     }
 
@@ -40,19 +39,17 @@ class Create extends Component
         // Only teachers and admins can create classrooms
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        if (!$user->isTeacher() && !$user->isAdmin()) {
+        if (! $user->isTeacher() && ! $user->isAdmin()) {
             abort(403, 'Only teachers can create classrooms.');
         }
 
         $this->validate();
 
         $classroom = Classroom::create([
-            'teacher_id'        => Auth::id(),
-            'name'              => $this->name,
-            'section'           => $this->section,
-            'subject'           => $this->subject,
-            'description'       => $this->description,
-            'theme_color'       => $this->theme_color,
+            'teacher_id' => Auth::id(),
+            'name' => $this->name,
+            'section' => $this->section,
+            'description' => $this->description,
             'theme_category_id' => $this->theme_category_id,
         ]);
 
@@ -66,8 +63,8 @@ class Create extends Component
 
     public function render()
     {
-        $themes = ClassroomThemeCategory::active()->orderBy('sort_order')->get();
+        $themes = ThemeCategory::active()->orderBy('sort_order')->get();
 
         return view('livewire.classroom.create', compact('themes'));
-}
+    }
 }

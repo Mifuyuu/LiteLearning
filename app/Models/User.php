@@ -5,11 +5,11 @@ namespace App\Models;
 use App\Models\Pivots\ClassroomUserPivot;
 use App\Models\Pivots\UserAchievementPivot;
 use App\Models\Pivots\UserStoreItemPivot;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -100,7 +100,6 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps();
     }
 
-
     public function storeItems(): BelongsToMany
     {
         return $this->belongsToMany(StoreItem::class, 'user_store_items')
@@ -147,7 +146,8 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($this->avatar) {
             return \Illuminate\Support\Facades\Storage::url($this->avatar);
         }
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=4F46E5&color=fff';
+
+        return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&background=4F46E5&color=fff';
     }
 
     public function getCoverImageUrlAttribute(): ?string
@@ -166,6 +166,7 @@ class User extends Authenticatable implements MustVerifyEmail
         foreach (array_slice($words, 0, 2) as $word) {
             $initials .= strtoupper(substr($word, 0, 1));
         }
+
         return $initials;
     }
 

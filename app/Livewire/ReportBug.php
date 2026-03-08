@@ -9,8 +9,11 @@ use Livewire\Component;
 class ReportBug extends Component
 {
     public bool $showModal = false;
+
     public string $type = 'bug';
+
     public string $title = '';
+
     public string $message = '';
 
     protected $listeners = ['openReportModal' => 'openModal'];
@@ -30,26 +33,27 @@ class ReportBug extends Component
     public function submit(): void
     {
         // I5: rate limit bug reports (3 per 10 minutes)
-        $key = 'report-bug:' . Auth::id();
+        $key = 'report-bug:'.Auth::id();
         if (cache()->has($key) && cache()->get($key) >= 3) {
             $this->dispatch('notify', message: __('Too many reports. Please wait before submitting again.'));
+
             return;
         }
         cache()->increment($key);
         cache()->put($key, cache()->get($key), 600);
 
         $this->validate([
-            'type'    => 'required|in:bug,suggestion,other',
-            'title'   => 'required|string|max:100',
+            'type' => 'required|in:bug,suggestion,other',
+            'title' => 'required|string|max:100',
             'message' => 'required|string|max:2000',
         ]);
 
         BugReport::create([
             'user_id' => Auth::id(),
-            'type'    => $this->type,
-            'title'   => $this->title,
+            'type' => $this->type,
+            'title' => $this->title,
             'message' => $this->message,
-            'status'  => 'pending',
+            'status' => 'pending',
         ]);
 
         $this->showModal = false;

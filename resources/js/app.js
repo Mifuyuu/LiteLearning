@@ -111,7 +111,7 @@ function updateSidebarList(list, classroom, shouldInclude) {
 		list.appendChild(buildSidebarClassroomItem({
 			...classroom,
 			classroomId: id,
-			themeColor: classroom.themeColor ?? classroom.theme_color,
+			themeColor: classroom.color ?? classroom.themeColor ?? '#8B5CF6',
 		}));
 	}
 

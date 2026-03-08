@@ -49,7 +49,7 @@ class AttendanceSession extends Model
      */
     public function isCodeExpired(): bool
     {
-        if (!$this->code_rotated_at) {
+        if (! $this->code_rotated_at) {
             return true;
         }
 

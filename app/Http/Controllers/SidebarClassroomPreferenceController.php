@@ -30,7 +30,7 @@ class SidebarClassroomPreferenceController extends Controller
 
         $position = 1;
         foreach ($orderedIds as $classroomId) {
-            if (!isset($validSet[$classroomId])) {
+            if (! isset($validSet[$classroomId])) {
                 continue;
             }
 

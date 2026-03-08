@@ -13,10 +13,10 @@ class Achievements extends Component
     public function render()
     {
         $user = Auth::user();
-        
+
         $allAchievements = Achievement::where('is_active', true)->get();
         $unlockedAchievementIds = $user->achievements()->pluck('achievements.id')->toArray();
-        
+
         return view('livewire.student.achievements', [
             'allAchievements' => $allAchievements,
             'unlockedAchievementIds' => $unlockedAchievementIds,

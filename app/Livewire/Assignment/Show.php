@@ -9,9 +9,9 @@ use App\Models\Topic;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Locked;
-use Mews\Purifier\Facades\Purifier;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Mews\Purifier\Facades\Purifier;
 
 class Show extends Component
 {
@@ -19,11 +19,13 @@ class Show extends Component
 
     #[Locked]
     public Classroom $classroom;
+
     #[Locked]
     public Assignment $assignment;
 
     // Student submission
     public ?Submission $userSubmission = null;
+
     public string $submissionContent = '';
 
     // File upload
@@ -31,15 +33,25 @@ class Show extends Component
 
     // Edit mode
     public bool $isEditTab = false;
+
     public string $editTitle = '';
+
     public string $editDescription = '';
+
     public int $editMaxScore = 100;
+
     public int $editExpReward = 0;
+
     public int $editCoinReward = 0;
+
     public ?string $editDueDate = null;
+
     public string $editStatus = 'published';
+
     public string $editType = 'question';
+
     public string $editTopic = '';
+
     public bool $editAllowLateSubmission = true;
 
     // Delete modal
@@ -82,14 +94,14 @@ class Show extends Component
     public function updatedUploadedFiles(): void
     {
         $this->validate([
-            'uploadedFiles.*' => 'file|max:25600|mimes:' . Assignment::allowedSubmissionMimes(),
+            'uploadedFiles.*' => 'file|max:25600|mimes:'.Assignment::allowedSubmissionMimes(),
         ]);
 
         foreach ($this->uploadedFiles as $file) {
-            $path = $file->store('submissions/' . $this->assignment->id, 's3');
+            $path = $file->store('submissions/'.$this->assignment->id, 's3');
 
             // Ensure we have a submission record
-            if (!$this->userSubmission) {
+            if (! $this->userSubmission) {
                 $this->userSubmission = $this->assignment->submissions()->create([
                     'user_id' => auth()->id(),
                     'status' => 'assigned',
@@ -133,12 +145,13 @@ class Show extends Component
         $user = auth()->user();
 
         // Check if submission is allowed
-        if (!$this->assignment->canAcceptSubmission()) {
+        if (! $this->assignment->canAcceptSubmission()) {
             session()->flash('error', __('Submissions closed'));
+
             return;
         }
 
-        if (!$this->userSubmission) {
+        if (! $this->userSubmission) {
             $this->userSubmission = $this->assignment->submissions()->create([
                 'user_id' => $user->id,
                 'status' => 'assigned',
@@ -153,14 +166,14 @@ class Show extends Component
 
         $this->userSubmission->turnIn();
 
-        if (!$wasAlreadyTurnedIn) {
+        if (! $wasAlreadyTurnedIn) {
             app(GamificationService::class)->awardForAssignmentTurnedIn($user, $this->assignment->id);
         }
     }
 
     public function saveDraft(): void
     {
-        if (!$this->userSubmission) {
+        if (! $this->userSubmission) {
             $this->userSubmission = $this->assignment->submissions()->create([
                 'user_id' => auth()->id(),
                 'status' => 'assigned',
@@ -216,8 +229,8 @@ class Show extends Component
         $this->validate([
             'editTitle' => 'required|string|max:50',
             'editDescription' => 'nullable|string',
-            'editMaxScore'  => 'required_unless:editType,material|integer|min:0|max:1000',
-            'editExpReward'  => 'integer|min:0|max:9999',
+            'editMaxScore' => 'required_unless:editType,material|integer|min:0|max:1000',
+            'editExpReward' => 'integer|min:0|max:9999',
             'editCoinReward' => 'integer|min:0|max:9999',
             'editDueDate' => 'nullable|date',
             'editStatus' => 'required|in:draft,published,closed',
@@ -237,9 +250,9 @@ class Show extends Component
         $this->assignment->update([
             'title' => $this->editTitle,
             'description' => $this->editDescription ? Purifier::clean($this->editDescription) : null,
-            'max_score'            => $this->editMaxScore,
-            'exp_reward'           => $this->editExpReward,
-            'coin_reward'          => $this->editCoinReward,
+            'max_score' => $this->editMaxScore,
+            'exp_reward' => $this->editExpReward,
+            'coin_reward' => $this->editCoinReward,
             'due_date' => $this->editDueDate,
             'status' => $this->editStatus,
             'type' => $this->editType,

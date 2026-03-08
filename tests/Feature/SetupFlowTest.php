@@ -40,7 +40,7 @@ class SetupFlowTest extends TestCase
             'id' => $user->id,
             'role' => 'teacher',
         ]);
-        
+
         $user->refresh();
         $this->assertNotNull($user->setup_completed_at);
     }

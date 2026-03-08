@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -13,17 +14,18 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'teacher', 'student'])->default('student');
+            $table->enum('role', ['admin', 'teacher', 'student'])->default('student')->index();
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('setup_completed_at')->nullable();
             $table->string('avatar')->nullable();
+            $table->string('cover_image')->nullable();
             $table->text('bio')->nullable();
+            $table->string('active_name_color')->nullable();
+            $table->string('active_avatar_frame')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->string('locale')->default('en');
-            $table->string('theme')->default('system');
             $table->integer('ui_scale')->default(100);
-            $table->integer('coins')->default(0);
-            $table->integer('xp')->default(0);
-            $table->integer('level')->default(1);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -86,19 +88,27 @@ return new class extends Migration {
             $table->timestamp('failed_at')->useCurrent();
         });
 
+        Schema::create('theme_categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('color', 7)->default('#6B3FBF');
+            $table->boolean('is_active')->default(true);
+            $table->unsignedInteger('sort_order')->default(0);
+            $table->unsignedTinyInteger('planet_number')->default(1);
+            $table->timestamps();
+        });
+
         Schema::create('classrooms', function (Blueprint $table) {
             $table->id();
             $table->foreignId('teacher_id')->constrained('users')->cascadeOnDelete();
             $table->string('name');
             $table->string('section')->nullable();
-            $table->string('subject')->nullable();
             $table->text('description')->nullable();
             $table->string('code')->unique();
-            $table->string('cover_image')->nullable();
-            $table->string('theme_color')->default('#4F46E5');
             $table->boolean('is_archived')->default(false);
             $table->timestamps();
             $table->string('slug')->default('');
+            $table->foreignId('theme_category_id')->nullable()->constrained('theme_categories')->nullOnDelete();
         });
 
         Schema::create('classroom_user', function (Blueprint $table) {
@@ -110,49 +120,75 @@ return new class extends Migration {
             $table->primary(['classroom_id', 'user_id']);
         });
 
-        Schema::create('announcements', function (Blueprint $table) {
+        Schema::create('classroom_sidebar_preferences', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
+            $table->boolean('is_pinned')->default(false);
+            $table->integer('position')->nullable();
+            $table->timestamp('pinned_at')->nullable();
+            $table->timestamps();
+            $table->primary(['user_id', 'classroom_id']);
+            $table->index(['user_id', 'is_pinned', 'position']);
+        });
+
+        Schema::create('classroom_contents', function (Blueprint $table) {
+            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
+            $table->string('contentable_type');
+            $table->unsignedBigInteger('contentable_id');
+            $table->integer('order')->default(0);
+            $table->timestamp('pinned_at')->nullable();
+            $table->timestamps();
+
+            $table->primary(['classroom_id', 'contentable_type', 'contentable_id'], 'classroom_contents_primary');
+            $table->index(['classroom_id', 'order']);
+            $table->index(['contentable_type', 'contentable_id'], 'classroom_contents_contentable_index');
+        });
+
+        Schema::create('topics', function (Blueprint $table) {
             $table->id();
             $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->text('content');
+            $table->string('name');
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
 
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('announcements', function (Blueprint $table) {
             $table->id();
-            $table->morphs('commentable');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('classroom_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('title')->nullable();
             $table->text('content');
             $table->timestamps();
         });
 
         Schema::create('assignments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
+            $table->string('slug', 16)->unique()->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('classroom_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->text('instructions')->nullable();
             $table->integer('max_score')->default(100);
+            $table->unsignedInteger('exp_reward')->default(0);
+            $table->unsignedInteger('coin_reward')->default(0);
             $table->dateTime('due_date')->nullable();
-            $table->enum('status', ['draft', 'published', 'closed'])->default('draft');
-            $table->enum('type', ['attendance', 'file', 'question', 'quiz', 'material'])->default('question');
+            $table->enum('status', ['draft', 'published', 'closed'])->default('draft')->index();
+            $table->string('type')->default('question');
             $table->string('topic')->nullable();
+            $table->boolean('allow_late_submission')->default(true);
             $table->timestamps();
+            $table->index('due_date');
         });
 
-        Schema::create('submissions', function (Blueprint $table) {
+        Schema::create('materials', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('assignment_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->text('content')->nullable();
-            $table->enum('status', ['assigned', 'turned_in', 'graded', 'returned'])->default('assigned');
-            $table->integer('score')->nullable();
-            $table->text('feedback')->nullable();
-            $table->timestamp('turned_in_at')->nullable();
-            $table->timestamp('graded_at')->nullable();
+            $table->foreignId('classroom_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->string('slug', 16)->unique();
+            $table->text('description')->nullable();
+            $table->foreignId('topic_id')->nullable()->constrained('topics')->nullOnDelete();
             $table->timestamps();
-            $table->unique(['assignment_id', 'user_id']);
         });
 
         Schema::create('attachments', function (Blueprint $table) {
@@ -166,34 +202,36 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('quiz_questions', function (Blueprint $table) {
+        Schema::create('submissions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assignment_id')->constrained()->cascadeOnDelete();
-            $table->text('question');
-            $table->enum('type', ['multiple_choice', 'true_false', 'short_answer', 'essay'])->default('multiple_choice');
-            $table->text('options')->nullable();
-            $table->text('correct_answer')->nullable();
-            $table->integer('points')->default(1);
-            $table->integer('order')->default(0);
-            $table->timestamps();
-        });
-
-        Schema::create('quiz_responses', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('quiz_question_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('submission_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->text('answer')->nullable();
-            $table->boolean('is_correct')->nullable();
-            $table->integer('points_earned')->default(0);
+            $table->text('content')->nullable();
+            $table->enum('status', ['assigned', 'turned_in', 'graded', 'returned'])->default('assigned')->index();
+            $table->integer('score')->nullable();
+            $table->text('feedback')->nullable();
+            $table->timestamp('turned_in_at')->nullable();
+            $table->timestamp('graded_at')->nullable();
+            $table->timestamps();
+            $table->unique(['assignment_id', 'user_id']);
+            $table->index('user_id');
+        });
+
+        Schema::create('attendance_sessions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('assignment_id')->constrained()->cascadeOnDelete();
+            $table->string('current_code', 6)->nullable();
+            $table->boolean('is_active')->default(false);
+            $table->dateTime('started_at')->nullable();
+            $table->dateTime('code_rotated_at')->nullable();
             $table->timestamps();
         });
 
-        Schema::create('topics', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
-            $table->integer('order')->default(0);
+            $table->morphs('commentable');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->text('content');
             $table->timestamps();
         });
 
@@ -203,6 +241,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('icon')->nullable();
+            $table->string('badge_image')->nullable();
             $table->integer('coin_reward')->default(0);
             $table->integer('xp_reward')->default(0);
             $table->boolean('is_active')->default(true);
@@ -217,46 +256,94 @@ return new class extends Migration {
             $table->primary(['user_id', 'achievement_id']);
         });
 
+        Schema::create('user_gamifications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
+            $table->integer('coins')->default(0);
+            $table->integer('xp')->default(0);
+            $table->integer('level')->default(1);
+            $table->timestamps();
+        });
+
         Schema::create('coin_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->integer('amount');
             $table->string('type')->default('earn');
             $table->string('source')->nullable();
-            $table->nullableMorphs('reference');
+            $table->string('reference_type')->nullable();
+            $table->unsignedBigInteger('reference_id')->nullable();
             $table->text('metadata')->nullable();
             $table->timestamp('happened_at')->nullable();
             $table->timestamps();
+            $table->index(['reference_type', 'reference_id']);
+            $table->index('user_id');
+            $table->index('type');
+            $table->index(['user_id', 'happened_at']);
         });
 
-        Schema::create('classroom_sidebar_preferences', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
-            $table->boolean('is_pinned')->default(false);
-            $table->integer('position')->nullable();
-            $table->timestamp('pinned_at')->nullable();
+        Schema::create('store_items', function (Blueprint $table) {
+            $table->id();
+            $table->string('code')->unique();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->enum('type', ['name_color', 'avatar_frame']);
+            $table->string('value');
+            $table->integer('price')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
-            $table->primary(['user_id', 'classroom_id']);
-            $table->index(['user_id', 'is_pinned', 'position']);
+        });
+
+        Schema::create('user_store_items', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('store_item_id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
+            $table->primary(['user_id', 'store_item_id']);
+        });
+
+        Schema::create('email_otp_verifications', function (Blueprint $table) {
+            $table->id();
+            $table->string('email')->index();
+            $table->string('otp');
+            $table->json('user_data');
+            $table->timestamp('expires_at');
+            $table->timestamps();
+        });
+
+        Schema::create('bug_reports', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->enum('type', ['bug', 'suggestion', 'other'])->default('bug');
+            $table->string('title');
+            $table->text('message');
+            $table->enum('status', ['pending', 'resolved'])->default('pending');
+            $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('classroom_sidebar_preferences');
+        Schema::dropIfExists('bug_reports');
+        Schema::dropIfExists('email_otp_verifications');
+        Schema::dropIfExists('user_store_items');
+        Schema::dropIfExists('store_items');
         Schema::dropIfExists('coin_transactions');
+        Schema::dropIfExists('user_gamifications');
         Schema::dropIfExists('user_achievements');
         Schema::dropIfExists('achievements');
-        Schema::dropIfExists('topics');
-        Schema::dropIfExists('quiz_responses');
-        Schema::dropIfExists('quiz_questions');
-        Schema::dropIfExists('attachments');
-        Schema::dropIfExists('submissions');
-        Schema::dropIfExists('assignments');
         Schema::dropIfExists('comments');
+        Schema::dropIfExists('attendance_sessions');
+        Schema::dropIfExists('submissions');
+        Schema::dropIfExists('attachments');
+        Schema::dropIfExists('materials');
+        Schema::dropIfExists('assignments');
         Schema::dropIfExists('announcements');
+        Schema::dropIfExists('topics');
+        Schema::dropIfExists('classroom_contents');
+        Schema::dropIfExists('classroom_sidebar_preferences');
         Schema::dropIfExists('classroom_user');
         Schema::dropIfExists('classrooms');
+        Schema::dropIfExists('theme_categories');
         Schema::dropIfExists('failed_jobs');
         Schema::dropIfExists('job_batches');
         Schema::dropIfExists('jobs');

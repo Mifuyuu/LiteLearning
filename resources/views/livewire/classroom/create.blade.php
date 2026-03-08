@@ -38,12 +38,6 @@
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     placeholder="{{ __('e.g., Section A') }}">
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Subject') }}</label>
-                                <input wire:model="subject" type="text"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                    placeholder="{{ __('e.g., Math') }}">
-                            </div>
                         </div>
 
                         <div>
@@ -51,18 +45,6 @@
                             <textarea wire:model="description" rows="3"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                 placeholder="{{ __('Add a description...') }}"></textarea>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Theme Color') }}</label>
-                            <div class="flex flex-wrap gap-2">
-                                @foreach(['#DC2626', '#F97316', '#F59E0B', '#059669', '#0891B2', '#2563EB', '#4F46E5', '#9333EA', '#DB2777', '#475569'] as $color)
-                                    <button type="button" wire:click="$set('theme_color', '{{ $color }}')"
-                                        class="w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 {{ $theme_color === $color ? 'border-gray-900 scale-110' : 'border-transparent' }}"
-                                        style="background-color: {{ $color }}" title="{{ $color }}">
-                                    </button>
-                                @endforeach
-                            </div>
                         </div>
 
                         {{-- Planet / Theme Picker --}}

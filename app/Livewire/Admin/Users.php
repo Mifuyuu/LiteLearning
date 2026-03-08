@@ -13,7 +13,9 @@ class Users extends Component
     use WithPagination;
 
     public $search = '';
+
     public $roleFilter = '';
+
     public $statusFilter = '';
 
     protected $updatesQueryString = [
@@ -32,10 +34,11 @@ class Users extends Component
     {
         if ($user->id === auth()->id()) {
             $this->dispatch('notify', message: __('admin.users.toggle_self_error'));
+
             return;
         }
 
-        $user->is_active = !$user->is_active;
+        $user->is_active = ! $user->is_active;
         $user->save();
 
         $this->dispatch('notify', message: __('admin.users.status_updated'));
@@ -43,13 +46,15 @@ class Users extends Component
 
     public function updateRole(User $user, $newRole)
     {
-        if (!in_array($newRole, ['admin', 'teacher', 'student'], true)) {
+        if (! in_array($newRole, ['admin', 'teacher', 'student'], true)) {
             $this->dispatch('notify', message: __('Invalid role.'));
+
             return;
         }
 
         if ($user->id === auth()->id() && $newRole !== 'admin') {
             $this->dispatch('notify', message: __('admin.users.role_self_error'));
+
             return;
         }
 
@@ -63,6 +68,7 @@ class Users extends Component
     {
         if ($user->id === auth()->id()) {
             $this->dispatch('notify', message: __('admin.users.toggle_self_error'));
+
             return;
         }
 
@@ -76,8 +82,8 @@ class Users extends Component
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%');
+                $q->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('email', 'like', '%'.$this->search.'%');
             });
         }
 

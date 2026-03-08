@@ -47,10 +47,11 @@ class ClassroomSidebarPreference extends Model
      */
     public function save(array $options = []): bool
     {
-        if (!$this->exists) {
+        if (! $this->exists) {
             // INSERT new record
             $this->exists = (bool) static::query()->insert($this->getAttributes());
             $this->syncOriginal();
+
             return $this->exists;
         }
 
@@ -66,6 +67,7 @@ class ClassroomSidebarPreference extends Model
             ->update($dirty);
 
         $this->syncOriginal();
+
         return true;
     }
 }

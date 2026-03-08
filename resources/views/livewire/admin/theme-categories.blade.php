@@ -60,14 +60,10 @@
                                 class="w-10 h-10 object-contain" />
                         </td>
                         <td class="px-6 py-4">
-                            <div class="w-7 h-7 rounded-full border border-gray-200 shadow-sm" style="background: {{ $category->preview_color }};"></div>
+                            <div class="w-7 h-7 rounded-full border border-gray-200 shadow-sm" style="background: {{ $category->color }};"></div>
                         </td>
                         <td class="px-6 py-4">
                             <div class="text-sm font-semibold text-gray-800">{{ $category->name }}</div>
-                            <div class="text-xs text-gray-400 font-mono mt-0.5">{{ $category->slug }}</div>
-                        </td>
-                        <td class="px-6 py-4 hidden md:table-cell">
-                            <span class="text-sm text-gray-500">{{ $category->description ?: '—' }}</span>
                         </td>
                         <td class="px-6 py-4 hidden sm:table-cell">
                             <span class="text-sm text-gray-600">{{ $category->sort_order }}</span>
@@ -139,11 +135,11 @@
             class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
             @click.stop
             x-data="{
-                localColor: $wire.entangle('form.preview_color').defer,
+                localColor: $wire.entangle('form.color').defer,
                 localPlanet: $wire.entangle('form.planet_number').defer,
                 syncColor(val) { this.localColor = val; },
             }"
-            x-init="$watch('$wire.showModal', v => { if (v) { localColor = $wire.form.preview_color; localPlanet = $wire.form.planet_number; } })"
+            x-init="$watch('$wire.showModal', v => { if (v) { localColor = $wire.form.color; localPlanet = $wire.form.planet_number; } })"
         >
             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
                 <h3 class="text-base font-bold text-gray-800">
@@ -163,30 +159,23 @@
                     @error('form.name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
-                {{-- Description --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('คำอธิบาย') }}</label>
-                    <input wire:model="form.description" type="text" placeholder="{{ __('คำอธิบายสั้น ๆ (ไม่บังคับ)') }}"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
-                    @error('form.description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
 
                 {{-- Preview Color + Sort Order --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('สีตัวอย่าง') }} <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('สี') }} <span class="text-red-500">*</span></label>
                         <div class="flex items-center gap-2">
                             {{-- Alpine local state — ไม่ fire Livewire request ขณะลากสี --}}
                             <input type="color"
                                 x-model="localColor"
-                                @change="$wire.set('form.preview_color', localColor)"
+                                @change="$wire.set('form.color', localColor)"
                                 class="w-10 h-10 rounded-lg border border-gray-300 cursor-pointer p-0.5" />
                             <input type="text" maxlength="7" placeholder="#6B3FBF"
                                 x-model="localColor"
-                                @blur="$wire.set('form.preview_color', localColor)"
+                                @blur="$wire.set('form.color', localColor)"
                                 class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono" />
                         </div>
-                        @error('form.preview_color') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        @error('form.color') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('ลำดับ') }}</label>

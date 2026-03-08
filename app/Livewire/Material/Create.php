@@ -6,12 +6,11 @@ use App\Models\Classroom;
 use App\Models\Material;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Mews\Purifier\Facades\Purifier;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Mews\Purifier\Facades\Purifier;
 
 #[Layout('layouts.app')]
 class Create extends Component
@@ -108,10 +107,10 @@ class Create extends Component
                 's3'
             );
             $material->attachments()->create([
-                'file_name'   => $uploaded['name'],
-                'file_path'   => $path,
-                'file_type'   => $uploaded['mime'],
-                'file_size'   => $uploaded['size'],
+                'file_name' => $uploaded['name'],
+                'file_path' => $path,
+                'file_type' => $uploaded['mime'],
+                'file_size' => $uploaded['size'],
                 'uploaded_by' => $user->id,
             ]);
         }
@@ -124,6 +123,7 @@ class Create extends Component
         );
 
     }
+
     public function render(): \Illuminate\View\View
     {
         return view('livewire.material.create');

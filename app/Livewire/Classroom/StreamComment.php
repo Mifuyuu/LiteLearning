@@ -10,7 +10,9 @@ use Livewire\Component;
 class StreamComment extends Component
 {
     public int $announcementId = 0;
+
     public string $commentText = '';
+
     public bool $showComments = false;
 
     protected $rules = [
@@ -19,7 +21,7 @@ class StreamComment extends Component
 
     public function toggleComments()
     {
-        $this->showComments = !$this->showComments;
+        $this->showComments = ! $this->showComments;
     }
 
     public function addComment()
@@ -32,7 +34,7 @@ class StreamComment extends Component
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        if (!$classroom->hasAccess($user)) {
+        if (! $classroom->hasAccess($user)) {
             abort(403);
         }
 

@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
 use App\Models\Achievement;
 use App\Models\StoreItem;
+use Illuminate\Database\Seeder;
 
 class GamificationFeaturesSeeder extends Seeder
 {
@@ -30,7 +28,7 @@ class GamificationFeaturesSeeder extends Seeder
             ['code' => 'color_blue', 'name' => 'Ocean Blue', 'description' => 'A deep blue name color.', 'type' => 'name_color', 'value' => 'text-blue-500', 'price' => 0],
             ['code' => 'color_gold', 'name' => 'Golden Legend', 'description' => 'A prestige gold name color.', 'type' => 'name_color', 'value' => 'text-amber-500 font-bold', 'price' => 0],
             ['code' => 'color_purple', 'name' => 'Royal Purple', 'description' => 'A rich purple name color.', 'type' => 'name_color', 'value' => 'text-purple-600', 'price' => 0],
-            
+
             // Avatar Frames (Free for testing)
             ['code' => 'frame_01', 'name' => 'Cyber Gear', 'description' => 'A futuristic gear frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_01.svg', 'price' => 0],
             ['code' => 'frame_02', 'name' => 'Mystic Aura', 'description' => 'A glowing mystical border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_02.svg', 'price' => 0],

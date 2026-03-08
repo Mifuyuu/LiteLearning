@@ -13,6 +13,7 @@ class Settings extends Component
     const NAME_MAX_LENGTH = 50;
 
     public int $uiScale = 100;
+
     public string $name = '';
 
     public function mount(): void
@@ -26,7 +27,7 @@ class Settings extends Component
     public function setUiScale(string|int $value): void
     {
         $scale = (int) $value;
-        if (!in_array($scale, [90, 100, 110, 125], true)) {
+        if (! in_array($scale, [90, 100, 110, 125], true)) {
             return;
         }
 
@@ -44,7 +45,7 @@ class Settings extends Component
     public function updateName(): void
     {
         $this->validate([
-            'name' => ['required', 'string', 'max:' . self::NAME_MAX_LENGTH],
+            'name' => ['required', 'string', 'max:'.self::NAME_MAX_LENGTH],
         ]);
 
         /** @var User $user */

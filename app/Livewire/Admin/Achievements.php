@@ -11,11 +11,14 @@ use Livewire\WithPagination;
 #[Layout('layouts.app')]
 class Achievements extends Component
 {
-    use WithPagination, WithFileUploads;
+    use WithFileUploads, WithPagination;
 
     public string $search = '';
+
     public $badgeImageUpload = null;
+
     public $showModal = false;
+
     public $editingId = null;
 
     public $form = [
@@ -27,6 +30,7 @@ class Achievements extends Component
         'xp_reward' => 100,
         'is_active' => true,
     ];
+
     protected $rules = [
         'form.code' => 'required|string|max:100',
         'form.name' => 'required|string|max:255',
@@ -75,7 +79,7 @@ class Achievements extends Component
         if ($this->badgeImageUpload) {
             $filename = $this->badgeImageUpload->getClientOriginalName();
             $this->badgeImageUpload->storeAs('', $filename, ['disk' => 'achievements']);
-            $this->form['badge_image'] = 'images/achievements/' . $filename;
+            $this->form['badge_image'] = 'images/achievements/'.$filename;
         }
 
         $data = $this->form;
@@ -94,7 +98,7 @@ class Achievements extends Component
 
     public function toggleActive(Achievement $achievement)
     {
-        $achievement->is_active = !$achievement->is_active;
+        $achievement->is_active = ! $achievement->is_active;
         $achievement->save();
 
         $this->dispatch('notify', message: __('admin.achievements.status_updated'));
@@ -111,8 +115,8 @@ class Achievements extends Component
         $query = Achievement::query();
 
         if ($this->search) {
-            $query->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('code', 'like', '%' . $this->search . '%');
+            $query->where('name', 'like', '%'.$this->search.'%')
+                ->orWhere('code', 'like', '%'.$this->search.'%');
         }
 
         return view('livewire.admin.achievements', [

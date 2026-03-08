@@ -2,11 +2,11 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 #[Layout('layouts.app')]
 class Profile extends Component
@@ -14,7 +14,9 @@ class Profile extends Component
     use WithFileUploads;
 
     public $user;
+
     public $avatar;
+
     public $cover_image;
 
     public function mount()
@@ -54,7 +56,7 @@ class Profile extends Component
                 $base64Data = substr($base64Data, strpos($base64Data, ',') + 1);
                 $type = strtolower($type[1]); // jpg, png, gif
 
-                if (!in_array($type, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                if (! in_array($type, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
                     throw new \Exception('Invalid image type.');
                 }
 
@@ -76,7 +78,7 @@ class Profile extends Component
                 }
                 imagedestroy($img);
 
-                $fileName = $folder . '/' . uniqid() . '.' . $type;
+                $fileName = $folder.'/'.uniqid().'.'.$type;
                 $disk = config('filesystems.default') === 's3' ? 's3' : 'public';
 
                 // Delete old file if exists
@@ -85,18 +87,18 @@ class Profile extends Component
                 }
 
                 Storage::disk($disk)->put($fileName, $imageData);
-                
+
                 $user = Auth::user();
                 $user->update([$field => $fileName]);
                 $this->user = $user->fresh();
-                
+
                 $this->$field = null;
 
                 $message = $field === 'avatar' ? __('อัปเดตรูปโปรไฟล์เรียบร้อยแล้ว') : __('อัปเดตรูปปกเรียบร้อยแล้ว');
                 $this->dispatch('notify', message: $message);
             }
         } catch (\Exception $e) {
-            $this->dispatch('notify', message: __('อัปโหลดไม่สำเร็จ: ') . $e->getMessage());
+            $this->dispatch('notify', message: __('อัปโหลดไม่สำเร็จ: ').$e->getMessage());
         }
     }
 

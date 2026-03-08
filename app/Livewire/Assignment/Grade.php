@@ -16,18 +16,22 @@ class Grade extends Component
 {
     #[Locked]
     public Classroom $classroom;
+
     #[Locked]
     public Assignment $assignment;
+
     #[Locked]
     public Submission $submission;
+
     public int $score = 0;
+
     public string $feedback = '';
 
     public function mount(Classroom $classroom, Assignment $assignment, Submission $submission)
     {
         /** @var User $user */
         $user = Auth::user();
-        if (!$classroom->canManageClassroom($user) && !$user->isAdmin()) {
+        if (! $classroom->canManageClassroom($user) && ! $user->isAdmin()) {
             abort(403);
         }
 

@@ -77,7 +77,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center text-white font-bold text-lg"
-                                        style="background-color: {{ $classroom->theme_color }}">
+                                        style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
                                         {{ substr($classroom->name, 0, 1) }}
                                     </div>
                                     <div class="ml-4">
