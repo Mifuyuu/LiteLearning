@@ -60,8 +60,7 @@
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 </head>
 
-<body class="h-full overflow-hidden space-bg font-sans antialiased" x-data="{ sidebarOpen: true, mobileSidebar: false }"
-    style="zoom: {{ (int) (auth()->user()->ui_scale ?? 100) }}%;">
+<body class="h-full overflow-hidden space-bg font-sans antialiased" x-data="{ sidebarOpen: true, mobileSidebar: false }">
     {{-- Loading bar (shown during wire:navigate transitions) --}}
     <div x-data x-ref="bar" x-on:livewire:navigate-start.window="$refs.bar.style.opacity = '1'"
         x-on:livewire:navigate-end.window="$refs.bar.style.opacity = '0'" class="livewire-progress" style="opacity: 0;">
@@ -280,15 +279,15 @@
                                 <i class="fas fa-award w-5 mr-3 text-center"></i>
                                 {{ __('Achievements') }}
                             </a>
-                            <a href="{{ route('admin.reports') }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminReportsActive) }}">
-                                <i class="fas fa-flag w-5 mr-3 text-center"></i>
-                                {{ __('Bug Reports') }}
-                            </a>
                             <a href="{{ route('admin.theme-categories') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminThemeCategoriesActive) }}">
                                 <i class="fas fa-palette w-5 mr-3 text-center"></i>
                                 {{ __('Theme Categories') }}
+                            </a>
+                            <a href="{{ route('admin.reports') }}" wire:navigate
+                                class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isAdminReportsActive) }}">
+                                <i class="fas fa-flag w-5 mr-3 text-center"></i>
+                                {{ __('Bug Reports') }}
                             </a>
                         </div>
                     </div>

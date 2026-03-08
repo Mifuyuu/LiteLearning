@@ -1,5 +1,5 @@
 @section('page-title', __('Classrooms'))
-<div style="zoom: {{ auth()->user()->ui_scale }}%;"
+<div
     class="px-6 py-6 max-w-7xl mx-auto animate__animated animate__fadeIn">
 
     {{-- ── Search / filter bar ── --}}
@@ -64,7 +64,7 @@
                     {{-- ── White 3D card ── --}}
                     <a wire:navigate href="{{ route('classroom.show', $classroom) }}"
                         class="rounded-2xl overflow-hidden transition-transform duration-300 group-hover:-translate-y-1 flex flex-col h-full"
-                        style="background: #ffffff; box-shadow: 0 6px 0 0 #c4b5fd; border: 3px solid #c4b5fd;">
+                        style="background: #ffffff; box-shadow: 0 6px 0 0 #c4b5fd; border: 3px solid #c4b5fd66;">
 
                         {{-- Card body ── --}}
                         <div class="px-5 pt-16 pb-5 flex flex-col flex-1">

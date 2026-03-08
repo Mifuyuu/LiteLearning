@@ -26,7 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'cover_image',
         'bio',
         'locale',
-        'ui_scale',
+
         'is_active',
         'active_name_color',
         'active_avatar_frame',
@@ -43,7 +43,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'setup_completed_at' => 'datetime',
-            'ui_scale' => 'integer',
+
             'is_active' => 'boolean',
         ];
     }

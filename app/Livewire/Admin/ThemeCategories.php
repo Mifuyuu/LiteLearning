@@ -22,7 +22,7 @@ class ThemeCategories extends Component
         'name' => '',
         'color' => '#6B3FBF',
         'is_active' => true,
-        'sort_order' => 0,
+
         'planet_number' => 1,
     ];
 
@@ -30,7 +30,7 @@ class ThemeCategories extends Component
         'form.name' => 'required|string|max:100',
         'form.color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
         'form.is_active' => 'boolean',
-        'form.sort_order' => 'integer|min:0',
+
         'form.planet_number' => 'required|integer|min:1|max:21',
     ];
 
@@ -54,7 +54,7 @@ class ThemeCategories extends Component
             'name' => '',
             'color' => '#6B3FBF',
             'is_active' => true,
-            'sort_order' => 0,
+
             'planet_number' => 1,
         ];
         $this->showModal = true;
@@ -67,7 +67,7 @@ class ThemeCategories extends Component
             'name' => $category->name,
             'color' => $category->color,
             'is_active' => $category->is_active,
-            'sort_order' => $category->sort_order,
+
             'planet_number' => $category->planet_number,
         ];
         $this->showModal = true;
@@ -82,10 +82,10 @@ class ThemeCategories extends Component
         if ($this->editingId) {
             $category = ThemeCategory::findOrFail($this->editingId);
             $category->update($data);
-            session()->flash('message', __('อัปเดต category สำเร็จ'));
+            $this->dispatch('notify', message: __('อัปเดต category สำเร็จ'), type: 'success');
         } else {
             ThemeCategory::create($data);
-            session()->flash('message', __('สร้าง category สำเร็จ'));
+            $this->dispatch('notify', message: __('สร้าง category สำเร็จ'), type: 'success');
         }
 
         $this->showModal = false;
@@ -95,15 +95,14 @@ class ThemeCategories extends Component
     public function delete(ThemeCategory $category): void
     {
         $category->delete();
-        session()->flash('message', __('ลบ category สำเร็จ'));
+        $this->dispatch('notify', message: __('ลบ category สำเร็จ'), type: 'success');
     }
 
     public function render()
     {
         $categories = ThemeCategory::query()
             ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-            ->orderBy('sort_order')
-            ->orderBy('name')
+            ->orderBy('planet_number')
             ->paginate(7);
 
         return view('livewire.admin.theme-categories', ['categories' => $categories]);

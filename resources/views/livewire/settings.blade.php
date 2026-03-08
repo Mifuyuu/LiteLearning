@@ -5,46 +5,17 @@
 
         {{-- Page Header --}}
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-white">{{ __('Settings') }}</h2>
-            <p class="text-sm text-blue-300/60 mt-1">{{ __('Manage your account preferences') }}</p>
+            <h2 class="text-2xl font-bold text-gray-900">{{ __('Settings') }}</h2>
+            <p class="text-sm text-gray-500 mt-1">{{ __('Manage your account preferences') }}</p>
         </div>
 
 
-        {{-- UI Size Settings --}}
-        <div class="card-3d card-3d--indigo p-6">
-            <div class="flex items-start gap-4">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-indigo-100 border border-indigo-200">
-                    <i class="fas fa-magnifying-glass-plus text-indigo-500"></i>
-                </div>
-                <div class="flex-1">
-                    <h3 class="text-base font-semibold text-gray-800">{{ __('UI Size') }}</h3>
-                    <p class="text-sm text-gray-500 mt-0.5">{{ __('Adjust interface zoom size for better readability.') }}</p>
-
-                    <div class="mt-4">
-                        <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">{{ __('Select UI Size') }}</label>
-                        <div class="grid grid-cols-4 gap-2">
-                            @foreach([90, 100, 110, 125] as $scale)
-                                <button type="button" wire:click="setUiScale({{ $scale }})"
-                                    class="group relative px-3 py-3 text-sm rounded-xl border transition-all duration-200
-                                        {{ $uiScale === $scale
-                                            ? 'border-indigo-400 bg-indigo-100 text-indigo-700 font-semibold'
-                                            : 'border-gray-200 bg-white text-gray-500 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600' }}">
-                                    @if($uiScale === $scale)
-                                        <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                                    @endif
-                                    {{ $scale }}%
-                                </button>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         {{-- Account Settings --}}
-        <div class="card-3d card-3d--indigo p-6">
+        <div class="card-3d card-3d--purple p-6">
             <div class="flex items-start gap-4">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-indigo-100 border border-indigo-200">
+                <div
+                    class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-indigo-100 border border-indigo-200">
                     <i class="fas fa-user-circle text-indigo-500"></i>
                 </div>
                 <div class="flex-1">
@@ -55,21 +26,21 @@
                         {{-- Name --}}
                         <div x-data="{ nameLen: {{ strlen(auth()->user()->name) }} }">
                             <div class="flex items-center justify-between mb-2">
-                                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider">{{ __('Name') }}</label>
+                                <label
+                                    class="block text-xs font-medium text-gray-400 uppercase tracking-wider">{{ __('Name') }}</label>
                                 <span class="text-xs transition-colors"
                                     :class="nameLen >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
                                     <span x-text="nameLen"></span>/50
                                 </span>
                             </div>
                             <form wire:submit="updateName" class="flex gap-2">
-                                <input wire:model="name"
-                                    @input="nameLen = $event.target.value.length"
-                                    type="text"
+                                <input wire:model="name" @input="nameLen = $event.target.value.length" type="text"
                                     maxlength="50"
                                     class="flex-1 rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-300
                                            focus:outline-none focus:ring-2 focus:ring-indigo-400/40 focus:border-indigo-400 transition-all"
                                     placeholder="{{ __('Your display name') }}">
-                                <button type="submit" class="btn-3d btn-3d--indigo px-4 py-2.5 text-sm font-medium rounded-xl whitespace-nowrap">
+                                <button type="submit"
+                                    class="btn-3d btn-3d--indigo px-4 py-2.5 text-sm font-medium rounded-xl whitespace-nowrap">
                                     {{ __('Save') }}
                                 </button>
                             </form>
@@ -85,8 +56,10 @@
 
                         {{-- Email (read-only) --}}
                         <div>
-                            <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">{{ __('Email') }}</label>
-                            <div class="flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-500">
+                            <label
+                                class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">{{ __('Email') }}</label>
+                            <div
+                                class="flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-500">
                                 <i class="fas fa-envelope text-xs text-gray-400"></i>
                                 <span>{{ auth()->user()->email }}</span>
                             </div>
@@ -94,7 +67,8 @@
 
                         {{-- Role --}}
                         <div>
-                            <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">{{ __('Role') }}</label>
+                            <label
+                                class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">{{ __('Role') }}</label>
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium
                                          bg-indigo-100 text-indigo-700 border border-indigo-200">
                                 <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>

@@ -1,6 +1,6 @@
 @section('page-title', "Achievements")
 
-<div style="zoom: {{ auth()->user()->ui_scale }}%;" class="px-6 py-6 max-w-7xl mx-auto space-y-8 animate__animated animate__fadeIn">
+<div class="px-6 py-6 max-w-7xl mx-auto space-y-8 animate__animated animate__fadeIn">
 
     <!-- Title -->
     <div>

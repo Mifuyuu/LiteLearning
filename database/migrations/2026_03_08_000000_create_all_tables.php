@@ -25,7 +25,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->string('locale')->default('en');
-            $table->integer('ui_scale')->default(100);
+
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -93,7 +93,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('color', 7)->default('#6B3FBF');
             $table->boolean('is_active')->default(true);
-            $table->unsignedInteger('sort_order')->default(0);
+
             $table->unsignedTinyInteger('planet_number')->default(1);
             $table->timestamps();
         });

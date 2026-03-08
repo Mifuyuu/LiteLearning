@@ -292,6 +292,7 @@ select:focus {
     transform: translateY(3px);
     box-shadow: 0 3px 0 0 var(--card-3d-shadow);
 }
+
 .card-3d-interactive:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 0 0 var(--card-3d-shadow);
@@ -305,7 +306,7 @@ select:focus {
 }
 
 .card-3d--purple {
-    --card-3d-bg: #faf5ff;
+    --card-3d-bg: #ffffff;
     --card-3d-border: #c4b5fd;
     --card-3d-shadow: #9b82ff;
 }

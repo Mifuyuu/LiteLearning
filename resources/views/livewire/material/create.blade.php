@@ -1,4 +1,4 @@
-<div style="zoom: {{ auth()->user()->ui_scale }}%;">
+<div>
     <div class="max-w-3xl mx-auto px-4 py-6">
 
         {{-- Breadcrumb --}}

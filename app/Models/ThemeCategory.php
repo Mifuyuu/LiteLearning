@@ -11,7 +11,7 @@ class ThemeCategory extends Model
         'name',
         'color',
         'is_active',
-        'sort_order',
+
         'planet_number',
     ];
 
@@ -19,7 +19,7 @@ class ThemeCategory extends Model
     {
         return [
             'is_active' => 'boolean',
-            'sort_order' => 'integer',
+
             'planet_number' => 'integer',
         ];
     }

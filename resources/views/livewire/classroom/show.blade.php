@@ -924,7 +924,7 @@
     @endif
 
     <!-- Delete Assignment Modal (page-level, outside all tabs) -->
-    <div x-data="{ showDeleteModal: false, deleteAssignmentId: null, deleteAssignmentTitle: ' }"
+    <div x-data="{ showDeleteModal: false, deleteAssignmentId: null, deleteAssignmentTitle: '' }"
         @open-delete-assignment.window="deleteAssignmentId = $event.detail.id; deleteAssignmentTitle = $event.detail.title; showDeleteModal = true"
         @keydown.escape.window="showDeleteModal = false">
         <template x-teleport="body">

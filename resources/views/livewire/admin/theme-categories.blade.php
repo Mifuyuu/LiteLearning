@@ -1,17 +1,11 @@
 @section('page-title', __('Theme Categories'))
-<div style="zoom: {{ auth()->user()->ui_scale }}%;" class="space-y-6 animate__animated animate__fadeIn" x-data="{
+<div class="space-y-6 animate__animated animate__fadeIn" x-data="{
     deleteModal: false,
     deleteId: null,
     deleteName: '',
     openDelete(id, name) { this.deleteId = id; this.deleteName = name; this.deleteModal = true; }
 }">
 
-    {{-- Flash message --}}
-    @if (session()->has('message'))
-        <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl text-sm">
-            {{ session('message') }}
-        </div>
-    @endif
 
     {{-- Header --}}
     <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
@@ -42,33 +36,33 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-16">{{ __('ดาว') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-10">{{ __('สี') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{{ __('ชื่อ') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider hidden md:table-cell">{{ __('คำอธิบาย') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell">{{ __('ลำดับ') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell">{{ __('สถานะ') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{{ __('จัดการ') }}</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-20">{{ __('ดาว') }}</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-32">{{ __('สี') }}</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-40">{{ __('ชื่อ') }}</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell w-28">{{ __('สถานะ') }}</th>
+                    <th class="px-6 py-3 text-right text-sm font-bold text-gray-500 uppercase tracking-wider w-36">{{ __('การดำเนินการ') }}</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse ($categories as $category)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4">
+                        <td class="px-4 py-4">
                             @php $pn = str_pad($category->planet_number, 2, '0', STR_PAD_LEFT); @endphp
                             <img src="/images/planets/planet_{{ $pn }}.svg" alt="planet {{ $pn }}"
                                 class="w-10 h-10 object-contain" />
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="w-7 h-7 rounded-full border border-gray-200 shadow-sm" style="background: {{ $category->color }};"></div>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full border border-gray-200 shadow-sm flex-shrink-0"
+                                    style="background: {{ $category->color }};"></div>
+                                <span class="text-xs font-mono text-gray-500 hidden md:inline">{{ $category->color }}</span>
+                            </div>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-4 py-2">
                             <div class="text-sm font-semibold text-gray-800">{{ $category->name }}</div>
+                            <div class="text-xs text-gray-400 mt-0.5">{{ __('ดาวเคราะห์') }} #{{ $category->planet_number }}</div>
                         </td>
-                        <td class="px-6 py-4 hidden sm:table-cell">
-                            <span class="text-sm text-gray-600">{{ $category->sort_order }}</span>
-                        </td>
-                        <td class="px-6 py-4 hidden sm:table-cell">
+                        <td class="px-4 py-2 hidden sm:table-cell">
                             @if ($category->is_active)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                     <i class="fas fa-circle text-[8px] mr-1.5"></i>{{ __('ใช้งาน') }}
@@ -79,24 +73,23 @@
                                 </span>
                             @endif
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
+                        <td class="px-6 py-4 whitespace-nowrap text-right">
+                            <div class="flex justify-end gap-3 text-gray-400">
                                 <button wire:click="openEdit({{ $category->id }})"
-                                    class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors text-sm">
+                                    class="hover:text-indigo-600 transition-colors p-1">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button
-                                    x-data
-                    @click="openDelete({{ $category->id }}, '{{ addslashes($category->name) }}')"
-                                    class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors text-sm">
-                                    <i class="fas fa-trash"></i>
+                                    @click="openDelete({{ $category->id }}, '{{ addslashes($category->name) }}')"
+                                    class="hover:text-red-600 transition-colors p-1">
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                    <td colspan="7" class="px-6 py-12 text-center text-gray-500 italic text-sm">
+                        <td colspan="5" class="px-6 py-12 text-center text-gray-500 italic text-sm">
                             {{ $search ? __('ไม่พบ category ที่ค้นหา') : __('ยังไม่มี theme category') }}
                         </td>
                     </tr>
@@ -150,7 +143,7 @@
                 </button>
             </div>
 
-            <div class="px-6 py-5 space-y-4">
+            <div class="px-6 py-5 space-y-5">
                 {{-- Name --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('ชื่อ') }} <span class="text-red-500">*</span></label>
@@ -159,33 +152,23 @@
                     @error('form.name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
-
-                {{-- Preview Color + Sort Order --}}
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('สี') }} <span class="text-red-500">*</span></label>
-                        <div class="flex items-center gap-2">
-                            {{-- Alpine local state — ไม่ fire Livewire request ขณะลากสี --}}
-                            <input type="color"
-                                x-model="localColor"
-                                @change="$wire.set('form.color', localColor)"
-                                class="w-10 h-10 rounded-lg border border-gray-300 cursor-pointer p-0.5" />
-                            <input type="text" maxlength="7" placeholder="#6B3FBF"
-                                x-model="localColor"
-                                @blur="$wire.set('form.color', localColor)"
-                                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono" />
-                        </div>
-                        @error('form.color') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                {{-- Color --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('สี') }} <span class="text-red-500">*</span></label>
+                    <div class="flex items-center gap-2">
+                        <input type="color"
+                            x-model="localColor"
+                            @change="$wire.set('form.color', localColor)"
+                            class="w-10 h-10 rounded-lg border border-gray-300 cursor-pointer p-0.5" />
+                        <input type="text" maxlength="7" placeholder="#6B3FBF"
+                            x-model="localColor"
+                            @blur="$wire.set('form.color', localColor)"
+                            class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono" />
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('ลำดับ') }}</label>
-                        <input wire:model="form.sort_order" type="number" min="0"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
-                        @error('form.sort_order') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
+                    @error('form.color') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
-                {{-- Planet Picker — Alpine local, sync เฉพาะตอนคลิก --}}
+                {{-- Planet Picker --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('ดาวเคราะห์') }} <span class="text-red-500">*</span></label>
                     <div class="grid grid-cols-7 gap-2">
@@ -222,7 +205,7 @@
         </div>
     </div>
 
-    {{-- Delete Modal (shared, Alpine-driven — ไม่ render ซ้ำต่อ row) --}}
+    {{-- Delete Modal --}}
     <div
         x-show="deleteModal"
         x-transition:enter="transition ease-out duration-200"
