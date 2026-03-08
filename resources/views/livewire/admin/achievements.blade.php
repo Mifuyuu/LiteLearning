@@ -32,7 +32,6 @@
                     <tr>
                         <th class="px-6 py-3 text-left">{{ __('admin.achievements.col_achievement') }}</th>
                         <th class="px-6 py-3 text-left">{{ __('admin.achievements.col_rewards') }}</th>
-                        <th class="px-6 py-3 text-left">{{ __('admin.achievements.col_target') }}</th>
                         <th class="px-6 py-3 text-left">{{ __('admin.achievements.col_status') }}</th>
                         <th class="px-6 py-3 text-right">{{ __('admin.achievements.col_actions') }}</th>
                     </tr>
@@ -42,8 +41,10 @@
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
-                                    <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 text-lg shrink-0">
-                                        <i class="{{ $achievement->icon ?: 'fas fa-award' }}"></i>
+                                    <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0 overflow-hidden relative">
+                                        <img src="{{ asset($achievement->badge_image ?: 'images/achievements/achievements-img-01.svg') }}"
+                                            alt="{{ $achievement->name }}"
+                                            class="w-8 h-8 object-contain">
                                     </div>
                                     <div class="ml-4">
                                         <div class="text-sm font-bold text-gray-900 truncate max-w-48">{{ $achievement->name }}</div>
@@ -54,17 +55,12 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center gap-3">
                                     <span class="inline-flex items-center text-xs font-bold text-amber-600">
-                                        <i class="fas fa-coins mr-1"></i> {{ $achievement->coin_reward }}
+                                        <i class="gsi gsi-coin-gold mr-1 text-base"></i> {{ $achievement->coin_reward }}
                                     </span>
                                     <span class="inline-flex items-center text-xs font-bold text-blue-600">
-                                        <i class="fas fa-bolt mr-1"></i> {{ $achievement->xp_reward }}
+                                        <i class="gsi gsi-flash-lime mr-1 text-base"></i> {{ $achievement->xp_reward }}
                                     </span>
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-600">
-                                    {{ $achievement->target_role ?: __('admin.achievements.target_all') }}
-                                </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <button wire:click="toggleActive({{ $achievement->id }})"
@@ -88,7 +84,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-500 italic">
+                            <td colspan="4" class="px-6 py-12 text-center text-gray-500 italic">
                                 {{ __('admin.achievements.empty') }}
                             </td>
                         </tr>
@@ -153,15 +149,13 @@
     <!-- Create / Edit Modal -->
     <template x-teleport="body">
         <div x-data x-show="$wire.showModal" x-cloak
-            x-on:keydown.escape.window="$wire.showModal = false"
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100"
             x-transition:leave="transition ease-in duration-150"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
-            @click.self="$wire.showModal = false">
+            class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60">
         <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
             <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <h3 class="text-lg font-bold text-gray-900">
@@ -173,15 +167,36 @@
             </div>
 
             <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4 items-start">
+                    <!-- รหัส (ซ้าย) -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.achievements.field_code') }}</label>
                         <input type="text" wire:model="form.code" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                         @error('form.code') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.achievements.field_icon') }}</label>
-                        <input type="text" wire:model="form.icon" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono">
+                    <!-- รูปไอคอน (ขวา) -->
+                    <div x-data="{
+    preview: '{{ !empty($form["badge_image"]) ? "/" . $form["badge_image"] : "" }}',
+    }" class="space-y-1">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.achievements.field_badge_image') }}</label>
+                        <label for="badge-upload" class="flex flex-col items-center justify-center w-full h-[72px] border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-colors">
+                            <template x-if="!preview">
+                                <div class="flex flex-col items-center gap-0.5 text-gray-400">
+                                    <i class="fas fa-cloud-upload-alt text-xl"></i>
+                                    <span class="text-[10px] text-center leading-tight">PNG / SVG<br>สูงสุด 2MB</span>
+                                </div>
+                            </template>
+                            <template x-if="preview">
+                                <img :src="preview" class="h-14 w-14 object-contain rounded-lg">
+                            </template>
+                            <input id="badge-upload" type="file" accept=".png,.svg,image/png,image/svg+xml" class="hidden"
+                                wire:model="badgeImageUpload"
+                                @change="const f = $event.target.files[0]; if(f) preview = URL.createObjectURL(f);">
+                        </label>
+                        @if(!empty($form['badge_image']))
+                            <p class="text-xs text-gray-400 font-mono truncate">{{ $form['badge_image'] }}</p>
+                        @endif
+                        @error('badgeImageUpload') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
                 <div>
@@ -203,49 +218,8 @@
                         <input type="number" wire:model="form.xp_reward" min="0" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                     </div>
                 </div>
-                <div class="flex items-end gap-4">
-                        <div class="flex-1" x-data="{ open: false }">
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.achievements.field_target_role') }}</label>
-                            <div class="relative">
-                                <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
-                                    class="flex w-full items-center justify-between px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <span>
-                                        @if($form['target_role'] === '' || $form['target_role'] === null) {{ __('admin.achievements.target_all') }}
-                                        @elseif($form['target_role'] === 'student') {{ __('Student') }}
-                                        @else {{ __('Teacher') }}
-                                        @endif
-                                    </span>
-                                    <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
-                                </button>
-                                <div x-show="open" x-cloak @click.outside="open = false"
-                                    x-transition:enter="transition ease-out duration-100"
-                                    x-transition:enter-start="opacity-0 scale-95"
-                                    x-transition:enter-end="opacity-100 scale-100"
-                                    x-transition:leave="transition ease-in duration-75"
-                                    x-transition:leave-start="opacity-100 scale-100"
-                                    x-transition:leave-end="opacity-0 scale-95"
-                                    class="absolute left-0 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
-                                    <div role="menu">
-                                        <button type="button" role="menuitem" wire:click="$set('form.target_role', '')" @click="open = false"
-                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['target_role'] ?? '') === '' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
-                                            {{ __('admin.achievements.target_all') }}
-                                            @if(($form['target_role'] ?? '') === '') <i class="fas fa-check text-xs"></i> @endif
-                                        </button>
-                                        <button type="button" role="menuitem" wire:click="$set('form.target_role', 'student')" @click="open = false"
-                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['target_role'] ?? '') === 'student' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
-                                            {{ __('Student') }}
-                                            @if(($form['target_role'] ?? '') === 'student') <i class="fas fa-check text-xs"></i> @endif
-                                        </button>
-                                        <button type="button" role="menuitem" wire:click="$set('form.target_role', 'teacher')" @click="open = false"
-                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['target_role'] ?? '') === 'teacher' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
-                                            {{ __('Teacher') }}
-                                            @if(($form['target_role'] ?? '') === 'teacher') <i class="fas fa-check text-xs"></i> @endif
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
-                    <label class="flex items-center gap-2 pb-2 cursor-pointer select-none">
+                <div class="flex items-center gap-2 mt-1">
+                    <label class="flex items-center gap-2 cursor-pointer select-none">
                         <input type="checkbox" wire:model="form.is_active" class="w-4 h-4 text-indigo-600 rounded">
                         <span class="text-sm font-semibold text-gray-700">{{ __('admin.achievements.field_active') }}</span>
                     </label>

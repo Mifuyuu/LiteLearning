@@ -47,6 +47,13 @@ return [
             'report' => false,
         ],
 
+        'achievements' => [
+            'driver' => 'local',
+            'root' => public_path('images/achievements'),
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Achievement;
 use App\Models\Announcement;
 use App\Models\Assignment;
-use App\Models\Badge;
 use App\Models\Classroom;
 use App\Models\ClassroomContent;
 use App\Models\Comment;
@@ -22,113 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(GamificationFeaturesSeeder::class);
         $this->call(LeaderboardSeeder::class);
 
-        Achievement::upsert([
-            [
-                'code' => 'first_classroom_created',
-                'name' => 'First Classroom',
-                'description' => 'Create your first classroom',
-                'icon' => 'fas fa-chalkboard',
-                'coin_reward' => 50,
-                'xp_reward' => 50,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'classroom_builder',
-                'name' => 'Classroom Builder',
-                'description' => 'Create 5 classrooms',
-                'icon' => 'fas fa-school',
-                'coin_reward' => 120,
-                'xp_reward' => 120,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'first_classroom_joined',
-                'name' => 'Welcome Student',
-                'description' => 'Join your first classroom',
-                'icon' => 'fas fa-door-open',
-                'coin_reward' => 30,
-                'xp_reward' => 35,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'first_assignment_created',
-                'name' => 'First Assignment',
-                'description' => 'Publish your first assignment',
-                'icon' => 'fas fa-file-circle-plus',
-                'coin_reward' => 40,
-                'xp_reward' => 40,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'first_assignment_turned_in',
-                'name' => 'On Time',
-                'description' => 'Turn in your first assignment',
-                'icon' => 'fas fa-paper-plane',
-                'coin_reward' => 35,
-                'xp_reward' => 35,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'consistent_submitter',
-                'name' => 'Consistent Submitter',
-                'description' => 'Turn in 10 assignments',
-                'icon' => 'fas fa-medal',
-                'coin_reward' => 100,
-                'xp_reward' => 100,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ], ['code'], ['name', 'description', 'icon', 'coin_reward', 'xp_reward', 'is_active', 'updated_at']);
-
-        Badge::upsert([
-            [
-                'code' => 'new-learner',
-                'name' => 'New Learner',
-                'description' => 'Joined your first class',
-                'icon' => 'fas fa-seedling',
-                'color' => 'green',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'class-starter',
-                'name' => 'Class Starter',
-                'description' => 'Created your first class',
-                'icon' => 'fas fa-rocket',
-                'color' => 'indigo',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'submission-pro',
-                'name' => 'Submission Pro',
-                'description' => 'Submitted 10 assignments',
-                'icon' => 'fas fa-award',
-                'color' => 'amber',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'master-teacher',
-                'name' => 'Master Teacher',
-                'description' => 'Created 5 classrooms',
-                'icon' => 'fas fa-crown',
-                'color' => 'purple',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ], ['code'], ['name', 'description', 'icon', 'color', 'updated_at']);
 
         // Create admin
         $admin = User::updateOrCreate(

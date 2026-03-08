@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::command('model:prune')->daily();
+Schedule::command('otp:prune')->hourly();

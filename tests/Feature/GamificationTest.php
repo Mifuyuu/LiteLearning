@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Achievement;
-use App\Models\Badge;
 use App\Models\Classroom;
 use App\Models\StoreItem;
 use App\Models\User;

@@ -29,7 +29,7 @@
     --teal: #34D399;
     --gold: #FBBF24;
     --sky: #60A5FA;
-    --bg-deep: #2D1B69;
+    --bg-deep: #f5f3ff;
 }
 
 /* Custom scrollbar */
@@ -249,65 +249,12 @@ select:focus {
     display: contents;
 }
 
-/* Deep-space background */
+/* Dot-grid background */
 .space-bg {
-    background: var(--bg-deep);
+    background-color: #f9fafb;
+    background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+    background-size: 32px 32px;
     position: relative;
-}
-
-.space-bg::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-        radial-gradient(circle at 15% 20%, rgba(107, 63, 191, 0.5) 0%, transparent 40%),
-        radial-gradient(circle at 85% 70%, rgba(74, 44, 143, 0.6) 0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(45, 27, 105, 1) 0%, transparent 100%);
-    z-index: 0;
-    pointer-events: none;
-}
-
-/* Nebula border */
-.nebula-border {
-    border-color: rgba(139, 92, 246, 0.3);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-}
-
-/* Orb animations */
-.orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.25;
-    pointer-events: none;
-    z-index: 0;
-    animation: floatOrb 8s ease-in-out infinite;
-}
-
-.orb-1 {
-    width: 300px;
-    height: 300px;
-    background: #8B5CF6;
-    top: -50px;
-    left: 10%;
-}
-
-.orb-2 {
-    width: 200px;
-    height: 200px;
-    background: #F472B6;
-    bottom: 10%;
-    right: 5%;
-    animation-delay: 3s;
-}
-
-.orb-3 {
-    width: 150px;
-    height: 150px;
-    background: #60A5FA;
-    top: 40%;
-    left: 40%;
-    animation-delay: 5s;
 }
 
 @keyframes floatOrb {
@@ -325,4 +272,70 @@ select:focus {
 /* Livewire progress bar */
 .livewire-progress {
     background: linear-gradient(90deg, #8B5CF6, #F472B6, #8B5CF6) !important;
+}
+
+/* ─── 3D Card ───────────────────────────────────────────────────────────────
+ * Usage: class="card-3d card-3d--indigo"  (or other variant)
+ * ─────────────────────────────────────────────────────────────────────────── */
+.card-3d {
+    --card-3d-bg: #ffffff;
+    --card-3d-border: #c4b5fd;
+    --card-3d-shadow: #a78bfa;
+    background: var(--card-3d-bg);
+    border: 3px solid var(--card-3d-border);
+    box-shadow: 0 6px 0 0 var(--card-3d-shadow);
+    border-radius: 1rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-3d:active {
+    transform: translateY(3px);
+    box-shadow: 0 3px 0 0 var(--card-3d-shadow);
+}
+.card-3d-interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 0 var(--card-3d-shadow);
+}
+
+/* Variants */
+.card-3d--indigo {
+    --card-3d-bg: #ffffff;
+    --card-3d-border: var(--color-indigo-400);
+    --card-3d-shadow: var(--color-indigo-600);
+}
+
+.card-3d--purple {
+    --card-3d-bg: #faf5ff;
+    --card-3d-border: #c4b5fd;
+    --card-3d-shadow: #9b82ff;
+}
+
+.card-3d--sky {
+    --card-3d-bg: #f0f9ff;
+    --card-3d-border: #bae6fd;
+    --card-3d-shadow: #0284c7;
+}
+
+.card-3d--green {
+    --card-3d-bg: #f0fdf4;
+    --card-3d-border: #bbf7d0;
+    --card-3d-shadow: #16a34a;
+}
+
+.card-3d--amber {
+    --card-3d-bg: #fffbeb;
+    --card-3d-border: #fde68a;
+    --card-3d-shadow: #d97706;
+}
+
+.card-3d--rose {
+    --card-3d-bg: #fff1f2;
+    --card-3d-border: #fecdd3;
+    --card-3d-shadow: #e11d48;
+}
+
+.card-3d--dark {
+    --card-3d-bg: #1e1150;
+    --card-3d-border: #6d28d9;
+    --card-3d-shadow: #4c1d95;
 }

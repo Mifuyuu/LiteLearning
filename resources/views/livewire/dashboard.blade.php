@@ -25,7 +25,7 @@
 
             @if(auth()->user()->isStudent() && $gamification)
                 <!-- Gamification Stats -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
                         <div class="flex items-center">
                             <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center shrink-0">
@@ -62,17 +62,6 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
-                                <i class="gsi-star-pirple text-purple-500 text-3xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <p class="text-2xl font-bold text-gray-900">{{ $gamification['badges'] }}</p>
-                                <p class="text-sm text-gray-500">{{ __('Badges') }}</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="bg-white rounded-xl border border-gray-200 p-5 list-none">

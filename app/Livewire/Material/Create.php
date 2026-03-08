@@ -82,12 +82,14 @@ class Create extends Component
         ]);
 
         // Handle topic creation
+        $topicId = null;
         $topicName = trim($this->topic);
         if ($topicName) {
-            Topic::firstOrCreate([
+            $topicModel = Topic::firstOrCreate([
                 'classroom_id' => $this->classroom->id,
                 'name' => $topicName,
             ]);
+            $topicId = $topicModel->id;
         }
 
         // Create material
@@ -96,6 +98,7 @@ class Create extends Component
             'classroom_id' => $this->classroom->id,
             'title' => $this->title,
             'description' => $this->description ? Purifier::clean($this->description) : null,
+            'topic_id' => $topicId,
         ]);
 
         // Upload files to S3 and persist to polymorphic attachments table

@@ -17,6 +17,7 @@ class Material extends Model
         'title',
         'slug',
         'description',
+        'topic_id',
     ];
 
     protected function casts(): array
@@ -64,6 +65,11 @@ class Material extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function topic(): BelongsTo
+    {
+        return $this->belongsTo(Topic::class);
     }
 
     public function comments(): MorphMany

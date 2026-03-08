@@ -6,9 +6,9 @@
             <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shrink-0 shadow-sm">
                 <i class="fas fa-user-plus text-white text-lg"></i>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900">{{ __('สร้างบัญชีใหม่') }}</h2>
+            <h2 class="text-2xl font-bold text-gray-900">{{ __('auth.register.title') }}</h2>
         </div>
-        <p class="text-gray-500 mb-6">{{ __('กรอกข้อมูลด้านล่างเพื่อเริ่มต้นใช้งาน') }}</p>
+        <p class="text-gray-500 mb-6">{{ __('auth.register.description') }}</p>
 
         @if (!$otpSent)
             {{-- Step 1: Registration Form --}}
@@ -16,14 +16,14 @@
                 {{-- Name --}}
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ __('ชื่อ-นามสกุล') }}
+                        {{ __('auth.register.name') }}
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-user text-gray-400 text-sm"></i>
                         </div>
                         <input id="name" type="text" wire:model="name" autocomplete="name"
-                            placeholder="{{ __('ชื่อของคุณ') }}"
+                            placeholder="{{ __('auth.register.name_placeholder') }}"
                             class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors @error('name') border-red-500 @enderror">
                     </div>
                     @error('name')
@@ -34,7 +34,7 @@
                 {{-- Email --}}
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ __('อีเมล') }}
+                        {{ __('auth.register.email') }}
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -51,14 +51,14 @@
                 {{-- Password --}}
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ __('รหัสผ่าน') }}
+                        {{ __('auth.register.password') }}
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-lock text-gray-400 text-sm"></i>
                         </div>
                         <input id="password" type="password" wire:model="password" autocomplete="new-password"
-                            placeholder="{{ __('อย่างน้อย 8 ตัวอักษร') }}"
+                            placeholder="{{ __('auth.register.password_placeholder') }}"
                             class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors @error('password') border-red-500 @enderror">
                     </div>
                     @error('password')
@@ -76,7 +76,7 @@
                             <i class="fas fa-lock text-gray-400 text-sm"></i>
                         </div>
                         <input id="password_confirmation" type="password" wire:model="password_confirmation"
-                            autocomplete="new-password" placeholder="{{ __('พิมพ์รหัสผ่านอีกครั้ง') }}"
+                            autocomplete="new-password" placeholder="{{ __('auth.register.password_confirmation') }}"
                             class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors @error('password_confirmation') border-red-500 @enderror">
                     </div>
                     @error('password_confirmation')
@@ -88,10 +88,10 @@
                 <button type="submit"
                     class="btn-3d btn-3d--indigo w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <span wire:loading.remove wire:target="register">
-                        <i class="fas fa-paper-plane mr-2"></i>{{ __('ส่งรหัสยืนยัน') }}
+                        <i class="fas fa-paper-plane mr-2"></i>{{ __('auth.register.otp.send') }}
                     </span>
                     <span wire:loading wire:target="register">
-                        <i class="fas fa-spinner fa-spin mr-2"></i>{{ __('กำลังส่ง...') }}
+                        <i class="fas fa-spinner fa-spin mr-2"></i>{{ __('auth.register.otp.sending') }}
                     </span>
                 </button>
             </form>
@@ -102,13 +102,13 @@
 
                 <div class="bg-indigo-50 border border-indigo-100 rounded-lg px-4 py-3 text-sm text-indigo-700">
                     <i class="fas fa-envelope mr-1.5"></i>
-                    {{ __('ส่งรหัส OTP ไปที่') }} <span class="font-semibold">{{ $email }}</span>
+                    {{ __('auth.register.otp.sent_to') }} <span class="font-semibold">{{ $email }}</span>
                 </div>
 
                 {{-- OTP Input --}}
                 <div>
                     <label for="otp" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ __('รหัส OTP (6 หลัก)') }}
+                        {{ __('auth.register.otp.code') }}
                     </label>
                     <input id="otp" type="text" wire:model="otp" inputmode="numeric" pattern="\d{6}" maxlength="6" autofocus
                         autocomplete="one-time-code" placeholder="000000"
@@ -122,10 +122,10 @@
                 <button type="submit"
                     class="btn-3d btn-3d--indigo w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <span wire:loading.remove wire:target="verifyOtp">
-                        <i class="fas fa-check mr-2"></i>{{ __('ยืนยันและสมัครสมาชิก') }}
+                        <i class="fas fa-check mr-2"></i>{{ __('auth.register.otp.verify') }}
                     </span>
                     <span wire:loading wire:target="verifyOtp">
-                        <i class="fas fa-spinner fa-spin mr-2"></i>{{ __('กำลังตรวจสอบ...') }}
+                        <i class="fas fa-spinner fa-spin mr-2"></i>{{ __('auth.register.otp.verifying') }}
                     </span>
                 </button>
 
@@ -133,15 +133,15 @@
                 <div x-data="{ cooldown: $wire.entangle('resendCooldown') }" class="text-center">
                     <template x-if="cooldown > 0">
                         <p class="text-sm text-gray-500">
-                            {{ __('ส่งรหัสอีกครั้งได้ใน') }}
+                            {{ __('auth.register.otp.resend_in') }}
                             <span x-text="cooldown" class="font-semibold text-indigo-600"></span>
-                            {{ __('วินาที') }}
+                            {{ __('auth.register.otp.seconds') }}
                         </p>
                     </template>
                     <template x-if="cooldown <= 0">
                         <button type="button" wire:click="sendOtp"
                             class="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors">
-                            <i class="fas fa-redo mr-1 text-xs"></i>{{ __('ส่งรหัสอีกครั้ง') }}
+                            <i class="fas fa-redo mr-1 text-xs"></i>{{ __('auth.register.otp.resend') }}
                         </button>
                     </template>
                 </div>
@@ -150,7 +150,7 @@
                 <div class="text-center">
                     <button type="button" wire:click="$set('otpSent', false)"
                         class="text-sm text-gray-500 hover:text-gray-700 transition-colors">
-                        <i class="fas fa-arrow-left mr-1 text-xs"></i>{{ __('แก้ไขข้อมูล') }}
+                        <i class="fas fa-arrow-left mr-1 text-xs"></i>{{ __('auth.register.otp.back') }}
                     </button>
                 </div>
             </form>
@@ -160,10 +160,10 @@
         @if (!$otpSent)
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
-                    {{ __('มีบัญชีอยู่แล้ว?') }}
+                    {{ __('auth.register.already_have_account') }}
                     <a href="{{ route('login') }}" wire:navigate
                         class="text-indigo-600 hover:text-indigo-800 font-medium transition-colors">
-                        {{ __('เข้าสู่ระบบ') }}
+                        {{ __('auth.login.title') }}
                     </a>
                 </p>
             </div>

@@ -6,19 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::table('achievements', function (Blueprint $table) {
-            $table->string('target_role')->default('student')->after('is_active');
+            //
         });
-
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('achievements', function (Blueprint $table) {
-            $table->dropColumn('target_role');
+            //
         });
-
     }
 };

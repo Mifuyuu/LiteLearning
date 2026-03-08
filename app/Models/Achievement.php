@@ -16,10 +16,10 @@ class Achievement extends Model
         'name',
         'description',
         'icon',
+        'badge_image',
         'coin_reward',
         'xp_reward',
         'is_active',
-        'target_role',
     ];
 
     protected function casts(): array

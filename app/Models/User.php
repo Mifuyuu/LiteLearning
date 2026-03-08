@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Pivots\ClassroomUserPivot;
 use App\Models\Pivots\UserAchievementPivot;
-use App\Models\Pivots\UserBadgePivot;
 use App\Models\Pivots\UserStoreItemPivot;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -101,13 +100,6 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps();
     }
 
-    public function badges(): BelongsToMany
-    {
-        return $this->belongsToMany(Badge::class, 'user_badges')
-            ->using(UserBadgePivot::class)
-            ->withPivot('earned_at')
-            ->withTimestamps();
-    }
 
     public function storeItems(): BelongsToMany
     {

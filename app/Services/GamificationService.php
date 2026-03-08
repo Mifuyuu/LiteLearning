@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Exceptions\GamificationException;
 use App\Models\Achievement;
-use App\Models\Badge;
 use App\Models\CoinTransaction;
 use App\Models\StoreItem;
 use App\Models\User;
@@ -114,25 +113,6 @@ class GamificationService
         }
     }
 
-    public function awardBadge(User $user, string $code): void
-    {
-        if (!$this->isEligible($user)) {
-            return;
-        }
-
-        $badge = Badge::where('code', $code)->first();
-        if (!$badge) {
-            return;
-        }
-
-        if ($user->badges()->where('badge_id', $badge->id)->exists()) {
-            return;
-        }
-
-        $user->badges()->attach($badge->id, [
-            'earned_at' => now(),
-        ]);
-    }
 
     public function awardForClassroomCreated(User $user, int $classroomId): void
     {
@@ -143,12 +123,10 @@ class GamificationService
 
         if ($count >= 1) {
             $this->unlockAchievement($user, 'first_classroom_created');
-            $this->awardBadge($user, 'class-starter');
         }
 
         if ($count >= 5) {
             $this->unlockAchievement($user, 'classroom_builder');
-            $this->awardBadge($user, 'master-teacher');
         }
     }
 
@@ -159,7 +137,6 @@ class GamificationService
 
         if ($user->enrolledClassrooms()->count() >= 1) {
             $this->unlockAchievement($user, 'first_classroom_joined');
-            $this->awardBadge($user, 'new-learner');
         }
     }
 
@@ -186,7 +163,6 @@ class GamificationService
 
         if ($turnedInCount >= 10) {
             $this->unlockAchievement($user, 'consistent_submitter');
-            $this->awardBadge($user, 'submission-pro');
         }
     }
 

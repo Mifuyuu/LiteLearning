@@ -1,4 +1,30 @@
 {
+    "auth.register.title": "สร้างบัญชีใหม่",
+    "auth.register.description": "กรอกข้อมูลด้านล่างเพื่อเริ่มต้นใช้งาน",
+    "auth.register.name": "ชื่อ-นามสกุล",
+    "auth.register.name_placeholder": "พิมพ์ชื่อ-นามสกุลของคุณ",
+    "auth.register.email": "อีเมล",
+    "auth.register.role": "บทบาท",
+    "auth.register.student": "นักเรียน",
+    "auth.register.teacher": "ครู",
+    "auth.register.password": "รหัสผ่าน",
+    "auth.register.password_placeholder": "อย่างน้อย 8 ตัวอักษร",
+    "auth.register.password_confirmation": "ยืนยันรหัสผ่าน",
+    "auth.register.otp.sent_to": "ส่งรหัส OTP ไปที่",
+    "auth.register.otp.code": "รหัส OTP (6 หลัก)",
+    "auth.register.otp.verify": "ยืนยันและสมัครสมาชิก",
+    "auth.register.otp.verifying": "กำลังตรวจสอบ...",
+    "auth.register.otp.send": "ส่งรหัส OTP",
+    "auth.register.otp.sending": "กำลังส่ง...",
+    "auth.register.otp.resend": "ส่งรหัสอีกครั้ง",
+    "auth.register.otp.resend_in": "ส่งรหัสอีกครั้งได้ใน",
+    "auth.register.otp.seconds": "วินาที",
+    "auth.register.otp.back": "แก้ไขข้อมูล",
+    "auth.register.already_have_account": "มีบัญชีอยู่แล้ว?",
+    "auth.register.login": "เข้าสู่ระบบ",
+    "auth.register.create_account": "สร้างบัญชี",
+    "auth.register.creating": "กำลังสร้าง...",
+    "auth.login.title": "เข้าสู่ระบบ",
     "Dashboard": "แดชบอร์ด",
     "Classrooms": "ห้องเรียน",
     "Calendar": "ปฏิทิน",
@@ -11,7 +37,6 @@
     "Settings": "ตั้งค่า",
     "Sign Out": "ออกจากระบบ",
     "Notifications": "การแจ้งเตือน",
-
     "Welcome back, :name!": "ยินดีต้อนรับกลับ, :name!",
     "Pending Review": "รอตรวจ",
     "Students": "นักเรียน",
@@ -25,7 +50,6 @@
     "No upcoming assignments": "ไม่มีงานที่กำลังจะถึง",
     "Due": "กำหนดส่ง",
     "Owner": "เจ้าของ",
-
     "Login": "เข้าสู่ระบบ",
     "Register": "สมัครสมาชิก",
     "Email": "อีเมล",
@@ -53,7 +77,6 @@
     "I am a": "ฉันเป็น",
     "Confirm password": "ยืนยันรหัสผ่าน",
     "Creating...": "กำลังสร้าง...",
-
     "Create Classroom": "สร้างห้องเรียน",
     "Join Classroom": "เข้าร่วมห้องเรียน",
     "Class Code": "รหัสห้องเรียน",
@@ -70,7 +93,6 @@
     "Class Name *": "ชื่อห้องเรียน *",
     "Joining...": "กำลังเข้าร่วม...",
     "Ask your teacher for the class code, then enter it here.": "ขอรหัสห้องเรียนจากครูของคุณ แล้วใส่ที่นี่",
-
     "Stream": "สตรีม",
     "Classwork": "งานในชั้นเรียน",
     "People": "สมาชิก",
@@ -92,7 +114,6 @@
     "Add class comment...": "เพิ่มความคิดเห็น...",
     "class comment": "ความคิดเห็น",
     "class comments": "ความคิดเห็น",
-
     "Manage and access your classrooms": "จัดการและเข้าถึงห้องเรียนของคุณ",
     "Search classrooms...": "ค้นหาห้องเรียน...",
     "All": "ทั้งหมด",
@@ -102,10 +123,8 @@
     "Join a classroom using the class code provided by your teacher.": "เข้าร่วมห้องเรียนโดยใช้รหัสที่ครูให้มา",
     "students": "นักเรียน",
     "assignments": "งาน",
-
     "No students enrolled yet.": "ยังไม่มีนักเรียนลงทะเบียน",
     "Back to :name": "กลับไปที่ :name",
-
     "Create Assignment": "สร้างงาน",
     "Title": "หัวข้อ",
     "Instructions": "คำสั่ง",
@@ -143,7 +162,6 @@
     "Add description...": "เพิ่มรายละเอียด...",
     "Add instructions for students...": "เพิ่มคำสั่งสำหรับนักเรียน...",
     "Select or create a topic": "เลือกหรือสร้างหัวข้อ",
-
     "Your Work": "งานของคุณ",
     "Student Work": "งานนักเรียน",
     "Student's Response": "คำตอบของนักเรียน",
@@ -161,14 +179,12 @@
     "No assignments yet.": "ยังไม่มีงาน",
     "This is a material - no submission required.": "นี่คือเอกสาร - ไม่ต้องส่งงาน",
     "turned in": "ส่งแล้ว",
-    
     "classrooms.remove_all": "ลบนักเรียนทั้งหมด",
     "classrooms.remove_student": "ลบออกจากห้องเรียน",
     "classrooms.remove_all_confirm": "คุณแน่ใจหรือไม่ว่าต้องการลบนักเรียนทั้งหมดออกจากห้องนี้?",
     "classrooms.remove_confirm": "นำคุณ :name ออกจากห้องเรียนนี้หรือไม่?",
     "Member removed successfully.": "นำสมาชิกออกเรียบร้อยแล้ว",
     "All students removed successfully.": "นำนักเรียนทั้งหมดออกเรียบร้อยแล้ว",
-
     "All caught up!": "ตรวจงานครบแล้ว!",
     "No pending submissions to review.": "ไม่มีงานที่รอตรวจ",
     "Needs review": "รอตรวจ",
@@ -180,14 +196,11 @@
     "Add a description...": "เพิ่มคำอธิบาย...",
     "Crop Profile Picture": "ครอบตัดรูปประจำตัว",
     "Crop Cover Image": "ครอบตัดรูปหน้าปก",
-
     "Calendar View": "มุมมองปฏิทิน",
     "View all your upcoming assignments and deadlines in one place.": "ดูงานที่กำลังจะถึงและกำหนดส่งทั้งหมดในที่เดียว",
     "No upcoming deadlines!": "ไม่มีกำหนดส่งที่กำลังจะถึง!",
-
     "Classes Teaching": "สอนอยู่",
     "Classes Enrolled": "เรียนอยู่",
-
     "Account Settings": "ตั้งค่าบัญชี",
     "Language": "ภาษา",
     "English": "อังกฤษ",
@@ -197,7 +210,6 @@
     "Appearance": "การแสดงผล",
     "Choose your preferred language for the interface.": "เลือกภาษาที่ต้องการใช้สำหรับอินเทอร์เฟซ",
     "Your modern learning platform": "แพลตฟอร์มการเรียนรู้ที่ทันสมัย",
-
     "Share the class code": "แชร์รหัสห้องเรียน",
     "with your students.": "ให้นักเรียนของคุณ",
     "Coins": "เหรียญ",
@@ -249,7 +261,6 @@
     "Pinned to sidebar.": "ปักหมุดในแถบด้านข้างแล้ว",
     "Unpinned from sidebar.": "ยกเลิกปักหมุดจากแถบด้านข้างแล้ว",
     "No pinned classrooms.": "ยังไม่มีห้องเรียนที่ปักหมุด",
-
     "Complete your profile setup": "กรอกข้อมูลโปรไฟล์ให้ครบ",
     "Please provide your basic information before using the platform.": "กรุณากรอกข้อมูลพื้นฐานก่อนเริ่มใช้งานแพลตฟอร์ม",
     "Institution": "สถาบันการศึกษา",
@@ -269,7 +280,6 @@
     "Complete Setup": "ตั้งค่าให้เสร็จสิ้น",
     "Sign out": "ออกจากระบบ",
     "Setup completed successfully.": "ตั้งค่าบัญชีเรียบร้อยแล้ว",
-
     "Attendance": "เช็คชื่อ",
     "File Upload": "ภารกิจ",
     "Question": "คำถาม",
@@ -348,14 +358,11 @@
     "No ranking data available yet.": "ยังไม่มีข้อมูลการจัดอันดับ",
     "Unlocked": "ปลดล็อกแล้ว",
     "Locked": "ยังไม่ปลดล็อก",
-
     "achievements.title": "ความสำเร็จและเหรียญตรา",
     "achievements.subtitle": "ทำภารกิจให้สำเร็จเพื่อปลดล็อกรางวัล!",
-    "achievements.badges_section": "เหรียญตรา",
     "achievements.achievements_section": "ความสำเร็จ",
     "achievements.unlocked": "ปลดล็อกแล้ว",
     "achievements.locked": "ยังไม่ปลดล็อก",
-
     "store.title": "ร้านค้าของตกแต่ง",
     "store.subtitle": "ใช้เหรียญแลกของตกแต่งสุดพิเศษ",
     "store.your_coins": "เหรียญของคุณ",
@@ -370,8 +377,6 @@
     "store.modal_desc_3": "เหรียญ?",
     "store.modal_confirm": "ยืนยันการซื้อ",
     "store.modal_cancel": "ยกเลิก",
-
-
     "Top Student": "นักเรียนดีเด่น",
     "Awarded for exceptional academic performance.": "รางวัลสำหรับผลการเรียนที่ยอดเยี่ยม",
     "Helpful Peer": "เพื่อนที่ดี",
@@ -388,7 +393,6 @@
     "Submitted an assignment after midnight.": "ส่งงานหลังเที่ยงคืน",
     "Streak Master": "เจ้าแห่งความต่อเนื่อง",
     "Submitted 5 assignments on time in a row.": "ส่งงานตรงเวลาติดต่อกัน 5 ชิ้น",
-
     "On a Roll": "ไหลลื่น",
     "Submit 5 assignments successfully.": "ส่งงานสำเร็จ 5 ชิ้น",
     "Grade Seeker": "ตามหาคะแนน",
@@ -399,8 +403,6 @@
     "Leave 5 comments on posts or assignments.": "แสดงความคิดเห็น 5 ครั้ง",
     "Level Up!": "เลเวลสูงขึ้น!",
     "Reach level 5 on the platform.": "ไปถึงเลเวล 5 บนแพลตฟอร์ม",
-
-
     "Welcome Aboard": "ยินดีต้อนรับ",
     "Log in to the platform for the first time.": "เข้าสู่ระบบแพลตฟอร์มเป็นครั้งแรก",
     "First Blood": "เริ่มต้น",
@@ -411,7 +413,6 @@
     "Submit an assignment well before the deadline.": "ส่งงานก่อนกำหนดล่วงหน้า",
     "Social Butterfly": "ชอบสังสรรค์",
     "Leave a comment on a post or assignment.": "แสดงความคิดเห็นในโพสต์หรืองาน",
-
     "Ruby Red": "แดงทับทิม",
     "A shining red name color.": "สีชื่อแดงสุกสว่าง",
     "Ocean Blue": "ฟ้าทะเล",
@@ -426,7 +427,6 @@
     "A shiny silver border.": "กรอบสีเงินสุดเงางาม",
     "Neon Frame": "กรอบนีออน",
     "A glowing neon border.": "กรอบนีออนเรืองแสง",
-
     "Bug Reports": "รายงานปัญหา",
     "report.button": "รายงานปัญหา / เสนอแนะ",
     "report.title": "รายงานปัญหา",
@@ -447,13 +447,11 @@
     "report.resolved": "แก้ไขแล้ว",
     "report.mark_resolved": "ทำเครื่องหมายว่าแก้ไขแล้ว",
     "report.mark_pending": "เปลี่ยนกลับเป็นรอดำเนินการ",
-
     "Administration": "การจัดการระบบ",
     "Admin Dashboard": "แดชบอร์ดผู้ดูแล",
     "User Management": "จัดการผู้ใช้",
     "Classroom Management": "จัดการห้องเรียน",
     "Store Management": "จัดการร้านค้า",
-
     "admin.dashboard.title": "แดชบอร์ดผู้ดูแลระบบ",
     "admin.dashboard.total_users": "ผู้ใช้ทั้งหมด",
     "admin.dashboard.new_users_month": "ใหม่เดือนนี้",
@@ -465,7 +463,6 @@
     "admin.dashboard.recent_reports": "รายงานปัญหาล่าสุด",
     "admin.dashboard.view_all": "ดูทั้งหมด",
     "admin.dashboard.no_reports": "ไม่มีรายงานปัญหาล่าสุด!",
-
     "admin.users.title": "จัดการผู้ใช้",
     "admin.users.search_placeholder": "ค้นหาด้วยชื่อหรืออีเมล...",
     "admin.users.filter_role": "ทุกบทบาท",
@@ -486,7 +483,6 @@
     "admin.users.deleted": "ลบผู้ใช้แล้ว",
     "admin.users.view_profile": "ดูโปรไฟล์",
     "admin.users.delete_user": "ลบผู้ใช้",
-
     "admin.classrooms.title": "จัดการห้องเรียน",
     "admin.classrooms.search_placeholder": "ค้นหาด้วยชื่อหรือรหัส...",
     "admin.classrooms.filter_all": "ห้องเรียนทั้งหมด",
@@ -508,7 +504,6 @@
     "admin.classrooms.archive": "เก็บถาวร",
     "admin.classrooms.restore": "กู้คืน",
     "admin.classrooms.delete": "ลบ",
-
     "admin.store.title": "จัดการร้านค้า",
     "admin.store.search_placeholder": "ค้นหาสินค้า...",
     "admin.store.total_items": "สินค้าทั้งหมด:",
@@ -537,7 +532,6 @@
     "admin.store.updated": "อัปเดตสินค้าแล้ว",
     "admin.store.delete_confirm": "แน่ใจหรือไม่ว่าต้องการลบสินค้านี้?",
     "admin.store.deleted": "ลบสินค้าแล้ว",
-
     "admin.achievements.title": "จัดการความสำเร็จ",
     "admin.achievements.search_placeholder": "ค้นหาความสำเร็จ...",
     "admin.achievements.hint": "เฉพาะความสำเร็จที่เปิดใช้งานเท่านั้นที่ปลดล็อกได้",
@@ -555,9 +549,9 @@
     "admin.achievements.create_title": "เพิ่มความสำเร็จใหม่",
     "admin.achievements.edit_title": "แก้ไขความสำเร็จ",
     "admin.achievements.field_code": "รหัส (unique key)",
+    "admin.achievements.field_badge_image": "รูปไอคอน",
     "admin.achievements.field_name": "ชื่อ",
     "admin.achievements.field_description": "คำอธิบาย",
-    "admin.achievements.field_icon": "ไอคอน (FontAwesome class)",
     "admin.achievements.field_coin_reward": "รางวัลเหรียญ",
     "admin.achievements.field_xp_reward": "รางวัล XP",
     "admin.achievements.field_target_role": "กลุ่มเป้าหมาย",
@@ -566,29 +560,5 @@
     "admin.achievements.created": "เพิ่มความสำเร็จแล้ว",
     "admin.achievements.updated": "อัปเดตความสำเร็จแล้ว",
     "admin.achievements.delete_confirm": "แน่ใจหรือไม่ว่าต้องการลบความสำเร็จนี้?",
-    "admin.achievements.deleted": "ลบความสำเร็จแล้ว",
-
-    "admin.badges.title": "จัดการเหรียญตรา",
-    "admin.badges.search_placeholder": "ค้นหาเหรียญตรา...",
-    "admin.badges.hint": "เหรียญตราเป็นเกียรติพิเศษสำหรับผู้ใช้",
-    "admin.badges.col_badge": "เหรียญตรา",
-    "admin.badges.col_appearance": "รูปลักษณ์",
-    "admin.badges.col_target": "กลุ่มเป้าหมาย",
-    "admin.badges.col_actions": "การดำเนินการ",
-    "admin.badges.target_all": "ทั้งหมด",
-    "admin.badges.empty": "ไม่พบเหรียญตรา",
-    "admin.badges.create": "เพิ่มเหรียญตรา",
-    "admin.badges.create_title": "เพิ่มเหรียญตราใหม่",
-    "admin.badges.edit_title": "แก้ไขเหรียญตรา",
-    "admin.badges.field_code": "รหัส (unique key)",
-    "admin.badges.field_name": "ชื่อ",
-    "admin.badges.field_description": "คำอธิบาย",
-    "admin.badges.field_icon": "ไอคอน (FontAwesome class)",
-    "admin.badges.field_color": "สี (hex)",
-    "admin.badges.field_target_role": "กลุ่มเป้าหมาย",
-    "admin.badges.save": "บันทึกเหรียญตรา",
-    "admin.badges.created": "เพิ่มเหรียญตราแล้ว",
-    "admin.badges.updated": "อัปเดตเหรียญตราแล้ว",
-    "admin.badges.delete_confirm": "แน่ใจหรือไม่ว่าต้องการลบเหรียญตรานี้?",
-    "admin.badges.deleted": "ลบเหรียญตราแล้ว"
+    "admin.achievements.deleted": "ลบความสำเร็จแล้ว"
 }

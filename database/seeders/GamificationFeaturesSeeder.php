@@ -6,7 +6,6 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 use App\Models\Achievement;
-use App\Models\Badge;
 use App\Models\StoreItem;
 
 class GamificationFeaturesSeeder extends Seeder
@@ -17,8 +16,12 @@ class GamificationFeaturesSeeder extends Seeder
     public function run(): void
     {
         // Remove stale records not in current data
-        Badge::whereNotIn('code', ['top_student', 'helpful_peer', 'consistent', 'quick_learner', 'star_pupil', 'explorer', 'night_owl', 'streak_master'])->delete();
-        Achievement::whereNotIn('code', ['first_login', 'first_assignment', 'perfect_score', 'early_bird', 'social_butterfly', 'on_a_roll', 'grade_seeker', 'multi_class', 'chatterbox', 'level_up'])->delete();
+        Achievement::whereNotIn('code', [
+            'first_classroom_joined', 'first_classroom_created', 'classroom_builder',
+            'first_assignment_turned_in', 'consistent_submitter', 'first_assignment_created',
+            'perfect_score', 'early_bird', 'social_butterfly', 'on_a_roll',
+            'grade_seeker', 'multi_class', 'chatterbox', 'level_up',
+        ])->delete();
 
         // 1. Initial Store Items
         $storeItems = [
@@ -45,38 +48,27 @@ class GamificationFeaturesSeeder extends Seeder
             StoreItem::updateOrCreate(['code' => $item['code']], $item);
         }
 
-        // 2. Initial Achievements
         $achievements = [
-            ['code' => 'first_login',      'name' => 'Welcome Aboard',   'description' => 'Log in to the platform for the first time.',              'icon' => 'fas fa-door-open',     'coin_reward' => 50,  'xp_reward' => 100,  'is_active' => true, 'target_role' => 'student'],
-            ['code' => 'first_assignment', 'name' => 'First Blood',      'description' => 'Complete your first assignment.',                          'icon' => 'fas fa-check-circle',  'coin_reward' => 100, 'xp_reward' => 200,  'is_active' => true, 'target_role' => 'student'],
-            ['code' => 'perfect_score',    'name' => 'Perfectionist',    'description' => 'Get a perfect score on an assignment.',                    'icon' => 'fas fa-star',          'coin_reward' => 200, 'xp_reward' => 500,  'is_active' => true, 'target_role' => 'student'],
-            ['code' => 'early_bird',       'name' => 'Early Bird',       'description' => 'Submit an assignment well before the deadline.',           'icon' => 'fas fa-clock',         'coin_reward' => 150, 'xp_reward' => 300,  'is_active' => true, 'target_role' => 'student'],
-            ['code' => 'social_butterfly', 'name' => 'Social Butterfly', 'description' => 'Leave a comment on a post or assignment.',                 'icon' => 'fas fa-comments',      'coin_reward' => 50,  'xp_reward' => 100,  'is_active' => true, 'target_role' => 'student'],
-            ['code' => 'on_a_roll',        'name' => 'On a Roll',        'description' => 'Submit 5 assignments successfully.',                       'icon' => 'fas fa-fire-alt',      'coin_reward' => 150, 'xp_reward' => 350,  'is_active' => true, 'target_role' => 'student'],
-            ['code' => 'grade_seeker',     'name' => 'Grade Seeker',     'description' => 'Get graded on 5 assignments.',                             'icon' => 'fas fa-graduation-cap','coin_reward' => 100, 'xp_reward' => 250,  'is_active' => true, 'target_role' => 'student'],
-            ['code' => 'multi_class',      'name' => 'Multi-Class',      'description' => 'Join 3 or more classrooms.',                               'icon' => 'fas fa-layer-group',   'coin_reward' => 100, 'xp_reward' => 200,  'is_active' => true, 'target_role' => 'student'],
-            ['code' => 'chatterbox',       'name' => 'Chatterbox',       'description' => 'Leave 5 comments on posts or assignments.',                'icon' => 'fas fa-comment-dots',  'coin_reward' => 75,  'xp_reward' => 150,  'is_active' => true, 'target_role' => 'student'],
-            ['code' => 'level_up',         'name' => 'Level Up!',        'description' => 'Reach level 5 on the platform.',                          'icon' => 'fas fa-arrow-up',      'coin_reward' => 200, 'xp_reward' => 400,  'is_active' => true, 'target_role' => 'student'],
+            // Synced with GamificationService
+            ['code' => 'first_classroom_joined',    'name' => 'ก้าวแรกในห้องเรียน',   'description' => 'เข้าร่วมห้องเรียนครั้งแรก',                    'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 15,  'xp_reward' => 50,  'is_active' => true],
+            ['code' => 'first_classroom_created',   'name' => 'ครูนักสร้าง',            'description' => 'สร้างห้องเรียนครั้งแรก',                        'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 20,  'xp_reward' => 80,  'is_active' => true],
+            ['code' => 'classroom_builder',         'name' => 'นักบุกเบิก',             'description' => 'สร้างห้องเรียนใหม่สำเร็จ',                      'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 20,  'xp_reward' => 80,  'is_active' => true],
+            ['code' => 'first_assignment_turned_in', 'name' => 'ส่งงานครั้งแรก',        'description' => 'ส่งงานครั้งแรกเป็นที่เรียบร้อย',               'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 10,  'xp_reward' => 50,  'is_active' => true],
+            ['code' => 'consistent_submitter',      'name' => 'ขยันส่งงาน',             'description' => 'ส่งงานครบทุกชิ้นในห้องเรียน',                  'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 10,  'xp_reward' => 100, 'is_active' => true],
+            ['code' => 'first_assignment_created',  'name' => 'ครูนักสอน',              'description' => 'สร้างงานมอบหมายชิ้นแรก',                        'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 20,  'xp_reward' => 80,  'is_active' => true],
+            // Future achievements
+            ['code' => 'perfect_score',             'name' => 'Perfectionist',          'description' => 'ได้คะแนนเต็มในงานมอบหมาย',                    'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 200, 'xp_reward' => 500, 'is_active' => true],
+            ['code' => 'early_bird',                'name' => 'Early Bird',             'description' => 'ส่งงานก่อนกำหนดอย่างน้อย 1 วัน',               'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 150, 'xp_reward' => 300, 'is_active' => true],
+            ['code' => 'social_butterfly',          'name' => 'Social Butterfly',       'description' => 'แสดงความคิดเห็นในโพสต์หรืองาน',                'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 50,  'xp_reward' => 100, 'is_active' => true],
+            ['code' => 'on_a_roll',                 'name' => 'On a Roll',              'description' => 'ส่งงานสำเร็จ 5 ชิ้นติดต่อกัน',                 'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 150, 'xp_reward' => 350, 'is_active' => true],
+            ['code' => 'grade_seeker',              'name' => 'Grade Seeker',           'description' => 'ได้รับการตรวจงาน 5 ชิ้น',                      'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 100, 'xp_reward' => 250, 'is_active' => true],
+            ['code' => 'multi_class',               'name' => 'Multi-Class',            'description' => 'เข้าร่วมห้องเรียน 3 ห้องขึ้นไป',               'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 100, 'xp_reward' => 200, 'is_active' => true],
+            ['code' => 'chatterbox',                'name' => 'Chatterbox',             'description' => 'แสดงความคิดเห็น 5 ครั้ง',                      'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 75,  'xp_reward' => 150, 'is_active' => true],
+            ['code' => 'level_up',                  'name' => 'Level Up!',              'description' => 'ไปถึง Level 5',                                 'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 200, 'xp_reward' => 400, 'is_active' => true],
         ];
 
         foreach ($achievements as $ach) {
             Achievement::updateOrCreate(['code' => $ach['code']], $ach);
-        }
-
-        // 3. Initial Badges
-        $badges = [
-            ['code' => 'top_student',   'name' => 'Top Student',    'description' => 'Awarded for exceptional academic performance.', 'icon' => 'fas fa-crown',          'color' => 'text-amber-500',   'target_role' => 'student'],
-            ['code' => 'helpful_peer',  'name' => 'Helpful Peer',   'description' => 'Awarded for helping other students.',           'icon' => 'fas fa-hands-helping', 'color' => 'text-emerald-500', 'target_role' => 'student'],
-            ['code' => 'consistent',    'name' => 'Consistent',     'description' => 'Never missed a deadline for an entire term.',   'icon' => 'fas fa-calendar-check', 'color' => 'text-blue-500',    'target_role' => 'student'],
-            ['code' => 'quick_learner', 'name' => 'Quick Learner',  'description' => 'Reached level 5 on the platform.',             'icon' => 'fas fa-bolt',          'color' => 'text-yellow-500',  'target_role' => 'student'],
-            ['code' => 'star_pupil',    'name' => 'Star Pupil',     'description' => 'Achieved a perfect score 3 times.',            'icon' => 'fas fa-star',          'color' => 'text-indigo-500',  'target_role' => 'student'],
-            ['code' => 'explorer',      'name' => 'Explorer',       'description' => 'Joined 3 or more classrooms.',                 'icon' => 'fas fa-compass',       'color' => 'text-cyan-500',    'target_role' => 'student'],
-            ['code' => 'night_owl',     'name' => 'Night Owl',      'description' => 'Submitted an assignment after midnight.',       'icon' => 'fas fa-moon',          'color' => 'text-purple-500',  'target_role' => 'student'],
-            ['code' => 'streak_master', 'name' => 'Streak Master',  'description' => 'Submitted 5 assignments on time in a row.',    'icon' => 'fas fa-fire',          'color' => 'text-orange-500',  'target_role' => 'student'],
-        ];
-
-        foreach ($badges as $badge) {
-            Badge::updateOrCreate(['code' => $badge['code']], $badge);
         }
     }
 }

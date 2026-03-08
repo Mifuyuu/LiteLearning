@@ -209,30 +209,12 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('badges', function (Blueprint $table) {
-            $table->id();
-            $table->string('code')->unique();
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->string('icon')->nullable();
-            $table->string('color')->nullable();
-            $table->timestamps();
-        });
-
         Schema::create('user_achievements', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('achievement_id')->constrained()->cascadeOnDelete();
             $table->timestamp('unlocked_at')->nullable();
             $table->timestamps();
             $table->primary(['user_id', 'achievement_id']);
-        });
-
-        Schema::create('user_badges', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('badge_id')->constrained()->cascadeOnDelete();
-            $table->timestamp('earned_at')->nullable();
-            $table->timestamps();
-            $table->primary(['user_id', 'badge_id']);
         });
 
         Schema::create('coin_transactions', function (Blueprint $table) {
@@ -263,9 +245,7 @@ return new class extends Migration {
     {
         Schema::dropIfExists('classroom_sidebar_preferences');
         Schema::dropIfExists('coin_transactions');
-        Schema::dropIfExists('user_badges');
         Schema::dropIfExists('user_achievements');
-        Schema::dropIfExists('badges');
         Schema::dropIfExists('achievements');
         Schema::dropIfExists('topics');
         Schema::dropIfExists('quiz_responses');

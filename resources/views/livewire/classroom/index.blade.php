@@ -3,41 +3,32 @@
     class="px-6 py-6 max-w-7xl mx-auto animate__animated animate__fadeIn">
 
     {{-- ── Search / filter bar ── --}}
-    <div class="bg-white/6 border border-white/10 rounded-2xl px-4 py-3">
+    <div class="card-3d rounded-2xl px-4 py-3">
         <div class="flex items-center gap-3 flex-wrap">
 
             {{-- Search --}}
-            <div
-                class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-md">
-                <i class="fas fa-search text-white/40 text-xs"></i>
+            <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 border border-gray-200">
+                <i class="fas fa-search text-gray-400 text-xs"></i>
                 <input wire:model.live.debounce.300ms="search" type="text" placeholder="ค้นหาห้องเรียน..."
-                    class="bg-transparent border-none outline-none text-white placeholder-white/40 text-base w-44" />
+                    class="bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 text-base w-44" />
             </div>
 
             {{-- Filter pills --}}
             <div class="flex items-center gap-1.5">
                 <button wire:click="$set('filter','all')"
-                    class="px-4 py-2 rounded-2xl text-sm font-semibold transition-all {{ $filter === 'all' ? 'bg-white/20 text-white shadow' : 'text-white/50 hover:text-white hover:bg-white/10' }}">
-                    ทั้งหมด
-                </button>
+                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'all' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">ทั้งหมด</button>
                 @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
                     <button wire:click="$set('filter','teaching')"
-                        class="px-4 py-2 rounded-2xl text-sm font-semibold transition-all {{ $filter === 'teaching' ? 'bg-white/20 text-white shadow' : 'text-white/50 hover:text-white hover:bg-white/10' }}">
-                        สอน
-                    </button>
+                        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'teaching' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">สอน</button>
                 @endif
                 <button wire:click="$set('filter','enrolled')"
-                    class="px-4 py-2 rounded-2xl text-sm font-semibold transition-all {{ $filter === 'enrolled' ? 'bg-white/20 text-white shadow' : 'text-white/50 hover:text-white hover:bg-white/10' }}">
-                    ลงทะเบียน
-                </button>
+                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'enrolled' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">ลงทะเบียน</button>
                 <button wire:click="$set('filter','archived')"
-                    class="px-4 py-2 rounded-2xl text-sm font-semibold transition-all {{ $filter === 'archived' ? 'bg-white/20 text-white shadow' : 'text-white/50 hover:text-white hover:bg-white/10' }}">
-                    เก็บถาวร
-                </button>
+                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'archived' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">เก็บถาวร</button>
             </div>
 
             {{-- Count --}}
-            <span class="ml-auto text-sm text-white/30">{{ $classrooms->count() }} ห้องเรียน</span>
+            <span class="ml-auto text-sm text-gray-400">{{ $classrooms->count() }} ห้องเรียน</span>
         </div>
     </div>
 

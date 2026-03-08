@@ -5,14 +5,16 @@ namespace App\Livewire\Admin;
 use App\Models\Achievement;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 #[Layout('layouts.app')]
 class Achievements extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
-    public $search = '';
+    public string $search = '';
+    public $badgeImageUpload = null;
     public $showModal = false;
     public $editingId = null;
 
@@ -20,22 +22,20 @@ class Achievements extends Component
         'code' => '',
         'name' => '',
         'description' => '',
-        'icon' => 'fas fa-award',
+        'badge_image' => 'images/achievements/achievements-img-01.svg',
         'coin_reward' => 50,
         'xp_reward' => 100,
-        'target_role' => '',
         'is_active' => true,
     ];
-
     protected $rules = [
         'form.code' => 'required|string|max:100',
         'form.name' => 'required|string|max:255',
         'form.description' => 'nullable|string',
-        'form.icon' => 'nullable|string|max:100',
+        'form.badge_image' => 'nullable|string|max:255',
         'form.coin_reward' => 'required|integer|min:0',
         'form.xp_reward' => 'required|integer|min:0',
-        'form.target_role' => 'nullable|in:,student,teacher',
         'form.is_active' => 'boolean',
+        'badgeImageUpload' => 'nullable|file|mimes:png,svg|max:2048',
     ];
 
     public function updatingSearch()
@@ -46,8 +46,8 @@ class Achievements extends Component
     public function openCreate()
     {
         $this->editingId = null;
-        $this->form = ['code' => '', 'name' => '', 'description' => '', 'icon' => 'fas fa-award', 'coin_reward' => 50, 'xp_reward' => 100, 'target_role' => '', 'is_active' => true];
-        $this->resetValidation();
+        $this->badgeImageUpload = null;
+        $this->form = ['code' => '', 'name' => '', 'description' => '', 'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 50, 'xp_reward' => 100, 'is_active' => true];
         $this->showModal = true;
     }
 
@@ -58,22 +58,27 @@ class Achievements extends Component
             'code' => $achievement->code,
             'name' => $achievement->name,
             'description' => $achievement->description,
-            'icon' => $achievement->icon,
+            'badge_image' => $achievement->badge_image ?? 'images/achievements/achievements-img-01.svg',
             'coin_reward' => $achievement->coin_reward,
             'xp_reward' => $achievement->xp_reward,
-            'target_role' => $achievement->target_role ?? '',
             'is_active' => $achievement->is_active,
         ];
-        $this->resetValidation();
         $this->showModal = true;
+        $this->badgeImageUpload = null;
     }
 
-    public function save()
+    public function save(): void
     {
         $this->validate();
 
+        // Handle file upload
+        if ($this->badgeImageUpload) {
+            $filename = $this->badgeImageUpload->getClientOriginalName();
+            $this->badgeImageUpload->storeAs('', $filename, ['disk' => 'achievements']);
+            $this->form['badge_image'] = 'images/achievements/' . $filename;
+        }
+
         $data = $this->form;
-        $data['target_role'] = $data['target_role'] ?: null;
 
         if ($this->editingId) {
             $achievement = Achievement::findOrFail($this->editingId);

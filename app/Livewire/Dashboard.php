@@ -73,7 +73,6 @@ class Dashboard extends Component
                 'level'            => $user->level,
                 'xp'               => $user->xp,
                 'achievements'     => $user->achievements()->count(),
-                'badges'           => $user->badges()->count(),
                 'xp_to_next'       => max(0, $nextLevelXp - $user->xp),
                 'progress_percent' => (int) min(100, round(($xpInCurrentLevel / $xpNeededInLevel) * 100)),
             ];

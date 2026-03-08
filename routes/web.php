@@ -79,7 +79,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/c/{classroom}/a/{assignment}/g/{submission}', Grade::class)->name('assignment.grade');
         });
         Route::get('/c/{classroom}/a/{assignment}', AssignmentShow::class)->name('assignment.show');
-        Route::get('/c/{classroom}/a/{assignment}/g/{submission}', Grade::class)->name('assignment.grade');
         Route::get('/c/{classroom}/m/{material}', MaterialShow::class)->name('material.show');
 
         // Calendar & To-Review
@@ -97,7 +96,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/classrooms', \App\Livewire\Admin\Classrooms::class)->name('classrooms');
             Route::get('/store', \App\Livewire\Admin\Store::class)->name('store');
             Route::get('/achievements', \App\Livewire\Admin\Achievements::class)->name('achievements');
-            Route::get('/badges', \App\Livewire\Admin\Badges::class)->name('badges');
             Route::get('/reports', \App\Livewire\Admin\BugReports::class)->name('reports');
             Route::get('/theme-categories', \App\Livewire\Admin\ThemeCategories::class)->name('theme-categories');
         });
