@@ -63,7 +63,7 @@ class Create extends Component
 
     public function render()
     {
-        $themes = ThemeCategory::active()->orderBy('sort_order')->get();
+        $themes = ThemeCategory::active()->orderBy('planet_number')->get();
 
         return view('livewire.classroom.create', compact('themes'));
     }

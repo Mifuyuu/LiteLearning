@@ -25,8 +25,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'avatar',
         'cover_image',
         'bio',
-        'locale',
-
         'is_active',
         'active_name_color',
         'active_avatar_frame',

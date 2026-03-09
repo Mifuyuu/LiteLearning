@@ -30,7 +30,7 @@ class Classrooms extends Component
 
     public function render()
     {
-        $query = Classroom::query()->with(['teacher', 'members']);
+        $query = Classroom::query()->with(['teacher', 'members', 'themeCategory']);
 
         if ($this->search) {
             $query->where('name', 'like', '%'.$this->search.'%')

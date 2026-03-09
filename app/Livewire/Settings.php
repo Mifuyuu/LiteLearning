@@ -12,8 +12,6 @@ class Settings extends Component
 {
     const NAME_MAX_LENGTH = 50;
 
-
-
     public string $name = '';
 
     public function mount(): void
@@ -23,8 +21,6 @@ class Settings extends Component
 
         $this->name = $user->name;
     }
-
-
 
     public function updateName(): void
     {

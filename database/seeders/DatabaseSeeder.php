@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
     {
         $themes = ThemeCategory::query()
             ->where('is_active', true)
-            ->orderBy('sort_order')
+            ->orderBy('planet_number')
             ->get();
 
         $blueprints = [

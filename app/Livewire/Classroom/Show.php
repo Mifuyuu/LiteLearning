@@ -217,7 +217,7 @@ class Show extends Component
     public function render()
     {
         // Fix #3: no relationship loading here — all done in mount() and targeted refreshes
-        $themes = \App\Models\ThemeCategory::active()->orderBy('sort_order')->get();
+        $themes = \App\Models\ThemeCategory::active()->orderBy('planet_number')->get();
 
         return view('livewire.classroom.show', compact('themes'));
     }
