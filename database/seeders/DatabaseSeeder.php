@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Classroom;
-use App\Models\ClassroomContent;
 use App\Models\Comment;
 use App\Models\Submission;
 use App\Models\ThemeCategory;
@@ -126,12 +125,6 @@ class DatabaseSeeder extends Seeder
                     'content' => $announcementData['content'],
                 ]);
 
-                ClassroomContent::create([
-                    'classroom_id' => $classroom->id,
-                    'contentable_type' => Announcement::class,
-                    'contentable_id' => $announcement->id,
-                    'order' => $feedOrder++,
-                ]);
 
                 foreach ($enrolledStudents->take(3) as $commentIndex => $student) {
                     Comment::create([
@@ -175,12 +168,6 @@ class DatabaseSeeder extends Seeder
                     'allow_late_submission' => in_array($assignmentData['type'], ['project', 'file'], true),
                 ]);
 
-                ClassroomContent::create([
-                    'classroom_id' => $classroom->id,
-                    'contentable_type' => Assignment::class,
-                    'contentable_id' => $assignment->id,
-                    'order' => $feedOrder++,
-                ]);
 
                 foreach ($assignmentData['submission_states'] as $studentIndex => $status) {
                     $student = $enrolledStudents[$studentIndex] ?? null;

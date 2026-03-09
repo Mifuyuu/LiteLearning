@@ -120,30 +120,6 @@ return new class extends Migration
             $table->primary(['classroom_id', 'user_id']);
         });
 
-        Schema::create('classroom_sidebar_preferences', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
-            $table->boolean('is_pinned')->default(false);
-            $table->integer('position')->nullable();
-            $table->timestamp('pinned_at')->nullable();
-            $table->timestamps();
-            $table->primary(['user_id', 'classroom_id']);
-            $table->index(['user_id', 'is_pinned', 'position']);
-        });
-
-        Schema::create('classroom_contents', function (Blueprint $table) {
-            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
-            $table->string('contentable_type');
-            $table->unsignedBigInteger('contentable_id');
-            $table->integer('order')->default(0);
-            $table->timestamp('pinned_at')->nullable();
-            $table->timestamps();
-
-            $table->primary(['classroom_id', 'contentable_type', 'contentable_id'], 'classroom_contents_primary');
-            $table->index(['classroom_id', 'order']);
-            $table->index(['contentable_type', 'contentable_id'], 'classroom_contents_contentable_index');
-        });
-
         Schema::create('topics', function (Blueprint $table) {
             $table->id();
             $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();

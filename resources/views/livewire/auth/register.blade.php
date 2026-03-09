@@ -69,7 +69,7 @@
                 {{-- Confirm Password --}}
                 <div>
                     <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ __('ยืนยันรหัสผ่าน') }}
+                        {{ __('auth.register.password_confirmation') }}
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

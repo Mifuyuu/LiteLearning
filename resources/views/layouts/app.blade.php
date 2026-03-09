@@ -175,31 +175,8 @@
                             </p>
                             <div class="mt-2 space-y-1" data-sortable-sidebar data-sidebar-list="teaching">
                                 @php
-                                    $pinnedTeachingIds = \App\Models\ClassroomSidebarPreference::query()
-                                        ->where('user_id', auth()->id())
-                                        ->where('is_pinned', true)
-                                        ->whereIn('classroom_id', auth()->user()->ownedClassrooms()->where('is_archived', false)->pluck('id'))
-                                        ->orderBy('position')
-                                        ->pluck('classroom_id')
-                                        ->all();
-
-                                    $pinnedTeachingMap = \App\Models\Classroom::query()
-                                        ->whereIn('id', $pinnedTeachingIds)
-                                        ->get()
-                                        ->keyBy('id');
-
-                                    $teachingClasses = collect($pinnedTeachingIds)
-                                        ->map(fn($id) => $pinnedTeachingMap->get($id))
-                                        ->filter();
+                                    $teachingClasses = auth()->user()->ownedClassrooms()->where('is_archived', false)->orderBy('name')->get();
                                 @endphp
-                                @foreach($teachingClasses as $tc)
-                                    <a href="{{ route('classroom.show', $tc) }}" wire:navigate data-classroom-id="{{ $tc->id }}"
-                                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass(request()->routeIs('classroom.show') && optional(request()->route('classroom'))->id === $tc->id) }}">
-                                        <div class="w-5 h-5 rounded mr-3 shrink-0" style="background-color: {{ $tc->themeCategory?->color ?? '#8B5CF6' }}">
-                                        </div>
-                                        <span class="truncate">{{ $tc->name }}</span>
-                                    </a>
-                                @endforeach
                                 <p data-empty-pinned
                                     class="px-3 py-2 text-xs text-gray-400/70 {{ $teachingClasses->isEmpty() ? '' : 'hidden' }}">
                                 </p>
@@ -214,22 +191,7 @@
                             </p>
                             <div class="mt-2 space-y-1" data-sortable-sidebar data-sidebar-list="enrolled">
                                 @php
-                                    $pinnedEnrolledIds = \App\Models\ClassroomSidebarPreference::query()
-                                        ->where('user_id', auth()->id())
-                                        ->where('is_pinned', true)
-                                        ->whereIn('classroom_id', auth()->user()->enrolledClassrooms()->where('is_archived', false)->pluck('classrooms.id'))
-                                        ->orderBy('position')
-                                        ->pluck('classroom_id')
-                                        ->all();
-
-                                    $pinnedEnrolledMap = \App\Models\Classroom::query()
-                                        ->whereIn('id', $pinnedEnrolledIds)
-                                        ->get()
-                                        ->keyBy('id');
-
-                                    $enrolledClasses = collect($pinnedEnrolledIds)
-                                        ->map(fn($id) => $pinnedEnrolledMap->get($id))
-                                        ->filter();
+                                    $enrolledClasses = auth()->user()->enrolledClassrooms()->where('is_archived', false)->orderBy('name')->get();
                                 @endphp
                                 @foreach($enrolledClasses as $ec)
                                     <a href="{{ route('classroom.show', $ec) }}" wire:navigate data-classroom-id="{{ $ec->id }}"
@@ -244,7 +206,6 @@
                                     {{ __('No pinned classrooms.') }}
                                 </p>
                             </div>
-                        </div>
                     @endif
 
                 @else

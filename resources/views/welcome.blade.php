@@ -135,7 +135,9 @@
 
                 <div class="hidden md:flex items-center gap-3">
                     <a href="{{ route('login') }}"
-                        class="text-sm font-semibold text-gray-700 hover:text-indigo-600 transition-colors px-4 py-2">เข้าสู่ระบบ</a>
+                        class="text-sm font-semibold text-indigo-700 hover:text-indigo-500 transition-colors px-4 py-2 rounded-xl border border-indigo-200 hover:bg-indigo-50"><i class="fa-solid fa-chalkboard-user mr-1.5"></i>ครู</a>
+                    <a href="{{ route('login') }}"
+                        class="text-sm font-semibold text-gray-700 hover:text-indigo-600 transition-colors px-4 py-2 rounded-xl border border-gray-200 hover:bg-gray-50"><i class="fa-solid fa-user-graduate mr-1.5"></i>นักเรียน</a>
                     <a href="{{ route('register') }}"
                         class="btn-3d btn-3d--indigo rounded-xl px-5 py-2.5 text-sm">เข้าใช้งานฟรี <i
                             class="fa-solid fa-arrow-right ml-1"></i></a>
@@ -168,10 +170,11 @@
 
                     <div class="mt-5 flex flex-col gap-3 pt-5 border-t border-gray-100">
                         <a href="{{ route('login') }}"
-                            class="inline-flex items-center justify-center rounded-xl border-2 border-gray-200 px-4 py-3 text-base font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all">เข้าสู่ระบบ</a>
+                            class="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-indigo-200 px-4 py-3 text-base font-semibold text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300 transition-all"><i class="fa-solid fa-chalkboard-user"></i> เข้าสู่ระบบ (ครู)</a>
+                        <a href="{{ route('login') }}"
+                            class="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-gray-200 px-4 py-3 text-base font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all"><i class="fa-solid fa-user-graduate"></i> เข้าสู่ระบบ (นักเรียน)</a>
                         <a href="{{ route('register') }}"
                             class="btn-3d btn-3d--indigo rounded-xl px-4 py-3 text-base text-center">เริ่มต้นใช้งานฟรี</a>
-                    </div>
                 </div>
             </div>
         </header>
@@ -198,6 +201,11 @@
                         เปลี่ยนห้องเรียนธรรมดาให้เป็นความท้าทาย จัดการงาน มอบหมายคะแนน และใช้ระบบเกมมิฟิเคชัน
                         ทั้งหมดนี้ในแพลตฟอร์มเดียวที่คุณจะหลงรัก
                     </p>
+
+                    <!-- Rocket Image -->
+                    <div class="fade-up-enter delay-200 flex justify-center mt-8 mb-2">
+                        <img src="{{ asset('images/rocket.png') }}" alt="LiteLearning Rocket" class="w-28 h-28 md:w-36 md:h-36 drop-shadow-xl animate-bounce" style="animation-duration: 3s;">
+                    </div>
 
                     <div
                         class="fade-up-enter delay-300 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -474,8 +482,12 @@
                                     สมัครสมาชิกฟรี <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
                                 </a>
                                 <a href="{{ route('login') }}"
-                                    class="btn-3d btn-3d--dark w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg">
-                                    เข้าสู่ระบบ
+                                    class="btn-3d btn-3d--dark w-full sm:w-auto px-6 py-4 rounded-xl font-bold text-lg">
+                                    <i class="fa-solid fa-chalkboard-user mr-2"></i>ครู
+                                </a>
+                                <a href="{{ route('login') }}"
+                                    class="btn-3d btn-3d--dark w-full sm:w-auto px-6 py-4 rounded-xl font-bold text-lg">
+                                    <i class="fa-solid fa-user-graduate mr-2"></i>นักเรียน
                                 </a>
                             </div>
                         </div>

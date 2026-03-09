@@ -5,8 +5,8 @@
 
         {{-- Page Header --}}
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-white">{{ __('Settings') }}</h2>
-            <p class="text-sm text-indigo-200/70 mt-1">{{ __('Manage your account preferences') }}</p>
+            <h2 class="text-2xl font-bold text-gray-900">{{ __('Settings') }}</h2>
+            <p class="text-sm text-gray-500 mt-1">{{ __('Manage your account preferences') }}</p>
         </div>
 
 
@@ -19,7 +19,7 @@
                     <i class="fas fa-user-circle text-indigo-500"></i>
                 </div>
                 <div class="flex-1">
-                    <h3 class="text-base font-semibold text-gray-800">{{ __('Account Settings') }}</h3>
+                    <h3 class="text-base font-semibold text-white">{{ __('Account Settings') }}</h3>
 
                     <div class="mt-5 space-y-5">
 

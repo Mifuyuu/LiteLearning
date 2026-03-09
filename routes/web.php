@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\SidebarClassroomPreferenceController;
 use App\Livewire\Assignment\Create as AssignmentCreate;
 use App\Livewire\Assignment\Grade;
 use App\Livewire\Assignment\Show as AssignmentShow;
@@ -101,9 +100,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/theme-categories', \App\Livewire\Admin\ThemeCategories::class)->name('theme-categories');
         });
 
-        // Sidebar classroom preferences
-        Route::post('/sidebar/classrooms/reorder', [SidebarClassroomPreferenceController::class, 'reorder'])
-            ->name('sidebar.classrooms.reorder');
     }); // setup
 
 }); // auth

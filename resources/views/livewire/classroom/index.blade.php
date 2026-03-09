@@ -76,12 +76,6 @@
                                     <p class="text-xs text-gray-400 mt-0.5 truncate">{{ $classroom->section }}</p>
                                 @endif
                                 <div class="flex flex-wrap gap-1.5 mt-2">
-                                    @if($classroom->isOwnedBy(auth()->user()))
-                                        <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium"
-                                            style="background: #fef9c3; color: #854d0e;">
-                                            <i class="fas fa-crown text-[10px]"></i> ผู้สอน
-                                        </span>
-                                    @endif
                                     @if($classroom->is_archived)
                                         <span
                                             class="inline-flex items-center text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-500">
