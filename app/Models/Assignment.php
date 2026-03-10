@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Traits\BelongsToClassroom;
+use App\Models\Traits\HasCommentsAndAttachments;
+use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\UniqueConstraintViolationException;
 
 class Assignment extends Model
 {
-    use HasFactory;
+    use BelongsToClassroom, HasCommentsAndAttachments, HasFactory, HasSlug;
 
     protected $fillable = [
         'user_id',
@@ -42,66 +42,13 @@ class Assignment extends Model
         ];
     }
 
-    protected static function booted(): void
-    {
-        static::creating(function (Assignment $assignment) {
-            if (empty($assignment->slug)) {
-                $assignment->slug = self::generateUniqueSlug();
-            }
-        });
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
-    /**
-     * Generate a unique 16-char random slug.
-     * The DB unique index on `assignments.slug` acts as the final race-condition guard;
-     * if two processes generate the same slug simultaneously, the second INSERT will
-     * throw UniqueConstraintViolationException which should be handled by the caller.
-     */
-    public static function generateUniqueSlug(): string
-    {
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        do {
-            $slug = '';
-            for ($i = 0; $i < 16; $i++) {
-                $slug .= $chars[random_int(0, strlen($chars) - 1)];
-            }
-        } while (self::where('slug', $slug)->exists());
-
-        return $slug;
-    }
-
     // ──────────────────────────────────────────────
-    // Relationships
+    // Relationships (Assignment-specific)
     // ──────────────────────────────────────────────
-
-    public function classroom(): BelongsTo
-    {
-        return $this->belongsTo(Classroom::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function submissions(): HasMany
     {
         return $this->hasMany(Submission::class);
-    }
-
-    public function comments(): MorphMany
-    {
-        return $this->morphMany(Comment::class, 'commentable');
-    }
-
-    public function attachments(): MorphMany
-    {
-        return $this->morphMany(Attachment::class, 'attachable');
     }
 
     public function attendanceSession(): HasOne

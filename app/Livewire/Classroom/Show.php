@@ -134,7 +134,7 @@ class Show extends Component
             'name' => $this->name,
             'color' => $this->classroom->themeCategory?->color ?? '#8B5CF6',
         ]);
-        session()->flash('message', __('Classroom settings saved successfully.'));
+        $this->dispatch('notify', message: __('Classroom settings saved successfully.'));
     }
 
     public function toggleArchive(): void
@@ -146,7 +146,7 @@ class Show extends Component
         $this->classroom->is_archived = ! $this->classroom->is_archived;
         $this->classroom->save();
 
-        session()->flash('message', $this->classroom->is_archived ? __('Classroom archived.') : __('Classroom restored.'));
+        $this->dispatch('notify', message: $this->classroom->is_archived ? __('Classroom archived.') : __('Classroom restored.'));
     }
 
     public function deleteClassroom()

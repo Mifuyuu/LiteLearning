@@ -11,8 +11,8 @@ use App\Models\ThemeCategory;
 use App\Models\User;
 use App\Models\UserGamification;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -125,7 +125,6 @@ class DatabaseSeeder extends Seeder
                     'content' => $announcementData['content'],
                 ]);
 
-
                 foreach ($enrolledStudents->take(3) as $commentIndex => $student) {
                     Comment::create([
                         'commentable_type' => Announcement::class,
@@ -167,7 +166,6 @@ class DatabaseSeeder extends Seeder
                     'topic' => $assignmentData['topic'],
                     'allow_late_submission' => in_array($assignmentData['type'], ['project', 'file'], true),
                 ]);
-
 
                 foreach ($assignmentData['submission_states'] as $studentIndex => $status) {
                     $student = $enrolledStudents[$studentIndex] ?? null;

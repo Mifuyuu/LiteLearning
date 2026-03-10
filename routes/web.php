@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Assignment\Create as AssignmentCreate;
+use App\Livewire\Classroom\GradeReport;
 use App\Livewire\Assignment\Grade;
 use App\Livewire\Assignment\Show as AssignmentShow;
 use App\Livewire\Auth\Login;
@@ -77,6 +78,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/c/{classroom}/a/create', AssignmentCreate::class)->name('assignment.create');
             Route::get('/c/{classroom}/m/create', MaterialCreate::class)->name('material.create');
             Route::get('/c/{classroom}/a/{assignment}/g/{submission}', Grade::class)->name('assignment.grade');
+            Route::get('/c/{classroom}/grades', GradeReport::class)->name('classroom.grades');
         });
         Route::get('/c/{classroom}/a/{assignment}', AssignmentShow::class)->name('assignment.show');
         Route::get('/c/{classroom}/m/{material}', MaterialShow::class)->name('material.show');

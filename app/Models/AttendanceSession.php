@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AttendanceSession extends Model
 {
+    use HasSlug;
+
     protected $fillable = [
         'assignment_id',
+        'slug',
         'current_code',
         'is_active',
         'started_at',

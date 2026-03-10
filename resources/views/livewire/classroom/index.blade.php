@@ -1,4 +1,4 @@
-@section('page-title', __('Classrooms'))
+@section('page-title', auth()->user()->isTeacher() ? __('ชั้นเรียนของฉัน') : __('Classrooms'))
 <div
     class="px-6 py-6 max-w-7xl mx-auto animate__animated animate__fadeIn">
 
@@ -13,19 +13,24 @@
                     class="bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 text-base w-44" />
             </div>
 
-            {{-- Filter pills --}}
-            <div class="flex items-center gap-1.5">
-                <button wire:click="$set('filter','all')"
-                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'all' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">ทั้งหมด</button>
-                @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
-                    <button wire:click="$set('filter','teaching')"
-                        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'teaching' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">สอน</button>
-                @endif
-                <button wire:click="$set('filter','enrolled')"
-                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'enrolled' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">ลงทะเบียน</button>
-                <button wire:click="$set('filter','archived')"
-                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'archived' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">เก็บถาวร</button>
-            </div>
+            @if(auth()->user()->isTeacher())
+                {{-- Archived checkbox for teacher --}}
+                <label class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm cursor-pointer transition-all"
+                    :class="$wire.showArchived ? 'bg-indigo-50 text-indigo-700' : 'text-gray-500 hover:text-gray-700'">
+                    <input type="checkbox" wire:model.live="showArchived" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    {{ __('แสดงเก็บถาวร') }}
+                </label>
+            @else
+                {{-- Filter pills for student --}}
+                <div class="flex items-center gap-1.5">
+                    <button wire:click="$set('filter','all')"
+                        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'all' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">ทั้งหมด</button>
+                    <button wire:click="$set('filter','enrolled')"
+                        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'enrolled' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">ลงทะเบียน</button>
+                    <button wire:click="$set('filter','archived')"
+                        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'archived' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">เก็บถาวร</button>
+                </div>
+            @endif
 
             {{-- Count --}}
             <span class="ml-auto text-sm text-gray-400">{{ $classrooms->count() }} ห้องเรียน</span>

@@ -130,6 +130,7 @@ return new class extends Migration
 
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
+            $table->string('slug', 16)->unique()->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('classroom_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('title')->nullable();
@@ -180,6 +181,7 @@ return new class extends Migration
 
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
+            $table->string('slug', 16)->unique();
             $table->foreignId('assignment_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->text('content')->nullable();
@@ -195,6 +197,7 @@ return new class extends Migration
 
         Schema::create('attendance_sessions', function (Blueprint $table) {
             $table->id();
+            $table->string('slug', 16)->unique()->nullable();
             $table->foreignId('assignment_id')->constrained()->cascadeOnDelete();
             $table->string('current_code', 6)->nullable();
             $table->boolean('is_active')->default(false);

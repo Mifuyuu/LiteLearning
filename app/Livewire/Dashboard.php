@@ -78,11 +78,13 @@ class Dashboard extends Component
 
             if (! $submission) {
                 $statusCounts['missing']++;
+
                 continue;
             }
 
             if (array_key_exists($submission->status, $statusCounts)) {
                 $statusCounts[$submission->status]++;
+
                 continue;
             }
 

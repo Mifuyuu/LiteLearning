@@ -2,9 +2,12 @@
 
 namespace App\Livewire\Material;
 
+use App\Livewire\Concerns\HasEditableContent;
+use App\Livewire\Concerns\HasTopicSelector;
+use App\Livewire\Concerns\VerifiesContentAccess;
 use App\Models\Classroom;
 use App\Models\Material;
-use App\Models\Topic;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
@@ -16,59 +19,19 @@ use Mews\Purifier\Facades\Purifier;
 #[Layout('layouts.app')]
 class Show extends Component
 {
-    use WithFileUploads;
+    use HasEditableContent, HasTopicSelector, VerifiesContentAccess, WithFileUploads;
 
     #[Locked]
     public Classroom $classroom;
 
+    #[Locked]
     public Material $material;
-
-    // Edit mode
-    public bool $isEditTab = false;
-
-    public string $editTitle = '';
-
-    public string $editDescription = '';
-
-    public string $editTopic = '';
-
-    // Delete modal
-    public bool $showDeleteModal = false;
 
     public function mount(Classroom $classroom, Material $material): void
     {
-        // Verify material belongs to this classroom
-        abort_unless($material->classroom_id === $classroom->id, 404);
-
-        // Verify access
-        abort_unless($classroom->hasAccess(auth()->user()), 403);
-
         $this->classroom = $classroom;
         $this->material = $material;
-    }
-
-    // ──────────────────────────────────────────────
-    // Teacher: Edit material
-    // ──────────────────────────────────────────────
-
-    public function openEditTab(): void
-    {
-        $this->isEditTab = true;
-        $this->syncEditFields();
-    }
-
-    public function cancelEditTab(): void
-    {
-        $this->isEditTab = false;
-    }
-
-    private function syncEditFields(): void
-    {
-        $this->editTitle = $this->material->title;
-        $this->editDescription = $this->material->description ?? '';
-
-        // Materials don't have a topic column
-        $this->editTopic = '';
+        $this->verifyContentAccess($classroom, $material);
     }
 
     public function saveMaterial(): void
@@ -85,10 +48,7 @@ class Show extends Component
 
         $topicName = trim($this->editTopic);
         if ($topicName) {
-            Topic::firstOrCreate([
-                'classroom_id' => $this->classroom->id,
-                'name' => $topicName,
-            ]);
+            $this->resolveOrCreateTopic($topicName, $this->classroom->id);
         }
 
         $this->material->update([
@@ -100,20 +60,6 @@ class Show extends Component
         $this->material->refresh();
 
         session()->flash('message', __('Material updated'));
-    }
-
-    // ──────────────────────────────────────────────
-    // Teacher: Delete material
-    // ──────────────────────────────────────────────
-
-    public function openDeleteModal(): void
-    {
-        $this->showDeleteModal = true;
-    }
-
-    public function closeDeleteModal(): void
-    {
-        $this->showDeleteModal = false;
     }
 
     public function deleteMaterial(): void
@@ -133,9 +79,18 @@ class Show extends Component
         $this->redirect(route('classroom.show', $this->classroom->slug), navigate: true);
     }
 
-    public function getTopicsProperty()
+    protected function editableFields(): array
     {
-        return Topic::where('classroom_id', $this->classroom->id)->get();
+        return [
+            'editTitle' => 'title',
+            'editDescription' => 'description',
+            'editTopic' => '',
+        ];
+    }
+
+    protected function getEditableModel(): Model
+    {
+        return $this->material;
     }
 
     public function render()

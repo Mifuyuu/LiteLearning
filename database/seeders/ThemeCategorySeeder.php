@@ -115,6 +115,16 @@ class ThemeCategorySeeder extends Seeder
                 'color' => '#4A235A',
                 'planet_number' => 21,
             ],
+            [
+                'name' => 'ดาวเคราะห์ม่วงเข้ม',
+                'color' => '#821BFF',
+                'planet_number' => 22,
+            ],
+            [
+                'name' => 'ดาวเคราะห์เงิน',
+                'color' => '#979797',
+                'planet_number' => 23,
+            ],
         ];
 
         foreach ($themes as $theme) {

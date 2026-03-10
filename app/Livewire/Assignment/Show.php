@@ -2,11 +2,14 @@
 
 namespace App\Livewire\Assignment;
 
+use App\Livewire\Concerns\HasEditableContent;
+use App\Livewire\Concerns\HasTopicSelector;
+use App\Livewire\Concerns\VerifiesContentAccess;
 use App\Models\Assignment;
 use App\Models\Classroom;
 use App\Models\Submission;
-use App\Models\Topic;
 use App\Services\GamificationService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -15,7 +18,7 @@ use Mews\Purifier\Facades\Purifier;
 
 class Show extends Component
 {
-    use WithFileUploads;
+    use HasEditableContent, HasTopicSelector, VerifiesContentAccess, WithFileUploads;
 
     #[Locked]
     public Classroom $classroom;
@@ -30,9 +33,6 @@ class Show extends Component
 
     // File upload
     public $uploadedFiles = [];
-
-    // Edit mode
-    public bool $isEditTab = false;
 
     public string $editTitle = '';
 
@@ -54,9 +54,6 @@ class Show extends Component
 
     public bool $editAllowLateSubmission = true;
 
-    // Delete modal
-    public bool $showDeleteModal = false;
-
     // Teacher: submissions list
     public $submissions = null;
 
@@ -66,9 +63,7 @@ class Show extends Component
         $this->assignment = $assignment;
 
         // Verify assignment belongs to this classroom
-        abort_unless($assignment->classroom_id === $classroom->id, 404);
-        // Verify access
-        abort_unless($classroom->hasAccess(auth()->user()), 403);
+        $this->verifyContentAccess($classroom, $assignment);
 
         $user = auth()->user();
 
@@ -194,32 +189,28 @@ class Show extends Component
     }
 
     // ──────────────────────────────────────────────
-    // Teacher: Edit assignment
+    // HasEditableContent implementation
     // ──────────────────────────────────────────────
 
-    public function openEditTab(): void
+    protected function editableFields(): array
     {
-        $this->isEditTab = true;
-        $this->syncEditFields();
+        return [
+            'editTitle' => 'title',
+            'editDescription' => 'description',
+            'editMaxScore' => 'max_score',
+            'editExpReward' => 'exp_reward',
+            'editCoinReward' => 'coin_reward',
+            'editDueDate' => 'due_date',
+            'editStatus' => 'status',
+            'editType' => 'type',
+            'editTopic' => 'topic',
+            'editAllowLateSubmission' => 'allow_late_submission',
+        ];
     }
 
-    public function cancelEditTab(): void
+    protected function getEditableModel(): Model
     {
-        $this->isEditTab = false;
-    }
-
-    private function syncEditFields(): void
-    {
-        $this->editTitle = $this->assignment->title;
-        $this->editDescription = $this->assignment->description ?? '';
-        $this->editMaxScore = $this->assignment->max_score;
-        $this->editExpReward = $this->assignment->exp_reward;
-        $this->editCoinReward = $this->assignment->coin_reward;
-        $this->editDueDate = $this->assignment->due_date?->format('Y-m-d\TH:i');
-        $this->editStatus = $this->assignment->status;
-        $this->editType = $this->assignment->type;
-        $this->editTopic = $this->assignment->topic ?? '';
-        $this->editAllowLateSubmission = $this->assignment->allow_late_submission;
+        return $this->assignment;
     }
 
     public function saveAssignment(): void
@@ -241,10 +232,7 @@ class Show extends Component
 
         $topicName = trim($this->editTopic);
         if ($topicName) {
-            Topic::firstOrCreate([
-                'classroom_id' => $this->classroom->id,
-                'name' => $topicName,
-            ]);
+            $this->resolveOrCreateTopic($topicName, $this->classroom->id);
         }
 
         $this->assignment->update([
@@ -266,20 +254,6 @@ class Show extends Component
         session()->flash('message', __('Assignment updated'));
     }
 
-    // ──────────────────────────────────────────────
-    // Teacher: Delete assignment
-    // ──────────────────────────────────────────────
-
-    public function openDeleteModal(): void
-    {
-        $this->showDeleteModal = true;
-    }
-
-    public function closeDeleteModal(): void
-    {
-        $this->showDeleteModal = false;
-    }
-
     public function deleteAssignment(): void
     {
         abort_unless($this->classroom->canManageClassroom(auth()->user()), 403);
@@ -287,15 +261,6 @@ class Show extends Component
         $this->assignment->delete();
 
         $this->redirect(route('classroom.show', $this->classroom->slug), navigate: true);
-    }
-
-    // ──────────────────────────────────────────────
-    // Computed
-    // ──────────────────────────────────────────────
-
-    public function getTopicsProperty()
-    {
-        return Topic::where('classroom_id', $this->classroom->id)->get();
     }
 
     public function render()

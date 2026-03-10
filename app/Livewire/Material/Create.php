@@ -2,9 +2,10 @@
 
 namespace App\Livewire\Material;
 
+use App\Livewire\Concerns\HasFileUpload;
+use App\Livewire\Concerns\HasTopicSelector;
 use App\Models\Classroom;
 use App\Models\Material;
-use App\Models\Topic;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
@@ -15,7 +16,7 @@ use Mews\Purifier\Facades\Purifier;
 #[Layout('layouts.app')]
 class Create extends Component
 {
-    use WithFileUploads;
+    use HasFileUpload, HasTopicSelector, WithFileUploads;
 
     #[Locked]
     public Classroom $classroom;
@@ -26,10 +27,6 @@ class Create extends Component
 
     public string $topic = '';
 
-    public array $uploadedFiles = [];
-
-    public $file;
-
     public function mount(Classroom $classroom): void
     {
         /** @var \App\Models\User $user */
@@ -39,33 +36,14 @@ class Create extends Component
         $this->classroom = $classroom;
     }
 
-    public function getTopicsProperty(): \Illuminate\Database\Eloquent\Collection
+    protected function allowedMimes(): string
     {
-        return Topic::where('classroom_id', $this->classroom->id)->get();
+        return 'pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,zip,rar,txt,mp4,mp3';
     }
 
-    public function updatedFile(): void
+    protected function maxFileSizeKb(): int
     {
-        $this->validate([
-            'file' => 'file|max:25600|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,zip,rar,txt,mp4,mp3',
-        ]);
-
-        $this->uploadedFiles[] = [
-            'tmpPath' => $this->file->getRealPath(),
-            'name' => $this->file->getClientOriginalName(),
-            'size' => $this->file->getSize(),
-            'mime' => $this->file->getMimeType(),
-            'file' => $this->file,
-            'id' => $this->generateAttachmentId(),
-        ];
-
-        $this->file = null;
-    }
-
-    public function removeFile(int $index): void
-    {
-        unset($this->uploadedFiles[$index]);
-        $this->uploadedFiles = array_values($this->uploadedFiles);
+        return 25600;
     }
 
     public function save(): void
@@ -81,15 +59,8 @@ class Create extends Component
         ]);
 
         // Handle topic creation
-        $topicId = null;
         $topicName = trim($this->topic);
-        if ($topicName) {
-            $topicModel = Topic::firstOrCreate([
-                'classroom_id' => $this->classroom->id,
-                'name' => $topicName,
-            ]);
-            $topicId = $topicModel->id;
-        }
+        $topicId = $this->resolveOrCreateTopic($topicName, $this->classroom->id);
 
         // Create material
         $material = Material::create([

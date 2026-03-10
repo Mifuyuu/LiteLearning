@@ -14,14 +14,16 @@ class Index extends Component
 
     public string $filter = 'all';
 
+    public bool $showArchived = false;
+
     public function render()
     {
         /** @var User $user */
         $user = Auth::user();
 
-        if ($this->filter === 'teaching') {
+        if ($user->isTeacher()) {
             $classrooms = $user->ownedClassrooms()
-                ->where('is_archived', false)
+                ->when(! $this->showArchived, fn ($q) => $q->where('is_archived', false))
                 ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->with('teacher', 'themeCategory')
                 ->get();
@@ -44,20 +46,12 @@ class Index extends Component
                 ->get();
             $classrooms = $owned->merge($enrolled)->unique('id')->values();
         } else {
-            $classrooms = collect();
-            if ($user->isTeacher() || $user->isAdmin()) {
-                $classrooms = $user->ownedClassrooms()
-                    ->where('is_archived', false)
-                    ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                    ->with('teacher', 'themeCategory')
-                    ->get();
-            }
             $enrolled = $user->enrolledClassrooms()
                 ->where('is_archived', false)
                 ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->with('teacher', 'themeCategory')
                 ->get();
-            $classrooms = $classrooms->merge($enrolled)->unique('id')->values();
+            $classrooms = $enrolled;
         }
 
         return view('livewire.classroom.index', [

@@ -3,7 +3,7 @@
 
         {{-- Breadcrumb --}}
         <nav class="flex items-center text-sm text-gray-500 mb-6 flex-wrap gap-1">
-            <a href="{{ route('dashboard') }}" class="hover:text-indigo-600 transition-colors">{{ __('Classrooms') }}</a>
+            <a href="{{ route('classrooms') }}" class="hover:text-indigo-600 transition-colors">{{ auth()->user()->isTeacher() ? __('ชั้นเรียนของฉัน') : __('ห้องเรียน') }}</a>
             <i class="fas fa-chevron-right text-[10px] mx-1"></i>
             <a href="{{ route('classroom.show', $classroom) }}"
                 class="hover:text-indigo-600 transition-colors truncate max-w-[200px]">{{ $classroom->name }}</a>

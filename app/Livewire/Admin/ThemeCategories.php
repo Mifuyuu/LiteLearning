@@ -31,7 +31,7 @@ class ThemeCategories extends Component
         'form.color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
         'form.is_active' => 'boolean',
 
-        'form.planet_number' => 'required|integer|min:1|max:21',
+        'form.planet_number' => 'required|integer|min:1|max:23',
     ];
 
     protected array $messages = [
@@ -39,7 +39,7 @@ class ThemeCategories extends Component
         'form.color.regex' => 'กรุณาระบุสีในรูปแบบ hex (#RRGGBB)',
         'form.planet_number.required' => 'กรุณาเลือกดาวเคราะห์',
         'form.planet_number.min' => 'หมายเลขดาวเคราะห์ต้องอยู่ระหว่าง 1-21',
-        'form.planet_number.max' => 'หมายเลขดาวเคราะห์ต้องอยู่ระหว่าง 1-21',
+        'form.planet_number.max' => 'หมายเลขดาวเคราะห์ต้องอยู่ระหว่าง 1-23',
     ];
 
     public function updatingSearch(): void

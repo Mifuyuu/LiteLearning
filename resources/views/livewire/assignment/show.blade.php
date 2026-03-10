@@ -2,7 +2,7 @@
 @section('breadcrumb')
     <nav class="flex items-center space-x-1 text-sm">
         <a href="{{ route('classrooms') }}"
-            class="text-gray-500 hover:text-indigo-600 transition-colors">{{ __('Classrooms') }}</a>
+            class="text-gray-500 hover:text-indigo-600 transition-colors">{{ auth()->user()->isTeacher() ? __('ชั้นเรียนของฉัน') : __('ห้องเรียน') }}</a>
         <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
         <a href="{{ route('classroom.show', $classroom) }}" class="text-gray-500 hover:text-indigo-600 transition-colors"
             title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 20) }}</a>

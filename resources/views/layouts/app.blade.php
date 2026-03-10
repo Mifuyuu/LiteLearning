@@ -123,11 +123,13 @@
                         </a>
                     @endif
 
+                    @if(!auth()->user()->isTeacher())
                     <a href="{{ route('calendar') }}" wire:navigate
                         class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isCalendarActive) }}">
                         <i class="fas fa-calendar-alt w-5 mr-3 text-center"></i>
                         {{ __('Calendar') }}
                     </a>
+                    @endif
 
                     @if(auth()->user()->isStudent())
                         <a href="{{ route('achievements') }}" wire:navigate
@@ -153,13 +155,13 @@
                                 {{ __('Teaching') }}
                             </p>
                             <div class="mt-2 space-y-1">
-                                @php
-                                    $isMyClassesActive = request()->routeIs('classrooms') && request()->query('filter') === 'teaching';
-                                @endphp
-                                <a href="{{ route('classrooms') }}?filter=teaching" wire:navigate
+                @php
+                    $isMyClassesActive = request()->routeIs('classrooms');
+                @endphp
+                                <a href="{{ route('classrooms') }}" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isMyClassesActive) }}">
                                     <i class="fas fa-chalkboard-teacher w-5 mr-3 text-center"></i>
-                                    {{ __('My Classes') }}
+                                    {{ __('ชั้นเรียนของฉัน') }}
                                 </a>
                                 <a href="{{ route('to-review') }}" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $navItemClass($isToReviewActive) }}">
@@ -286,7 +288,10 @@
                     <div class="flex items-center space-x-3">
                         <!-- Create / Join buttons -->
                         @if(auth()->user()->isTeacher())
-                            @livewire('classroom.create')
+                            <button x-data @click="$dispatch('open-create-classroom')"
+                                class="btn-3d btn-3d--indigo px-4 py-2 text-sm font-medium rounded-lg">
+                                <i class="fas fa-plus mr-1.5"></i>{{ __('Create Class') }}
+                            </button>
                         @endif
                         @if(auth()->user()->isStudent())
                             @livewire('classroom.join-classroom')
@@ -435,6 +440,7 @@
     </script>
 
 
+    @livewire('classroom.create')
     @livewire('report-bug')
 </body>
 

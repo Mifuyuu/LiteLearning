@@ -6,6 +6,7 @@ use App\Models\Classroom;
 use App\Models\ThemeCategory;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Create extends Component
@@ -27,11 +28,13 @@ class Create extends Component
         'theme_category_id' => 'nullable|integer|exists:theme_categories,id',
     ];
 
+    #[On('open-create-classroom')]
     public function openModal(): void
     {
         $this->resetValidation();
         $this->reset(['name', 'section', 'description']);
         $this->theme_category_id = null;
+        $this->showModal = true;
     }
 
     public function create()

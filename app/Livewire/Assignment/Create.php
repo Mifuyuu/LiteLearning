@@ -2,10 +2,11 @@
 
 namespace App\Livewire\Assignment;
 
+use App\Livewire\Concerns\HasFileUpload;
+use App\Livewire\Concerns\HasTopicSelector;
 use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Classroom;
-use App\Models\Topic;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Locked;
@@ -15,7 +16,7 @@ use Mews\Purifier\Facades\Purifier;
 
 class Create extends Component
 {
-    use WithFileUploads;
+    use HasFileUpload, HasTopicSelector, WithFileUploads;
 
     #[Locked]
     public Classroom $classroom;
@@ -41,11 +42,6 @@ class Create extends Component
 
     public string $type = 'question';
 
-    // File upload - single file at a time, accumulated into uploadedFiles
-    public $file = null;
-
-    public array $uploadedFiles = [];
-
     public function mount(Classroom $classroom): void
     {
         $this->classroom = $classroom;
@@ -62,33 +58,14 @@ class Create extends Component
         }
     }
 
-    public function getTopicsProperty(): \Illuminate\Database\Eloquent\Collection
+    protected function allowedMimes(): string
     {
-        return Topic::where('classroom_id', $this->classroom->id)->get();
+        return Assignment::allowedSubmissionMimes();
     }
 
-    public function updatedFile(): void
+    protected function maxFileSizeKb(): int
     {
-        $this->validate([
-            'file' => 'file|max:25600|mimes:'.Assignment::allowedSubmissionMimes(),
-        ]);
-
-        if ($this->file) {
-            $this->uploadedFiles[] = [
-                'tmpPath' => $this->file->getRealPath(),
-                'name' => $this->file->getClientOriginalName(),
-                'size' => $this->file->getSize(),
-                'mime' => $this->file->getMimeType(),
-                'file' => $this->file,
-            ];
-            $this->file = null;
-        }
-    }
-
-    public function removeFile(int $index): void
-    {
-        unset($this->uploadedFiles[$index]);
-        $this->uploadedFiles = array_values($this->uploadedFiles);
+        return 25600;
     }
 
     public function save(): void
@@ -122,10 +99,7 @@ class Create extends Component
         // Handle topic
         $topicName = trim($this->topic);
         if ($topicName) {
-            Topic::firstOrCreate([
-                'classroom_id' => $this->classroom->id,
-                'name' => $topicName,
-            ]);
+            $this->resolveOrCreateTopic($topicName, $this->classroom->id);
         }
 
         // Upload attachments to S3
@@ -134,7 +108,7 @@ class Create extends Component
             if (isset($uploaded['file']) && $uploaded['file']) {
                 $path = $uploaded['file']->store('assignments/attachments/'.$this->classroom->id, 's3');
                 $attachments[] = [
-                    'id' => $this->generateAttachmentId(),
+                    'id' => $uploaded['id'],
                     'name' => $uploaded['name'],
                     'path' => $path,
                     'size' => $uploaded['size'],
@@ -197,16 +171,5 @@ class Create extends Component
     public function render(): \Illuminate\View\View
     {
         return view('livewire.assignment.create');
-    }
-
-    private function generateAttachmentId(): string
-    {
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        $id = '';
-        for ($i = 0; $i < 8; $i++) {
-            $id .= $chars[random_int(0, strlen($chars) - 1)];
-        }
-
-        return $id;
     }
 }

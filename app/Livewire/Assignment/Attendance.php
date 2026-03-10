@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Assignment;
 
+use App\Livewire\Concerns\VerifiesContentAccess;
 use App\Models\Assignment;
 use App\Models\AttendanceSession as AttendanceSessionModel;
 use App\Models\Classroom;
@@ -14,6 +15,8 @@ use Livewire\Component;
 #[Layout('layouts.app')]
 class Attendance extends Component
 {
+    use VerifiesContentAccess;
+
     #[Locked]
     public Classroom $classroom;
 
@@ -33,6 +36,9 @@ class Attendance extends Component
     {
         $this->classroom = $classroom;
         $this->assignment = $assignment;
+
+        // Verify assignment belongs to this classroom + user has access
+        $this->verifyContentAccess($classroom, $assignment);
 
         $this->session = $assignment->attendanceSession;
 

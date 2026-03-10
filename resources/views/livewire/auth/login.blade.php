@@ -18,7 +18,7 @@
                         <i class="fas fa-envelope text-gray-400"></i>
                     </div>
                     <input wire:model="email" type="email" id="email"
-                        class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors @error('email') border-red-500 @enderror"
                         placeholder="you@example.com">
                 </div>
                 @error('email') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
@@ -32,7 +32,7 @@
                         <i class="fas fa-lock text-gray-400"></i>
                     </div>
                     <input wire:model="password" type="password" id="password"
-                        class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors @error('password') border-red-500 @enderror"
                         placeholder="••••••••">
                 </div>
                 @error('password') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
@@ -49,8 +49,9 @@
 
             <!-- Submit -->
             <button type="submit"
-                class="btn-3d btn-3d--indigo w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <span wire:loading.remove wire:target="login"><i class="fas fa-arrow-right-to-bracket mr-2"></i>{{ __('Sign in') }}</span>
+                class="btn-3d btn-3d--indigo w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-indigo-500">
+                <span wire:loading.remove wire:target="login"><i
+                        class="fas fa-arrow-right-to-bracket mr-2"></i>{{ __('Sign in') }}</span>
                 <span wire:loading wire:target="login"><i class="fas fa-spinner fa-spin mr-2"></i>
                     {{ __('Signing in...') }}</span>
             </button>
