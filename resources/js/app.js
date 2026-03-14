@@ -9,74 +9,74 @@ import Placeholder from '@tiptap/extension-placeholder';
 window.Cropper = Cropper;
 
 document.addEventListener('alpine:init', () => {
-    Alpine.data('tiptapEditor', ({ wireModel, placeholder = '' }) => ({
-        _editor: null,
+    Alpine.data('tiptapEditor', ({ wireModel, placeholder = '' }) => {
+        let editor = null;
 
-        init() {
-            const self = this;
-            if (self._editor) return;
-            self._editor = new Editor({
-                element: self.$refs.editorEl,
-                extensions: [
-                    StarterKit.configure({
-                        link: { openOnClick: false },
-                    }),
-                    TextAlign.configure({ types: ['heading', 'paragraph'] }),
-                    Placeholder.configure({ placeholder }),
-                ],
-                content: self.$wire.get(wireModel) || '',
-                onBlur() { self.flush(); },
-            });
+        return {
+            init() {
+                const self = this;
+                editor = new Editor({
+                    element: self.$refs.editorEl,
+                    extensions: [
+                        StarterKit.configure({
+                            link: { openOnClick: false },
+                        }),
+                        TextAlign.configure({ types: ['heading', 'paragraph'] }),
+                        Placeholder.configure({ placeholder }),
+                    ],
+                    content: self.$wire.get(wireModel) || '',
+                    onBlur() { self.flush(); },
+                });
 
-            const form = self.$el.closest('form');
-            if (form) {
-                form.addEventListener('submit', () => self.flush(), { capture: true });
-            }
-
-            self.$watch('$wire.' + wireModel, (val) => {
-                if (self._editor && val !== self._editor.getHTML()) {
-                    self._editor.commands.setContent(val || '', false);
+                const form = self.$el.closest('form');
+                if (form) {
+                    form.addEventListener('submit', () => self.flush(), { capture: true });
                 }
-            });
-        },
 
-        flush() {
-            if (!this._editor) return;
-            const html = this._editor.getHTML();
-            const clean = html === '<p></p>' ? '' : html;
-            this.$wire.set(wireModel, clean);
-        },
+                self.$watch('$wire.' + wireModel, (val) => {
+                    if (editor && val !== editor.getHTML()) {
+                        editor.commands.setContent(val || '', false);
+                    }
+                });
+            },
 
-        isActive(type, opts = {}) {
-            return this._editor?.isActive(type, opts) ?? false;
-        },
+            flush() {
+                if (!editor) return;
+                const html = editor.getHTML();
+                this.$wire.set(wireModel, html === '<p></p>' ? '' : html);
+            },
 
-        toggleBold()       { this._editor?.chain().focus().toggleBold().run(); },
-        toggleItalic()     { this._editor?.chain().focus().toggleItalic().run(); },
-        toggleUnderline()  { this._editor?.chain().focus().toggleUnderline().run(); },
-        toggleStrike()     { this._editor?.chain().focus().toggleStrike().run(); },
-        toggleHeading(lvl) { this._editor?.chain().focus().toggleHeading({ level: lvl }).run(); },
-        setParagraph()     { this._editor?.chain().focus().setParagraph().run(); },
-        setAlign(val)      { this._editor?.chain().focus().setTextAlign(val).run(); },
-        toggleOrdered()    { this._editor?.chain().focus().toggleOrderedList().run(); },
-        toggleBullet()     { this._editor?.chain().focus().toggleBulletList().run(); },
-        clearFormat()      { this._editor?.chain().focus().unsetAllMarks().clearNodes().run(); },
+            isActive(type, opts = {}) {
+                return editor?.isActive(type, opts) ?? false;
+            },
 
-        setLink() {
-            const url = window.prompt('URL');
-            if (url === null) return;
-            if (url === '') {
-                this._editor?.chain().focus().extendMarkRange('link').unsetLink().run();
-            } else {
-                this._editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-            }
-        },
+            toggleBold()       { editor?.chain().focus().toggleBold().run(); },
+            toggleItalic()     { editor?.chain().focus().toggleItalic().run(); },
+            toggleUnderline()  { editor?.chain().focus().toggleUnderline().run(); },
+            toggleStrike()     { editor?.chain().focus().toggleStrike().run(); },
+            toggleHeading(lvl) { editor?.chain().focus().toggleHeading({ level: lvl }).run(); },
+            setParagraph()     { editor?.chain().focus().setParagraph().run(); },
+            setAlign(val)      { editor?.chain().focus().setTextAlign(val).run(); },
+            toggleOrdered()    { editor?.chain().focus().toggleOrderedList().run(); },
+            toggleBullet()     { editor?.chain().focus().toggleBulletList().run(); },
+            clearFormat()      { editor?.chain().focus().unsetAllMarks().clearNodes().run(); },
 
-        destroy() {
-            this._editor?.destroy();
-            this._editor = null;
-        },
-    }));
+            setLink() {
+                const url = window.prompt('URL');
+                if (url === null) return;
+                if (url === '') {
+                    editor?.chain().focus().extendMarkRange('link').unsetLink().run();
+                } else {
+                    editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+                }
+            },
+
+            destroy() {
+                editor?.destroy();
+                editor = null;
+            },
+        };
+    });
 });
 
 function setSidebarEmptyState(list) {
