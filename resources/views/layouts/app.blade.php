@@ -55,9 +55,6 @@
             }
         }
     </style>
-    <!-- Quill CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 </head>
 
 <body class="h-full overflow-hidden space-bg font-sans antialiased" x-data="{ sidebarOpen: true, mobileSidebar: false }">
