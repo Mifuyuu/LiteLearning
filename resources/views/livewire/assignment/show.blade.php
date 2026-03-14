@@ -12,7 +12,7 @@
     </nav>
 @endsection
 
-<div class="animate__animated animate__fadeIn" x-data="{ copiedToast: false, showDeleteModal: false }">
+<div class="max-w-6xl mx-auto animate__animated animate__fadeIn" x-data="{ copiedToast: false, showDeleteModal: false }">
     <!-- Back -->
     <a href="{{ route('classroom.show', $classroom) }}"
         class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
@@ -122,7 +122,7 @@
                     <!-- Description -->
                     <div class="p-6">
                         @if($assignment->description)
-                            <div class="prose prose-sm max-w-none text-gray-700 [&>p]:my-0 [&>p]:leading-relaxed">
+                            <div class="prose prose-sm max-w-none text-gray-700 [&_p]:my-0 [&_p]:leading-relaxed">
                                 {!! $assignment->description !!}
                             </div>
                         @endif
@@ -453,21 +453,46 @@
 
                             {{-- File upload zone for 'file' type --}}
                             @if($assignment->isFile())
-                                <div class="mb-3" x-data="{ isDragging: false }" @dragenter.prevent="isDragging = true"
-                                    @dragleave.prevent="isDragging = false" @dragover.prevent
-                                    @drop.prevent="isDragging = false; $refs.fileInput.files = $event.dataTransfer.files; $refs.fileInput.dispatchEvent(new Event('change'))">
+                                <div class="mb-3"
+                                    x-data="{
+                                        isDragging: false,
+                                        isUploading: false,
+                                        uploadFiles(files) {
+                                            if (!files.length) return;
+                                            this.isUploading = true;
+                                            let index = 0;
+                                            const uploadNext = () => {
+                                                if (index >= files.length) {
+                                                    this.isUploading = false;
+                                                    return;
+                                                }
+                                                $wire.upload('uploadedFile', files[index], () => {
+                                                    index++;
+                                                    uploadNext();
+                                                }, () => {
+                                                    this.isUploading = false;
+                                                });
+                                            };
+                                            uploadNext();
+                                        }
+                                    }"
+                                    @dragenter.prevent="isDragging = true"
+                                    @dragleave.prevent="isDragging = false"
+                                    @dragover.prevent
+                                    @drop.prevent="isDragging = false; uploadFiles($event.dataTransfer.files)">
                                     <label :class="isDragging ? 'border-indigo-400 bg-indigo-50' : 'border-gray-300 bg-gray-50'"
                                         class="flex flex-col items-center justify-center w-full py-6 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
                                         <i class="fas fa-cloud-arrow-up text-gray-400 text-2xl mb-2"></i>
                                         <p class="text-sm text-gray-500">{{ __('Drag files here or click to upload') }}</p>
                                         <p class="text-xs text-gray-400 mt-1">{{ __('Max file size: 25MB') }}</p>
-                                        <input x-ref="fileInput" wire:model="uploadedFiles" type="file" class="hidden" multiple>
+                                        <input x-ref="fileInput" type="file" class="hidden" multiple
+                                            @change="uploadFiles($event.target.files); $event.target.value = ''">
                                     </label>
-                                    <div wire:loading wire:target="uploadedFiles" class="mt-2 text-center">
+                                    <div x-show="isUploading" class="mt-2 text-center">
                                         <i class="fas fa-spinner fa-spin text-indigo-500 mr-1"></i>
                                         <span class="text-sm text-gray-500">{{ __('Uploading...') }}</span>
                                     </div>
-                                    @error('uploadedFiles.*') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                                    @error('uploadedFile') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                                 </div>
 
                                 {{-- Show uploaded submission files --}}

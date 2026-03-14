@@ -31,8 +31,8 @@ class Show extends Component
 
     public string $submissionContent = '';
 
-    // File upload
-    public $uploadedFiles = [];
+    // File upload (single file — S3 does not support multiple simultaneous uploads)
+    public $uploadedFile = null;
 
     public string $editTitle = '';
 
@@ -86,33 +86,32 @@ class Show extends Component
     // Student: File Upload
     // ──────────────────────────────────────────────
 
-    public function updatedUploadedFiles(): void
+    public function updatedUploadedFile(): void
     {
         $this->validate([
-            'uploadedFiles.*' => 'file|max:25600|mimes:'.Assignment::allowedSubmissionMimes(),
+            'uploadedFile' => 'file|max:25600|mimes:'.Assignment::allowedSubmissionMimes(),
         ]);
 
-        foreach ($this->uploadedFiles as $file) {
-            $path = $file->store('submissions/'.$this->assignment->id, 's3');
+        $file = $this->uploadedFile;
+        $path = $file->store('submissions/'.$this->assignment->id, 's3');
 
-            // Ensure we have a submission record
-            if (! $this->userSubmission) {
-                $this->userSubmission = $this->assignment->submissions()->create([
-                    'user_id' => auth()->id(),
-                    'status' => 'assigned',
-                ]);
-            }
-
-            $this->userSubmission->attachments()->create([
-                'file_name' => $file->getClientOriginalName(),
-                'file_path' => $path,
-                'file_type' => $file->getMimeType(),
-                'file_size' => $file->getSize(),
-                'uploaded_by' => auth()->id(),
+        // Ensure we have a submission record
+        if (! $this->userSubmission) {
+            $this->userSubmission = $this->assignment->submissions()->create([
+                'user_id' => auth()->id(),
+                'status' => 'assigned',
             ]);
         }
 
-        $this->uploadedFiles = [];
+        $this->userSubmission->attachments()->create([
+            'file_name' => $file->getClientOriginalName(),
+            'file_path' => $path,
+            'file_type' => $file->getMimeType(),
+            'file_size' => $file->getSize(),
+            'uploaded_by' => auth()->id(),
+        ]);
+
+        $this->uploadedFile = null;
         $this->userSubmission->refresh();
 
         session()->flash('message', __('File uploaded successfully'));

@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use App\Models\Traits\HasSlug;
 
 class Submission extends Model
 {
@@ -30,6 +30,16 @@ class Submission extends Model
             'turned_in_at' => 'datetime',
             'graded_at' => 'datetime',
         ];
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return $this->getKeyName();
+    }
+
+    public function getRouteKey(): mixed
+    {
+        return $this->getKey();
     }
 
     public function assignment(): BelongsTo

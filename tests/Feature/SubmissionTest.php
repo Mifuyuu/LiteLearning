@@ -190,4 +190,19 @@ class SubmissionTest extends TestCase
 
         $response->assertStatus(403);
     }
+
+    public function test_grade_route_uses_submission_id_instead_of_slug(): void
+    {
+        $submission = Submission::where('assignment_id', $this->assignment->id)
+            ->where('user_id', $this->student->id)
+            ->firstOrFail();
+
+        $url = route('assignment.grade', [
+            'classroom' => $this->classroom,
+            'assignment' => $this->assignment,
+            'submission' => $submission,
+        ]);
+
+        $this->assertStringEndsWith('/g/'.$submission->id, $url);
+    }
 }

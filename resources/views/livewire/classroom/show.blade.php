@@ -109,7 +109,7 @@
                             </div>
                             <div class="ql-snow mt-2">
                                 <div
-                                    class="ql-editor prose prose-sm max-w-none text-gray-700 [&>p]:my-0 [&>p]:leading-relaxed p-0!">
+                                    class="ql-editor prose prose-sm max-w-none text-gray-700 [&_p]:my-0 [&_p]:leading-relaxed p-0!">
                                     {!! $announcement->content !!}</div>
                             </div>
                         </div>
