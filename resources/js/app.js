@@ -3,14 +3,10 @@ import Sortable from 'sortablejs';
 import Cropper from 'cropperjs';
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
 import { TextAlign } from '@tiptap/extension-text-align';
-import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 
 window.Cropper = Cropper;
-
-// Alpine.js is loaded by Livewire automatically
 
 document.addEventListener('alpine:init', () => {
     Alpine.data('tiptapEditor', ({ wireModel, placeholder = '' }) => ({
@@ -18,26 +14,25 @@ document.addEventListener('alpine:init', () => {
 
         init() {
             const self = this;
+            if (self._editor) return;
             self._editor = new Editor({
                 element: self.$refs.editorEl,
                 extensions: [
-                    StarterKit,
-                    Underline,
+                    StarterKit.configure({
+                        link: { openOnClick: false },
+                    }),
                     TextAlign.configure({ types: ['heading', 'paragraph'] }),
-                    Link.configure({ openOnClick: false }),
                     Placeholder.configure({ placeholder }),
                 ],
                 content: self.$wire.get(wireModel) || '',
                 onBlur() { self.flush(); },
             });
 
-            // Flush before Livewire form submit
             const form = self.$el.closest('form');
             if (form) {
                 form.addEventListener('submit', () => self.flush(), { capture: true });
             }
 
-            // Re-sync content when Livewire updates (e.g. edit modal open)
             self.$watch('$wire.' + wireModel, (val) => {
                 if (self._editor && val !== self._editor.getHTML()) {
                     self._editor.commands.setContent(val || '', false);
