@@ -74,9 +74,11 @@
                     </h3>
                 </div>
                 <div class="p-6">
-                    <div wire:ignore
-                        x-data="quillEditor({ wireModel: 'description', placeholder: '{{ __('Add a description or instructions for this assignment...') }}' })">
-                        <div x-ref="editorEl" class="min-h-[150px]"></div>
+                    <div wire:ignore x-data="tiptapEditor({ wireModel: 'description', placeholder: '{{ __('Add a description or instructions for this assignment...') }}' })">
+                        <x-tiptap-toolbar />
+                        <div x-ref="editorEl"
+                            class="min-h-[150px] border border-gray-200 rounded-b-lg p-3 focus:outline-none prose prose-sm max-w-none">
+                        </div>
                     </div>
 
                     @error('description')

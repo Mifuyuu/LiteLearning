@@ -117,8 +117,11 @@
                             {{-- Description (Tiptap editor) --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Description') }}</label>
-                                <div wire:ignore x-data="quillEditor({ wireModel: 'editDescription', placeholder: '{{ __('Add a description...') }}' })">
-                                    <div x-ref="editorEl" class="min-h-[150px]"></div>
+                                <div wire:ignore x-data="tiptapEditor({ wireModel: 'editDescription', placeholder: '{{ __('Add a description...') }}' })">
+                                    <x-tiptap-toolbar />
+                                    <div x-ref="editorEl"
+                                        class="min-h-[150px] border border-gray-200 rounded-b-lg p-3 focus:outline-none prose prose-sm max-w-none">
+                                    </div>
                                 </div>
                                 @error('editDescription') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                             </div>

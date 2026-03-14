@@ -306,9 +306,11 @@
                         @if($editType !== 'attendance')
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Description') }}</label>
-                                <div wire:ignore
-                                    x-data="quillEditor({ wireModel: 'editDescription', placeholder: '{{ __('Add a description or instructions for this assignment...') }}' })">
-                                    <div x-ref="editorEl" class="min-h-[150px]"></div>
+                                <div wire:ignore x-data="tiptapEditor({ wireModel: 'editDescription', placeholder: '{{ __('Add a description or instructions for this assignment...') }}' })">
+                                    <x-tiptap-toolbar />
+                                    <div x-ref="editorEl"
+                                        class="min-h-[150px] border border-gray-200 rounded-b-lg p-3 focus:outline-none prose prose-sm max-w-none">
+                                    </div>
                                 </div>
                                 @error('editDescription') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                             </div>

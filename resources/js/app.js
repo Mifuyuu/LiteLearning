@@ -1,62 +1,88 @@
 import './bootstrap';
 import Sortable from 'sortablejs';
 import Cropper from 'cropperjs';
+import { Editor } from '@tiptap/core';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import { TextAlign } from '@tiptap/extension-text-align';
+import Link from '@tiptap/extension-link';
+import Placeholder from '@tiptap/extension-placeholder';
 
 window.Cropper = Cropper;
 
 // Alpine.js is loaded by Livewire automatically
 
 document.addEventListener('alpine:init', () => {
-	Alpine.data('quillEditor', ({ wireModel, placeholder = '' }) => ({
-		_quill: null,
+    Alpine.data('tiptapEditor', ({ wireModel, placeholder = '' }) => ({
+        _editor: null,
 
-		init() {
-			const self = this;
-			const el = self.$refs.editorEl;
+        init() {
+            const self = this;
+            self._editor = new Editor({
+                element: self.$refs.editorEl,
+                extensions: [
+                    StarterKit,
+                    Underline,
+                    TextAlign.configure({ types: ['heading', 'paragraph'] }),
+                    Link.configure({ openOnClick: false }),
+                    Placeholder.configure({ placeholder }),
+                ],
+                content: self.$wire.get(wireModel) || '',
+                onBlur() { self.flush(); },
+                onUpdate() { self.flush(); },
+            });
 
-		self._quill = new window.Quill(el, {
-				theme: 'snow',
-				modules: {
-					toolbar: [
-						[{ header: [1, 2, 3, false] }],
-						['bold', 'italic', 'underline', 'strike'],
-						[{ align: [] }],
-						[{ list: 'ordered' }, { list: 'bullet' }],
-						['link'],
-						['clean'],
-					],
-					clipboard: { matchVisual: false },
-				},
-				placeholder,
-			});
+            // Flush before Livewire form submit
+            const form = self.$el.closest('form');
+            if (form) {
+                form.addEventListener('submit', () => self.flush(), { capture: true });
+            }
 
-			// Load initial content
-			const initial = self.$wire.get(wireModel) || '';
-			if (initial) {
-				self._quill.root.innerHTML = initial;
-			}
+            // Re-sync content when Livewire updates (e.g. edit modal open)
+            self.$watch('$wire.' + wireModel, (val) => {
+                if (self._editor && val !== self._editor.getHTML()) {
+                    self._editor.commands.setContent(val || '', false);
+                }
+            });
+        },
 
-			// Sync to Livewire on blur
-			self._quill.root.addEventListener('blur', () => self.flush());
+        flush() {
+            if (!this._editor) return;
+            const html = this._editor.getHTML();
+            const clean = html === '<p></p>' ? '' : html;
+            this.$wire.set(wireModel, clean);
+        },
 
-			// Also flush when the parent form submits (before Livewire sends the request)
-			const form = self.$el.closest('form');
-			if (form) {
-				form.addEventListener('submit', () => self.flush(), { capture: true });
-			}
-		},
+        isActive(type, opts = {}) {
+            return this._editor?.isActive(type, opts) ?? false;
+        },
 
-		flush() {
-			if (!this._quill) return;
-			const html = this._quill.root.innerHTML;
-			const clean = html === '<p><br></p>' ? '' : html;
-			this.$wire.set(wireModel, clean);
-		},
+        toggleBold()       { this._editor?.chain().focus().toggleBold().run(); },
+        toggleItalic()     { this._editor?.chain().focus().toggleItalic().run(); },
+        toggleUnderline()  { this._editor?.chain().focus().toggleUnderline().run(); },
+        toggleStrike()     { this._editor?.chain().focus().toggleStrike().run(); },
+        toggleHeading(lvl) { this._editor?.chain().focus().toggleHeading({ level: lvl }).run(); },
+        setParagraph()     { this._editor?.chain().focus().setParagraph().run(); },
+        setAlign(val)      { this._editor?.chain().focus().setTextAlign(val).run(); },
+        toggleOrdered()    { this._editor?.chain().focus().toggleOrderedList().run(); },
+        toggleBullet()     { this._editor?.chain().focus().toggleBulletList().run(); },
+        clearFormat()      { this._editor?.chain().focus().unsetAllMarks().clearNodes().run(); },
 
-		destroy() {
-			this._quill = null;
-		},
-	}));
+        setLink() {
+            const url = window.prompt('URL');
+            if (url === null) return;
+            if (url === '') {
+                this._editor?.chain().focus().extendMarkRange('link').unsetLink().run();
+            } else {
+                this._editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+            }
+        },
+
+        destroy() {
+            this._editor?.destroy();
+            this._editor = null;
+        },
+    }));
 });
 
 function setSidebarEmptyState(list) {
