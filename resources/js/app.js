@@ -29,7 +29,6 @@ document.addEventListener('alpine:init', () => {
                 ],
                 content: self.$wire.get(wireModel) || '',
                 onBlur() { self.flush(); },
-                onUpdate() { self.flush(); },
             });
 
             // Flush before Livewire form submit
