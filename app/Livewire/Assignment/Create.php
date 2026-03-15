@@ -8,6 +8,7 @@ use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Classroom;
 use App\Services\GamificationService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -80,7 +81,7 @@ class Create extends Component
             'coin_reward' => 'integer|min:0|max:9999',
             'type' => 'required|in:announcement,attendance,file,question,material,topic,project',
             'due_date' => 'nullable|date',
-            'published_at' => 'nullable|date|after:now',
+            'published_at' => ['nullable', 'date', 'after:now', 'before:'.now()->addYears(5)->toDateTimeString()],
             'status' => 'required|in:draft,published,scheduled',
             'topic' => 'nullable|string|max:255',
             'allow_late_submission' => 'boolean',
@@ -106,7 +107,7 @@ class Create extends Component
             $topicId = $this->resolveOrCreateTopic($topicName, $this->classroom->id);
         }
 
-        if ($this->published_at && now()->lt(\Carbon\Carbon::parse($this->published_at))) {
+        if ($this->published_at && now()->lt(Carbon::parse($this->published_at))) {
             $this->status = 'scheduled';
         }
 

@@ -199,6 +199,19 @@
                         </datalist>
                     </div>
 
+                    <!-- Auto-Publish At -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            <i class="fas fa-clock mr-1.5 text-gray-400"></i>{{ __('Auto-Publish At') }}
+                        </label>
+                        <input type="datetime-local" wire:model="published_at"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                        <p class="text-xs text-gray-500 mt-1">{{ __('Leave blank to publish manually.') }}</p>
+                        @error('published_at')
+                            <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <!-- Due Date + EXP + Coin row -->
                     @if(!in_array($type, ['material', 'topic']))
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -208,14 +221,6 @@
                                 </label>
                                 <input wire:model="due_date" type="datetime-local"
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                                    <i class="fas fa-clock mr-1.5 text-gray-400"></i>{{ __('Auto-Publish At') }}
-                                </label>
-                                <input type="datetime-local" wire:model="published_at"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
-                                <p class="text-xs text-gray-500 mt-1">{{ __('Leave blank to publish manually.') }}</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
