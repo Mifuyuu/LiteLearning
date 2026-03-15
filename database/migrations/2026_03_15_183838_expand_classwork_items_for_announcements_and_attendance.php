@@ -103,14 +103,13 @@ return new class extends Migration
             JOIN classwork_items ci ON ci.id = a.classwork_item_id
         ");
 
-        // 7. Set attendance_sessions.classwork_item_id using the assignment relationship
+        // 7. Set attendance_sessions.classwork_item_id by matching the backfilled slug
         DB::statement("
             UPDATE attendance_sessions
             SET classwork_item_id = (
-                SELECT ci.id FROM classwork_items ci
-                JOIN assignments a ON a.classwork_item_id = ci.id
-                WHERE a.id = attendance_sessions.assignment_id
-                  AND ci.type = 'attendance'
+                SELECT id FROM classwork_items
+                WHERE classwork_items.slug = attendance_sessions.slug
+                  AND classwork_items.type = 'attendance'
                 LIMIT 1
             )
         ");
