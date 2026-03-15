@@ -2,63 +2,45 @@
 
 namespace App\Models\Traits;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 trait HasSlug
 {
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
-    /**
-     * Return the slug for URL generation.
-     * Falls back to id if slug is not yet set (legacy records).
-     */
-    public function getRouteKey(): string|int
-    {
-        return $this->slug ?? $this->getKey();
-    }
-
-    /**
-     * Resolve route binding by slug first, then by id (legacy fallback).
-     * When found by id, backfill the slug automatically.
-     */
-    public function resolveRouteBinding($value, $field = null): ?Model
-    {
-        $field = $field ?? $this->getRouteKeyName();
-
-        $model = $this->where($field, $value)->first();
-
-        // Fallback: try by primary key for legacy records without slugs
-        if (! $model && is_numeric($value)) {
-            $model = $this->where($this->getKeyName(), $value)->first();
-
-            // Backfill slug for legacy record
-            if ($model && empty($model->slug)) {
-                $model->slug = static::generateUniqueSlug();
-                $model->saveQuietly();
-            }
-        }
-
-        return $model;
-    }
-
     public static function bootHasSlug(): void
     {
-        static::creating(function ($model): void {
+        static::creating(function ($model) {
             if (empty($model->slug)) {
-                $model->slug = static::generateUniqueSlug();
+                $model->slug = static::generateSlugForModel($model);
             }
         });
     }
 
-    public static function generateUniqueSlug(): string
+    public static function generateUniqueSlug(string $title): string
     {
-        do {
-            $slug = strtolower(Str::random(16));
-        } while (static::where('slug', $slug)->exists());
+        $baseSlug = Str::slug($title);
+        $slug = $baseSlug ?: Str::random(8);
+        $counter = 2;
+
+        while (\App\Models\ClassworkItem::where('slug', $slug)->exists()) {
+            $slug = $baseSlug.'-'.$counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    private static function generateSlugForModel(object $model): string
+    {
+        $base = isset($model->title) && $model->title
+            ? Str::slug($model->title)
+            : Str::random(8);
+        $slug = $base ?: Str::random(8);
+        $counter = 2;
+
+        while (static::where('slug', $slug)->exists()) {
+            $slug = $base.'-'.$counter;
+            $counter++;
+        }
 
         return $slug;
     }

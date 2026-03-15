@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Str;
 
 class Classroom extends Model
@@ -116,14 +116,51 @@ class Classroom extends Model
             ->withTimestamps();
     }
 
-    public function announcements(): HasMany
+    public function announcements(): HasManyThrough
     {
-        return $this->hasMany(Announcement::class)->latest();
+        return $this->hasManyThrough(
+            Announcement::class,
+            ClassworkItem::class,
+            'classroom_id',
+            'classwork_item_id',
+            'id',
+            'id'
+        )->where('classwork_items.type', 'announcement')
+            ->latest('classwork_items.created_at');
     }
 
-    public function assignments(): HasMany
+    public function classworkItems(): HasMany
     {
-        return $this->hasMany(Assignment::class)->latest();
+        return $this->hasMany(ClassworkItem::class)->latest();
+    }
+
+    public function classworkAssignments(): HasMany
+    {
+        return $this->hasMany(ClassworkItem::class)->where('classwork_items.type', 'assignment');
+    }
+
+    public function assignments(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Assignment::class,
+            ClassworkItem::class,
+            'classroom_id',      // FK on classwork_items
+            'classwork_item_id', // FK on assignments
+            'id',                // local key on classrooms
+            'id'                 // local key on classwork_items
+        )->latest('classwork_items.created_at');
+    }
+
+    public function materials(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Material::class,
+            ClassworkItem::class,
+            'classroom_id',
+            'classwork_item_id',
+            'id',
+            'id'
+        )->latest('classwork_items.created_at');
     }
 
     public function topics(): HasMany

@@ -57,12 +57,12 @@ class Dashboard extends Component
 
         $assignments = Assignment::query()
             ->with([
-                'classroom.themeCategory',
+                'classworkItem.classroom.themeCategory',
                 'submissions' => fn ($query) => $query->where('user_id', $user->id),
             ])
-            ->whereIn('classroom_id', $classroomIds)
+            ->whereHas('classworkItem', fn ($q) => $q->whereIn('classroom_id', $classroomIds))
             ->published()
-            ->whereNotIn('type', ['material', 'announcement', 'topic'])
+            ->whereNotIn('assignments.type', ['material', 'announcement', 'topic'])
             ->orderBy('due_date')
             ->get();
 
@@ -170,7 +170,6 @@ class Dashboard extends Component
         foreach ($classrooms as $classroom) {
             $assignments = $classroom->assignments()
                 ->published()
-                ->where('type', '!=', 'material')
                 ->where('due_date', '>=', now())
                 ->orderBy('due_date')
                 ->take(5)
@@ -184,15 +183,17 @@ class Dashboard extends Component
         if ($user->isTeacher() || $user->isAdmin()) {
             $ownedClassrooms = $user->ownedClassrooms()
                 ->where('is_archived', false)
-                ->withCount(['students', 'assignments'])
+                ->withCount(['students', 'classworkAssignments as assignments_count'])
                 ->get();
 
             $totalStudents = $ownedClassrooms->sum('students_count');
             $totalAssignments = $ownedClassrooms->sum('assignments_count');
 
-            // Single aggregate query via direct classroom_id
-            $assignmentIds = \App\Models\Assignment::whereIn('classroom_id', $ownedClassrooms->pluck('id'))
-                ->pluck('id');
+            // Single aggregate query via classwork_items join
+            $assignmentIds = \App\Models\Assignment::whereHas(
+                'classworkItem',
+                fn ($q) => $q->whereIn('classroom_id', $ownedClassrooms->pluck('id'))
+            )->pluck('id');
 
             $pendingSubmissions = Submission::whereIn('assignment_id', $assignmentIds)
                 ->where('status', 'turned_in')->count();

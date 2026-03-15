@@ -4,6 +4,7 @@ namespace App\Livewire\Assignment;
 
 use App\Models\Assignment;
 use App\Models\Classroom;
+use App\Models\ClassworkItem;
 use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -36,9 +37,12 @@ class Grade extends Component
         }
 
         // Ensure assignment belongs to classroom (prevent IDOR)
-        if ($assignment->classroom_id !== $classroom->id) {
-            abort(404);
-        }
+        abort_unless(
+            ClassworkItem::where('id', $assignment->classwork_item_id)
+                ->where('classroom_id', $classroom->id)
+                ->exists(),
+            404
+        );
         if ($submission->assignment_id !== $assignment->id) {
             abort(404);
         }

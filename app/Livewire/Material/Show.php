@@ -47,13 +47,15 @@ class Show extends Component
         ]);
 
         $topicName = trim($this->editTopic);
+        $topicId = null;
         if ($topicName) {
-            $this->resolveOrCreateTopic($topicName, $this->classroom->id);
+            $topicId = $this->resolveOrCreateTopic($topicName, $this->classroom->id);
         }
 
-        $this->material->update([
+        $this->material->classworkItem->update([
             'title' => $this->editTitle,
             'description' => $this->editDescription ? Purifier::clean($this->editDescription) : null,
+            'topic_id' => $topicId,
         ]);
 
         $this->isEditTab = false;
@@ -84,7 +86,6 @@ class Show extends Component
         return [
             'editTitle' => 'title',
             'editDescription' => 'description',
-            'editTopic' => '',
         ];
     }
 

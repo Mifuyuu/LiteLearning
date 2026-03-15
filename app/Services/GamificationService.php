@@ -253,10 +253,13 @@ class GamificationService
             throw new GamificationException(__('You do not own this item.'));
         }
 
-        if ($item->type === 'name_color') {
-            $user->update(['active_name_color' => $item->value]);
-        } elseif ($item->type === 'avatar_frame') {
-            $user->update(['active_avatar_frame' => $item->value]);
-        }
+        DB::transaction(function () use ($user, $item) {
+            $user->storeItems()
+                ->wherePivot('is_active', true)
+                ->where('type', $item->type)
+                ->each(fn ($owned) => $user->storeItems()->updateExistingPivot($owned->id, ['is_active' => false]));
+
+            $user->storeItems()->updateExistingPivot($item->id, ['is_active' => true]);
+        });
     }
 }

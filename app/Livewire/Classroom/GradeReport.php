@@ -2,9 +2,8 @@
 
 namespace App\Livewire\Classroom;
 
-use App\Models\Assignment;
 use App\Models\Classroom;
-use App\Models\User;
+use App\Models\Topic;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -40,11 +39,18 @@ class GradeReport extends Component
     private function getAssignments(): Collection
     {
         return $this->classroom->assignments()
+            ->with('classworkItem.topic')
             ->published()
             ->when($this->filterType, fn ($q) => $q->ofType($this->filterType))
-            ->when($this->filterTopic, fn ($q) => $q->where('topic', $this->filterTopic))
-            ->whereNotIn('type', ['material', 'announcement', 'topic'])
-            ->orderBy('created_at')
+            ->when($this->filterTopic, fn ($q) => $q->whereHas(
+                'classworkItem',
+                fn ($q2) => $q2->whereHas(
+                    'topic',
+                    fn ($q3) => $q3->where('name', $this->filterTopic)
+                )
+            ))
+            ->whereNotIn('assignments.type', ['material', 'announcement', 'topic'])
+            ->orderBy('assignments.created_at')
             ->get();
     }
 
@@ -125,9 +131,9 @@ class GradeReport extends Component
         if ($totalSlots === 0) {
             return [
                 'assignment_count' => 0,
-                'submission_rate'  => 0,
-                'avg_score'        => null,
-                'pending_grading'  => 0,
+                'submission_rate' => 0,
+                'avg_score' => null,
+                'pending_grading' => 0,
             ];
         }
 
@@ -152,9 +158,9 @@ class GradeReport extends Component
 
         return [
             'assignment_count' => $assignments->count(),
-            'submission_rate'  => $totalSlots > 0 ? round($turnedIn / $totalSlots * 100) : 0,
-            'avg_score'        => $avgScore,
-            'pending_grading'  => $pendingGrading,
+            'submission_rate' => $totalSlots > 0 ? round($turnedIn / $totalSlots * 100) : 0,
+            'avg_score' => $avgScore,
+            'pending_grading' => $pendingGrading,
         ];
     }
 
@@ -164,12 +170,12 @@ class GradeReport extends Component
 
     public function getTopicsProperty(): Collection
     {
-        return $this->classroom->assignments()
-            ->published()
-            ->whereNotNull('topic')
-            ->where('topic', '!=', '')
-            ->distinct()
-            ->pluck('topic');
+        return Topic::where('classroom_id', $this->classroom->id)
+            ->whereHas('classworkItems', function ($q) {
+                $q->where('classroom_id', $this->classroom->id)
+                    ->where('type', 'assignment');
+            })
+            ->pluck('name');
     }
 
     public function getTypesProperty(): array
@@ -190,7 +196,7 @@ class GradeReport extends Component
 
         $filename = 'grade_report_'.now()->format('Ymd_His').'.csv';
 
-        return response()->streamDownload(function () use ($classroom, $assignments, $students, $scoreMap) {
+        return response()->streamDownload(function () use ($assignments, $students, $scoreMap) {
             $handle = fopen('php://output', 'w');
 
             // UTF-8 BOM for Excel
@@ -242,11 +248,11 @@ class GradeReport extends Component
 
         return view('livewire.classroom.grade-report', [
             'assignments' => $assignments,
-            'students'    => $students,
-            'scoreMap'    => $scoreMap,
-            'stats'       => $this->stats,
-            'topics'      => $this->topics,
-            'types'       => $this->types,
+            'students' => $students,
+            'scoreMap' => $scoreMap,
+            'stats' => $this->stats,
+            'topics' => $this->topics,
+            'types' => $this->types,
         ])->title($this->classroom->name.' — '.__('Grade Report'));
     }
 }

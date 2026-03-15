@@ -13,6 +13,8 @@ document.addEventListener('alpine:init', () => {
         let editor = null;
 
         return {
+            updatedAt: 0,
+
             init() {
                 const self = this;
                 editor = new Editor({
@@ -26,6 +28,7 @@ document.addEventListener('alpine:init', () => {
                     ],
                     content: self.$wire.get(wireModel) || '',
                     onBlur() { self.flush(); },
+                    onTransaction() { self.updatedAt++; },
                 });
 
                 const form = self.$el.closest('form');
@@ -47,6 +50,7 @@ document.addEventListener('alpine:init', () => {
             },
 
             isActive(type, opts = {}) {
+                void this.updatedAt;
                 return editor?.isActive(type, opts) ?? false;
             },
 
@@ -61,14 +65,32 @@ document.addEventListener('alpine:init', () => {
             toggleBullet()     { editor?.chain().focus().toggleBulletList().run(); },
             clearFormat()      { editor?.chain().focus().unsetAllMarks().clearNodes().run(); },
 
-            setLink() {
-                const url = window.prompt('URL');
-                if (url === null) return;
-                if (url === '') {
+            showLinkModal: false,
+            linkUrl: '',
+
+            openLinkModal() {
+                this.linkUrl = editor?.getAttributes('link').href || '';
+                this.showLinkModal = true;
+                this.$nextTick(() => {
+                    this.$refs.linkInput?.focus();
+                });
+            },
+
+            saveLink() {
+                const url = this.linkUrl.trim();
+                this.showLinkModal = false;
+                if (!url) {
                     editor?.chain().focus().extendMarkRange('link').unsetLink().run();
                 } else {
                     editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
                 }
+                this.linkUrl = '';
+            },
+
+            removeLink() {
+                this.showLinkModal = false;
+                editor?.chain().focus().extendMarkRange('link').unsetLink().run();
+                this.linkUrl = '';
             },
 
             destroy() {

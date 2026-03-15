@@ -8,6 +8,7 @@ use App\Models\AttendanceSession as AttendanceSessionModel;
 use App\Models\Classroom;
 use App\Models\Submission;
 use App\Services\GamificationService;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -61,10 +62,23 @@ class Attendance extends Component
         );
 
         if (! $this->session) {
-            $this->session = AttendanceSessionModel::create([
-                'assignment_id' => $this->assignment->id,
-                'is_active' => false,
-            ]);
+            DB::transaction(function (): void {
+                $assignmentItem = $this->assignment->classworkItem;
+                $classworkItem = \App\Models\ClassworkItem::create([
+                    'type' => 'attendance',
+                    'classroom_id' => $assignmentItem->classroom_id,
+                    'user_id' => $assignmentItem->user_id,
+                    'topic_id' => $assignmentItem->topic_id,
+                    'title' => $assignmentItem->title,
+                    'slug' => \App\Models\Traits\HasSlug::generateUniqueSlug($assignmentItem->title),
+                    'description' => $assignmentItem->description,
+                ]);
+
+                $this->session = AttendanceSessionModel::create([
+                    'classwork_item_id' => $classworkItem->id,
+                    'is_active' => false,
+                ]);
+            });
         }
 
         $this->session->start();

@@ -15,5 +15,13 @@ class UserStoreItemPivot extends Pivot
     protected $fillable = [
         'user_id',
         'store_item_id',
+        'is_active',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
 }

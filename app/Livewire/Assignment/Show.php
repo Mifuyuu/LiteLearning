@@ -202,7 +202,6 @@ class Show extends Component
             'editDueDate' => 'due_date',
             'editStatus' => 'status',
             'editType' => 'type',
-            'editTopic' => 'topic',
             'editAllowLateSubmission' => 'allow_late_submission',
         ];
     }
@@ -230,20 +229,24 @@ class Show extends Component
         ]);
 
         $topicName = trim($this->editTopic);
+        $topicId = null;
         if ($topicName) {
-            $this->resolveOrCreateTopic($topicName, $this->classroom->id);
+            $topicId = $this->resolveOrCreateTopic($topicName, $this->classroom->id);
         }
 
-        $this->assignment->update([
+        $this->assignment->classworkItem->update([
             'title' => $this->editTitle,
             'description' => $this->editDescription ? Purifier::clean($this->editDescription) : null,
+            'topic_id' => $topicId,
+        ]);
+
+        $this->assignment->update([
             'max_score' => $this->editMaxScore,
             'exp_reward' => $this->editExpReward,
             'coin_reward' => $this->editCoinReward,
             'due_date' => $this->editDueDate,
             'status' => $this->editStatus,
             'type' => $this->editType,
-            'topic' => $topicName ?: null,
             'allow_late_submission' => $this->editAllowLateSubmission,
         ]);
 

@@ -9,16 +9,23 @@ erDiagram
         datetime email_verified_at
         varchar password
         varchar role "admin | teacher | student"
+        boolean is_active "default: true"
+        datetime setup_completed_at
         varchar avatar
         varchar cover_image
         text bio
-        varchar locale "default: en"
-        int ui_scale "default: 100"
-        varchar active_name_color
-        varchar active_avatar_frame
-        boolean is_active "default: true"
-        datetime setup_completed_at
         varchar remember_token
+        varchar locale "default: en"
+        datetime created_at
+        datetime updated_at
+    }
+
+    theme_categories {
+        int id PK
+        varchar name
+        varchar color "7 chars, default: #6B3FBF"
+        boolean is_active "default: true"
+        tinyint planet_number "default: 1"
         datetime created_at
         datetime updated_at
     }
@@ -28,25 +35,11 @@ erDiagram
         int teacher_id FK
         int theme_category_id FK
         varchar name
-        varchar slug UK
+        varchar slug "default: empty string"
         varchar section
         text description
         varchar code UK
-        varchar theme_color "default: #4F46E5"
         boolean is_archived "default: false"
-        datetime created_at
-        datetime updated_at
-    }
-
-    classroom_theme_categories {
-        int id PK
-        varchar name
-        varchar slug UK
-        text description
-        varchar preview_color "7 chars, default: #6B3FBF"
-        tinyint planet_number "default: 1"
-        boolean is_active "default: true"
-        int sort_order "default: 0"
         datetime created_at
         datetime updated_at
     }
@@ -60,46 +53,6 @@ erDiagram
         datetime updated_at
     }
 
-    assignments {
-        int id PK
-        int classroom_id FK
-        int user_id FK
-        varchar title
-        varchar slug UK
-        text description
-        varchar topic
-        int max_score "default: 100"
-        int exp_reward "default: 0"
-        int coin_reward "default: 0"
-        datetime due_date
-        varchar status "draft | published | closed"
-        varchar type "attendance | file | question | project"
-        boolean allow_late_submission "default: true"
-        datetime created_at
-        datetime updated_at
-    }
-
-    announcements {
-        int id PK
-        int classroom_id FK
-        int user_id FK
-        varchar title
-        text content
-        datetime created_at
-        datetime updated_at
-    }
-
-    materials {
-        int id PK
-        int classroom_id FK
-        int user_id FK
-        varchar title
-        varchar slug UK
-        text description
-        datetime created_at
-        datetime updated_at
-    }
-
     topics {
         int id PK
         int classroom_id FK
@@ -109,16 +62,47 @@ erDiagram
         datetime updated_at
     }
 
-    submissions {
+    announcements {
         int id PK
-        int assignment_id FK
+        varchar slug UK "16 chars"
         int user_id FK
+        int classroom_id FK
+        varchar title
         text content
-        varchar status "assigned | turned_in | graded | returned"
-        int score
-        text feedback
-        datetime turned_in_at
-        datetime graded_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    classwork_items {
+        int id PK
+        varchar type "assignment | material"
+        int classroom_id FK
+        int user_id FK
+        int topic_id FK "nullable"
+        varchar title
+        varchar slug UK "32 chars"
+        longtext description "nullable"
+        datetime created_at
+        datetime updated_at
+    }
+
+    assignments {
+        int id PK
+        int classwork_item_id FK "UK, 1:1"
+        int max_score "default: 100"
+        int exp_reward "default: 0"
+        int coin_reward "default: 0"
+        datetime due_date "nullable"
+        varchar status "draft | published | closed"
+        varchar type "default: question"
+        boolean allow_late_submission "default: true"
+        datetime created_at
+        datetime updated_at
+    }
+
+    materials {
+        int id PK
+        int classwork_item_id FK "UK, 1:1"
         datetime created_at
         datetime updated_at
     }
@@ -136,6 +120,33 @@ erDiagram
         datetime updated_at
     }
 
+    submissions {
+        int id PK
+        varchar slug UK "16 chars"
+        int assignment_id FK
+        int user_id FK
+        text content
+        varchar status "assigned | turned_in | graded | returned"
+        int score
+        text feedback
+        datetime turned_in_at
+        datetime graded_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    attendance_sessions {
+        int id PK
+        varchar slug UK "16 chars"
+        int assignment_id FK
+        varchar current_code "6 chars"
+        boolean is_active "default: false"
+        datetime started_at
+        datetime code_rotated_at
+        datetime created_at
+        datetime updated_at
+    }
+
     comments {
         int id PK
         varchar commentable_type
@@ -146,49 +157,16 @@ erDiagram
         datetime updated_at
     }
 
-    attendance_sessions {
-        int id PK
-        int assignment_id FK
-        varchar current_code "6 chars"
-        boolean is_active "default: false"
-        datetime started_at
-        datetime code_rotated_at
-        datetime created_at
-        datetime updated_at
-    }
-
-    user_gamifications {
-        int id PK
-        int user_id FK "UK"
-        int coins "default: 0"
-        int xp "default: 0"
-        int level "default: 1"
-        datetime created_at
-        datetime updated_at
-    }
-
     achievements {
         int id PK
         varchar code UK
         varchar name
         varchar description
         varchar icon
+        varchar badge_image
         int coin_reward "default: 0"
         int xp_reward "default: 0"
         boolean is_active "default: true"
-        varchar target_role "default: student"
-        datetime created_at
-        datetime updated_at
-    }
-
-    badges {
-        int id PK
-        varchar code UK
-        varchar name
-        varchar description
-        varchar icon
-        varchar color
-        varchar target_role "default: student"
         datetime created_at
         datetime updated_at
     }
@@ -201,10 +179,12 @@ erDiagram
         datetime updated_at
     }
 
-    user_badges {
-        int user_id FK
-        int badge_id FK
-        datetime earned_at
+    user_gamifications {
+        int id PK
+        int user_id FK "UK"
+        int coins "default: 0"
+        int xp "default: 0"
+        int level "default: 1"
         datetime created_at
         datetime updated_at
     }
@@ -239,6 +219,17 @@ erDiagram
     user_store_items {
         int user_id FK
         int store_item_id FK
+        boolean is_active "default: false"
+        datetime created_at
+        datetime updated_at
+    }
+
+    email_otp_verifications {
+        int id PK
+        varchar email
+        varchar otp
+        json user_data
+        datetime expires_at
         datetime created_at
         datetime updated_at
     }
@@ -254,24 +245,41 @@ erDiagram
         datetime updated_at
     }
 
-    classroom_sidebar_preferences {
-        int user_id FK
-        int classroom_id FK
-        boolean is_pinned "default: false"
-        int position
-        datetime pinned_at
+    %% ─── Infrastructure (Laravel internals) ───
+
+    password_reset_tokens {
+        varchar email PK
+        varchar token
         datetime created_at
-        datetime updated_at
     }
 
-    email_otp_verifications {
+    sessions {
+        varchar id PK
+        int user_id FK
+        varchar ip_address
+        text user_agent
+        longtext payload
+        int last_activity
+    }
+
+    jobs {
         int id PK
-        varchar email
-        varchar otp
-        json user_data
-        datetime expires_at
-        datetime created_at
-        datetime updated_at
+        varchar queue
+        longtext payload
+        tinyint attempts
+        int reserved_at
+        int available_at
+        int created_at
+    }
+
+    failed_jobs {
+        int id PK
+        varchar uuid UK
+        text connection
+        text queue
+        longtext payload
+        longtext exception
+        datetime failed_at
     }
 
     %% ─── Relationships ───
@@ -279,19 +287,20 @@ erDiagram
     users ||--o{ classrooms : "owns (teacher_id)"
     users ||--o{ classroom_user : "enrolls"
     classrooms ||--o{ classroom_user : "has members"
-    classroom_theme_categories ||--o{ classrooms : "styles"
+    theme_categories ||--o{ classrooms : "styles"
 
-    classrooms ||--o{ assignments : "contains"
-    users ||--o{ assignments : "creates"
+    classrooms ||--o{ topics : "organizes"
     classrooms ||--o{ announcements : "has"
     users ||--o{ announcements : "posts"
-    classrooms ||--o{ materials : "has"
-    users ||--o{ materials : "creates"
-    classrooms ||--o{ topics : "organizes"
+
+    classrooms ||--o{ classwork_items : "contains"
+    users ||--o{ classwork_items : "creates"
+    topics ||--o{ classwork_items : "groups"
+    classwork_items ||--|| assignments : "is"
+    classwork_items ||--|| materials : "is"
 
     assignments ||--o{ submissions : "receives"
     users ||--o{ submissions : "submits"
-
     assignments ||--|| attendance_sessions : "has session"
 
     users ||--o{ comments : "writes"
@@ -299,16 +308,11 @@ erDiagram
 
     users ||--|| user_gamifications : "has stats"
     users ||--o{ coin_transactions : "earns/spends"
-
     users ||--o{ user_achievements : "unlocks"
     achievements ||--o{ user_achievements : "achieved by"
-    users ||--o{ user_badges : "earns"
-    badges ||--o{ user_badges : "awarded to"
 
     users ||--o{ user_store_items : "owns"
     store_items ||--o{ user_store_items : "purchased by"
 
     users ||--o{ bug_reports : "reports"
-    users ||--o{ classroom_sidebar_preferences : "configures"
-    classrooms ||--o{ classroom_sidebar_preferences : "pinned in"
 ```

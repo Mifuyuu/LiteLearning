@@ -7,6 +7,7 @@ use App\Livewire\Concerns\HasTopicSelector;
 use App\Models\Classroom;
 use App\Models\Material;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -58,40 +59,50 @@ class Create extends Component
             'topic' => 'nullable|string|max:255',
         ]);
 
-        // Handle topic creation
+        // Handle topic
         $topicName = trim($this->topic);
-        $topicId = $this->resolveOrCreateTopic($topicName, $this->classroom->id);
-
-        // Create material
-        $material = Material::create([
-            'user_id' => $user->id,
-            'classroom_id' => $this->classroom->id,
-            'title' => $this->title,
-            'description' => $this->description ? Purifier::clean($this->description) : null,
-            'topic_id' => $topicId,
-        ]);
-
-        // Upload files to S3 and persist to polymorphic attachments table
-        foreach ($this->uploadedFiles as $uploaded) {
-            $path = $uploaded['file']->store(
-                'materials/attachments/'.$this->classroom->id,
-                's3'
-            );
-            $material->attachments()->create([
-                'file_name' => $uploaded['name'],
-                'file_path' => $path,
-                'file_type' => $uploaded['mime'],
-                'file_size' => $uploaded['size'],
-                'uploaded_by' => $user->id,
-            ]);
+        $topicId = null;
+        if ($topicName) {
+            $topicId = $this->resolveOrCreateTopic($topicName, $this->classroom->id);
         }
 
-        session()->flash('message', __('Material created successfully.'));
+        DB::transaction(function () use ($user, $topicId): void {
+            $classworkItem = \App\Models\ClassworkItem::create([
+                'type' => 'material',
+                'classroom_id' => $this->classroom->id,
+                'user_id' => $user->id,
+                'topic_id' => $topicId,
+                'title' => $this->title,
+                'slug' => \App\Models\Traits\HasSlug::generateUniqueSlug(),
+                'description' => $this->description ? Purifier::clean($this->description) : null,
+            ]);
 
-        $this->redirect(
-            route('material.show', ['classroom' => $this->classroom, 'material' => $material]),
-            navigate: true
-        );
+            $material = Material::create([
+                'classwork_item_id' => $classworkItem->id,
+            ]);
+
+            // Upload files to S3 and persist to polymorphic attachments table
+            foreach ($this->uploadedFiles as $uploaded) {
+                $path = $uploaded['file']->store(
+                    'materials/attachments/'.$this->classroom->id,
+                    's3'
+                );
+                $material->attachments()->create([
+                    'file_name' => $uploaded['name'],
+                    'file_path' => $path,
+                    'file_type' => $uploaded['mime'],
+                    'file_size' => $uploaded['size'],
+                    'uploaded_by' => $user->id,
+                ]);
+            }
+
+            session()->flash('message', __('Material created successfully.'));
+
+            $this->redirect(
+                route('material.show', ['classroom' => $this->classroom, 'material' => $material]),
+                navigate: true
+            );
+        });
 
     }
 

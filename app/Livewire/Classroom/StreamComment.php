@@ -29,7 +29,7 @@ class StreamComment extends Component
         $this->validate();
 
         // Verify user has access to the announcement's classroom
-        $announcement = \App\Models\Announcement::findOrFail($this->announcementId);
+        $announcement = \App\Models\Announcement::with('classworkItem.classroom')->findOrFail($this->announcementId);
         $classroom = $announcement->classroom;
 
         /** @var \App\Models\User $user */

@@ -2,30 +2,24 @@
 
 namespace App\Models;
 
-use App\Models\Traits\BelongsToClassroom;
 use App\Models\Traits\HasCommentsAndAttachments;
-use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Assignment extends Model
 {
-    use BelongsToClassroom, HasCommentsAndAttachments, HasFactory, HasSlug;
+    use HasCommentsAndAttachments, HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'title',
-        'slug',
-        'description',
-        'classroom_id',
+        'classwork_item_id',
         'exp_reward',
         'coin_reward',
         'due_date',
         'status',
         'type',
-        'topic',
         'allow_late_submission',
         'max_score',
     ];
@@ -43,8 +37,37 @@ class Assignment extends Model
     }
 
     // ──────────────────────────────────────────────
-    // Relationships (Assignment-specific)
+    // Route model binding via classwork_items.slug
     // ──────────────────────────────────────────────
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function getRouteKey(): string|int
+    {
+        return $this->classworkItem?->slug ?? $this->getKey();
+    }
+
+    public function resolveRouteBinding($value, $field = null): ?Model
+    {
+        if ($field === 'slug' || $field === null) {
+            return static::whereHas('classworkItem', fn ($q) => $q->where('slug', $value))->first()
+                ?? (is_numeric($value) ? static::find($value) : null);
+        }
+
+        return static::where($field, $value)->first();
+    }
+
+    // ──────────────────────────────────────────────
+    // Relationships
+    // ──────────────────────────────────────────────
+
+    public function classworkItem(): BelongsTo
+    {
+        return $this->belongsTo(ClassworkItem::class);
+    }
 
     public function submissions(): HasMany
     {
@@ -53,7 +76,62 @@ class Assignment extends Model
 
     public function attendanceSession(): HasOne
     {
-        return $this->hasOne(AttendanceSession::class);
+        return $this->hasOne(AttendanceSession::class, 'classwork_item_id', 'classwork_item_id');
+    }
+
+    // ──────────────────────────────────────────────
+    // Proxy accessors for shared fields (CTI pattern)
+    // ──────────────────────────────────────────────
+
+    public function getClassroomIdAttribute(): ?int
+    {
+        return $this->classworkItem?->classroom_id;
+    }
+
+    public function getUserIdAttribute(): ?int
+    {
+        return $this->classworkItem?->user_id;
+    }
+
+    public function getTitleAttribute(): ?string
+    {
+        return $this->classworkItem?->title;
+    }
+
+    public function getSlugAttribute(): ?string
+    {
+        return $this->classworkItem?->slug;
+    }
+
+    public function getDescriptionAttribute(): ?string
+    {
+        return $this->classworkItem?->description;
+    }
+
+    /**
+     * topic accessor: returns the topic name from the related Topic model via classwork_items.
+     */
+    public function getTopicAttribute(): ?string
+    {
+        return $this->classworkItem?->topic?->name;
+    }
+
+    /**
+     * topic_id accessor for completeness.
+     */
+    public function getTopicIdAttribute(): ?int
+    {
+        return $this->classworkItem?->topic_id;
+    }
+
+    public function getClassroomAttribute(): ?Classroom
+    {
+        return $this->classworkItem?->classroom;
+    }
+
+    public function getUserAttribute(): ?User
+    {
+        return $this->classworkItem?->user;
     }
 
     // ──────────────────────────────────────────────
@@ -245,12 +323,12 @@ class Assignment extends Model
 
     public function scopeOfType($query, string $type)
     {
-        return $query->where('type', $type);
+        return $query->where('assignments.type', $type);
     }
 
     public function scopePublished($query)
     {
-        return $query->where('status', 'published');
+        return $query->where('assignments.status', 'published');
     }
 
     // Fix #5: Allow only safe file types for student submission uploads.

@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasSlug;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AttendanceSession extends Model
 {
-    use HasSlug;
+    use HasFactory;
 
     protected $fillable = [
-        'assignment_id',
-        'slug',
+        'classwork_item_id',
         'current_code',
         'is_active',
         'started_at',
@@ -28,9 +27,14 @@ class AttendanceSession extends Model
         ];
     }
 
+    public function classworkItem(): BelongsTo
+    {
+        return $this->belongsTo(ClassworkItem::class);
+    }
+
     public function assignment(): BelongsTo
     {
-        return $this->belongsTo(Assignment::class);
+        return $this->belongsTo(Assignment::class, 'classwork_item_id', 'classwork_item_id');
     }
 
     /**

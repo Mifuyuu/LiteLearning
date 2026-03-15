@@ -98,8 +98,9 @@ class Create extends Component
 
         // Handle topic
         $topicName = trim($this->topic);
+        $topicId = null;
         if ($topicName) {
-            $this->resolveOrCreateTopic($topicName, $this->classroom->id);
+            $topicId = $this->resolveOrCreateTopic($topicName, $this->classroom->id);
         }
 
         // Upload attachments to S3
@@ -119,24 +120,41 @@ class Create extends Component
 
         // Announcement → save to announcements table, not assignments
         if ($this->type === 'announcement') {
-            Announcement::create([
-                'user_id' => $user->id,
-                'classroom_id' => $this->classroom->id,
-                'title' => $this->title,
-                'content' => $this->description ? Purifier::clean($this->description) : null,
-            ]);
+            DB::transaction(function () use ($user, $topicId): void {
+                $classworkItem = \App\Models\ClassworkItem::create([
+                    'type' => 'announcement',
+                    'classroom_id' => $this->classroom->id,
+                    'user_id' => $user->id,
+                    'topic_id' => $topicId,
+                    'title' => $this->title,
+                    'slug' => \App\Models\Traits\HasSlug::generateUniqueSlug($this->title),
+                    'description' => $this->description ? Purifier::clean($this->description) : null,
+                ]);
+
+                Announcement::create([
+                    'classwork_item_id' => $classworkItem->id,
+                    'content' => $this->description ? Purifier::clean($this->description) : null,
+                ]);
+            });
 
             $this->redirect(route('classroom.show', $this->classroom), navigate: true);
 
             return;
         }
 
-        DB::transaction(function () use ($user, $topicName, $attachments): void {
-            $assignment = Assignment::create([
-                'user_id' => $user->id,
+        DB::transaction(function () use ($user, $topicId, $attachments): void {
+            $classworkItem = \App\Models\ClassworkItem::create([
+                'type' => 'assignment',
                 'classroom_id' => $this->classroom->id,
+                'user_id' => $user->id,
+                'topic_id' => $topicId,
                 'title' => $this->title,
+                'slug' => \App\Models\Traits\HasSlug::generateUniqueSlug(),
                 'description' => $this->description ? Purifier::clean($this->description) : null,
+            ]);
+
+            $assignment = Assignment::create([
+                'classwork_item_id' => $classworkItem->id,
                 'attachments' => ! empty($attachments) ? $attachments : null,
                 'max_score' => $this->max_score,
                 'exp_reward' => $this->exp_reward,
@@ -144,7 +162,6 @@ class Create extends Component
                 'due_date' => $this->due_date,
                 'status' => $this->status,
                 'type' => $this->type,
-                'topic' => $topicName ?: null,
                 'allow_late_submission' => $this->allow_late_submission,
             ]);
 

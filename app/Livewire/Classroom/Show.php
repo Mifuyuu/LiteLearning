@@ -68,14 +68,14 @@ class Show extends Component
         ]);
 
         // Load announcements with comments and users
-        $announcementsQuery = $this->classroom->announcements()->with(['user', 'comments.user']);
+        $announcementsQuery = $this->classroom->announcements()->with(['classworkItem.user', 'comments.user']);
         $announcements = $announcementsQuery->latest()->get();
         $this->classroom->setRelation('announcements', $announcements);
 
         // Load assignments with submissions and users — filter for students
-        $assignmentsQuery = $this->classroom->assignments()->with(['user', 'submissions']);
+        $assignmentsQuery = $this->classroom->assignments()->with(['classworkItem.user', 'classworkItem.topic', 'submissions']);
         if (! $user->isAdmin() && ! $this->classroom->isOwnedBy($user)) {
-            $assignmentsQuery->where('status', 'published');
+            $assignmentsQuery->where('assignments.status', 'published');
         }
         $assignments = $assignmentsQuery->latest()->get();
         $this->classroom->setRelation('assignments', $assignments);
@@ -208,7 +208,10 @@ class Show extends Component
             abort(403);
         }
 
-        $assignment = \App\Models\Assignment::where('classroom_id', $this->classroom->id)
+        $assignment = \App\Models\Assignment::whereHas(
+            'classworkItem',
+            fn ($q) => $q->where('classroom_id', $this->classroom->id)
+        )
             ->where('id', $id)
             ->firstOrFail();
         $assignment->delete();

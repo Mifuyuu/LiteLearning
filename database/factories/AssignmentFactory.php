@@ -3,26 +3,48 @@
 namespace Database\Factories;
 
 use App\Models\Assignment;
-use App\Models\User;
+use App\Models\ClassworkItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AssignmentFactory extends Factory
 {
     protected $model = Assignment::class;
 
+    private const PARENT_KEYS = ['user_id', 'classroom_id', 'title', 'description', 'topic_id', 'slug'];
+
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-            'classroom_id' => \App\Models\Classroom::factory(),
-            'title' => fake()->sentence(4),
-            'description' => fake()->paragraph(),
+            'classwork_item_id' => ClassworkItem::factory()->forAssignment(),
             'max_score' => fake()->randomElement([10, 20, 50, 100]),
             'due_date' => fake()->dateTimeBetween('now', '+2 weeks'),
             'status' => 'published',
             'type' => 'question',
             'allow_late_submission' => true,
         ];
+    }
+
+    protected function expandAttributes(array $definition): array
+    {
+        [$parentAttrs, $childAttrs] = [[], []];
+
+        foreach ($definition as $key => $value) {
+            if (in_array($key, self::PARENT_KEYS, true)) {
+                $parentAttrs[$key] = $value;
+            } else {
+                $childAttrs[$key] = $value;
+            }
+        }
+
+        if (! empty($parentAttrs)) {
+            $existing = $childAttrs['classwork_item_id'] ?? null;
+
+            $childAttrs['classwork_item_id'] = $existing instanceof \Illuminate\Database\Eloquent\Factories\Factory
+                ? $existing->state($parentAttrs)
+                : ClassworkItem::factory()->forAssignment()->state($parentAttrs);
+        }
+
+        return parent::expandAttributes($childAttrs);
     }
 
     public function announcement(): static

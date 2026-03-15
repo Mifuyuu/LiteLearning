@@ -26,8 +26,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'cover_image',
         'bio',
         'is_active',
-        'active_name_color',
-        'active_avatar_frame',
     ];
 
     protected $hidden = [
@@ -70,11 +68,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Submission::class);
     }
 
-    public function announcements(): HasMany
-    {
-        return $this->hasMany(Announcement::class);
-    }
-
     public function assignments(): HasMany
     {
         return $this->hasMany(Assignment::class);
@@ -102,6 +95,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(StoreItem::class, 'user_store_items')
             ->using(UserStoreItemPivot::class)
+            ->withPivot('is_active')
             ->withTimestamps();
     }
 
@@ -187,5 +181,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getLevelAttribute(): int
     {
         return $this->gamification?->level ?? 1;
+    }
+
+    public function getActiveNameColorAttribute(): ?string
+    {
+        return $this->storeItems()
+            ->wherePivot('is_active', true)
+            ->where('type', 'name_color')
+            ->value('value');
+    }
+
+    public function getActiveAvatarFrameAttribute(): ?string
+    {
+        return $this->storeItems()
+            ->wherePivot('is_active', true)
+            ->where('type', 'avatar_frame')
+            ->value('value');
     }
 }
