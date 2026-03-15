@@ -82,6 +82,23 @@ class Show extends Component
             $assignmentsQuery->where('assignments.status', 'published');
         }
         $assignments = $assignmentsQuery->latest()->get();
+
+        // Filter scheduled items for students
+        if ($user->isStudent()) {
+            $assignments = $assignments->filter(function ($assignment) {
+                // Hide if published_at is in the future
+                if ($assignment->classworkItem?->published_at && $assignment->classworkItem->published_at->isFuture()) {
+                    return false;
+                }
+                // Hide if assignment status is scheduled
+                if ($assignment->status === 'scheduled') {
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
         $this->classroom->setRelation('assignments', $assignments);
     }
 

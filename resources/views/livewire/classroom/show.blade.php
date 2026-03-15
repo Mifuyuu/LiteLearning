@@ -232,35 +232,42 @@
                                 <div class="flex-1 border-t-2 border-gray-200"></div>
                             </div>
 
-                            <!-- Assignments under this topic -->
-                            <div class="space-y-1">
-                                @foreach($grouped[$topicName]->sortByDesc('created_at') as $assignment)
-                                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-gray-300 transition-all duration-200"
-                                        wire:key="assignment-{{ $assignment->id }}">
+                             <!-- Assignments under this topic -->
+                             <div class="space-y-1">
+                                 @foreach($grouped[$topicName]->sortByDesc('created_at') as $assignment)
+                                     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-gray-300 transition-all duration-200"
+                                         wire:key="assignment-{{ $assignment->id }}">
 
-                                        <!-- Clickable Header -->
-                                        <div @click="activeAssignment = activeAssignment === {{ $assignment->id }} ? null : {{ $assignment->id }}"
-                                            class="flex items-center p-4 cursor-pointer group">
-                                            <!-- Type Icon -->
-                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mr-3"
-                                                style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}15;">
-                                                <i class="fas {{ $assignment->typeIcon() }}"
-                                                    style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
-                                            </div>
+                                         <!-- Clickable Header -->
+                                         <div @click="activeAssignment = activeAssignment === {{ $assignment->id }} ? null : {{ $assignment->id }}"
+                                             class="flex items-center p-4 cursor-pointer group">
+                                             <!-- Type Icon -->
+                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mr-3"
+                                                 style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}15;">
+                                                 <i class="fas {{ $assignment->typeIcon() }}"
+                                                     style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
+                                             </div>
 
-                                            <!-- Title & Info -->
-                                            <div class="flex-1 min-w-0">
-                                                <p
-                                                    class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors flex items-center gap-2">
-                                                    {{ $assignment->title }}
-                                                    @if($assignment->status === 'draft')
-                                                        <span
-                                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                                                            {{ __('Draft') }}
-                                                        </span>
-                                                    @endif
-                                                </p>
-                                                <div class="flex items-center gap-3 mt-0.5">
+                                             <!-- Title & Info -->
+                                             <div class="flex-1 min-w-0">
+                                                 <p
+                                                     class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors flex items-center gap-2">
+                                                     {{ $assignment->title }}
+                                                     @if($assignment->status === 'draft')
+                                                         <span
+                                                             class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                                             {{ __('Draft') }}
+                                                         </span>
+                                                     @endif
+                                                     @if(auth()->user()->isTeacher() && ($assignment->classworkItem?->published_at?->isFuture() || $assignment->status === 'scheduled'))
+                                                         <span
+                                                             class="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                                                             <i class="fas fa-clock text-amber-500"></i>
+                                                             {{ $assignment->classworkItem->published_at?->format('d/m/Y H:i') }}
+                                                         </span>
+                                                     @endif
+                                                 </p>
+                                                 <div class="flex items-center gap-3 mt-0.5">
                                                     <span class="text-xs text-gray-500">
                                                         {{ $assignment->created_at->translatedFormat('j M') }}
                                                     </span>
@@ -328,34 +335,41 @@
                                 </div>
                             @endif
 
-                            <div class="space-y-1">
-                                @foreach($noTopicAssignments->sortByDesc('created_at') as $assignment)
-                                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-gray-300 transition-all duration-200"
-                                        wire:key="assignment-{{ $assignment->id }}">
+                             <div class="space-y-1">
+                                 @foreach($noTopicAssignments->sortByDesc('created_at') as $assignment)
+                                     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-gray-300 transition-all duration-200"
+                                         wire:key="assignment-{{ $assignment->id }}">
 
-                                        <!-- Clickable Header -->
-                                        <div @click="activeAssignment = activeAssignment === {{ $assignment->id }} ? null : {{ $assignment->id }}"
-                                            class="flex items-center p-4 cursor-pointer group">
-                                            <!-- Type Icon -->
-                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mr-3"
-                                                style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}15;">
-                                                <i class="fas {{ $assignment->typeIcon() }}"
-                                                    style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
-                                            </div>
+                                         <!-- Clickable Header -->
+                                         <div @click="activeAssignment = activeAssignment === {{ $assignment->id }} ? null : {{ $assignment->id }}"
+                                             class="flex items-center p-4 cursor-pointer group">
+                                             <!-- Type Icon -->
+                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mr-3"
+                                                 style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}15;">
+                                                 <i class="fas {{ $assignment->typeIcon() }}"
+                                                     style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}"></i>
+                                             </div>
 
-                                            <!-- Title & Info -->
-                                            <div class="flex-1 min-w-0">
-                                                <p
-                                                    class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors flex items-center gap-2">
-                                                    {{ $assignment->title }}
-                                                    @if($assignment->status === 'draft')
-                                                        <span
-                                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                                                            {{ __('Draft') }}
-                                                        </span>
-                                                    @endif
-                                                </p>
-                                                <div class="flex items-center gap-3 mt-0.5">
+                                             <!-- Title & Info -->
+                                             <div class="flex-1 min-w-0">
+                                                 <p
+                                                     class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors flex items-center gap-2">
+                                                     {{ $assignment->title }}
+                                                     @if($assignment->status === 'draft')
+                                                         <span
+                                                             class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                                                             {{ __('Draft') }}
+                                                         </span>
+                                                     @endif
+                                                     @if(auth()->user()->isTeacher() && ($assignment->classworkItem?->published_at?->isFuture() || $assignment->status === 'scheduled'))
+                                                         <span
+                                                             class="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                                                             <i class="fas fa-clock text-amber-500"></i>
+                                                             {{ $assignment->classworkItem->published_at?->format('d/m/Y H:i') }}
+                                                         </span>
+                                                     @endif
+                                                 </p>
+                                                 <div class="flex items-center gap-3 mt-0.5">
                                                     <span class="text-xs text-gray-500">
                                                         {{ $assignment->created_at->translatedFormat('j M') }}
                                                     </span>
