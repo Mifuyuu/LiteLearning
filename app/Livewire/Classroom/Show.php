@@ -28,6 +28,10 @@ class Show extends Component
 
     public ?int $theme_category_id = null;
 
+    public string $addTeacherEmail = '';
+
+    public string $addStudentEmail = '';
+
     public string $deleteConfirm = '';
 
     public bool $showDeleteAnnouncementModal = false;
@@ -215,6 +219,90 @@ class Show extends Component
             ->where('id', $id)
             ->firstOrFail();
         $assignment->delete();
+    }
+
+    public function addTeacher(): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        abort_unless($this->classroom->isOwnedBy($user) || $user->isAdmin(), 403);
+
+        $this->validate(['addTeacherEmail' => 'required|email']);
+
+        $target = User::where('email', $this->addTeacherEmail)->first();
+
+        if (! $target) {
+            $this->addError('addTeacherEmail', __('ไม่พบผู้ใช้งานนี้ในระบบ'));
+
+            return;
+        }
+
+        if ($this->classroom->isOwnedBy($target)) {
+            $this->addError('addTeacherEmail', __('ผู้ใช้นี้เป็นเจ้าของห้องอยู่แล้ว'));
+
+            return;
+        }
+
+        if (! $target->isTeacher() && ! $target->isAdmin()) {
+            $this->addError('addTeacherEmail', __('สามารถเพิ่ม Co-Teacher ได้เฉพาะบัญชีอาจารย์เท่านั้น'));
+
+            return;
+        }
+
+        if ($this->classroom->isCoTeacher($target)) {
+            $this->addError('addTeacherEmail', __('ผู้ใช้นี้เป็น Co-Teacher อยู่แล้ว'));
+
+            return;
+        }
+
+        $this->classroom->members()->detach($target->id);
+        $this->classroom->members()->attach($target->id, [
+            'role' => 'co-teacher',
+            'joined_at' => now(),
+        ]);
+
+        $this->reset('addTeacherEmail');
+        $this->loadClassroomRelations();
+        $this->dispatch('notify', message: __('เพิ่ม Co-Teacher เรียบร้อยแล้ว'));
+    }
+
+    public function addStudent(): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        abort_unless($this->classroom->canManageClassroom($user), 403);
+
+        $this->validate(['addStudentEmail' => 'required|email']);
+
+        $target = User::where('email', $this->addStudentEmail)->first();
+
+        if (! $target) {
+            $this->addError('addStudentEmail', __('ไม่พบผู้ใช้งานนี้ในระบบ'));
+
+            return;
+        }
+
+        if (! $target->isStudent()) {
+            $this->addError('addStudentEmail', __('สามารถเพิ่มได้เฉพาะบัญชีนักเรียนเท่านั้น'));
+
+            return;
+        }
+
+        if ($this->classroom->students()->where('users.id', $target->id)->exists()) {
+            $this->addError('addStudentEmail', __('นักเรียนคนนี้อยู่ในห้องเรียนนี้แล้ว'));
+
+            return;
+        }
+
+        $this->classroom->members()->detach($target->id);
+        $this->classroom->members()->attach($target->id, [
+            'role' => 'student',
+            'joined_at' => now(),
+        ]);
+
+        $this->reset('addStudentEmail');
+        $this->loadClassroomRelations();
+        $this->dispatch('notify', message: __('เพิ่มนักเรียนเรียบร้อยแล้ว'));
     }
 
     public function render()
