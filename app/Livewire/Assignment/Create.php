@@ -34,6 +34,8 @@ class Create extends Component
 
     public ?string $due_date = null;
 
+    public ?string $published_at = null;
+
     public string $status = 'published';
 
     public string $topic = '';
@@ -78,7 +80,8 @@ class Create extends Component
             'coin_reward' => 'integer|min:0|max:9999',
             'type' => 'required|in:announcement,attendance,file,question,material,topic,project',
             'due_date' => 'nullable|date',
-            'status' => 'required|in:draft,published',
+            'published_at' => 'nullable|date|after:now',
+            'status' => 'required|in:draft,published,scheduled',
             'topic' => 'nullable|string|max:255',
             'allow_late_submission' => 'boolean',
         ]);
@@ -101,6 +104,10 @@ class Create extends Component
         $topicId = null;
         if ($topicName) {
             $topicId = $this->resolveOrCreateTopic($topicName, $this->classroom->id);
+        }
+
+        if ($this->published_at && now()->lt(\Carbon\Carbon::parse($this->published_at))) {
+            $this->status = 'scheduled';
         }
 
         // Upload attachments to S3
@@ -129,6 +136,7 @@ class Create extends Component
                     'title' => $this->title,
                     'slug' => \App\Models\Traits\HasSlug::generateUniqueSlug($this->title),
                     'description' => $this->description ? Purifier::clean($this->description) : null,
+                    'published_at' => $this->published_at ?: null,
                 ]);
 
                 Announcement::create([
@@ -151,6 +159,7 @@ class Create extends Component
                 'title' => $this->title,
                 'slug' => \App\Models\Traits\HasSlug::generateUniqueSlug($this->title),
                 'description' => $this->description ? Purifier::clean($this->description) : null,
+                'published_at' => $this->published_at ?: null,
             ]);
 
             $assignment = Assignment::create([

@@ -211,6 +211,14 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                    <i class="fas fa-clock mr-1.5 text-gray-400"></i>{{ __('Auto-Publish At') }}
+                                </label>
+                                <input type="datetime-local" wire:model="published_at"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                                <p class="text-xs text-gray-500 mt-1">{{ __('Leave blank to publish manually.') }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">
                                     <i class="gsi-flash-lime text-green-500 mr-1.5"
                                         style="font-size:1.1em"></i>{{ __('EXP Reward') }}
                                 </label>
@@ -248,10 +256,12 @@
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="flex items-center justify-between">
                 @if($type !== 'announcement')
-                    <button type="button" wire:click="$set('status', 'draft')" wire:click="save"
-                        class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <i class="fas fa-file-lines mr-1.5"></i>{{ __("Save as Draft") }}
-                    </button>
+                    <div x-show="!$wire.published_at">
+                        <button type="button" wire:click="$set('status', 'draft')" wire:click="save"
+                            class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-file-lines mr-1.5"></i>{{ __("Save as Draft") }}
+                        </button>
+                    </div>
                 @else
                     <div></div>
                 @endif
