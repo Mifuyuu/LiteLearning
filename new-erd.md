@@ -64,10 +64,7 @@ erDiagram
 
     announcements {
         int id PK
-        varchar slug UK "16 chars"
-        int user_id FK
-        int classroom_id FK
-        varchar title
+        int classwork_item_id FK "UK, 1:1"
         text content
         datetime created_at
         datetime updated_at
@@ -75,7 +72,7 @@ erDiagram
 
     classwork_items {
         int id PK
-        varchar type "assignment | material"
+        varchar type "assignment | material | announcement | attendance"
         int classroom_id FK
         int user_id FK
         int topic_id FK "nullable"
@@ -137,8 +134,7 @@ erDiagram
 
     attendance_sessions {
         int id PK
-        varchar slug UK "16 chars"
-        int assignment_id FK
+        int classwork_item_id FK "UK, 1:1"
         varchar current_code "6 chars"
         boolean is_active "default: false"
         datetime started_at
@@ -290,18 +286,16 @@ erDiagram
     theme_categories ||--o{ classrooms : "styles"
 
     classrooms ||--o{ topics : "organizes"
-    classrooms ||--o{ announcements : "has"
-    users ||--o{ announcements : "posts"
-
     classrooms ||--o{ classwork_items : "contains"
     users ||--o{ classwork_items : "creates"
     topics ||--o{ classwork_items : "groups"
     classwork_items ||--|| assignments : "is"
     classwork_items ||--|| materials : "is"
+    classwork_items ||--|| announcements : "is"
+    classwork_items ||--|| attendance_sessions : "is"
 
     assignments ||--o{ submissions : "receives"
     users ||--o{ submissions : "submits"
-    assignments ||--|| attendance_sessions : "has session"
 
     users ||--o{ comments : "writes"
     users ||--o{ attachments : "uploads"

@@ -120,7 +120,6 @@ class Register extends Component
             'email' => $userData['email'],
             'password' => $userData['password'],
             'role' => 'student',
-            'locale' => session('locale', 'th'),
             'email_verified_at' => now(),
         ]);
 

@@ -36,7 +36,6 @@ class Setup extends Component
         $user = Auth::user();
         $user->update([
             'role' => $this->role,
-            'locale' => app()->getLocale(),
             'setup_completed_at' => now(),
         ]);
 

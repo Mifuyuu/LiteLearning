@@ -107,7 +107,7 @@
                                     </button>
                                 @endif
                             </div>
-                            <div class="prose prose-sm max-w-none text-gray-700 mt-2 [&_p]:my-0 [&_p]:leading-relaxed">
+                            <div class="prose prose-sm max-w-none text-gray-700 mt-2 [&_p]:leading-relaxed [&_p:first-child]:mt-0 [&_p:last-child]:mb-0">
                                 {!! $announcement->content !!}
                             </div>
                         </div>

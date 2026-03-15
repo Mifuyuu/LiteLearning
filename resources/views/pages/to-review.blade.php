@@ -9,7 +9,7 @@
             $pendingSubmissions = collect();
             foreach ($classrooms as $c) {
                 foreach ($c->assignments as $a) {
-                    $subs = $a->submissions()->where('status', 'turned_in')->with('user', 'assignment.classroom')->get();
+                    $subs = $a->submissions()->where('status', 'turned_in')->with('user', 'assignment.classworkItem.classroom')->get();
                     $pendingSubmissions = $pendingSubmissions->merge($subs);
                 }
             }

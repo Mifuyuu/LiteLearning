@@ -9,6 +9,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -68,9 +69,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Submission::class);
     }
 
-    public function assignments(): HasMany
+    public function assignments(): HasManyThrough
     {
-        return $this->hasMany(Assignment::class);
+        return $this->hasManyThrough(Assignment::class, ClassworkItem::class);
     }
 
     public function comments(): HasMany
