@@ -19,7 +19,15 @@ class ClassworkItem extends Model
         'title',
         'slug',
         'description',
+        'published_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'published_at' => 'datetime',
+        ];
+    }
 
     public function classroom(): BelongsTo
     {
