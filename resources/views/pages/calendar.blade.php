@@ -14,7 +14,7 @@
             $upcoming = collect();
             foreach ($classrooms as $c) {
                 $assignments = $c->assignments()->published()
-                    ->with('classroom')
+                    ->with('classworkItem.classroom.themeCategory')
                     ->where('due_date', '>=', now())
                     ->orderBy('due_date')
                     ->get();
@@ -51,11 +51,11 @@
                             @foreach($assignments as $a)
                                 @php
                                     $isUrgent = $a->due_date->lt(now()->addDay());
-                                    $themeColor = $a->classroom->themeCategory?->color ?? '#8B5CF6';
+                                    $themeColor = $a->classworkItem->classroom->themeCategory?->color ?? '#8B5CF6';
                                     $themeBg = $themeColor.'12';
                                     $themeBorder = $themeColor.'33';
                                 @endphp
-                                <a href="{{ route('assignment.show', ['classroom' => $a->classroom, 'assignment' => $a]) }}"
+                                <a href="{{ route('assignment.show', ['classroom' => $a->classworkItem->classroom, 'assignment' => $a]) }}"
                                    class="card-3d rounded-xl flex items-center gap-4 p-4 transition-colors duration-150 group {{ $isUrgent ? 'border-red-200 bg-red-50/80 hover:bg-red-100/70' : 'hover:bg-gray-50' }}"
                                    style="border-color: {{ $isUrgent ? '#fecaca' : $themeBorder }}; background-color: {{ $isUrgent ? '#fef2f2' : $themeBg }};">
                                     <div class="w-3 h-3 rounded-full shrink-0 ring-2 ring-white"
@@ -65,7 +65,7 @@
                                             {{ $a->title }}
                                         </p>
                                         <p class="text-xs text-gray-500 truncate mt-0.5">
-                                            {{ $a->classroom->name }}
+                                            {{ $a->classworkItem->classroom->name }}
                                         </p>
                                     </div>
                                     <div class="text-right shrink-0">
