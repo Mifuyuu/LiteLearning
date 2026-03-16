@@ -15,7 +15,6 @@ class Achievement extends Model
         'code',
         'name',
         'description',
-        'icon',
         'badge_image',
         'coin_reward',
         'xp_reward',
