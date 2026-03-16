@@ -18,7 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
             'not_admin' => \App\Http\Middleware\EnsureUserIsNotAdmin::class,
             'student' => \App\Http\Middleware\EnsureUserIsStudent::class,
-            'setup' => \App\Http\Middleware\EnsureUserHasCompletedSetup::class,
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         ]);
 
