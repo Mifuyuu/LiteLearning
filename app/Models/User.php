@@ -22,7 +22,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role',
-        'setup_completed_at',
         'avatar',
         'cover_image',
         'bio',
@@ -39,7 +38,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'setup_completed_at' => 'datetime',
 
             'is_active' => 'boolean',
         ];
@@ -161,11 +159,6 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $initials;
-    }
-
-    public function needsSetup(): bool
-    {
-        return $this->setup_completed_at === null;
     }
 
     // Magic getters for gamification downward compatibility
