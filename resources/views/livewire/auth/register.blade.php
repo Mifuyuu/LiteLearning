@@ -84,6 +84,30 @@
                     @enderror
                 </div>
 
+                {{-- Role Selection --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">บทบาทของคุณ</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" wire:model="role" value="student" class="sr-only peer">
+                            <div class="border border-gray-200 rounded-lg p-3 text-center transition-all peer-checked:border-indigo-600 peer-checked:bg-indigo-50 hover:bg-gray-50 text-gray-500 peer-checked:text-indigo-600">
+                                <i class="fas fa-user-graduate text-2xl mb-2"></i>
+                                <div class="font-medium text-gray-900">นักเรียน</div>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" wire:model="role" value="teacher" class="sr-only peer">
+                            <div class="border border-gray-200 rounded-lg p-3 text-center transition-all peer-checked:border-indigo-600 peer-checked:bg-indigo-50 hover:bg-gray-50 text-gray-500 peer-checked:text-indigo-600">
+                                <i class="fas fa-chalkboard-teacher text-2xl mb-2"></i>
+                                <div class="font-medium text-gray-900">ครูผู้สอน</div>
+                            </div>
+                        </label>
+                    </div>
+                    @error('role')
+                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 {{-- Submit --}}
                 <button type="submit"
                     class="btn-3d btn-3d--indigo w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">

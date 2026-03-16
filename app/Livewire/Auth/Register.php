@@ -24,6 +24,8 @@ class Register extends Component
 
     public string $password_confirmation = '';
 
+    public string $role = 'student';
+
     // Step 2 — OTP verification
     public string $otp = '';
 
@@ -38,6 +40,7 @@ class Register extends Component
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
             'password_confirmation' => 'required',
+            'role' => 'required|in:student,teacher',
         ]);
 
         $this->sendOtp();
@@ -67,6 +70,7 @@ class Register extends Component
                 'name' => $this->name,
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
+                'role' => $this->role,
             ],
             'expires_at' => now()->addMinutes(10),
         ]);
@@ -119,13 +123,12 @@ class Register extends Component
             'name' => $userData['name'],
             'email' => $userData['email'],
             'password' => $userData['password'],
-            'role' => 'student',
-            'email_verified_at' => now(),
+            'role' => $userData['role'],
         ]);
 
         Auth::login($user);
 
-        $this->redirect(route('setup'), navigate: true);
+        $this->redirectRoute('dashboard', navigate: true);
     }
 
     public function render(): \Illuminate\View\View
