@@ -41,7 +41,6 @@ class LeaderboardSeeder extends Seeder
                     'name' => $data['name'],
                     'password' => Hash::make('password'),
                     'role' => 'student',
-                    'setup_completed_at' => now(),
                     'email_verified_at' => now(),
                 ]
             );

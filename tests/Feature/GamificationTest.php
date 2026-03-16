@@ -25,7 +25,6 @@ class GamificationTest extends TestCase
 
         $this->student = User::factory()->create([
             'role' => 'student',
-            'setup_completed_at' => now(),
         ]);
     }
 
@@ -76,7 +75,7 @@ class GamificationTest extends TestCase
     public function test_coins_are_not_awarded_to_teacher(): void
     {
         /** @var User $teacher */
-        $teacher = User::factory()->create(['role' => 'teacher', 'setup_completed_at' => now()]);
+        $teacher = User::factory()->create(['role' => 'teacher']);
 
         $this->svc->awardCoins($teacher, 50, 'test');
 

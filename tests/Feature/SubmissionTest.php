@@ -26,8 +26,8 @@ class SubmissionTest extends TestCase
     {
         parent::setUp();
 
-        $this->teacher = User::factory()->create(['role' => 'teacher', 'setup_completed_at' => now()]);
-        $this->student = User::factory()->create(['role' => 'student', 'setup_completed_at' => now()]);
+        $this->teacher = User::factory()->create(['role' => 'teacher']);
+        $this->student = User::factory()->create(['role' => 'student']);
 
         $this->classroom = Classroom::factory()->create(['teacher_id' => $this->teacher->id]);
         $this->classroom->members()->attach($this->student->id, ['role' => 'student', 'joined_at' => now()]);
@@ -179,7 +179,7 @@ class SubmissionTest extends TestCase
     public function test_outsider_cannot_view_assignment(): void
     {
         /** @var User $outsider */
-        $outsider = User::factory()->create(['role' => 'student', 'setup_completed_at' => now()]);
+        $outsider = User::factory()->create(['role' => 'student']);
 
         $this->actingAs($outsider);
 
