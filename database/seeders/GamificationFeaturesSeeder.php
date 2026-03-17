@@ -15,8 +15,8 @@ class GamificationFeaturesSeeder extends Seeder
     {
         // Remove stale records not in current data
         Achievement::whereNotIn('code', [
-            'first_classroom_joined', 'first_classroom_created', 'classroom_builder',
-            'first_assignment_turned_in', 'consistent_submitter', 'first_assignment_created',
+            'first_classroom_joined',
+            'first_assignment_turned_in', 'consistent_submitter',
             'perfect_score', 'early_bird', 'social_butterfly', 'on_a_roll',
             'grade_seeker', 'multi_class', 'chatterbox', 'level_up',
         ])->delete();
@@ -49,11 +49,8 @@ class GamificationFeaturesSeeder extends Seeder
         $achievements = [
             // Synced with GamificationService
             ['code' => 'first_classroom_joined',    'name' => 'ก้าวแรกในห้องเรียน',   'description' => 'เข้าร่วมห้องเรียนครั้งแรก',                    'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 15,  'xp_reward' => 50,  'is_active' => true],
-            ['code' => 'first_classroom_created',   'name' => 'ครูนักสร้าง',            'description' => 'สร้างห้องเรียนครั้งแรก',                        'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 20,  'xp_reward' => 80,  'is_active' => true],
-            ['code' => 'classroom_builder',         'name' => 'นักบุกเบิก',             'description' => 'สร้างห้องเรียนใหม่สำเร็จ',                      'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 20,  'xp_reward' => 80,  'is_active' => true],
             ['code' => 'first_assignment_turned_in', 'name' => 'ส่งงานครั้งแรก',        'description' => 'ส่งงานครั้งแรกเป็นที่เรียบร้อย',               'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 10,  'xp_reward' => 50,  'is_active' => true],
             ['code' => 'consistent_submitter',      'name' => 'ขยันส่งงาน',             'description' => 'ส่งงานครบทุกชิ้นในห้องเรียน',                  'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 10,  'xp_reward' => 100, 'is_active' => true],
-            ['code' => 'first_assignment_created',  'name' => 'ครูนักสอน',              'description' => 'สร้างงานมอบหมายชิ้นแรก',                        'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 20,  'xp_reward' => 80,  'is_active' => true],
             // Future achievements
             ['code' => 'perfect_score',             'name' => 'Perfectionist',          'description' => 'ได้คะแนนเต็มในงานมอบหมาย',                    'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 200, 'xp_reward' => 500, 'is_active' => true],
             ['code' => 'early_bird',                'name' => 'Early Bird',             'description' => 'ส่งงานก่อนกำหนดอย่างน้อย 1 วัน',               'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 150, 'xp_reward' => 300, 'is_active' => true],

@@ -102,6 +102,43 @@ class GamificationTest extends TestCase
         $this->assertEquals(1, $this->student->achievements()->count());
     }
 
+    public function test_teacher_cannot_unlock_achievement(): void
+    {
+        Achievement::create([
+            'code' => 'student_only_test',
+            'name' => 'Student Only Test',
+            'coin_reward' => 0,
+            'xp_reward' => 0,
+            'is_active' => true,
+        ]);
+
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+
+        $this->svc->unlockAchievement($teacher, 'student_only_test');
+
+        $this->assertEquals(0, $teacher->achievements()->count());
+    }
+
+    public function test_gamification_seeder_keeps_only_student_achievement_codes(): void
+    {
+        $this->seed(\Database\Seeders\GamificationFeaturesSeeder::class);
+
+        $this->assertEqualsCanonicalizing([
+            'first_classroom_joined',
+            'first_assignment_turned_in',
+            'consistent_submitter',
+            'perfect_score',
+            'early_bird',
+            'social_butterfly',
+            'on_a_roll',
+            'grade_seeker',
+            'multi_class',
+            'chatterbox',
+            'level_up',
+        ], Achievement::query()->pluck('code')->all());
+    }
+
     // ─────────────────────────────────────────────
     // Store Purchase
     // ─────────────────────────────────────────────

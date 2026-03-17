@@ -117,16 +117,6 @@ class GamificationService
     {
         $this->awardCoins($user, 30, 'classroom_created', 'classroom', $classroomId);
         $this->awardXp($user, 40);
-
-        $count = $user->ownedClassrooms()->count();
-
-        if ($count >= 1) {
-            $this->unlockAchievement($user, 'first_classroom_created');
-        }
-
-        if ($count >= 5) {
-            $this->unlockAchievement($user, 'classroom_builder');
-        }
     }
 
     public function awardForClassroomJoined(User $user, int $classroomId): void
@@ -143,11 +133,6 @@ class GamificationService
     {
         $this->awardCoins($user, 20, 'assignment_created', 'assignment', $assignmentId);
         $this->awardXp($user, 30);
-
-        $createdAssignments = $user->assignments()->count();
-        if ($createdAssignments >= 1) {
-            $this->unlockAchievement($user, 'first_assignment_created');
-        }
     }
 
     public function awardForAssignmentTurnedIn(User $user, int $assignmentId): void
