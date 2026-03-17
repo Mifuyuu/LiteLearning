@@ -12,8 +12,6 @@ class Index extends Component
 {
     public string $search = '';
 
-    public string $filter = 'all';
-
     public bool $showArchived = false;
 
     public function render()
@@ -27,31 +25,12 @@ class Index extends Component
                 ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->with('teacher', 'themeCategory')
                 ->get();
-        } elseif ($this->filter === 'enrolled') {
+        } else {
             $classrooms = $user->enrolledClassrooms()
                 ->where('is_archived', false)
                 ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->with('teacher', 'themeCategory')
                 ->get();
-        } elseif ($this->filter === 'archived') {
-            $owned = $user->ownedClassrooms()
-                ->where('is_archived', true)
-                ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                ->with('teacher', 'themeCategory')
-                ->get();
-            $enrolled = $user->enrolledClassrooms()
-                ->where('is_archived', true)
-                ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                ->with('teacher', 'themeCategory')
-                ->get();
-            $classrooms = $owned->merge($enrolled)->unique('id')->values();
-        } else {
-            $enrolled = $user->enrolledClassrooms()
-                ->where('is_archived', false)
-                ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                ->with('teacher', 'themeCategory')
-                ->get();
-            $classrooms = $enrolled;
         }
 
         return view('livewire.classroom.index', [

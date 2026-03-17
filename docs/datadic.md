@@ -28,108 +28,6 @@
 
 ---
 
-## ตาราง password_reset_tokens
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | email | อีเมลที่ขอรีเซ็ตรหัสผ่าน | 255 | VARCHAR | PK |
-| 2 | token | token สำหรับรีเซ็ตรหัสผ่าน | 255 | VARCHAR | - |
-| 3 | created_at | วันเวลาที่สร้าง token | - | TIMESTAMP | - |
-
----
-
-## ตาราง sessions
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | id | รหัส session | 255 | VARCHAR | PK |
-| 2 | user_id | รหัสผู้ใช้งาน (อาจเป็น null สำหรับ guest) | 8 bytes | BIGINT UNSIGNED | IDX, FK → users |
-| 3 | ip_address | IP address ของผู้ใช้งาน | 45 | VARCHAR | - |
-| 4 | user_agent | User-Agent ของเบราว์เซอร์ | - | TEXT | - |
-| 5 | payload | ข้อมูล session (serialized) | - | LONGTEXT | - |
-| 6 | last_activity | Unix timestamp ที่ใช้งานล่าสุด | 4 bytes | INT | IDX |
-
----
-
-## ตาราง cache
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | key | คีย์ของ cache | 255 | VARCHAR | PK |
-| 2 | value | ค่าที่เก็บใน cache | - | MEDIUMTEXT | - |
-| 3 | expiration | Unix timestamp ที่หมดอายุ | 4 bytes | INT | - |
-
----
-
-## ตาราง cache_locks
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | key | คีย์ของ lock | 255 | VARCHAR | PK |
-| 2 | owner | เจ้าของ lock | 255 | VARCHAR | - |
-| 3 | expiration | Unix timestamp ที่หมดอายุ | 4 bytes | INT | - |
-
----
-
-## ตาราง jobs
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | id | รหัส job (Auto Increment) | 8 bytes | BIGINT UNSIGNED | PK |
-| 2 | queue | ชื่อ queue | 255 | VARCHAR | IDX |
-| 3 | payload | ข้อมูล job (serialized) | - | LONGTEXT | - |
-| 4 | attempts | จำนวนครั้งที่พยายามรัน | 1 byte | TINYINT UNSIGNED | - |
-| 5 | reserved_at | Unix timestamp ที่ถูกจองรัน | 4 bytes | INT UNSIGNED | - |
-| 6 | available_at | Unix timestamp ที่พร้อมรัน | 4 bytes | INT UNSIGNED | - |
-| 7 | created_at | Unix timestamp ที่สร้าง job | 4 bytes | INT UNSIGNED | - |
-
----
-
-## ตาราง job_batches
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | id | รหัส batch | 255 | VARCHAR | PK |
-| 2 | name | ชื่อ batch | 255 | VARCHAR | - |
-| 3 | total_jobs | จำนวน job ทั้งหมด | 4 bytes | INT | - |
-| 4 | pending_jobs | จำนวน job ที่รอดำเนินการ | 4 bytes | INT | - |
-| 5 | failed_jobs | จำนวน job ที่ล้มเหลว | 4 bytes | INT | - |
-| 6 | failed_job_ids | รายการรหัส job ที่ล้มเหลว (JSON) | - | LONGTEXT | - |
-| 7 | options | ตัวเลือกเพิ่มเติมของ batch | - | MEDIUMTEXT | - |
-| 8 | cancelled_at | Unix timestamp ที่ยกเลิก | 4 bytes | INT | - |
-| 9 | created_at | Unix timestamp ที่สร้าง | 4 bytes | INT | - |
-| 10 | finished_at | Unix timestamp ที่เสร็จสิ้น | 4 bytes | INT | - |
-
----
-
-## ตาราง failed_jobs
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | id | รหัส failed job (Auto Increment) | 8 bytes | BIGINT UNSIGNED | PK |
-| 2 | uuid | UUID ของ job | 255 | VARCHAR | UQ |
-| 3 | connection | ชื่อ connection ที่ใช้รัน | - | TEXT | - |
-| 4 | queue | ชื่อ queue | - | TEXT | - |
-| 5 | payload | ข้อมูล job (serialized) | - | LONGTEXT | - |
-| 6 | exception | ข้อมูล exception ที่เกิดขึ้น | - | LONGTEXT | - |
-| 7 | failed_at | วันเวลาที่ล้มเหลว (default now) | - | TIMESTAMP | - |
-
----
-
-## ตาราง theme_categories
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | id | รหัสหมวดหมู่ธีม (Auto Increment) | 8 bytes | BIGINT UNSIGNED | PK |
-| 2 | name | ชื่อหมวดหมู่ธีม | 255 | VARCHAR | - |
-| 3 | color | รหัสสี HEX ของธีม | 7 | VARCHAR | - |
-| 4 | is_active | สถานะเปิดใช้งานธีม | - | BOOLEAN | - |
-| 5 | planet_number | หมายเลขดาวเคราะห์ของธีม | 1 byte | TINYINT UNSIGNED | - |
-| 6 | created_at | วันเวลาที่สร้างรายการ | - | TIMESTAMP | - |
-| 7 | updated_at | วันเวลาที่แก้ไขรายการล่าสุด | - | TIMESTAMP | - |
-
----
-
 ## ตาราง classrooms
 
 | ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
@@ -156,19 +54,6 @@
 | 2 | user_id | รหัสผู้ใช้งาน | 8 bytes | BIGINT UNSIGNED | PK, FK → users |
 | 3 | role | บทบาทในห้องเรียน (student, co-teacher) | - | ENUM | - |
 | 4 | joined_at | วันเวลาที่เข้าร่วมห้องเรียน | - | TIMESTAMP | - |
-| 5 | created_at | วันเวลาที่สร้างรายการ | - | TIMESTAMP | - |
-| 6 | updated_at | วันเวลาที่แก้ไขรายการล่าสุด | - | TIMESTAMP | - |
-
----
-
-## ตาราง topics
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | id | รหัสหัวข้อ (Auto Increment) | 8 bytes | BIGINT UNSIGNED | PK |
-| 2 | classroom_id | รหัสห้องเรียน | 8 bytes | BIGINT UNSIGNED | FK → classrooms |
-| 3 | name | ชื่อหัวข้อ | 255 | VARCHAR | - |
-| 4 | order | ลำดับการแสดงผลหัวข้อ | 4 bytes | INT | - |
 | 5 | created_at | วันเวลาที่สร้างรายการ | - | TIMESTAMP | - |
 | 6 | updated_at | วันเวลาที่แก้ไขรายการล่าสุด | - | TIMESTAMP | - |
 
@@ -219,17 +104,6 @@
 | 9 | allow_late_submission | อนุญาตให้ส่งงานหลังกำหนดได้ | - | BOOLEAN | - |
 | 10 | created_at | วันเวลาที่สร้างรายการ | - | TIMESTAMP | - |
 | 11 | updated_at | วันเวลาที่แก้ไขรายการล่าสุด | - | TIMESTAMP | - |
-
----
-
-## ตาราง materials
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | id | รหัสสื่อการเรียน (Auto Increment) | 8 bytes | BIGINT UNSIGNED | PK |
-| 2 | classwork_item_id | รหัส classwork_items ที่เชื่อมโยง | 8 bytes | BIGINT UNSIGNED | UQ, FK → classwork_items |
-| 3 | created_at | วันเวลาที่สร้างรายการ | - | TIMESTAMP | - |
-| 4 | updated_at | วันเวลาที่แก้ไขรายการล่าสุด | - | TIMESTAMP | - |
 
 ---
 
@@ -341,24 +215,6 @@
 
 ---
 
-## ตาราง coin_transactions
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | id | รหัสธุรกรรม (Auto Increment) | 8 bytes | BIGINT UNSIGNED | PK |
-| 2 | user_id | รหัสผู้ใช้งาน | 8 bytes | BIGINT UNSIGNED | IDX, FK → users |
-| 3 | amount | จำนวน coin ที่เปลี่ยนแปลง (บวก/ลบ) | 4 bytes | INT | - |
-| 4 | type | ประเภทธุรกรรม (earn, spend) | 255 | VARCHAR | IDX |
-| 5 | source | แหล่งที่มาของธุรกรรม | 255 | VARCHAR | - |
-| 6 | reference_type | ประเภท model ที่เกี่ยวข้อง (polymorphic) | 255 | VARCHAR | IDX |
-| 7 | reference_id | รหัส record ที่เกี่ยวข้อง (polymorphic) | 8 bytes | BIGINT UNSIGNED | IDX |
-| 8 | metadata | ข้อมูลเพิ่มเติม (JSON) | - | TEXT | - |
-| 9 | happened_at | วันเวลาที่ธุรกรรมเกิดขึ้น | - | TIMESTAMP | IDX |
-| 10 | created_at | วันเวลาที่สร้างรายการ | - | TIMESTAMP | - |
-| 11 | updated_at | วันเวลาที่แก้ไขรายการล่าสุด | - | TIMESTAMP | - |
-
----
-
 ## ตาราง store_items
 
 | ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
@@ -385,20 +241,6 @@
 | 3 | is_active | สถานะเปิดใช้งานสินค้า (เลือกใช้แล้ว) | - | BOOLEAN | - |
 | 4 | created_at | วันเวลาที่สร้างรายการ | - | TIMESTAMP | - |
 | 5 | updated_at | วันเวลาที่แก้ไขรายการล่าสุด | - | TIMESTAMP | - |
-
----
-
-## ตาราง email_otp_verifications
-
-| ลำดับ | คุณสมบัติ | อธิบาย | ขนาด | ประเภท | ประเภทคีย์ |
-|-------|-----------|--------|------|--------|------------|
-| 1 | id | รหัสการยืนยัน OTP (Auto Increment) | 8 bytes | BIGINT UNSIGNED | PK |
-| 2 | email | อีเมลที่ขอยืนยัน | 255 | VARCHAR | IDX |
-| 3 | otp | รหัส OTP | 255 | VARCHAR | - |
-| 4 | user_data | ข้อมูลผู้ใช้งานที่รอสร้าง (JSON) | - | JSON | - |
-| 5 | expires_at | วันเวลาหมดอายุ OTP | - | TIMESTAMP | - |
-| 6 | created_at | วันเวลาที่สร้างรายการ | - | TIMESTAMP | - |
-| 7 | updated_at | วันเวลาที่แก้ไขรายการล่าสุด | - | TIMESTAMP | - |
 
 ---
 

@@ -176,4 +176,40 @@ class SecurityTest extends TestCase
             ->assertHasErrors('email')
             ->assertSee('Too many');
     }
+
+    public function test_login_redirects_student_to_dashboard(): void
+    {
+        User::factory()->create([
+            'email' => 'student@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'student',
+            'is_active' => true,
+        ]);
+
+        Livewire::test(
+            \App\Livewire\Auth\Login::class
+        )
+            ->set('email', 'student@example.com')
+            ->set('password', 'password')
+            ->call('login')
+            ->assertRedirect(route('dashboard'));
+    }
+
+    public function test_login_redirects_admin_to_admin_dashboard(): void
+    {
+        User::factory()->create([
+            'email' => 'admin@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
+            'is_active' => true,
+        ]);
+
+        Livewire::test(
+            \App\Livewire\Auth\Login::class
+        )
+            ->set('email', 'admin@example.com')
+            ->set('password', 'password')
+            ->call('login')
+            ->assertRedirect(route('admin.dashboard'));
+    }
 }

@@ -20,16 +20,6 @@
                     <input type="checkbox" wire:model.live="showArchived" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                     {{ __('แสดงเก็บถาวร') }}
                 </label>
-            @else
-                {{-- Filter pills for student --}}
-                <div class="flex items-center gap-1.5">
-                    <button wire:click="$set('filter','all')"
-                        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'all' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">ทั้งหมด</button>
-                    <button wire:click="$set('filter','enrolled')"
-                        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'enrolled' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">ลงทะเบียน</button>
-                    <button wire:click="$set('filter','archived')"
-                        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all {{ $filter === 'archived' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500 hover:text-gray-700' }}">เก็บถาวร</button>
-                </div>
             @endif
 
             {{-- Count --}}

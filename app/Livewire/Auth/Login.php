@@ -45,11 +45,11 @@ class Login extends Component
             /** @var User|null $user */
             $user = Auth::user();
 
-            if ($user?->needsSetup()) {
-                return redirect()->route('setup');
-            }
+            $defaultRoute = $user?->isAdmin()
+                ? route('admin.dashboard')
+                : route('dashboard');
 
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended($defaultRoute);
         }
 
         // Generic error message to prevent enumeration attacks
