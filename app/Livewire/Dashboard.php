@@ -166,17 +166,26 @@ class Dashboard extends Component
 
         // Get upcoming assignments — N queries avoided by fetching per-classroom
         // with a scoped query and sorting in PHP (classrooms are already a small set)
-        $upcomingAssignments = collect();
-        foreach ($classrooms as $classroom) {
-            $assignments = $classroom->assignments()
+        $classroomIds = $classrooms->pluck('id')->filter()->all();
+        if (empty($classroomIds)) {
+            $upcomingAssignments = collect();
+        } else {
+            $upcomingAssignments = Assignment::query()
+                ->with(['classworkItem.classroom.themeCategory'])
+                ->whereHas('classworkItem', fn ($query) => $query->whereIn('classroom_id', $classroomIds))
                 ->published()
                 ->where('due_date', '>=', now())
                 ->orderBy('due_date')
-                ->take(5)
                 ->get();
-            $upcomingAssignments = $upcomingAssignments->merge($assignments);
+
+            if (! $user->isTeacher() && ! $user->isAdmin()) {
+                $upcomingAssignments = $upcomingAssignments->filter(function (Assignment $assignment): bool {
+                    return ! $assignment->classworkItem?->published_at?->isFuture();
+                });
+            }
+
+            $upcomingAssignments = $upcomingAssignments->sortBy('due_date')->take(10)->values();
         }
-        $upcomingAssignments = $upcomingAssignments->sortBy('due_date')->take(10);
 
         // Stats for teachers — fix #2: use loadCount + single aggregate Submission query
         $stats = [];

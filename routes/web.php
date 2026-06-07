@@ -9,10 +9,12 @@ use App\Livewire\Classroom\GradeReport;
 use App\Livewire\Classroom\Index as ClassroomIndex;
 use App\Livewire\Classroom\People;
 use App\Livewire\Classroom\Show as ClassroomShow;
+use App\Livewire\Classroom\Work as ClassroomWork;
 use App\Livewire\Dashboard;
 use App\Livewire\Material\Create as MaterialCreate;
 use App\Livewire\Material\Show as MaterialShow;
 use App\Livewire\Settings;
+use App\Models\Classroom;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -62,7 +64,14 @@ Route::middleware('auth')->group(function () {
     Route::middleware('not_admin')->group(function () {
         Route::get('/classrooms', ClassroomIndex::class)->name('classrooms');
         Route::get('/c/{classroom}', ClassroomShow::class)->name('classroom.show');
-        Route::get('/c/{classroom}/people', People::class)->name('classroom.people');
+        Route::get('/w/{classroom}/t/{scope?}', ClassroomWork::class)->name('classroom.work');
+        Route::get('/r/{classroom}/{sort?}', People::class)->name('classroom.roster');
+        Route::get('/c/{classroom}/people', function (Classroom $classroom) {
+            return redirect()->route('classroom.roster', [
+                'classroom' => $classroom,
+                'sort' => 'sort-last-name',
+            ]);
+        })->name('classroom.people');
     });
 
     // Assignments — create route MUST come before {assignment} wildcard
@@ -70,7 +79,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/c/{classroom}/a/create', AssignmentCreate::class)->name('assignment.create');
         Route::get('/c/{classroom}/m/create', MaterialCreate::class)->name('material.create');
         Route::get('/c/{classroom}/a/{assignment}/g/{submission}', Grade::class)->name('assignment.grade');
-        Route::get('/c/{classroom}/grades', GradeReport::class)->name('classroom.grades');
+        Route::get('/c/{classroom}/gb/{sort?}/{display?}', GradeReport::class)->name('classroom.gradebook');
+        Route::get('/c/{classroom}/grades', function (Classroom $classroom) {
+            return redirect()->route('classroom.gradebook', [
+                'classroom' => $classroom,
+                'sort' => 'sort-last-name',
+                'display' => 'default',
+            ]);
+        })->name('classroom.grades');
     });
     Route::get('/c/{classroom}/a/{assignment}', AssignmentShow::class)->name('assignment.show');
     Route::get('/c/{classroom}/m/{material}', MaterialShow::class)->name('material.show');

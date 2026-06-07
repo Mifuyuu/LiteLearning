@@ -176,6 +176,10 @@ class Classroom extends Model
 
     public function isCoTeacher(User $user): bool
     {
+        if ($this->relationLoaded('coTeachers')) {
+            return $this->coTeachers->contains('id', $user->id);
+        }
+
         return $this->coTeachers()->where('user_id', $user->id)->exists();
     }
 
@@ -190,6 +194,10 @@ class Classroom extends Model
 
     public function hasMember(User $user): bool
     {
+        if ($this->relationLoaded('members')) {
+            return $this->members->contains('id', $user->id);
+        }
+
         return $this->members()->where('user_id', $user->id)->exists();
     }
 
@@ -200,6 +208,10 @@ class Classroom extends Model
 
     public function studentCount(): int
     {
+        if ($this->relationLoaded('students')) {
+            return $this->students->count();
+        }
+
         return $this->students()->count();
     }
 }

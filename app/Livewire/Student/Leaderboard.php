@@ -12,12 +12,12 @@ class Leaderboard extends Component
     public function render()
     {
         // Get top 50 students ordered by level (desc) and xp (desc)
-        $topStudents = UserGamification::with('user')
-            ->whereHas('user', function ($query) {
-                $query->where('role', 'student');
-            })
-            ->orderBy('level', 'desc')
-            ->orderBy('xp', 'desc')
+        $topStudents = UserGamification::select('user_gamifications.*')
+            ->join('users', 'users.id', '=', 'user_gamifications.user_id')
+            ->where('users.role', 'student')
+            ->with('user')
+            ->orderBy('user_gamifications.level', 'desc')
+            ->orderBy('user_gamifications.xp', 'desc')
             ->take(50)
             ->get();
 

@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Achievement;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -15,11 +16,11 @@ class Achievements extends Component
 
     public string $search = '';
 
-    public $badgeImageUpload = null;
+    public mixed $badgeImageUpload = null;
 
-    public $showModal = false;
+    public bool $showModal = false;
 
-    public $editingId = null;
+    public ?int $editingId = null;
 
     public $form = [
         'code' => '',
@@ -31,23 +32,12 @@ class Achievements extends Component
         'is_active' => true,
     ];
 
-    protected $rules = [
-        'form.code' => 'required|string|max:100',
-        'form.name' => 'required|string|max:255',
-        'form.description' => 'nullable|string',
-        'form.badge_image' => 'nullable|string|max:255',
-        'form.coin_reward' => 'required|integer|min:0',
-        'form.xp_reward' => 'required|integer|min:0',
-        'form.is_active' => 'boolean',
-        'badgeImageUpload' => 'nullable|file|mimes:png,svg|max:2048',
-    ];
-
-    public function updatingSearch()
+    public function updatingSearch(): void
     {
         $this->resetPage();
     }
 
-    public function openCreate()
+    public function openCreate(): void
     {
         $this->editingId = null;
         $this->badgeImageUpload = null;
@@ -55,7 +45,7 @@ class Achievements extends Component
         $this->showModal = true;
     }
 
-    public function openEdit(Achievement $achievement)
+    public function openEdit(Achievement $achievement): void
     {
         $this->editingId = $achievement->id;
         $this->form = [
@@ -73,11 +63,10 @@ class Achievements extends Component
 
     public function save(): void
     {
-        $this->validate();
+        $this->validate($this->rules());
 
-        // Handle file upload
         if ($this->badgeImageUpload) {
-            $filename = $this->badgeImageUpload->getClientOriginalName();
+            $filename = $this->badgeImageUpload->hashName();
             $this->badgeImageUpload->storeAs('', $filename, ['disk' => 'achievements']);
             $this->form['badge_image'] = 'images/achievements/'.$filename;
         }
@@ -96,7 +85,7 @@ class Achievements extends Component
         $this->showModal = false;
     }
 
-    public function toggleActive(Achievement $achievement)
+    public function toggleActive(Achievement $achievement): void
     {
         $achievement->is_active = ! $achievement->is_active;
         $achievement->save();
@@ -104,7 +93,7 @@ class Achievements extends Component
         $this->dispatch('notify', message: __('admin.achievements.status_updated'));
     }
 
-    public function delete(Achievement $achievement)
+    public function delete(Achievement $achievement): void
     {
         $achievement->delete();
         $this->dispatch('notify', message: __('admin.achievements.deleted'));
@@ -122,5 +111,24 @@ class Achievements extends Component
         return view('livewire.admin.achievements', [
             'achievements' => $query->latest()->paginate(10),
         ]);
+    }
+
+    protected function rules(): array
+    {
+        return [
+            'form.code' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('achievements', 'code')->ignore($this->editingId),
+            ],
+            'form.name' => 'required|string|max:255',
+            'form.description' => 'nullable|string',
+            'form.badge_image' => 'nullable|string|max:255',
+            'form.coin_reward' => 'required|integer|min:0',
+            'form.xp_reward' => 'required|integer|min:0',
+            'form.is_active' => 'boolean',
+            'badgeImageUpload' => 'nullable|file|mimes:png,svg|max:2048',
+        ];
     }
 }

@@ -12,7 +12,7 @@
     </nav>
 @endsection
 
-<div class="max-w-3xl mx-auto animate__animated animate__fadeIn">
+<div class="animate__animated animate__fadeIn">
     <!-- Back -->
     <a href="{{ route('classroom.show', $classroom) }}"
         class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
@@ -223,20 +223,18 @@
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                                    <i class="gsi-flash-lime text-green-500 mr-1.5"
-                                        style="font-size:1.1em"></i>{{ __('EXP Reward') }}
+                                <label class="flex items-center text-sm font-medium text-gray-700 mb-1.5">
+                                    <x-icon name="bolt" class="text-purple-600 mr-1.5 h-4 w-4 shrink-0" />{{ __('EXP Reward') }}
                                 </label>
                                 <input wire:model="exp_reward" type="number" min="0" max="9999"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                                    <i class="gsi-gemstone-blue text-blue-500 mr-1.5"
-                                        style="font-size:1.1em"></i>{{ __('Coin Reward') }}
+                                <label class="flex items-center text-sm font-medium text-gray-700 mb-1.5">
+                                    <x-icon name="star-solid" class="text-amber-500 mr-1.5 h-4 w-4 shrink-0" />{{ __('Coin Reward') }}
                                 </label>
                                 <input wire:model="coin_reward" type="number" min="0" max="9999"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                             </div>
 
                             <!-- Allow late submission -->
@@ -262,7 +260,7 @@
             <div class="flex items-center justify-between">
                 @if($type !== 'announcement')
                     <div x-show="!$wire.published_at">
-                        <button type="button" wire:click="$set('status', 'draft')" wire:click="save"
+                        <button type="button" wire:click="saveDraft"
                             class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                             <i class="fas fa-file-lines mr-1.5"></i>{{ __("Save as Draft") }}
                         </button>

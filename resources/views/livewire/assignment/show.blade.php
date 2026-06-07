@@ -12,7 +12,7 @@
     </nav>
 @endsection
 
-<div class="max-w-6xl mx-auto animate__animated animate__fadeIn" x-data="{ copiedToast: false, showDeleteModal: false }">
+<div class="animate__animated animate__fadeIn" x-data="{ copiedToast: false, showDeleteModal: false }">
     <!-- Back -->
     <a href="{{ route('classroom.show', $classroom) }}"
         class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
@@ -90,12 +90,12 @@
                                 {{ $assignment->due_date ? $assignment->due_date->translatedFormat('j M Y, H:i') : __('No due date') }}
                             </span>
                             @if($assignment->type !== 'material' && $assignment->type !== 'attendance')
-                                <span class="text-gray-500">
-                                    <i class="gsi-flash-lime text-green-500 mr-1" style="font-size:1.1em"></i>
+                                <span class="inline-flex items-center text-gray-500">
+                                    <x-icon name="bolt" class="text-purple-600 mr-1 h-4 w-4 shrink-0" />
                                     {{ $assignment->exp_reward }} {{ __('EXP') }}
                                 </span>
-                                <span class="text-gray-500">
-                                    <i class="gsi-gemstone-blue text-blue-500 mr-1" style="font-size:1.1em"></i>
+                                <span class="inline-flex items-center text-gray-500">
+                                    <x-icon name="star-solid" class="text-amber-500 mr-1 h-4 w-4 shrink-0" />
                                     {{ $assignment->coin_reward }} {{ __('Coins') }}
                                 </span>
                             @endif
@@ -128,21 +128,19 @@
                         @endif
 
                         <!-- Attachments -->
-                        @if(!empty($assignment->attachments))
+                        @if($assignment->attachments->count())
                             <div class="mt-4">
                                 <h3 class="text-sm font-semibold text-gray-700 mb-3">{{ __('Attachments') }}</h3>
                                 <div class="space-y-3">
                                     @foreach($assignment->attachments as $attachment)
                                         @php
-                                            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-                                            $disk = Storage::disk('s3');
-                                            $url = $disk->url($attachment['path']);
-                                            $ext = strtolower(pathinfo($attachment['name'] ?? '', PATHINFO_EXTENSION));
+                                            $url = $attachment->url;
+                                            $ext = strtolower(pathinfo($attachment->file_name ?? '', PATHINFO_EXTENSION));
                                             $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
                                             $isVideo = in_array($ext, ['mp4', 'webm', 'mov']);
                                             $isPdf = $ext === 'pdf';
-                                            $attachId = $attachment['id'] ?? 'att';
-                                            $sizeKb = round(($attachment['size'] ?? 0) / 1024);
+                                            $attachId = $attachment->id;
+                                            $sizeKb = round(($attachment->file_size ?? 0) / 1024);
                                             $sizeLabel = $sizeKb >= 1024 ? round($sizeKb / 1024, 1) . ' MB' : $sizeKb . ' KB';
                                             $icon = match (true) {
                                                 $isImage => 'fa-image text-green-500',
@@ -160,7 +158,7 @@
                                             {{-- Image preview --}}
                                             @if($isImage)
                                                 <a href="{{ $url }}" target="_blank" class="block">
-                                                    <img src="{{ $url }}" alt="{{ $attachment['name'] }}"
+                                                    <img src="{{ $url }}" alt="{{ $attachment->file_name }}"
                                                         class="w-full max-h-80 object-contain bg-gray-50">
                                                 </a>
                                             @endif
@@ -168,7 +166,7 @@
                                             {{-- Video player --}}
                                             @if($isVideo)
                                                 <video controls class="w-full max-h-96 bg-black">
-                                                    <source src="{{ $url }}" type="{{ $attachment['mime'] ?? 'video/mp4' }}">
+                                                    <source src="{{ $url }}" type="{{ $attachment->file_type ?? 'video/mp4' }}">
                                                     {{ __('Your browser does not support the video tag.') }}
                                                 </video>
                                             @endif
@@ -183,7 +181,7 @@
                                                 class="flex items-center p-3 bg-gray-50 hover:bg-gray-100 transition-colors {{ ($isImage || $isVideo || $isPdf) ? 'border-t border-gray-200' : '' }}">
                                                 <i class="fas {{ $icon }} mr-3 text-lg"></i>
                                                 <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-medium text-gray-700 truncate">{{ $attachment['name'] }}
+                                                    <p class="text-sm font-medium text-gray-700 truncate">{{ $attachment->file_name }}
                                                     </p>
                                                     <p class="text-xs text-gray-400">{{ $sizeLabel }}</p>
                                                 </div>
@@ -327,21 +325,19 @@
                                     @error('editMaxScore') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        <i class="gsi-flash-lime text-green-500 mr-1"
-                                            style="font-size:1.1em"></i>{{ __('EXP Reward') }}
+                                    <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                        <x-icon name="bolt" class="text-purple-600 mr-1.5 h-4 w-4 shrink-0" />{{ __('EXP Reward') }}
                                     </label>
                                     <input wire:model="editExpReward" type="number" min="0" max="9999"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                                     @error('editExpReward') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        <i class="gsi-gemstone-blue text-blue-500 mr-1"
-                                            style="font-size:1.1em"></i>{{ __('Coin Reward') }}
+                                    <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                        <x-icon name="star-solid" class="text-amber-500 mr-1.5 h-4 w-4 shrink-0" />{{ __('Coin Reward') }}
                                     </label>
                                     <input wire:model="editCoinReward" type="number" min="0" max="9999"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                                     @error('editCoinReward') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                                 </div>
 
@@ -576,14 +572,12 @@
                                 <span class="font-semibold text-gray-900">{{ $assignment->max_score }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-500"><i class="gsi-flash-lime text-green-500 mr-1"
-                                        style="font-size:1.1em"></i>{{ __('EXP Reward') }}</span>
-                                <span class="font-semibold text-green-700">{{ $assignment->exp_reward }}</span>
+                                <span class="inline-flex items-center text-gray-500"><x-icon name="bolt" class="text-purple-600 mr-1 h-4 w-4 shrink-0" />{{ __('EXP Reward') }}</span>
+                                <span class="font-semibold text-purple-700">{{ $assignment->exp_reward }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-500"><i class="gsi-gemstone-blue text-blue-500 mr-1"
-                                        style="font-size:1.1em"></i>{{ __('Coin Reward') }}</span>
-                                <span class="font-semibold text-blue-700">{{ $assignment->coin_reward }}</span>
+                                <span class="inline-flex items-center text-gray-500"><x-icon name="star-solid" class="text-amber-500 mr-1 h-4 w-4 shrink-0" />{{ __('Coin Reward') }}</span>
+                                <span class="font-semibold text-amber-700">{{ $assignment->coin_reward }}</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-gray-500">{{ __('Turned in') }}</span>

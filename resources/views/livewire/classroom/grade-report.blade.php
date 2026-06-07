@@ -1,252 +1,189 @@
-@section('page-title', $classroom->name . ' — ' . __('Grade Report'))
+@section('page-title', __('Gradebook') . ' - ' . $classroom->name)
 @section('breadcrumb')
     <nav class="flex items-center space-x-1 text-sm">
-        <a href="{{ route('classrooms') }}"
-            class="text-gray-500 hover:text-indigo-600 transition-colors">{{ __('ชั้นเรียนของฉัน') }}</a>
-        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-        <a href="{{ route('classroom.show', $classroom) }}"
-            class="text-gray-500 hover:text-indigo-600 transition-colors">{{ Illuminate\Support\Str::limit($classroom->name, 30) }}</a>
-        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-        <span class="text-gray-800 font-semibold">{{ __('Grade Report') }}</span>
+        <a href="{{ route('classrooms') }}" class="text-slate-500 hover:text-slate-900 transition-colors">
+            {{ __('ชั้นเรียนของฉัน') }}
+        </a>
+        <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
+        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-slate-500 hover:text-slate-900 transition-colors">
+            {{ \Illuminate\Support\Str::limit($classroom->name, 30) }}
+        </a>
+        <i class="fas fa-chevron-right text-slate-300 text-xs"></i>
+        <span class="text-slate-900 font-semibold">{{ __('Gradebook') }}</span>
     </nav>
 @endsection
 
-<div style="zoom: {{ auth()->user()->ui_scale }}%;" class="animate__animated animate__fadeIn">
+@php
+    $cellPadding = $display === 'compact' ? 'px-2 py-2' : 'px-3 py-3';
+@endphp
 
-    {{-- Header --}}
-    <div class="rounded-2xl overflow-hidden mb-6 relative"
-        style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
-        <div class="absolute inset-0 bg-linear-to-b from-black/10 to-black/40"></div>
-        <div class="relative p-6 sm:p-8">
-            <div class="flex items-start justify-between flex-wrap gap-4">
-                <div>
-                    <p class="text-white/70 text-sm font-medium mb-1">
-                        <i class="fas fa-chart-bar mr-1"></i> {{ __('Grade Report') }}
-                    </p>
-                    <h1 class="text-3xl font-bold text-white">{{ $classroom->name }}</h1>
-                    <p class="text-white/80 mt-1">{{ $classroom->section }}</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('classroom.show', $classroom) }}"
-                        class="btn-3d btn-3d--dark px-4 py-2 rounded-xl text-sm">
-                        <i class="fas fa-arrow-left mr-1"></i> {{ __('กลับห้องเรียน') }}
-                    </a>
-                    <button wire:click="exportCsv"
-                        class="btn-3d btn-3d--white px-4 py-2 rounded-xl text-sm">
-                        <i class="fas fa-download mr-1"></i> {{ __('Export CSV') }}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Stats cards --}}
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-tasks text-indigo-600 text-sm"></i>
-            </div>
+<div class="space-y-6 animate__animated animate__fadeIn">
+    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(168,85,247,0.18),_transparent_30%),linear-gradient(135deg,#ffffff_0%,#faf5ff_42%,#eef2ff_100%)] p-6 shadow-sm sm:p-8">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
-                <p class="text-2xl font-bold text-gray-800">{{ $stats['assignment_count'] }}</p>
-                <p class="text-xs text-gray-500">{{ __('งานทั้งหมด') }}</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-paper-plane text-green-600 text-sm"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-800">{{ $stats['submission_rate'] }}%</p>
-                <p class="text-xs text-gray-500">{{ __('อัตราการส่ง') }}</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-star text-blue-600 text-sm"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-800">
-                    {{ $stats['avg_score'] !== null ? $stats['avg_score'].'%' : '—' }}
+                <span class="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-green-700">
+                    <i class="fas fa-chart-column"></i>
+                    {{ __('Teacher View') }}
+                </span>
+                <h1 class="mt-3 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">{{ $classroom->name }}</h1>
+                <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                    {{ __('ดูคะแนนแบบรวมของทั้งห้อง พร้อมค้นหา กรอง ส่งออก และสลับรูปแบบการแสดงผลได้จากหน้านี้') }}
                 </p>
-                <p class="text-xs text-gray-500">{{ __('คะแนนเฉลี่ย') }}</p>
             </div>
-        </div>
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-hourglass-half text-amber-600 text-sm"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-800">{{ $stats['pending_grading'] }}</p>
-                <p class="text-xs text-gray-500">{{ __('รอให้คะแนน') }}</p>
-            </div>
-        </div>
-    </div>
 
-    {{-- Filters + Search --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4 flex flex-wrap items-center gap-3">
-        {{-- Search --}}
-        <div class="relative flex-1 min-w-48">
-            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
-            <input wire:model.live.debounce.300ms="search"
-                type="text"
-                placeholder="{{ __('ค้นหานักเรียน...') }}"
-                class="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('classroom.gradebook', ['classroom' => $classroom, 'sort' => 'sort-first-name', 'display' => $display]) }}" wire:navigate
+                    class="rounded-xl px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                    {{ __('First name') }}
+                </a>
+                <a href="{{ route('classroom.gradebook', ['classroom' => $classroom, 'sort' => 'sort-last-name', 'display' => $display]) }}" wire:navigate
+                    class="rounded-xl px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-last-name' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                    {{ __('Last name') }}
+                </a>
+                <a href="{{ route('classroom.gradebook', ['classroom' => $classroom, 'sort' => 'sort-last-name', 'display' => 'default']) }}" wire:navigate
+                    class="rounded-xl px-4 py-2 text-sm font-medium transition-colors {{ $display === 'default' ? 'bg-green-100 text-green-700' : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                    {{ __('Default') }}
+                </a>
+                <a href="{{ route('classroom.gradebook', ['classroom' => $classroom, 'sort' => 'sort-last-name', 'display' => 'compact']) }}" wire:navigate
+                    class="rounded-xl px-4 py-2 text-sm font-medium transition-colors {{ $display === 'compact' ? 'bg-green-100 text-green-700' : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                    {{ __('Compact') }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    @include('livewire.classroom.partials.subnav', ['classroom' => $classroom, 'sort' => $sort, 'display' => $display])
+
+    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">{{ __('Assignments') }}</p>
+            <p class="mt-2 text-3xl font-black text-slate-900">{{ $stats['assignment_count'] }}</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">{{ __('Submission rate') }}</p>
+            <p class="mt-2 text-3xl font-black text-slate-900">{{ $stats['submission_rate'] }}%</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">{{ __('Average score') }}</p>
+            <p class="mt-2 text-3xl font-black text-slate-900">{{ $stats['avg_score'] !== null ? $stats['avg_score'].'%' : '—' }}</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">{{ __('Pending grading') }}</p>
+            <p class="mt-2 text-3xl font-black text-slate-900">{{ $stats['pending_grading'] }}</p>
+        </div>
+    </section>
+
+    <section class="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div class="relative min-w-56 flex-1">
+            <i class="fas fa-search pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
+            <input wire:model.live.debounce.300ms="search" type="text"
+                placeholder="{{ __('Search students...') }}"
+                class="w-full rounded-2xl border border-slate-300 px-10 py-3 text-sm outline-none transition focus:border-green-400 focus:ring-2 focus:ring-green-100">
         </div>
 
-        {{-- Topic filter --}}
         @if($topics->isNotEmpty())
             <select wire:model.live="filterTopic"
-                class="px-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 bg-white">
-                <option value="">{{ __('ทุก Topic') }}</option>
+                class="rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-green-400 focus:ring-2 focus:ring-green-100">
+                <option value="">{{ __('All topics') }}</option>
                 @foreach($topics as $topic)
                     <option value="{{ $topic }}">{{ $topic }}</option>
                 @endforeach
             </select>
         @endif
 
-        {{-- Type filter --}}
         <select wire:model.live="filterType"
-            class="px-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 bg-white">
-            <option value="">{{ __('ทุกประเภท') }}</option>
-            <option value="file">{{ __('ส่งไฟล์') }}</option>
-            <option value="question">{{ __('ตอบคำถาม') }}</option>
-            <option value="project">{{ __('โปรเจกต์') }}</option>
-            <option value="attendance">{{ __('การเช็คชื่อ') }}</option>
+            class="rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-green-400 focus:ring-2 focus:ring-green-100">
+            <option value="">{{ __('All types') }}</option>
+            @foreach($types as $type)
+                <option value="{{ $type }}">{{ ucfirst($type) }}</option>
+            @endforeach
         </select>
 
-        {{-- Clear filters --}}
-        @if($filterTopic || $filterType || $search)
-            <button wire:click="$set('filterTopic', ''); $set('filterType', ''); $set('search', '')"
-                class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
-                <i class="fas fa-times mr-1"></i> {{ __('ล้าง') }}
-            </button>
-        @endif
-    </div>
+        <button type="button" wire:click="exportCsv"
+            class="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+            <i class="fas fa-download text-xs"></i>
+            {{ __('Export CSV') }}
+        </button>
+    </section>
 
-    {{-- Grade table --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         @if($students->isEmpty())
-            <div class="py-16 text-center text-gray-400">
-                <i class="fas fa-users text-4xl mb-3 block"></i>
-                <p class="font-medium">{{ __('ยังไม่มีนักเรียนในห้องเรียนนี้') }}</p>
+            <div class="p-12">
+                <x-empty-state-inline :title="__('Gradebook')" :body="__('No students matched the current filter.')" />
             </div>
         @elseif($assignments->isEmpty())
-            <div class="py-16 text-center text-gray-400">
-                <i class="fas fa-tasks text-4xl mb-3 block"></i>
-                <p class="font-medium">{{ __('ยังไม่มีงานที่ต้องส่งในห้องเรียนนี้') }}</p>
+            <div class="p-12">
+                <x-empty-state-inline :title="__('Gradebook')" :body="__('No gradable assignments exist for the current filter.')" />
             </div>
         @else
             <div class="overflow-x-auto">
-                <table class="w-full text-sm border-collapse">
-                    <thead>
-                        <tr class="bg-gray-50 border-b border-gray-200">
-                            {{-- Sticky student column --}}
-                            <th class="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left font-semibold text-gray-700 border-r border-gray-200 min-w-48 whitespace-nowrap">
-                                {{ __('นักเรียน') }}
-                                <span class="ml-1 text-gray-400 font-normal text-xs">({{ $students->count() }})</span>
+                <table class="min-w-full text-sm">
+                    <thead class="bg-slate-50">
+                        <tr class="border-b border-slate-200">
+                            <th class="sticky left-0 z-10 min-w-56 bg-slate-50 px-4 py-3 text-left font-semibold text-slate-700">
+                                {{ __('Student') }}
                             </th>
-                            {{-- Assignment columns --}}
                             @foreach($assignments as $assignment)
-                                <th class="px-3 py-3 text-center font-medium text-gray-600 min-w-28 whitespace-nowrap border-r border-gray-100 last:border-r-0">
-                                    <div class="truncate max-w-28" title="{{ $assignment->title }}">
-                                        {{ Illuminate\Support\Str::limit($assignment->title, 18) }}
-                                    </div>
-                                    <div class="text-xs text-gray-400 font-normal mt-0.5">/{{ $assignment->max_score }}</div>
+                                <th class="{{ $cellPadding }} min-w-32 border-l border-slate-100 text-center font-semibold text-slate-600">
+                                    <div class="truncate" title="{{ $assignment->title }}">{{ $assignment->title }}</div>
+                                    <div class="mt-1 text-xs font-normal text-slate-400">/{{ $assignment->max_score }}</div>
                                 </th>
                             @endforeach
-                            {{-- Summary columns --}}
-                            <th class="px-3 py-3 text-center font-semibold text-gray-700 min-w-24 whitespace-nowrap bg-gray-50 border-l border-gray-200">
-                                {{ __('รวม') }}
-                            </th>
-                            <th class="px-3 py-3 text-center font-semibold text-gray-700 min-w-24 whitespace-nowrap bg-gray-50">
-                                {{ __('เฉลี่ย') }}
-                            </th>
+                            <th class="{{ $cellPadding }} min-w-28 border-l border-slate-200 text-center font-semibold text-slate-700">{{ __('Total') }}</th>
+                            <th class="{{ $cellPadding }} min-w-28 text-center font-semibold text-slate-700">{{ __('Average') }}</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody class="divide-y divide-slate-100">
                         @foreach($students as $student)
-                            @php
-                                $totalScore = 0;
-                                $maxPossible = 0;
-                                $gradedCount = 0;
-                                foreach ($assignments as $a) {
-                                    $sub = $scoreMap[$student->id][$a->id] ?? null;
-                                    if ($sub && $sub->isGraded()) {
-                                        $totalScore += $sub->score;
-                                        $maxPossible += $a->max_score ?? 0;
-                                        $gradedCount++;
-                                    }
-                                }
-                                $avgPercent = $maxPossible > 0 ? round($totalScore / $maxPossible * 100) : null;
-                            @endphp
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                {{-- Sticky student name --}}
-                                <td class="sticky left-0 z-10 bg-white hover:bg-gray-50 px-4 py-3 border-r border-gray-200">
-                                    <div class="flex items-center gap-2.5">
-                                        @if($student->avatar)
-                                            <img src="{{ Storage::url($student->avatar) }}"
-                                                class="w-7 h-7 rounded-full object-cover flex-shrink-0" />
-                                        @else
-                                            <div class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                                                <span class="text-indigo-600 text-xs font-bold">{{ mb_substr($student->name, 0, 1) }}</span>
-                                            </div>
-                                        @endif
+                            @php $summary = $summaries[$student->id]; @endphp
+                            <tr class="hover:bg-slate-50/80">
+                                <td class="sticky left-0 z-10 bg-white px-4 py-3">
+                                    <div class="flex items-center gap-3">
+                                        <img src="{{ $student->avatar_url }}" alt="{{ $student->name }}" class="h-10 w-10 rounded-2xl object-cover">
                                         <div class="min-w-0">
-                                            <p class="font-medium text-gray-800 truncate max-w-36" title="{{ $student->name }}">{{ $student->name }}</p>
-                                            <p class="text-xs text-gray-400 truncate max-w-36">{{ $student->email }}</p>
+                                            <p class="truncate font-semibold text-slate-900">{{ $student->name }}</p>
+                                            <p class="truncate text-xs text-slate-500">{{ $student->email }}</p>
                                         </div>
                                     </div>
                                 </td>
 
-                                {{-- Score cells --}}
                                 @foreach($assignments as $assignment)
                                     @php
-                                        $sub = $scoreMap[$student->id][$assignment->id] ?? null;
-                                        $maxScore = $assignment->max_score ?? 0;
-                                        $pct = ($sub && $sub->isGraded() && $maxScore > 0)
-                                            ? round($sub->score / $maxScore * 100)
-                                            : null;
-                                        $cellBg = '';
-                                        $cellText = '';
-                                        if ($pct !== null) {
-                                            if ($pct >= 70) { $cellBg = 'bg-green-50'; $cellText = 'text-green-700'; }
-                                            elseif ($pct >= 50) { $cellBg = 'bg-amber-50'; $cellText = 'text-amber-700'; }
-                                            else { $cellBg = 'bg-red-50'; $cellText = 'text-red-700'; }
-                                        }
+                                        $submission = $scoreMap[$student->id][$assignment->id] ?? null;
+                                        $maxScore = $assignment->max_score ?: 0;
                                     @endphp
-                                    <td class="px-3 py-3 text-center border-r border-gray-100 last:border-r-0 {{ $cellBg }}">
-                                        @if($sub && $sub->isGraded())
-                                            <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $sub]) }}"
-                                                class="inline-flex items-center gap-1 font-semibold {{ $cellText }} hover:underline">
-                                                {{ $sub->score }}<span class="text-gray-400 font-normal text-xs">/{{ $maxScore }}</span>
+                                    <td class="{{ $cellPadding }} border-l border-slate-100 text-center">
+                                        @if($submission && $submission->isGraded())
+                                            <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $submission]) }}" wire:navigate
+                                                class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100">
+                                                {{ $submission->score }}/{{ $maxScore }}
                                             </a>
-                                        @elseif($sub && $sub->isTurnedIn())
-                                            <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $sub]) }}"
-                                                class="inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full hover:bg-amber-100 transition-colors">
-                                                <i class="fas fa-clock text-xs"></i> {{ __('รอคะแนน') }}
+                                        @elseif($submission && $submission->isTurnedIn())
+                                            <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $submission]) }}" wire:navigate
+                                                class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 transition hover:bg-amber-100">
+                                                <i class="fas fa-clock text-[10px]"></i>
+                                                {{ __('Pending') }}
                                             </a>
                                         @else
-                                            <span class="text-gray-300">—</span>
+                                            <span class="text-slate-300">—</span>
                                         @endif
                                     </td>
                                 @endforeach
 
-                                {{-- Summary --}}
-                                <td class="px-3 py-3 text-center border-l border-gray-200 bg-gray-50/50">
-                                    @if($gradedCount > 0)
-                                        <span class="font-semibold text-gray-700">{{ $totalScore }}<span class="text-gray-400 font-normal text-xs">/{{ $maxPossible }}</span></span>
+                                <td class="{{ $cellPadding }} border-l border-slate-200 text-center">
+                                    @if($summary['maxPossible'] > 0)
+                                        <span class="font-semibold text-slate-900">{{ $summary['totalScore'] }}/{{ $summary['maxPossible'] }}</span>
                                     @else
-                                        <span class="text-gray-300">—</span>
+                                        <span class="text-slate-300">—</span>
                                     @endif
                                 </td>
-                                <td class="px-3 py-3 text-center bg-gray-50/50">
-                                    @if($avgPercent !== null)
-                                        @php
-                                            $sumColor = $avgPercent >= 70 ? 'text-green-700 bg-green-100' : ($avgPercent >= 50 ? 'text-amber-700 bg-amber-100' : 'text-red-700 bg-red-100');
-                                        @endphp
-                                        <span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold {{ $sumColor }}">{{ $avgPercent }}%</span>
+                                <td class="{{ $cellPadding }} text-center">
+                                    @if($summary['avgPercent'] !== null)
+                                        <span class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700">
+                                            {{ $summary['avgPercent'] }}%
+                                        </span>
                                     @else
-                                        <span class="text-gray-300">—</span>
+                                        <span class="text-slate-300">—</span>
                                     @endif
                                 </td>
                             </tr>
@@ -255,6 +192,5 @@
                 </table>
             </div>
         @endif
-    </div>
-
+    </section>
 </div>

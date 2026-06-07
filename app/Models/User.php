@@ -138,7 +138,7 @@ class User extends Authenticatable implements MustVerifyEmail
             return \Illuminate\Support\Facades\Storage::url($this->avatar);
         }
 
-        return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&background=4F46E5&color=fff';
+        return asset('images/default_profile_pic.png');
     }
 
     public function getCoverImageUrlAttribute(): ?string

@@ -57,8 +57,8 @@
                                     <span class="inline-flex items-center text-xs font-bold text-amber-600">
                                         <i class="gsi gsi-coin-gold mr-1 text-base"></i> {{ $achievement->coin_reward }}
                                     </span>
-                                    <span class="inline-flex items-center text-xs font-bold text-blue-600">
-                                        <i class="gsi gsi-flash-lime mr-1 text-base"></i> {{ $achievement->xp_reward }}
+                                    <span class="inline-flex items-center text-xs font-bold text-purple-600">
+                                        <x-icon name="bolt" class="mr-1 h-4 w-4 shrink-0" /> {{ $achievement->xp_reward }}
                                     </span>
                                 </div>
                             </td>

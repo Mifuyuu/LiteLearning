@@ -10,6 +10,7 @@ use App\Models\Classroom;
 use App\Models\Submission;
 use App\Services\GamificationService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -57,6 +58,15 @@ class Show extends Component
     // Teacher: submissions list
     public $submissions = null;
 
+    private function ensureStudentUser(): \App\Models\User
+    {
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+        abort_unless($user->isStudent(), 403);
+
+        return $user;
+    }
+
     public function mount(Classroom $classroom, Assignment $assignment): void
     {
         $this->classroom = $classroom;
@@ -66,6 +76,15 @@ class Show extends Component
         $this->verifyContentAccess($classroom, $assignment);
 
         $user = auth()->user();
+        if (
+            ! $classroom->canManageClassroom($user)
+            && (
+                in_array($assignment->status, ['draft', 'scheduled'], true)
+                || $assignment->classworkItem?->published_at?->isFuture()
+            )
+        ) {
+            abort(404);
+        }
 
         if ($user->isStudent()) {
             $this->userSubmission = $assignment->submissionFor($user);
@@ -88,6 +107,8 @@ class Show extends Component
 
     public function updatedUploadedFile(): void
     {
+        $user = $this->ensureStudentUser();
+
         $this->validate([
             'uploadedFile' => 'file|max:25600|mimes:'.Assignment::allowedSubmissionMimes(),
         ]);
@@ -97,8 +118,9 @@ class Show extends Component
 
         // Ensure we have a submission record
         if (! $this->userSubmission) {
-            $this->userSubmission = $this->assignment->submissions()->create([
-                'user_id' => auth()->id(),
+            $this->userSubmission = $this->assignment->submissions()->firstOrCreate([
+                'user_id' => $user->id,
+            ], [
                 'status' => 'assigned',
             ]);
         }
@@ -119,6 +141,8 @@ class Show extends Component
 
     public function removeFile(int $attachmentId): void
     {
+        $this->ensureStudentUser();
+
         $attachment = $this->userSubmission?->attachments()->findOrFail($attachmentId);
 
         abort_unless($attachment->uploaded_by === auth()->id(), 403);
@@ -136,7 +160,7 @@ class Show extends Component
 
     public function turnIn(): void
     {
-        $user = auth()->user();
+        $user = $this->ensureStudentUser();
 
         // Check if submission is allowed
         if (! $this->assignment->canAcceptSubmission()) {
@@ -146,8 +170,9 @@ class Show extends Component
         }
 
         if (! $this->userSubmission) {
-            $this->userSubmission = $this->assignment->submissions()->create([
+            $this->userSubmission = $this->assignment->submissions()->firstOrCreate([
                 'user_id' => $user->id,
+            ], [
                 'status' => 'assigned',
             ]);
         }
@@ -167,9 +192,12 @@ class Show extends Component
 
     public function saveDraft(): void
     {
+        $user = $this->ensureStudentUser();
+
         if (! $this->userSubmission) {
-            $this->userSubmission = $this->assignment->submissions()->create([
-                'user_id' => auth()->id(),
+            $this->userSubmission = $this->assignment->submissions()->firstOrCreate([
+                'user_id' => $user->id,
+            ], [
                 'status' => 'assigned',
             ]);
         }
@@ -183,6 +211,8 @@ class Show extends Component
 
     public function unsubmit(): void
     {
+        $this->ensureStudentUser();
+
         $this->userSubmission?->unsubmit();
         $this->submissionContent = $this->userSubmission?->content ?? '';
     }
@@ -202,6 +232,7 @@ class Show extends Component
             'editDueDate' => 'due_date',
             'editStatus' => 'status',
             'editType' => 'type',
+            'editTopic' => 'topic',
             'editAllowLateSubmission' => 'allow_late_submission',
         ];
     }
@@ -260,7 +291,23 @@ class Show extends Component
     {
         abort_unless($this->classroom->canManageClassroom(auth()->user()), 403);
 
-        $this->assignment->delete();
+        DB::transaction(function (): void {
+            foreach ($this->assignment->attachments as $attachment) {
+                Storage::disk('s3')->delete($attachment->file_path);
+                $attachment->delete();
+            }
+
+            $this->assignment->comments()->delete();
+
+            foreach ($this->assignment->submissions()->with('attachments')->get() as $submission) {
+                foreach ($submission->attachments as $attachment) {
+                    Storage::disk('s3')->delete($attachment->file_path);
+                    $attachment->delete();
+                }
+            }
+
+            $this->assignment->classworkItem?->delete();
+        });
 
         $this->redirect(route('classroom.show', $this->classroom->slug), navigate: true);
     }

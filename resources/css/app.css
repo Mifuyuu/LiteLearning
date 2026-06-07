@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 @import "tailwindcss";
 @import "cropperjs/dist/cropper.css";
 @import "./gamestyleicons.css";
@@ -10,30 +11,60 @@
 
 @theme {
     --font-sans:
-        "Google Sans", "Kanit", "Sarabun", "Noto Sans Thai", ui-sans-serif,
-        system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-        "Segoe UI Symbol", "Noto Color Emoji";
+        "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial,
+        "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 :root {
-    --btn-3d-top: #2d1b69;
-    --btn-3d-bottom: #1e1150;
-    --btn-3d-base: #150c38;
-    --btn-3d-border: #6b3fbf;
-    --btn-3d-text: #c4b5fd;
-    --purple-deep: #4A2C8F;
-    --purple-mid: #6B3FBF;
-    --purple-soft: #8B5CF6;
-    --purple-light: #C4B5FD;
-    --pink-accent: #F472B6;
-    --coral: #FF6B7A;
-    --teal: #34D399;
-    --gold: #FBBF24;
-    --sky: #60A5FA;
-    --bg-deep: #f5f3ff;
+    /* ── Kraken Brand ─────────────────────────────────── */
+    --ll-purple:          #7132f5;
+    --ll-purple-dark:     #5741d8;
+    --ll-purple-deep:     #5b1ecf;
+    --ll-purple-subtle:   rgba(133, 91, 251, 0.16);
+    --ll-purple-hover:    rgba(133, 91, 251, 0.08);
+    --ll-purple-faint:    rgba(133, 91, 251, 0.04);
+
+    /* ── Surface & Text ──────────────────────────────── */
+    --ll-bg:              #ffffff;
+    --ll-surface:         #ffffff;
+    --ll-surface-soft:    #f9f9fb;
+    --ll-border:          #dedee5;
+    --ll-border-muted:    rgba(104, 107, 130, 0.24);
+    --ll-ink:             #101114;
+    --ll-muted:           #686b82;
+    --ll-silver:          #9497a9;
+
+    /* ── Semantic ────────────────────────────────────── */
+    --ll-green:           #149e61;
+    --ll-green-dark:      #026b3f;
+    --ll-green-subtle:    rgba(20, 158, 97, 0.16);
+
+    /* ── Button tokens (default = primary purple) ────── */
+    --btn-3d-top:         #855bfb;
+    --btn-3d-bottom:      #7132f5;
+    --btn-3d-base:        #5741d8;
+    --btn-3d-border:      #7132f5;
+    --btn-3d-text:        #ffffff;
+
+    /* ── Legacy aliases (keep so old views don't break) ─ */
+    --ll-green-soft:      rgba(133, 91, 251, 0.16);
+    --ll-yellow:          #ffe08a;
+    --purple-deep:        #5b1ecf;
+    --purple-mid:         #7132f5;
+    --purple-soft:        #855bfb;
+    --purple-light:       #c4b5fd;
+    --sky:                #7132f5;
+    --bg-deep:            var(--ll-bg);
 }
 
-/* Custom scrollbar */
+/* ─── Body ───────────────────────────────────────────────────────────── */
+body {
+    background: #ffffff;
+    color: var(--ll-ink);
+}
+
+/* ─── Custom scrollbar ───────────────────────────────────────────────── */
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -43,20 +74,20 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(139, 92, 246, 0.4);
+    background: rgba(113, 50, 245, 0.3);
     border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(139, 92, 246, 0.7);
+    background: rgba(113, 50, 245, 0.55);
 }
 
-/* Alpine.js cloak */
+/* ─── Alpine.js cloak ────────────────────────────────────────────────── */
 [x-cloak] {
     display: none !important;
 }
 
-/* Tabs horizontal scrollbar */
+/* ─── Tabs horizontal scrollbar ──────────────────────────────────────── */
 .tabs-scroll {
     scrollbar-width: thin;
 }
@@ -70,7 +101,7 @@
 }
 
 .tabs-scroll::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground));
+    background: rgba(113, 50, 245, 0.3);
     border-radius: 9999px;
 }
 
@@ -85,37 +116,31 @@
     }
 }
 
-/* Prevent double focus border (browser outline + Tailwind ring) */
+/* ─── Focus resets ───────────────────────────────────────────────────── */
 input:focus,
-textarea:focus {
-    outline: none;
-}
-
+textarea:focus,
 select:focus {
     outline: none;
 }
 
 /*
- * Reusable 3D button — apply `.btn-3d` explicitly on the element.
- *
- * Fix #11: Removed overly broad `button.bg-indigo-600`, `a.bg-blue-600`, etc.
- * selectors that unintentionally styled badge chips and other bg-*-600 elements
- * that are not buttons. Use `.btn-3d` + `.btn-3d--*` variant classes only.
+ * ─── 3D Buttons ────────────────────────────────────────────────────────────
+ * Default variant = Kraken Purple
  */
 .btn-3d {
     position: relative;
     border: 1px solid var(--btn-3d-border);
-    background: linear-gradient(to bottom,
-            var(--btn-3d-top),
-            var(--btn-3d-bottom));
+    background: linear-gradient(to bottom, var(--btn-3d-top), var(--btn-3d-bottom));
     color: var(--btn-3d-text);
     font-weight: 700;
     letter-spacing: 0.02em;
     text-transform: uppercase;
+    border-radius: 12px;
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
         0 6px 0 var(--btn-3d-base),
-        0 10px 14px rgba(178, 134, 154, 0.35);
+        0 10px 14px rgba(113, 50, 245, 0.24);
+    transform: translateY(-3px);
     transition:
         transform 0.15s ease,
         box-shadow 0.15s ease,
@@ -126,105 +151,106 @@ select:focus {
     background: linear-gradient(to bottom,
             color-mix(in oklab, var(--btn-3d-top) 86%, white),
             color-mix(in oklab, var(--btn-3d-bottom) 92%, white));
-    transform: translateY(2px);
+    transform: translateY(-1px);
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.88),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
         0 4px 0 var(--btn-3d-base),
-        0 8px 12px rgba(178, 134, 154, 0.33);
+        0 8px 12px rgba(113, 50, 245, 0.22);
 }
 
 .btn-3d:active {
-    transform: translateY(4px);
+    transform: translateY(1px);
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        inset 0 1px 0 rgba(255, 255, 255, 0.10),
         0 2px 0 var(--btn-3d-base),
-        0 4px 8px rgba(178, 134, 154, 0.28);
+        0 4px 8px rgba(113, 50, 245, 0.18);
 }
 
-/* Color variants */
-.btn-3d--rose {
-    --btn-3d-top: #1f0e14;
-    --btn-3d-bottom: #170a10;
-    --btn-3d-base: #12080d;
-    --btn-3d-border: #6e4b58;
-    --btn-3d-text: #f4c1d0;
-}
-
+/* ── Variant: Indigo (now Purple) ───── */
 .btn-3d--indigo {
-    --btn-3d-top: #7c3aed;
-    --btn-3d-bottom: #a855f7;
-    --btn-3d-base: #5b21b6;
-    --btn-3d-border: #6d28d9;
-    --btn-3d-text: #ffffff;
+    --btn-3d-top:    #855bfb;
+    --btn-3d-bottom: #7132f5;
+    --btn-3d-base:   #5741d8;
+    --btn-3d-border: #7132f5;
+    --btn-3d-text:   #ffffff;
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
         0 6px 0 var(--btn-3d-base),
-        0 10px 14px rgba(92, 33, 182, 0.35);
+        0 10px 14px rgba(113, 50, 245, 0.28);
 }
 
 .btn-3d--indigo:hover {
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.15),
         0 4px 0 var(--btn-3d-base),
-        0 8px 12px rgba(92, 33, 182, 0.33);
+        0 8px 12px rgba(113, 50, 245, 0.24);
 }
 
 .btn-3d--indigo:active {
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.10),
         0 2px 0 var(--btn-3d-base),
-        0 4px 8px rgba(92, 33, 182, 0.28);
+        0 4px 8px rgba(113, 50, 245, 0.20);
+}
+
+/* ── Other variants (kept for backward compat) ─ */
+.btn-3d--rose {
+    --btn-3d-top:    #e11d48;
+    --btn-3d-bottom: #be123c;
+    --btn-3d-base:   #9f1239;
+    --btn-3d-border: #e11d48;
+    --btn-3d-text:   #ffffff;
 }
 
 .btn-3d--blue {
-    --btn-3d-top: #0b1a2e;
-    --btn-3d-bottom: #081420;
-    --btn-3d-base: #060f18;
-    --btn-3d-border: #2e5578;
-    --btn-3d-text: #bde0ff;
+    --btn-3d-top:    #3b82f6;
+    --btn-3d-bottom: #2563eb;
+    --btn-3d-base:   #1d4ed8;
+    --btn-3d-border: #3b82f6;
+    --btn-3d-text:   #ffffff;
 }
 
 .btn-3d--green {
-    --btn-3d-top: #0b1e12;
-    --btn-3d-bottom: #08160d;
-    --btn-3d-base: #060f09;
-    --btn-3d-border: #2d5e3f;
-    --btn-3d-text: #bbf0ca;
+    --btn-3d-top:    #22c55e;
+    --btn-3d-bottom: #16a34a;
+    --btn-3d-base:   #15803d;
+    --btn-3d-border: #22c55e;
+    --btn-3d-text:   #ffffff;
 }
 
 .btn-3d--amber {
-    --btn-3d-top: #1e1608;
-    --btn-3d-bottom: #161005;
-    --btn-3d-base: #0f0a03;
-    --btn-3d-border: #6e5325;
-    --btn-3d-text: #fde68a;
+    --btn-3d-top:    #f59e0b;
+    --btn-3d-bottom: #d97706;
+    --btn-3d-base:   #b45309;
+    --btn-3d-border: #f59e0b;
+    --btn-3d-text:   #ffffff;
 }
 
 .btn-3d--red {
-    --btn-3d-top: #1f0a0d;
-    --btn-3d-bottom: #170709;
-    --btn-3d-base: #0f0406;
-    --btn-3d-border: #753642;
-    --btn-3d-text: #fca5a5;
+    --btn-3d-top:    #ef4444;
+    --btn-3d-bottom: #dc2626;
+    --btn-3d-base:   #b91c1c;
+    --btn-3d-border: #ef4444;
+    --btn-3d-text:   #ffffff;
 }
 
 .btn-3d--white {
-    --btn-3d-top: #ffffff;
+    --btn-3d-top:    #ffffff;
     --btn-3d-bottom: #f3f4f6;
-    --btn-3d-base: #d1d5db;
-    --btn-3d-border: #9ca3af;
-    --btn-3d-text: #374151;
+    --btn-3d-base:   #d1d5db;
+    --btn-3d-border: #dedee5;
+    --btn-3d-text:   #101114;
 }
 
 .btn-3d--dark {
-    --btn-3d-top: #ffffff22;
-    --btn-3d-bottom: #ffffff11;
-    --btn-3d-base: #ffffff33;
-    --btn-3d-border: #ffffff55;
-    --btn-3d-text: #ffffff;
+    --btn-3d-top:    rgba(255, 255, 255, 0.18);
+    --btn-3d-bottom: rgba(255, 255, 255, 0.08);
+    --btn-3d-base:   rgba(255, 255, 255, 0.28);
+    --btn-3d-border: rgba(255, 255, 255, 0.38);
+    --btn-3d-text:   #ffffff;
 }
 
-/* Auth page animation stability */
+/* ─── Auth page helpers ───────────────────────────────────────────────── */
 .auth-page {
     overflow-x: hidden;
 }
@@ -239,23 +265,19 @@ select:focus {
     backface-visibility: hidden;
 }
 
+/* ─── Tiptap editor ──────────────────────────────────────────────────── */
 .tiptap {
     outline: none;
 }
 
 .tiptap p.is-editor-empty:first-child::before {
-    color: #9ca3af;
+    color: #9497a9;
     content: attr(data-placeholder);
     float: left;
     height: 0;
     pointer-events: none;
 }
 
-/* ─── Tiptap content styles ─────────────────────────────────────────────
- * Tailwind v4 preflight strips all default element styles.
- * These rules re-apply visual distinction for headings, lists, links etc.
- * inside the editor.
- * ─────────────────────────────────────────────────────────────────────── */
 .tiptap h1 {
     font-size: 1.875rem;
     font-weight: 700;
@@ -310,20 +332,20 @@ select:focus {
 
 .tiptap a,
 .prose a {
-    color: #2563eb !important;
+    color: #7132f5 !important;
     text-decoration: underline !important;
     cursor: pointer;
 }
 
 .tiptap a:hover,
 .prose a:hover {
-    color: #5d06e9 !important;
+    color: #5741d8 !important;
 }
 
 .tiptap blockquote {
-    border-left: 3px solid #d1d5db;
+    border-left: 3px solid #dedee5;
     padding-left: 1rem;
-    color: #6b7280;
+    color: #686b82;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 }
@@ -337,7 +359,7 @@ select:focus {
 }
 
 .tiptap pre {
-    background-color: #1f2937;
+    background-color: #101114;
     color: #e5e7eb;
     border-radius: 0.5rem;
     padding: 0.75rem 1rem;
@@ -355,7 +377,7 @@ select:focus {
 
 .tiptap hr {
     border: none;
-    border-top: 2px solid #e5e7eb;
+    border-top: 2px solid #dedee5;
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
@@ -365,94 +387,184 @@ select:focus {
     margin-bottom: 0.125rem;
 }
 
-/* Dot-grid background */
+/* ─── Dot-grid background (auth / space-bg pages) ────────────────────── */
 .space-bg {
-    background-color: #f9fafb;
-    background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+    background-color: #fafafa;
+    background-image: radial-gradient(#dedee5 1px, transparent 1px);
     background-size: 32px 32px;
     position: relative;
 }
 
+/* ─── Float animation (mascot) ───────────────────────────────────────── */
 @keyframes floatOrb {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-20px);
-    }
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-20px); }
 }
 
-/* Livewire progress bar */
+/* ─── Livewire progress bar ──────────────────────────────────────────── */
 .livewire-progress {
-    background: linear-gradient(90deg, #8B5CF6, #F472B6, #8B5CF6) !important;
+    background: linear-gradient(90deg, #855bfb, #7132f5, #5741d8) !important;
 }
 
-/* ─── 3D Card ───────────────────────────────────────────────────────────────
- * Usage: class="card-3d card-3d--indigo"  (or other variant)
- * ─────────────────────────────────────────────────────────────────────────── */
+/* ─── Panel & Surface utilities ──────────────────────────────────────── */
+.ll-panel {
+    background: #ffffff;
+    border: 1px solid #dedee5;
+    border-radius: 16px;
+    box-shadow: rgba(0, 0, 0, 0.03) 0px 4px 24px;
+}
+
+.ll-hero-panel {
+    position: relative;
+    background: linear-gradient(135deg, #ffffff 0%, rgba(243, 240, 255, 0.55) 100%);
+    border: 1px solid #dedee5;
+    border-radius: 16px;
+    box-shadow: rgba(0, 0, 0, 0.03) 0px 4px 24px;
+}
+
+.ll-hero-panel::after {
+    content: "";
+    position: absolute;
+    right: 20%;
+    bottom: 0;
+    width: 220px;
+    height: 72px;
+    border-radius: 9999px 9999px 0 0;
+    background: rgba(133, 91, 251, 0.12);
+    transform: translateY(42px);
+}
+
+.ll-surface {
+    background: var(--ll-surface);
+    border: 1px solid var(--ll-border);
+}
+
+.ll-soft {
+    background: var(--ll-surface-soft);
+    border: 1px solid var(--ll-border);
+}
+
+.ll-icon {
+    background: linear-gradient(135deg, #855bfb, #7132f5);
+    color: #ffffff;
+}
+
+/* ─── 3D Card ────────────────────────────────────────────────────────── */
 .card-3d {
-    --card-3d-bg: #ffffff;
-    --card-3d-border: #c4b5fd;
-    --card-3d-shadow: #a78bfa;
+    --card-3d-bg:     #ffffff;
+    --card-3d-border: var(--ll-border);
     background: var(--card-3d-bg);
-    border: 3px solid var(--card-3d-border);
-    box-shadow: 0 6px 0 0 var(--card-3d-shadow);
-    border-radius: 1rem;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    border: 1px solid var(--card-3d-border);
+    border-radius: 12px;
+    box-shadow: rgba(0, 0, 0, 0.03) 0px 4px 24px;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .card-3d:active {
     transform: translateY(3px);
-    box-shadow: 0 3px 0 0 var(--card-3d-shadow);
 }
 
 .card-3d-interactive:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 0 0 var(--card-3d-shadow);
+    border-color: rgba(113, 50, 245, 0.4);
+    box-shadow: rgba(113, 50, 245, 0.12) 0px 8px 24px;
 }
 
 /* Variants */
 .card-3d--indigo {
-    --card-3d-bg: #ffffff;
-    --card-3d-border: var(--color-indigo-400);
-    --card-3d-shadow: var(--color-indigo-600);
+    --card-3d-bg:     #ffffff;
+    --card-3d-border: rgba(133, 91, 251, 0.3);
 }
 
 .card-3d--purple {
-    --card-3d-bg: #ffffff;
-    --card-3d-border: #c4b5fd;
-    --card-3d-shadow: #9b82ff;
+    --card-3d-bg:     #ffffff;
+    --card-3d-border: #dedee5;
 }
 
 .card-3d--sky {
-    --card-3d-bg: #f0f9ff;
-    --card-3d-border: #bae6fd;
-    --card-3d-shadow: #0284c7;
+    --card-3d-bg:     rgba(133, 91, 251, 0.04);
+    --card-3d-border: rgba(133, 91, 251, 0.2);
 }
 
 .card-3d--green {
-    --card-3d-bg: #f0fdf4;
+    --card-3d-bg:     #f0fdf4;
     --card-3d-border: #bbf7d0;
-    --card-3d-shadow: #16a34a;
 }
 
 .card-3d--amber {
-    --card-3d-bg: #fffbeb;
+    --card-3d-bg:     #fffbeb;
     --card-3d-border: #fde68a;
-    --card-3d-shadow: #d97706;
 }
 
 .card-3d--rose {
-    --card-3d-bg: #fff1f2;
+    --card-3d-bg:     #fff1f2;
     --card-3d-border: #fecdd3;
-    --card-3d-shadow: #e11d48;
 }
 
 .card-3d--dark {
-    --card-3d-bg: #1e1150;
-    --card-3d-border: #6d28d9;
-    --card-3d-shadow: #4c1d95;
+    --card-3d-bg:     #1e1150;
+    --card-3d-border: #5741d8;
+}
+
+/* ─── Mascot badge (CSS-only) ────────────────────────────────────────── */
+.ll-mascot-badge {
+    position: relative;
+    width: 148px;
+    height: 132px;
+    transform: rotate(-6deg);
+}
+
+.ll-mascot-face {
+    position: absolute;
+    inset: 16px 18px 10px 18px;
+    border-radius: 42% 42% 46% 46%;
+    background: linear-gradient(145deg, #855bfb, #7132f5);
+}
+
+.ll-mascot-face::before,
+.ll-mascot-face::after {
+    content: "";
+    position: absolute;
+    top: 32px;
+    width: 31px;
+    height: 38px;
+    border-radius: 9999px;
+    background: #ffffff;
+}
+
+.ll-mascot-face::before {
+    left: 27px;
+}
+
+.ll-mascot-face::after {
+    right: 27px;
+}
+
+.ll-mascot-face span {
+    position: absolute;
+    top: 45px;
+    z-index: 1;
+    width: 13px;
+    height: 16px;
+    border-radius: 9999px;
+    background: #101114;
+}
+
+.ll-mascot-face span:first-child {
+    left: 36px;
+}
+
+.ll-mascot-face span:last-child {
+    right: 36px;
+}
+
+.ll-mascot-wing {
+    position: absolute;
+    left: -2px;
+    bottom: 18px;
+    width: 54px;
+    height: 68px;
+    border-radius: 60% 16% 62% 28%;
+    background: linear-gradient(145deg, #c4b5fd, #855bfb);
+    transform: rotate(-24deg);
 }

@@ -112,9 +112,7 @@ class SecurityTest extends TestCase
         // Outsider (not enrolled) tries to comment via tampered announcementId
         Livewire::actingAs($outsider)
             ->test(\App\Livewire\Classroom\StreamComment::class, ['announcementId' => $announcement->id])
-            ->set('commentText', 'Injected comment')
-            ->call('addComment')
-            ->assertStatus(403);
+            ->assertStatus(404);
     }
 
     // ──────────────────────────────────────────────

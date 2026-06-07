@@ -40,4 +40,27 @@ class ClassroomIndexTest extends TestCase
         $response->assertDontSee('wire:click="$set(\'filter\',\'enrolled\')"', false);
         $response->assertDontSee('wire:click="$set(\'filter\',\'archived\')"', false);
     }
+
+    public function test_teacher_classrooms_page_includes_co_teaching_classrooms(): void
+    {
+        /** @var User $owner */
+        $owner = User::factory()->createOne(['role' => 'teacher']);
+        /** @var User $coTeacher */
+        $coTeacher = User::factory()->createOne(['role' => 'teacher']);
+
+        $coTeachingClassroom = Classroom::factory()->create([
+            'teacher_id' => $owner->id,
+            'name' => 'Shared Physics',
+        ]);
+
+        $coTeachingClassroom->members()->attach($coTeacher->id, [
+            'role' => 'co-teacher',
+            'joined_at' => now(),
+        ]);
+
+        $response = $this->actingAs($coTeacher)->get(route('classrooms'));
+
+        $response->assertOk();
+        $response->assertSeeText('Shared Physics');
+    }
 }

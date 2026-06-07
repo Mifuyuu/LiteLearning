@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('page-title', __('Calendar'))
 @section('content')
-    <div class="animate__animated animate__fadeIn max-w-4xl mx-auto">
+    <div class="animate__animated animate__fadeIn">
         <div class="flex items-center gap-3 mb-6">
             <div class="w-10 h-10 rounded-xl bg-indigo-100 border border-indigo-200 flex items-center justify-center">
                 <i class="fas fa-calendar-alt text-indigo-600"></i>

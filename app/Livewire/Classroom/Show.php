@@ -3,12 +3,15 @@
 namespace App\Livewire\Classroom;
 
 use App\Models\Announcement;
+use App\Models\Assignment;
 use App\Models\Classroom;
+use App\Models\ThemeCategory;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
-use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('layouts.app')]
@@ -16,9 +19,6 @@ class Show extends Component
 {
     #[Locked]
     public Classroom $classroom;
-
-    #[Url(as: 'tab', except: 'stream')]
-    public string $activeTab = 'stream';
 
     public string $name = '';
 
@@ -28,23 +28,46 @@ class Show extends Component
 
     public ?int $theme_category_id = null;
 
-    public string $addTeacherEmail = '';
-
-    public string $addStudentEmail = '';
-
     public string $deleteConfirm = '';
 
     public bool $showDeleteAnnouncementModal = false;
 
     public ?int $deleteAnnouncementId = null;
 
-    public function mount(Classroom $classroom)
+    protected function canEditSettings(): bool
     {
         /** @var User $user */
         $user = Auth::user();
-        if (! $classroom->hasAccess($user)) {
-            abort(403);
-        }
+
+        return $this->classroom->isOwnedBy($user) || $user->isAdmin();
+    }
+
+    private function deleteAssignmentRecord(Assignment $assignment): void
+    {
+        DB::transaction(function () use ($assignment): void {
+            foreach ($assignment->attachments as $attachment) {
+                Storage::disk('s3')->delete($attachment->file_path);
+                $attachment->delete();
+            }
+
+            $assignment->comments()->delete();
+
+            foreach ($assignment->submissions()->with('attachments')->get() as $submission) {
+                foreach ($submission->attachments as $attachment) {
+                    Storage::disk('s3')->delete($attachment->file_path);
+                    $attachment->delete();
+                }
+            }
+
+            $assignment->classworkItem?->delete();
+        });
+    }
+
+    public function mount(Classroom $classroom): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        abort_unless($classroom->hasAccess($user), 404);
 
         $this->classroom = $classroom;
         $this->name = $classroom->name;
@@ -52,14 +75,9 @@ class Show extends Component
         $this->description = $classroom->description ?? '';
         $this->theme_category_id = $classroom->theme_category_id;
 
-        // Fix #3: eager-load all relationships once in mount() instead of on every render()
         $this->loadClassroomRelations();
     }
 
-    /**
-     * Eager-load all relationships needed by the view.
-     * Called once in mount() and selectively after mutations.
-     */
     private function loadClassroomRelations(): void
     {
         /** @var User $user */
@@ -68,54 +86,157 @@ class Show extends Component
         $this->classroom->load([
             'teacher',
             'students',
+            'coTeachers',
             'topics',
         ]);
 
-        // Load announcements with comments and users
         $announcementsQuery = $this->classroom->announcements()->with(['classworkItem.user', 'comments.user']);
-        $announcements = $announcementsQuery->latest()->get();
-        $this->classroom->setRelation('announcements', $announcements);
-
-        // Load assignments with submissions and users — filter for students
-        $assignmentsQuery = $this->classroom->assignments()->with(['classworkItem.user', 'classworkItem.topic', 'submissions']);
-        if (! $user->isAdmin() && ! $this->classroom->isOwnedBy($user)) {
-            $assignmentsQuery->where('assignments.status', 'published');
-        }
-        $assignments = $assignmentsQuery->latest()->get();
-
-        if ($user->isStudent()) {
-            $assignments = $assignments->filter(function ($assignment) {
-                if ($assignment->classworkItem?->published_at && $assignment->classworkItem->published_at->isFuture()) {
-                    return false;
-                }
-
-                if ($assignment->status === 'scheduled') {
-                    return false;
-                }
-
-                return true;
+        if (! $this->classroom->canManageClassroom($user)) {
+            $announcementsQuery->where(function ($query): void {
+                $query->whereNull('classwork_items.published_at')
+                    ->orWhere('classwork_items.published_at', '<=', now());
             });
         }
+        $this->classroom->setRelation('announcements', $announcementsQuery->latest()->get());
 
+        $assignmentsQuery = $this->classroom->assignments()->with(['classworkItem.user', 'classworkItem.topic', 'submissions']);
+        if (! $this->classroom->canManageClassroom($user)) {
+            $assignmentsQuery->where('assignments.status', 'published');
+        }
+
+        $assignments = $assignmentsQuery->latest()->get();
+        if ($user->isStudent()) {
+            $assignments = $assignments->filter(function (Assignment $assignment) {
+                if ($assignment->classworkItem?->published_at?->isFuture()) {
+                    return false;
+                }
+
+                return $assignment->status !== 'scheduled';
+            })->values();
+        }
         $this->classroom->setRelation('assignments', $assignments);
+
+        $materialsQuery = $this->classroom->materials()->with(['classworkItem.user', 'classworkItem.topic']);
+        if (! $this->classroom->canManageClassroom($user)) {
+            $materialsQuery->where(function ($query): void {
+                $query->whereNull('classwork_items.published_at')
+                    ->orWhere('classwork_items.published_at', '<=', now());
+            });
+        }
+        $this->classroom->setRelation('materials', $materialsQuery->latest()->get());
     }
 
-    public function setTab(string $tab)
+    public function routeToWork(): void
     {
-        $allowedTabs = ['stream', 'classwork', 'people'];
+        $this->redirect(route('classroom.work', [
+            'classroom' => $this->classroom,
+            'scope' => 'all',
+        ]), navigate: true);
+    }
 
-        /** @var User $user */
-        $user = Auth::user();
-        if ($this->classroom->isOwnedBy($user)) {
-            $allowedTabs[] = 'grades';
-            $allowedTabs[] = 'settings';
+    public function setTab(string $tab): void
+    {
+        if ($tab === 'classwork') {
+            $this->routeToWork();
+
+            return;
         }
 
-        if (! in_array($tab, $allowedTabs, true)) {
-            $tab = 'stream';
+        if ($tab === 'people') {
+            $this->routeToRoster();
+
+            return;
         }
 
-        $this->activeTab = $tab;
+        if ($tab === 'grades') {
+            $this->routeToGradebook();
+        }
+    }
+
+    public function routeToRoster(): void
+    {
+        $this->redirect(route('classroom.roster', [
+            'classroom' => $this->classroom,
+            'sort' => 'sort-last-name',
+        ]), navigate: true);
+    }
+
+    public function routeToGradebook(): void
+    {
+        abort_unless($this->classroom->canManageClassroom(Auth::user()), 403);
+
+        $this->redirect(route('classroom.gradebook', [
+            'classroom' => $this->classroom,
+            'sort' => 'sort-last-name',
+            'display' => 'default',
+        ]), navigate: true);
+    }
+
+    public function overviewTopics(): array
+    {
+        $groups = [];
+
+        foreach ($this->classroom->topics as $topic) {
+            $items = collect()
+                ->merge(
+                    $this->classroom->assignments
+                        ->where('topic_id', $topic->id)
+                        ->map(fn (Assignment $assignment) => [
+                            'kind' => 'assignment',
+                            'model' => $assignment,
+                            'created_at' => $assignment->created_at,
+                        ])
+                )
+                ->merge(
+                    $this->classroom->materials
+                        ->where('topic_id', $topic->id)
+                        ->map(fn ($material) => [
+                            'kind' => 'material',
+                            'model' => $material,
+                            'created_at' => $material->created_at,
+                        ])
+                )
+                ->sortByDesc('created_at')
+                ->values();
+
+            if ($items->isNotEmpty()) {
+                $groups[] = [
+                    'name' => $topic->name,
+                    'items' => $items,
+                ];
+            }
+        }
+
+        $general = collect()
+            ->merge(
+                $this->classroom->assignments
+                    ->whereNull('topic_id')
+                    ->map(fn (Assignment $assignment) => [
+                        'kind' => 'assignment',
+                        'model' => $assignment,
+                        'created_at' => $assignment->created_at,
+                    ])
+            )
+            ->merge(
+                $this->classroom->materials
+                    ->whereNull('topic_id')
+                    ->map(fn ($material) => [
+                        'kind' => 'material',
+                        'model' => $material,
+                        'created_at' => $material->created_at,
+                    ])
+            )
+            ->sortByDesc('created_at')
+            ->values();
+
+        if ($general->isNotEmpty()) {
+            $groups[] = [
+                'name' => __('General'),
+                'items' => $general,
+            ];
+        }
+
+        return $groups;
     }
 
     protected function canManageClassroom(): bool
@@ -128,7 +249,7 @@ class Show extends Component
 
     public function saveSettings()
     {
-        if (! $this->canManageClassroom()) {
+        if (! $this->canEditSettings()) {
             abort(403);
         }
 
@@ -147,6 +268,7 @@ class Show extends Component
         ]);
 
         $this->classroom->refresh();
+        $this->loadClassroomRelations();
 
         $this->dispatch('classroom-updated', [
             'id' => $this->classroom->id,
@@ -203,8 +325,6 @@ class Show extends Component
         }
 
         $announcement = Announcement::findOrFail($announcementId);
-
-        // Ensure announcement belongs to this classroom (prevent cross-classroom deletion)
         abort_unless($announcement->classroom_id === $this->classroom->id, 404);
 
         /** @var User $user */
@@ -213,118 +333,43 @@ class Show extends Component
             abort(403);
         }
 
-        $announcement->delete();
+        DB::transaction(function () use ($announcement): void {
+            foreach ($announcement->attachments as $attachment) {
+                Storage::disk('s3')->delete($attachment->file_path);
+                $attachment->delete();
+            }
+
+            $announcement->comments()->delete();
+            $announcement->classworkItem?->delete();
+        });
+
         $this->showDeleteAnnouncementModal = false;
         $this->deleteAnnouncementId = null;
-        // Reload all relations after deletion
         $this->loadClassroomRelations();
     }
 
     public function deleteAssignment(int $id)
     {
-        // Fix #12: removed unused $user variable
         if (! $this->canManageClassroom()) {
             abort(403);
         }
 
-        $assignment = \App\Models\Assignment::whereHas(
+        $assignment = Assignment::whereHas(
             'classworkItem',
-            fn ($q) => $q->where('classroom_id', $this->classroom->id)
+            fn ($query) => $query->where('classroom_id', $this->classroom->id)
         )
             ->where('id', $id)
             ->firstOrFail();
-        $assignment->delete();
-    }
 
-    public function addTeacher(): void
-    {
-        /** @var User $user */
-        $user = Auth::user();
-        abort_unless($this->classroom->isOwnedBy($user) || $user->isAdmin(), 403);
-
-        $this->validate(['addTeacherEmail' => 'required|email']);
-
-        $target = User::where('email', $this->addTeacherEmail)->first();
-
-        if (! $target) {
-            $this->addError('addTeacherEmail', __('ไม่พบผู้ใช้งานนี้ในระบบ'));
-
-            return;
-        }
-
-        if ($this->classroom->isOwnedBy($target)) {
-            $this->addError('addTeacherEmail', __('ผู้ใช้นี้เป็นเจ้าของห้องอยู่แล้ว'));
-
-            return;
-        }
-
-        if (! $target->isTeacher() && ! $target->isAdmin()) {
-            $this->addError('addTeacherEmail', __('สามารถเพิ่ม Co-Teacher ได้เฉพาะบัญชีอาจารย์เท่านั้น'));
-
-            return;
-        }
-
-        if ($this->classroom->isCoTeacher($target)) {
-            $this->addError('addTeacherEmail', __('ผู้ใช้นี้เป็น Co-Teacher อยู่แล้ว'));
-
-            return;
-        }
-
-        $this->classroom->members()->detach($target->id);
-        $this->classroom->members()->attach($target->id, [
-            'role' => 'co-teacher',
-            'joined_at' => now(),
-        ]);
-
-        $this->reset('addTeacherEmail');
+        $this->deleteAssignmentRecord($assignment);
         $this->loadClassroomRelations();
-        $this->dispatch('notify', message: __('เพิ่ม Co-Teacher เรียบร้อยแล้ว'));
-    }
-
-    public function addStudent(): void
-    {
-        /** @var User $user */
-        $user = Auth::user();
-        abort_unless($this->classroom->canManageClassroom($user), 403);
-
-        $this->validate(['addStudentEmail' => 'required|email']);
-
-        $target = User::where('email', $this->addStudentEmail)->first();
-
-        if (! $target) {
-            $this->addError('addStudentEmail', __('ไม่พบผู้ใช้งานนี้ในระบบ'));
-
-            return;
-        }
-
-        if (! $target->isStudent()) {
-            $this->addError('addStudentEmail', __('สามารถเพิ่มได้เฉพาะบัญชีนักเรียนเท่านั้น'));
-
-            return;
-        }
-
-        if ($this->classroom->students()->where('users.id', $target->id)->exists()) {
-            $this->addError('addStudentEmail', __('นักเรียนคนนี้อยู่ในห้องเรียนนี้แล้ว'));
-
-            return;
-        }
-
-        $this->classroom->members()->detach($target->id);
-        $this->classroom->members()->attach($target->id, [
-            'role' => 'student',
-            'joined_at' => now(),
-        ]);
-
-        $this->reset('addStudentEmail');
-        $this->loadClassroomRelations();
-        $this->dispatch('notify', message: __('เพิ่มนักเรียนเรียบร้อยแล้ว'));
     }
 
     public function render()
     {
-        // Fix #3: no relationship loading here — all done in mount() and targeted refreshes
-        $themes = \App\Models\ThemeCategory::active()->orderBy('planet_number')->get();
-
-        return view('livewire.classroom.show', compact('themes'));
+        return view('livewire.classroom.show', [
+            'themes' => ThemeCategory::active()->orderBy('planet_number')->get(),
+            'topicGroups' => $this->overviewTopics(),
+        ])->title($this->classroom->name);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Livewire\Classroom;
 
 use App\Models\Classroom;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
@@ -15,19 +16,54 @@ class People extends Component
     #[Locked]
     public Classroom $classroom;
 
-    public string $inviteEmail = '';
-
     public string $inviteCoTeacherEmail = '';
 
-    public function mount(Classroom $classroom)
+    public string $sort = 'sort-last-name';
+
+    public function mount(Classroom $classroom, string $sort = 'sort-last-name'): void
     {
         /** @var User $user */
         $user = Auth::user();
-        if (! $classroom->hasAccess($user)) {
-            abort(403);
-        }
+        abort_unless($classroom->hasAccess($user), 404);
 
         $this->classroom = $classroom;
+        $this->sort = $this->normalizeSort($sort);
+        $this->loadRelations();
+    }
+
+    public function hydrate(): void
+    {
+        $this->loadRelations();
+    }
+
+    private function loadRelations(): void
+    {
+        $this->classroom->load(['teacher', 'coTeachers', 'students']);
+    }
+
+    private function normalizeSort(string $sort): string
+    {
+        return in_array($sort, ['sort-first-name', 'sort-last-name', 'sort-newest'], true)
+            ? $sort
+            : 'sort-last-name';
+    }
+
+    private function lastNameKey(string $name): string
+    {
+        $parts = preg_split('/\s+/u', trim($name)) ?: [$name];
+
+        return mb_strtolower((string) end($parts));
+    }
+
+    private function sortUsers(Collection $users): Collection
+    {
+        $sorted = match ($this->sort) {
+            'sort-newest' => $users->sortByDesc(fn (User $user) => $user->pivot?->joined_at ?? $user->created_at),
+            'sort-first-name' => $users->sortBy(fn (User $user) => mb_strtolower($user->name)),
+            default => $users->sortBy(fn (User $user) => $this->lastNameKey($user->name).'|'.mb_strtolower($user->name)),
+        };
+
+        return $sorted->values();
     }
 
     public function addCoTeacher()
@@ -60,14 +96,12 @@ class People extends Component
             return;
         }
 
-        // If already a co-teacher, skip
         if ($this->classroom->isCoTeacher($target)) {
             $this->addError('inviteCoTeacherEmail', __('ผู้ใช้นี้เป็น Co-Teacher อยู่แล้ว'));
 
             return;
         }
 
-        // Detach if already a member in another role, then attach as co-teacher
         $this->classroom->members()->detach($target->id);
         $this->classroom->members()->attach($target->id, [
             'role' => 'co-teacher',
@@ -75,7 +109,6 @@ class People extends Component
         ]);
 
         $this->reset('inviteCoTeacherEmail');
-        $this->classroom->refresh();
         $this->dispatch('notify', message: __('เพิ่ม Co-Teacher เรียบร้อยแล้ว'));
     }
 
@@ -88,7 +121,6 @@ class People extends Component
         }
 
         $this->classroom->members()->detach($userId);
-        $this->classroom->refresh();
         $this->dispatch('notify', message: __('ลบ Co-Teacher เรียบร้อยแล้ว'));
     }
 
@@ -100,14 +132,11 @@ class People extends Component
             abort(403);
         }
 
-        // Co-teachers cannot remove the owner
         if ($userId === $this->classroom->teacher_id) {
             abort(403);
         }
 
         $this->classroom->members()->detach($userId);
-        $this->classroom->refresh();
-
         $this->dispatch('notify', message: __('Member removed successfully.'));
     }
 
@@ -119,17 +148,15 @@ class People extends Component
             abort(403);
         }
 
-        // Only detach students, not co-teachers
         $this->classroom->students()->detach();
-        $this->classroom->refresh();
-
         $this->dispatch('notify', message: __('All students removed successfully.'));
     }
 
     public function render()
     {
-        $this->classroom->load(['teacher', 'members', 'coTeachers']);
-
-        return view('livewire.classroom.people');
+        return view('livewire.classroom.people', [
+            'coTeachers' => $this->sortUsers($this->classroom->coTeachers),
+            'students' => $this->sortUsers($this->classroom->students),
+        ])->title($this->classroom->name.' - '.__('People'));
     }
 }

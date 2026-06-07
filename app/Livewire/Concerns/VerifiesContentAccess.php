@@ -30,6 +30,6 @@ trait VerifiesContentAccess
             abort_unless($content->{$fkColumn} === $classroom->id, 404);
         }
 
-        abort_unless($classroom->hasAccess(auth()->user()), 403);
+        abort_unless($classroom->hasAccess(auth()->user()), 404);
     }
 }

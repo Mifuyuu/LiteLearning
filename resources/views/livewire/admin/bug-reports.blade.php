@@ -1,6 +1,6 @@
 @section('page-title', __('report.admin_title'))
 
-<div class="max-w-4xl mx-auto space-y-4 animate__animated animate__fadeIn">
+<div class="space-y-4 animate__animated animate__fadeIn">
 
     <div class="flex flex-wrap items-center justify-between gap-4">
         <h1 class="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">

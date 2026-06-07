@@ -192,13 +192,6 @@ private function loadRelations(): void
 {
     $this->classroom->load('assignments', 'members');
 }
-
-### UI Scale
-Apply zoom to page root in every page component view:
-```blade
-<div style="zoom: {{ auth()->user()->ui_scale }}%;">
-```
-
 ---
 
 ## Security Patterns

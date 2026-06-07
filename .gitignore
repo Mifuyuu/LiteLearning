@@ -31,3 +31,6 @@ Thumbs.db
 config.yml
 .env.docker
 /.worktrees
+/.agents
+/.codex
+AGENTS.md

@@ -188,7 +188,7 @@ class SubmissionTest extends TestCase
             'assignment' => $this->assignment->slug,
         ]));
 
-        $response->assertStatus(403);
+        $response->assertStatus(404);
     }
 
     public function test_grade_route_uses_submission_id_instead_of_slug(): void

@@ -27,7 +27,6 @@ class Assignment extends Model
     protected function casts(): array
     {
         return [
-            'attachments' => 'array',
             'due_date' => 'datetime',
             'allow_late_submission' => 'boolean',
             'exp_reward' => 'integer',
@@ -278,6 +277,10 @@ class Assignment extends Model
      */
     public function canAcceptSubmission(): bool
     {
+        if ($this->status !== 'published') {
+            return false;
+        }
+
         if (! $this->isOverdue()) {
             return true;
         }
@@ -304,16 +307,30 @@ class Assignment extends Model
 
     public function submittedCount(): int
     {
+        if ($this->relationLoaded('submissions')) {
+            return $this->submissions->filter(fn ($submission) => in_array($submission->status, ['turned_in', 'graded', 'returned'], true))->count();
+        }
+
         return $this->submissions()->whereIn('status', ['turned_in', 'graded', 'returned'])->count();
     }
 
     public function gradedCount(): int
     {
+        if ($this->relationLoaded('submissions')) {
+            return $this->submissions->where('status', 'graded')->count();
+        }
+
         return $this->submissions()->where('status', 'graded')->count();
     }
 
     public function averageScore(): ?float
     {
+        if ($this->relationLoaded('submissions')) {
+            $graded = $this->submissions->where('status', 'graded');
+
+            return $graded->isNotEmpty() ? (float) $graded->avg('score') : null;
+        }
+
         return $this->submissions()->where('status', 'graded')->avg('score');
     }
 

@@ -1,7 +1,7 @@
-@props(['user', 'size' => 'w-10 h-10', 'border' => 'border-4 border-white'])
+@props(['user', 'size' => 'w-10 h-10', 'border' => 'border-4 border-white', 'shadow' => 'shadow-sm'])
 
 <div {{ $attributes->merge(['class' => 'relative inline-block']) }}>
-    <div class="{{ $size }} rounded-full {{ $border }} shadow-sm bg-white overflow-hidden relative z-10">
+    <div class="{{ $size }} rounded-full {{ $border }} {{ $shadow }} bg-white overflow-hidden relative z-10">
         <img src="{{ $user->avatar_url }}" 
              alt="{{ $user->name }}"
              class="w-full h-full object-cover"

@@ -1,5 +1,5 @@
 <div>
-    <div class="max-w-5xl mx-auto px-4 py-6">
+    <div>
 
         {{-- Breadcrumb --}}
         <nav class="flex items-center text-sm text-gray-500 mb-6 flex-wrap gap-1">

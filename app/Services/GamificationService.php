@@ -4,9 +4,14 @@ namespace App\Services;
 
 use App\Exceptions\GamificationException;
 use App\Models\Achievement;
+use App\Models\Assignment;
 use App\Models\CoinTransaction;
+use App\Models\Comment;
 use App\Models\StoreItem;
+use App\Models\Submission;
 use App\Models\User;
+use App\Models\UserGamification;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
 class GamificationService
@@ -78,6 +83,10 @@ class GamificationService
                 'new_level' => $newLevel,
             ]);
         }
+
+        if ($newLevel >= 5) {
+            $this->unlockAchievement($user, 'level_up');
+        }
     }
 
     public function unlockAchievement(User $user, string $code): void
@@ -127,6 +136,10 @@ class GamificationService
         if ($user->enrolledClassrooms()->count() >= 1) {
             $this->unlockAchievement($user, 'first_classroom_joined');
         }
+
+        if ($user->enrolledClassrooms()->count() >= 3) {
+            $this->unlockAchievement($user, 'multi_class');
+        }
     }
 
     public function awardForAssignmentCreated(User $user, int $assignmentId): void
@@ -145,9 +158,106 @@ class GamificationService
             $this->unlockAchievement($user, 'first_assignment_turned_in');
         }
 
-        if ($turnedInCount >= 10) {
+        if ($turnedInCount >= 5) {
+            $this->unlockAchievement($user, 'on_a_roll');
+        }
+
+        $submission = $user->submissions()
+            ->with('assignment.classworkItem')
+            ->where('assignment_id', $assignmentId)
+            ->first();
+
+        if ($submission instanceof Submission && $this->wasSubmittedAtLeastOneDayEarly($submission)) {
+            $this->unlockAchievement($user, 'early_bird');
+        }
+
+        if ($this->hasCompletedAnyClassroom($user)) {
             $this->unlockAchievement($user, 'consistent_submitter');
         }
+    }
+
+    public function awardForCommentCreated(User $user, int $commentId): void
+    {
+        if (! $this->isEligible($user)) {
+            return;
+        }
+
+        if (! Comment::whereKey($commentId)->where('user_id', $user->id)->exists()) {
+            return;
+        }
+
+        $commentCount = $user->comments()->count();
+
+        if ($commentCount >= 1) {
+            $this->unlockAchievement($user, 'social_butterfly');
+        }
+
+        if ($commentCount >= 5) {
+            $this->unlockAchievement($user, 'chatterbox');
+        }
+    }
+
+    public function awardForSubmissionGraded(Submission $submission): void
+    {
+        $submission->loadMissing('assignment', 'user');
+
+        if (! $submission->user instanceof User || ! $this->isEligible($submission->user)) {
+            return;
+        }
+
+        $assignment = $submission->assignment;
+
+        if ($assignment instanceof Assignment && $assignment->max_score > 0 && $submission->score === $assignment->max_score) {
+            $this->unlockAchievement($submission->user, 'perfect_score');
+        }
+
+        $gradedCount = $submission->user->submissions()
+            ->where('status', 'graded')
+            ->count();
+
+        if ($gradedCount >= 5) {
+            $this->unlockAchievement($submission->user, 'grade_seeker');
+        }
+    }
+
+    private function wasSubmittedAtLeastOneDayEarly(Submission $submission): bool
+    {
+        $assignment = $submission->assignment;
+
+        if (! $assignment instanceof Assignment || ! $assignment->due_date || ! $submission->turned_in_at) {
+            return false;
+        }
+
+        return $submission->turned_in_at->lessThanOrEqualTo($assignment->due_date->copy()->subDay());
+    }
+
+    private function hasCompletedAnyClassroom(User $user): bool
+    {
+        $classroomIds = $user->enrolledClassrooms()->pluck('classrooms.id');
+
+        foreach ($classroomIds as $classroomId) {
+            $assignmentIds = Assignment::query()
+                ->whereHas('classworkItem', fn ($query) => $query->where('classroom_id', $classroomId))
+                ->where('status', 'published')
+                ->whereNotIn('type', ['announcement', 'material', 'topic'])
+                ->pluck('id');
+
+            if ($assignmentIds->isEmpty()) {
+                continue;
+            }
+
+            $completedCount = $user->submissions()
+                ->whereIn('assignment_id', $assignmentIds)
+                ->whereIn('status', ['turned_in', 'graded', 'returned'])
+                ->distinct('assignment_id')
+                ->count('assignment_id');
+
+            if ($completedCount >= $assignmentIds->count()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -200,12 +310,18 @@ class GamificationService
                 ['coins' => 0, 'xp' => 0, 'level' => 1]
             );
 
-            if ($gamification->coins < $item->price) {
-                throw new GamificationException(__('Not enough coins.'));
+            if ($user->storeItems()->where('store_item_id', $item->id)->exists()) {
+                throw new GamificationException(__('You already own this item.'));
             }
 
-            // Deduct coins
-            $gamification->decrement('coins', $item->price);
+            $coinsDeducted = UserGamification::query()
+                ->whereKey($gamification->id)
+                ->where('coins', '>=', $item->price)
+                ->decrement('coins', $item->price);
+
+            if ($coinsDeducted === 0) {
+                throw new GamificationException(__('Not enough coins.'));
+            }
 
             // Record transaction
             CoinTransaction::create([
@@ -218,8 +334,11 @@ class GamificationService
                 'happened_at' => now(),
             ]);
 
-            // Attach item
-            $user->storeItems()->attach($item->id);
+            try {
+                $user->storeItems()->attach($item->id);
+            } catch (QueryException $exception) {
+                throw new GamificationException(__('You already own this item.'), previous: $exception);
+            }
         });
     }
 

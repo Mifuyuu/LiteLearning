@@ -7,6 +7,7 @@ use App\Models\Classroom;
 use App\Models\ClassworkItem;
 use App\Models\Submission;
 use App\Models\User;
+use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
@@ -28,7 +29,7 @@ class Grade extends Component
 
     public string $feedback = '';
 
-    public function mount(Classroom $classroom, Assignment $assignment, Submission $submission)
+    public function mount(Classroom $classroom, Assignment $assignment, Submission $submission): void
     {
         /** @var User $user */
         $user = Auth::user();
@@ -54,7 +55,7 @@ class Grade extends Component
         $this->feedback = $submission->feedback ?? '';
     }
 
-    public function grade()
+    public function grade(): void
     {
         $this->validate([
             'score' => "required|integer|min:0|max:{$this->assignment->max_score}",
@@ -68,11 +69,12 @@ class Grade extends Component
 
         $this->submission->grade($this->score, $this->feedback);
         $this->submission->refresh();
+        app(GamificationService::class)->awardForSubmissionGraded($this->submission);
 
         session()->flash('message', __('Submission graded successfully!'));
     }
 
-    public function returnSubmission()
+    public function returnSubmission(): void
     {
         $this->submission->returnSubmission();
         $this->submission->refresh();

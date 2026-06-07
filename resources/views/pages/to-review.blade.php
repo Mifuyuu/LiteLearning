@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('page-title', __('To Review'))
 @section('content')
-    <div class="max-w-4xl mx-auto">
+    <div>
         <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('To Review') }}</h2>
 
         @php

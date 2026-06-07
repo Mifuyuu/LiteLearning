@@ -6,9 +6,7 @@ use App\Livewire\Concerns\VerifiesContentAccess;
 use App\Models\Assignment;
 use App\Models\AttendanceSession as AttendanceSessionModel;
 use App\Models\Classroom;
-use App\Models\Submission;
 use App\Services\GamificationService;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -62,23 +60,11 @@ class Attendance extends Component
         );
 
         if (! $this->session) {
-            DB::transaction(function (): void {
-                $assignmentItem = $this->assignment->classworkItem;
-                $classworkItem = \App\Models\ClassworkItem::create([
-                    'type' => 'attendance',
-                    'classroom_id' => $assignmentItem->classroom_id,
-                    'user_id' => $assignmentItem->user_id,
-                    'topic_id' => $assignmentItem->topic_id,
-                    'title' => $assignmentItem->title,
-                    'slug' => \App\Models\Traits\HasSlug::generateUniqueSlug($assignmentItem->title),
-                    'description' => $assignmentItem->description,
-                ]);
-
-                $this->session = AttendanceSessionModel::create([
-                    'classwork_item_id' => $classworkItem->id,
-                    'is_active' => false,
-                ]);
-            });
+            $this->session = AttendanceSessionModel::firstOrCreate([
+                'classwork_item_id' => $this->assignment->classwork_item_id,
+            ], [
+                'is_active' => false,
+            ]);
         }
 
         $this->session->start();
@@ -150,11 +136,14 @@ class Attendance extends Component
 
         // Create or update submission
         $submission = $this->assignment->submissionFor($user);
+        $wasAlreadyTurnedIn = $submission?->isTurnedIn() ?? false;
         if (! $submission) {
-            $submission = $this->assignment->submissions()->create([
+            $submission = $this->assignment->submissions()->firstOrCreate([
                 'user_id' => $user->id,
+            ], [
                 'status' => 'assigned',
             ]);
+            $wasAlreadyTurnedIn = false;
         }
 
         $submission->update([
@@ -165,7 +154,9 @@ class Attendance extends Component
         $this->alreadyCheckedIn = true;
         $this->enteredCode = '';
 
-        app(GamificationService::class)->awardForAssignmentTurnedIn($user, $this->assignment->id);
+        if (! $wasAlreadyTurnedIn) {
+            app(GamificationService::class)->awardForAssignmentTurnedIn($user, $this->assignment->id);
+        }
 
         session()->flash('attendance_success', __('Checked in successfully'));
     }

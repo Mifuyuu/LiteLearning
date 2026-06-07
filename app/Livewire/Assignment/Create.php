@@ -9,6 +9,7 @@ use App\Models\Assignment;
 use App\Models\Classroom;
 use App\Services\GamificationService;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -71,6 +72,24 @@ class Create extends Component
         return 25600;
     }
 
+    private function persistAttachments(Model $attachable, int $uploadedBy): void
+    {
+        foreach ($this->uploadedFiles as $uploaded) {
+            if (! isset($uploaded['file']) || ! $uploaded['file']) {
+                continue;
+            }
+
+            $path = $uploaded['file']->store('classwork/attachments/'.$this->classroom->id, 's3');
+            $attachable->attachments()->create([
+                'file_name' => $uploaded['name'],
+                'file_path' => $path,
+                'file_type' => $uploaded['mime'],
+                'file_size' => $uploaded['size'],
+                'uploaded_by' => $uploadedBy,
+            ]);
+        }
+    }
+
     public function save(): void
     {
         $this->validate([
@@ -111,21 +130,6 @@ class Create extends Component
             $this->status = 'scheduled';
         }
 
-        // Upload attachments to S3
-        $attachments = [];
-        foreach ($this->uploadedFiles as $uploaded) {
-            if (isset($uploaded['file']) && $uploaded['file']) {
-                $path = $uploaded['file']->store('assignments/attachments/'.$this->classroom->id, 's3');
-                $attachments[] = [
-                    'id' => $uploaded['id'],
-                    'name' => $uploaded['name'],
-                    'path' => $path,
-                    'size' => $uploaded['size'],
-                    'mime' => $uploaded['mime'],
-                ];
-            }
-        }
-
         // Announcement → save to announcements table, not assignments
         if ($this->type === 'announcement') {
             DB::transaction(function () use ($user, $topicId): void {
@@ -140,10 +144,12 @@ class Create extends Component
                     'published_at' => $this->published_at ?: null,
                 ]);
 
-                Announcement::create([
+                $announcement = Announcement::create([
                     'classwork_item_id' => $classworkItem->id,
                     'content' => $this->description ? Purifier::clean($this->description) : null,
                 ]);
+
+                $this->persistAttachments($announcement, $user->id);
             });
 
             $this->redirect(route('classroom.show', $this->classroom), navigate: true);
@@ -151,7 +157,7 @@ class Create extends Component
             return;
         }
 
-        DB::transaction(function () use ($user, $topicId, $attachments): void {
+        DB::transaction(function () use ($user, $topicId): void {
             $classworkItem = \App\Models\ClassworkItem::create([
                 'type' => 'assignment',
                 'classroom_id' => $this->classroom->id,
@@ -165,7 +171,6 @@ class Create extends Component
 
             $assignment = Assignment::create([
                 'classwork_item_id' => $classworkItem->id,
-                'attachments' => ! empty($attachments) ? $attachments : null,
                 'max_score' => $this->max_score,
                 'exp_reward' => $this->exp_reward,
                 'coin_reward' => $this->coin_reward,
@@ -174,6 +179,8 @@ class Create extends Component
                 'type' => $this->type,
                 'allow_late_submission' => $this->allow_late_submission,
             ]);
+
+            $this->persistAttachments($assignment, $user->id);
 
             // Create submissions for all enrolled students
             if ($this->status === 'published' && ! in_array($this->type, ['material', 'topic'])) {
@@ -193,6 +200,14 @@ class Create extends Component
             ]), navigate: true);
         });
 
+    }
+
+    public function saveDraft(): void
+    {
+        $this->status = 'draft';
+        $this->published_at = null;
+
+        $this->save();
     }
 
     public function render(): \Illuminate\View\View

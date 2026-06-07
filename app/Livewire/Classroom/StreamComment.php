@@ -2,14 +2,23 @@
 
 namespace App\Livewire\Classroom;
 
-use App\Models\Classroom;
+use App\Models\Announcement;
 use App\Models\Comment;
+use App\Models\Material;
+use App\Models\User;
+use App\Services\GamificationService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class StreamComment extends Component
 {
-    public int $announcementId = 0;
+    #[Locked]
+    public int $contentId = 0;
+
+    #[Locked]
+    public string $contentType = Announcement::class;
 
     public string $commentText = '';
 
@@ -19,40 +28,79 @@ class StreamComment extends Component
         'commentText' => 'required|string|min:1|max:5000',
     ];
 
-    public function toggleComments()
+    public function mount(int $announcementId = 0, int $contentId = 0, string $contentType = Announcement::class): void
+    {
+        $this->contentId = $announcementId !== 0 ? $announcementId : $contentId;
+        $this->contentType = $announcementId !== 0 ? Announcement::class : $contentType;
+
+        $this->resolveCommentable();
+    }
+
+    public function toggleComments(): void
     {
         $this->showComments = ! $this->showComments;
     }
 
-    public function addComment()
+    public function addComment(): void
     {
         $this->validate();
 
-        // Verify user has access to the announcement's classroom
-        $announcement = \App\Models\Announcement::with('classworkItem.classroom')->findOrFail($this->announcementId);
-        $classroom = $announcement->classroom;
+        $commentable = $this->resolveCommentable();
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
-        if (! $classroom->hasAccess($user)) {
-            abort(403);
-        }
 
-        Comment::create([
-            'commentable_type' => \App\Models\Announcement::class,
-            'commentable_id' => $this->announcementId,
-            'user_id' => Auth::id(),
+        $comment = Comment::create([
+            'commentable_type' => $commentable::class,
+            'commentable_id' => $commentable->getKey(),
+            'user_id' => $user->id,
             'content' => $this->commentText,
         ]);
+
+        app(GamificationService::class)->awardForCommentCreated($user, $comment->id);
 
         $this->reset('commentText');
         $this->dispatch('comment-added');
     }
 
+    private function resolveCommentable(): Model
+    {
+        $allowedTypes = [
+            Announcement::class,
+            Material::class,
+        ];
+
+        abort_unless($this->contentId > 0, 404);
+        abort_unless(in_array($this->contentType, $allowedTypes, true), 404);
+
+        $commentable = match ($this->contentType) {
+            Announcement::class => Announcement::with('classworkItem.classroom')->findOrFail($this->contentId),
+            Material::class => Material::with('classworkItem.classroom')->findOrFail($this->contentId),
+        };
+
+        /** @var User $user */
+        $user = Auth::user();
+        $classroom = $commentable->classroom;
+
+        abort_unless($classroom?->hasAccess($user), 404);
+
+        if (
+            $commentable instanceof Announcement
+            && $commentable->classworkItem?->published_at?->isFuture()
+            && ! $classroom->canManageClassroom($user)
+        ) {
+            abort(404);
+        }
+
+        return $commentable;
+    }
+
     public function render()
     {
-        $comments = Comment::where('commentable_type', \App\Models\Announcement::class)
-            ->where('commentable_id', $this->announcementId)
+        $commentable = $this->resolveCommentable();
+
+        $comments = Comment::where('commentable_type', $commentable::class)
+            ->where('commentable_id', $commentable->getKey())
             ->with('user')
             ->latest()
             ->get();

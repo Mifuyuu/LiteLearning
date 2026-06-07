@@ -1,7 +1,7 @@
 @section('page-title', __('Settings'))
 
 <div class="animate__animated animate__fadeIn">
-    <div class="max-w-2xl mx-auto space-y-4">
+    <div class="space-y-4">
 
         {{-- Page Header --}}
         <div class="mb-8">

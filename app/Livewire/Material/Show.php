@@ -9,6 +9,7 @@ use App\Models\Classroom;
 use App\Models\Material;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
@@ -27,11 +28,24 @@ class Show extends Component
     #[Locked]
     public Material $material;
 
+    public string $editTitle = '';
+
+    public string $editDescription = '';
+
+    public string $editTopic = '';
+
     public function mount(Classroom $classroom, Material $material): void
     {
         $this->classroom = $classroom;
         $this->material = $material;
         $this->verifyContentAccess($classroom, $material);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        abort_unless(
+            $classroom->canManageClassroom($user) || ! $material->classworkItem?->published_at?->isFuture(),
+            404
+        );
     }
 
     public function saveMaterial(): void
@@ -70,13 +84,15 @@ class Show extends Component
         $user = Auth::user();
         abort_unless($this->classroom->canManageClassroom($user), 403);
 
-        // Delete attachments from S3 and remove from DB
-        foreach ($this->material->attachments as $attachment) {
-            Storage::disk('s3')->delete($attachment->file_path);
-            $attachment->delete();
-        }
+        DB::transaction(function (): void {
+            foreach ($this->material->attachments as $attachment) {
+                Storage::disk('s3')->delete($attachment->file_path);
+                $attachment->delete();
+            }
 
-        $this->material->delete();
+            $this->material->comments()->delete();
+            $this->material->classworkItem?->delete();
+        });
 
         $this->redirect(route('classroom.show', $this->classroom->slug), navigate: true);
     }
@@ -86,6 +102,7 @@ class Show extends Component
         return [
             'editTitle' => 'title',
             'editDescription' => 'description',
+            'editTopic' => 'topic',
         ];
     }
 

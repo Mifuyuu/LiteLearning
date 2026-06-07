@@ -1,7 +1,7 @@
 <div class="animate__animated animate__fadeIn" x-data>
     <button wire:click="openModal"
         class="btn-3d btn-3d--indigo inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg select-none">
-        <i class="fas fa-rocket mr-2"></i> สำรวจดวงดาว
+        <x-icon name="rocket-launch" class="mr-2 h-4 w-4" /> สำรวจดวงดาว
     </button>
 
     @if($showModal)

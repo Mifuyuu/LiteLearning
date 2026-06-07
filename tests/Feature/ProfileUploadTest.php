@@ -61,4 +61,29 @@ class ProfileUploadTest extends TestCase
         $this->assertStringContainsString('covers/', $user->cover_image);
         $this->assertTrue(Storage::disk('public')->exists($user->cover_image));
     }
+
+    public function test_student_profile_renders_rank_graph_data()
+    {
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+        $this->actingAs($student);
+
+        Livewire::test(\App\Livewire\Profile::class)
+            ->assertViewHas('rank')
+            ->assertViewHas('chartPoints')
+            ->assertSee('อันดับ')
+            ->assertDontSee('อันดับทั่วโลก')
+            ->assertDontSee('อันดับในประเทศ');
+    }
+
+    public function test_teacher_profile_does_not_render_rank_graph_data()
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        $this->actingAs($teacher);
+
+        Livewire::test(\App\Livewire\Profile::class)
+            ->assertViewHas('rank', null)
+            ->assertDontSee('อันดับและแนวโน้มการเรียน');
+    }
 }
