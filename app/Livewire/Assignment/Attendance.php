@@ -127,6 +127,13 @@ class Attendance extends Component
 
         // Validate code
         $this->session->refresh();
+        if ($this->session->isCodeExpired()) {
+            session()->flash('attendance_error', __('Attendance code has expired'));
+            $this->enteredCode = '';
+
+            return;
+        }
+
         if ($this->enteredCode !== $this->session->current_code) {
             session()->flash('attendance_error', __('Invalid code'));
             $this->enteredCode = '';

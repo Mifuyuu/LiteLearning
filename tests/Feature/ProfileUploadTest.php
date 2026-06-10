@@ -62,6 +62,21 @@ class ProfileUploadTest extends TestCase
         $this->assertTrue(Storage::disk('public')->exists($user->cover_image));
     }
 
+    public function test_profile_upload_hides_internal_exception_details(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        Livewire::actingAs($user)
+            ->test(\App\Livewire\Profile::class)
+            ->call('uploadAvatar', 'data:image/png;base64,invalid-data')
+            ->assertDispatched(
+                'notify',
+                message: __('Upload failed. Please try again.'),
+                type: 'error'
+            );
+    }
+
     public function test_student_profile_renders_rank_graph_data()
     {
         /** @var User $student */

@@ -1,293 +1,229 @@
 @section('page-title', __('Dashboard'))
 
 @php
-    $user = auth()->user();
-    $isStudent = $user->isStudent();
-    $isTeacher = $user->isTeacher() || $user->isAdmin();
+    $isStudent = $role === 'student';
     $displayName = trim(explode(' ', $user->name)[0] ?? $user->name);
-    $firstClassroom = $classrooms->first();
-    $primaryClassroomRoute = $firstClassroom ? route('classroom.show', $firstClassroom) : route('classrooms');
-    $createRoute = $firstClassroom ? route('assignment.create', $firstClassroom) : route('classrooms');
+    $activityDays = collect($activity['days']);
+    $monthLabels = $activityDays
+        ->chunk(7)
+        ->values()
+        ->map(function ($week, int $index) use ($activityDays): array {
+            $date = \Illuminate\Support\Carbon::parse($week->first()['date']);
+            $previousMonth = $index > 0
+                ? \Illuminate\Support\Carbon::parse($activityDays[($index - 1) * 7]['date'])->month
+                : null;
 
-    $heroMetric = $isStudent
-        ? [
-            'label' => __('Level'),
-            'value' => $gamification['level'] ?? 1,
-            'caption' => __(':xp XP to next level', ['xp' => number_format($gamification['xp_to_next'] ?? 0)]),
-            'progress' => $gamification['progress_percent'] ?? 0,
-            'icon' => 'fire',
-        ]
-        : [
-            'label' => __('Pending Review'),
-            'value' => $stats['pending'] ?? 0,
-            'caption' => __('submissions waiting for feedback'),
-            'progress' => min(100, (($stats['pending'] ?? 0) * 12)),
-            'icon' => 'clipboard-document-list',
-        ];
-
-    $statsGrid = $isStudent
-        ? [
-            ['label' => __('Coins'), 'value' => number_format($gamification['coins'] ?? 0), 'icon' => 'star-solid', 'tone' => 'text-amber-700 bg-amber-50'],
-            ['label' => __('Achievements'), 'value' => number_format($gamification['achievements'] ?? 0), 'icon' => 'star', 'tone' => 'text-amber-700 bg-amber-50'],
-            ['label' => __('Assignments'), 'value' => number_format($studentAnalytics['totals']['assignments'] ?? 0), 'icon' => 'document-text', 'tone' => 'text-indigo-700 bg-indigo-50'],
-            ['label' => __('Average Score'), 'value' => number_format($studentAnalytics['totals']['average_score'] ?? 0, 1), 'icon' => 'chart-bar', 'tone' => 'text-violet-700 bg-violet-50'],
-        ]
-        : [
-            ['label' => __('Classrooms'), 'value' => number_format($stats['classrooms'] ?? 0), 'icon' => 'academic-cap', 'tone' => 'text-indigo-700 bg-indigo-50'],
-            ['label' => __('Students'), 'value' => number_format($stats['students'] ?? 0), 'icon' => 'users', 'tone' => 'text-sky-700 bg-sky-50'],
-            ['label' => __('Assignments'), 'value' => number_format($stats['assignments'] ?? 0), 'icon' => 'document-text', 'tone' => 'text-violet-700 bg-violet-50'],
-            ['label' => __('Pending'), 'value' => number_format($stats['pending'] ?? 0), 'icon' => 'clock', 'tone' => 'text-amber-700 bg-amber-50'],
-        ];
-
-    $activityItems = $upcomingAssignments->take(3)->map(fn ($assignment) => [
-        'title' => $assignment->title,
-        'meta' => $assignment->classroom?->name ?? __('Classroom'),
-        'time' => $assignment->due_date?->diffForHumans() ?? __('No due date'),
-        'route' => route('assignment.show', [$assignment->classroom, $assignment]),
-        'icon' => $assignment->isProject() ? 'clipboard-document-list' : 'document-text',
-        'color' => $assignment->classroom?->themeCategory?->color ?? '#7132f5',
-    ]);
-
-    $quickLinks = $isStudent
-        ? [
-            ['label' => __('Achievements'), 'route' => route('achievements'), 'icon' => 'star'],
-            ['label' => __('Leaderboard'), 'route' => route('leaderboard'), 'icon' => 'trophy'],
-            ['label' => __('Store'), 'route' => route('store'), 'icon' => 'shopping-bag'],
-        ]
-        : [
-            ['label' => __('Create Classwork'), 'route' => $createRoute, 'icon' => 'plus'],
-            ['label' => __('To Review'), 'route' => route('to-review'), 'icon' => 'clipboard-document-list'],
-            ['label' => __('Classrooms'), 'route' => route('classrooms'), 'icon' => 'academic-cap'],
-        ];
-
-    $weekDays = collect(['M', 'T', 'W', 'T', 'F', 'S', 'S']);
-    $recentSubmissions = collect($studentAnalytics['charts']['recent_activity']['submissions'] ?? []);
+            return [
+                'week' => $index + 1,
+                'label' => $index === 0 || $date->month !== $previousMonth
+                    ? $date->translatedFormat('M')
+                    : '',
+            ];
+        });
+    $activityLevelClasses = [
+        0 => 'bg-[#ece9f0]',
+        1 => 'bg-[#e2d4ff]',
+        2 => 'bg-[#bea1fb]',
+        3 => 'bg-[#9363ef]',
+        4 => 'bg-[#7132f5]',
+    ];
 @endphp
 
-<div class="animate__animated animate__fadeIn">
-    <div class="space-y-6">
-        {{-- Hero Section --}}
-        <section class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-stretch">
-            <div class="overflow-hidden rounded-2xl border border-[#dedee5] bg-gradient-to-br from-white to-[rgba(243,240,255,0.6)] p-5 sm:p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                    <div class="min-w-0">
-                        <div class="inline-flex items-center rounded-full bg-[rgba(133,91,251,0.16)] px-3 py-1 text-xs font-semibold text-[#7132f5]">
-                            <x-icon name="sparkles" class="mr-1.5 h-3.5 w-3.5" />
-                            {{ $isStudent ? __('Learning workspace') : __('Teaching workspace') }}
-                        </div>
-                        <h1 class="mt-4 max-w-3xl text-3xl font-bold leading-tight text-[#101114] sm:text-5xl" style="font-family: 'IBM Plex Sans', sans-serif; letter-spacing: -1px;">
-                            {{ __('Great to see you, :name!', ['name' => $displayName]) }}
-                        </h1>
-                        <p class="mt-3 max-w-2xl text-base leading-7 text-[#686b82]">
-                            {{ $isStudent ? __('Keep your learning day moving.') : __('Keep classes, reviews, and classwork in one place.') }}
-                        </p>
+<div data-dashboard-role="{{ $role }}"
+    class="flex min-h-full flex-col gap-3 animate__animated animate__fadeIn xl:h-[calc(100vh-3rem)] xl:min-h-[560px] xl:overflow-hidden">
+    <header class="flex shrink-0 items-center justify-between gap-4">
+        <div class="min-w-0">
+            <h1 class="truncate text-2xl font-bold tracking-tight text-[#101114]">
+                {{ __('Hello, :name', ['name' => $displayName]) }}
+            </h1>
+            <p class="mt-0.5 truncate text-sm text-[#686b82]">
+                {{ $isStudent ? __('See how your learning is growing today.') : __('Start with the submissions that need your attention.') }}
+            </p>
+        </div>
+        <a href="{{ route('calendar') }}" wire:navigate
+            class="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-white px-3 py-2 text-sm font-semibold text-[#7132f5] shadow-sm transition hover:bg-[rgba(133,91,251,0.08)]">
+            <x-icon name="calendar-days" class="h-4 w-4" />
+            <span class="hidden sm:inline">{{ __('Calendar') }}</span>
+        </a>
+    </header>
 
-                        <div class="mt-6 flex flex-wrap gap-3">
-                            <a href="{{ route('classrooms') }}" wire:navigate
-                                class="inline-flex items-center gap-2 rounded-[12px] border border-[#5741d8] bg-white px-4 py-[13px] text-sm font-semibold text-[#5741d8] transition hover:bg-[rgba(133,91,251,0.08)]">
-                                <x-icon name="academic-cap" class="h-4 w-4" />
-                                {{ __('Classrooms') }}
-                            </a>
-                            <a href="{{ $isTeacher ? $createRoute : route('calendar') }}" wire:navigate
-                                class="inline-flex items-center gap-2 rounded-[12px] bg-[#7132f5] px-4 py-[13px] text-sm font-semibold text-white transition hover:bg-[#5741d8]">
-                                <x-icon :name="$isTeacher ? 'plus' : 'calendar-days'" class="h-4 w-4" />
-                                {{ $isTeacher ? __('New') : __('Calendar') }}
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="hidden shrink-0 lg:block">
-                        <div class="ll-mascot-badge">
-                            <div class="ll-mascot-face">
-                                <span></span>
-                                <span></span>
+    <div class="grid min-h-0 flex-1 gap-3 xl:grid-cols-[minmax(220px,0.78fr)_minmax(380px,1.55fr)_minmax(220px,0.78fr)]">
+        <div class="grid min-h-0 gap-3 xl:grid-rows-[180px_minmax(0,1fr)]">
+            <section class="card card-border overflow-hidden border-[#dedee5] bg-white shadow-sm">
+                <div class="card-body gap-0 p-5">
+                    @if($isStudent)
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#7132f5]">{{ __('Current Level') }}</p>
+                                <p class="mt-2 text-5xl font-bold leading-none text-[#101114]">{{ $primaryMetric['level'] }}</p>
                             </div>
-                            <div class="ll-mascot-wing"></div>
+                            <span class="rounded-[9px] bg-[rgba(133,91,251,0.16)] px-2.5 py-1 text-xs font-bold text-[#7132f5]">
+                                {{ number_format($primaryMetric['xp_current']) }} / {{ number_format($primaryMetric['xp_required']) }} XP
+                            </span>
                         </div>
+                        <div class="dashboard-liquid-progress mt-5" role="progressbar"
+                            aria-label="{{ __('Level progress') }}" aria-valuemin="0" aria-valuemax="100"
+                            aria-valuenow="{{ $primaryMetric['progress_percent'] }}">
+                            <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%">
+                                <span class="dashboard-liquid-wave"></span>
+                            </span>
+                        </div>
+                        <p class="mt-2 text-xs text-[#686b82]">
+                            {{ __(':xp XP until level :level', ['xp' => number_format($primaryMetric['remaining']), 'level' => $primaryMetric['level'] + 1]) }}
+                        </p>
+                    @else
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#7132f5]">{{ __('Pending Review') }}</p>
+                                <p class="mt-2 text-5xl font-bold leading-none text-[#101114]">{{ number_format($primaryMetric['pending']) }}</p>
+                            </div>
+                            <span class="rounded-[9px] bg-[rgba(133,91,251,0.16)] px-2.5 py-1 text-xs font-bold text-[#7132f5]">
+                                {{ number_format($primaryMetric['graded_this_week']) }} {{ __('reviewed') }}
+                            </span>
+                        </div>
+                        <div class="dashboard-liquid-progress mt-5" role="progressbar"
+                            aria-label="{{ __('Review progress') }}" aria-valuemin="0" aria-valuemax="100"
+                            aria-valuenow="{{ $primaryMetric['progress_percent'] }}">
+                            <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%">
+                                <span class="dashboard-liquid-wave"></span>
+                            </span>
+                        </div>
+                        <p class="mt-2 text-xs text-[#686b82]">{{ __('Weekly review completion') }} · {{ $primaryMetric['progress_percent'] }}%</p>
+                    @endif
+                </div>
+            </section>
+
+            <section class="card card-border min-h-[330px] overflow-hidden border-[#dedee5] bg-white shadow-sm xl:min-h-0">
+                <div class="card-body min-h-0 gap-0 p-4">
+                    <div class="flex shrink-0 items-center justify-between gap-3">
+                        <h2 class="card-title text-base text-[#101114]">{{ $isStudent ? __('Up Next') : __('Review Queue') }}</h2>
+                        <a href="{{ $isStudent ? route('calendar') : route('to-review') }}" wire:navigate
+                            class="text-xs font-bold text-[#7132f5] hover:text-[#5741d8]">{{ __('View all') }}</a>
+                    </div>
+                    <div class="mt-2 min-h-0 divide-y divide-[#ece9f0] overflow-hidden">
+                        @forelse($actionItems as $item)
+                            <a href="{{ $isStudent ? route('assignment.show', [$item->classroom, $item]) : route('to-review') }}"
+                                wire:navigate class="group flex items-center gap-3 py-3">
+                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-white"
+                                    style="background-color: {{ $item->classroom?->themeCategory?->color ?? '#7132f5' }}">
+                                    <x-icon name="{{ $isStudent ? 'document-text' : 'clipboard-document-list' }}" class="h-4 w-4" />
+                                </span>
+                                <span class="min-w-0 flex-1">
+                                    <span class="block truncate text-sm font-semibold text-[#101114] group-hover:text-[#7132f5]">{{ $item->title }}</span>
+                                    <span class="mt-0.5 block truncate text-xs text-[#686b82]">{{ $item->classroom?->name }}</span>
+                                </span>
+                                <span class="shrink-0 rounded-[7px] bg-[rgba(133,91,251,0.12)] px-2 py-1 text-[11px] font-bold text-[#7132f5]">
+                                    {{ $isStudent ? $item->due_date?->translatedFormat('j M') : $item->pending_count }}
+                                </span>
+                            </a>
+                        @empty
+                            <div class="flex h-full min-h-48 flex-col items-center justify-center text-center">
+                                <span class="flex h-11 w-11 items-center justify-center rounded-[12px] bg-[rgba(133,91,251,0.12)] text-[#7132f5]">
+                                    <x-icon name="check-circle" class="h-5 w-5" />
+                                </span>
+                                <p class="mt-3 text-sm font-semibold text-[#101114]">{{ __('Nothing urgent right now') }}</p>
+                                <p class="mt-1 text-xs text-[#9497a9]">{{ $isStudent ? __('Upcoming work will appear here.') : __('New submissions will appear here.') }}</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
-            </div>
+            </section>
+        </div>
 
-            {{-- Hero Metric Card --}}
-            <aside class="rounded-2xl border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                <div class="flex items-start justify-between gap-4">
+        <section data-activity-heatmap
+            class="card card-border min-h-[510px] overflow-hidden border-[#dedee5] bg-white shadow-sm xl:min-h-0">
+            <div class="card-body flex h-full min-h-0 flex-col gap-0 p-4 sm:p-5">
+                <div class="flex shrink-0 items-start justify-between gap-4">
                     <div>
-                        <p class="text-sm font-semibold text-[#686b82]">{{ $heroMetric['label'] }}</p>
-                        <p class="mt-2 text-5xl font-bold leading-none text-[#7132f5]" style="font-family: 'IBM Plex Sans', sans-serif;">{{ number_format($heroMetric['value']) }}</p>
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#7132f5]">{{ __('1-year activity') }}</p>
+                        <h2 class="card-title mt-1 text-lg text-[#101114]">
+                            {{ $isStudent ? __('Learning consistency') : __('Teaching activity') }}
+                        </h2>
+                        <p class="mt-1 text-xs text-[#686b82]">
+                            {{ $isStudent ? __('Submissions, attendance, comments, and grades') : __('Classwork, reviews, and comments') }}
+                        </p>
                     </div>
-                    <span class="flex h-14 w-14 items-center justify-center rounded-[12px] bg-[rgba(133,91,251,0.16)] text-[#7132f5]">
-                        <x-icon :name="$heroMetric['icon']" class="h-7 w-7" />
+                    <span class="rounded-[9px] bg-[rgba(133,91,251,0.12)] px-2.5 py-1.5 text-xs font-bold text-[#7132f5]">
+                        {{ number_format($activity['total']) }} {{ __('activities') }}
                     </span>
                 </div>
-                <p class="mt-4 text-sm font-semibold text-[#686b82]">{{ $heroMetric['caption'] }}</p>
-                <div class="mt-5 h-3 overflow-hidden rounded-full bg-[#f5f3ff]">
-                    <div class="h-full rounded-full bg-[#7132f5]" style="width: {{ $heroMetric['progress'] }}%"></div>
+
+                <div class="mt-5 min-h-0 flex-1 overflow-x-auto">
+                    <div class="grid min-w-[720px] grid-cols-[24px_minmax(0,1fr)] gap-2">
+                        <span></span>
+                        <div class="grid text-[10px] font-medium text-[#9497a9]"
+                            style="grid-template-columns: repeat({{ $activity['week_count'] }}, minmax(0, 1fr));">
+                            @foreach($monthLabels as $month)
+                                <span class="whitespace-nowrap" style="grid-column: {{ $month['week'] }};">{{ $month['label'] }}</span>
+                            @endforeach
+                        </div>
+                        <div class="grid grid-rows-7 gap-1 text-[9px] text-[#9497a9]">
+                            <span>{{ __('Mon') }}</span><span></span><span>{{ __('Wed') }}</span><span></span>
+                            <span>{{ __('Fri') }}</span><span></span><span>{{ __('Sun') }}</span>
+                        </div>
+                        <div class="grid min-h-[250px] grid-flow-col grid-rows-[repeat(7,minmax(0,1fr))] gap-1"
+                            style="grid-template-columns: repeat({{ $activity['week_count'] }}, minmax(0, 1fr));">
+                            @foreach($activityDays as $day)
+                                <span tabindex="0"
+                                    class="tooltip tooltip-top min-h-4 rounded-[4px] outline-none ring-[#7132f5] transition hover:ring-2 focus:ring-2 {{ $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
+                                    data-tip="{{ $day['label'] }} · {{ $day['count'] }} {{ __('activities') }}"
+                                    aria-label="{{ $day['label'] }}: {{ $day['count'] }} {{ __('activities') }}"></span>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
-                <div class="mt-6 grid grid-cols-7 gap-1.5 sm:gap-2">
-                    @foreach($weekDays as $index => $day)
-                        @php
-                            $isComplete = $isStudent
-                                ? (($recentSubmissions[$index] ?? 0) > 0)
-                                : ($index < min(7, max(1, $upcomingAssignments->count())));
-                        @endphp
-                        <div class="text-center">
-                            <p class="text-xs font-semibold text-[#9497a9]">{{ $day }}</p>
-                            <span class="mx-auto mt-1.5 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full {{ $isComplete ? 'bg-[#7132f5] text-white' : 'border border-[#dedee5] bg-white text-[#9497a9]' }}">
-                                <x-icon :name="$isComplete ? 'check' : 'circle'" class="h-3.5 w-3.5" />
-                            </span>
+
+                <div class="mt-4 grid shrink-0 grid-cols-3 gap-2">
+                    @foreach($activitySummaries as $summary)
+                        <div class="rounded-[11px] bg-[#f7f5f9] p-3">
+                            <p class="text-lg font-bold leading-none text-[#101114]">{{ $summary['value'] }}</p>
+                            <p class="mt-1 truncate text-[10px] text-[#686b82]">{{ $summary['label'] }}</p>
                         </div>
                     @endforeach
                 </div>
-            </aside>
-        </section>
-
-        {{-- Stats Grid --}}
-        <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            @foreach($statsGrid as $item)
-                <article class="group rounded-2xl border border-[#dedee5] bg-white p-4 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] transition-all duration-300 hover:-translate-y-1 hover:shadow-[rgba(0,0,0,0.06)_0px_4px_24px] hover:border-[rgba(113,50,245,0.3)]">
-                    <div class="flex items-center gap-4">
-                        <span class="flex h-12 w-12 items-center justify-center rounded-[12px] {{ $item['tone'] }}">
-                            @if(str_starts_with($item['icon'], 'gsi-'))
-                                <i class="{{ $item['icon'] }} text-xl"></i>
-                            @else
-                                <x-icon :name="$item['icon']" class="h-5 w-5" />
-                            @endif
-                        </span>
-                        <div class="min-w-0">
-                            <p class="truncate text-2xl font-bold text-[#101114]" style="font-family: 'IBM Plex Sans', sans-serif;">{{ $item['value'] }}</p>
-                            <p class="truncate text-sm text-[#686b82]">{{ $item['label'] }}</p>
-                        </div>
-                    </div>
-                </article>
-            @endforeach
-        </section>
-
-        {{-- Main Content Grid --}}
-        <section class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.82fr)]">
-            <div class="space-y-5">
-                {{-- Recent Activity --}}
-                <section class="rounded-2xl border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                    <div class="flex items-center justify-between gap-4">
-                        <h2 class="text-xl font-bold text-[#101114]" style="font-family: 'IBM Plex Sans', sans-serif; letter-spacing: -0.5px;">{{ __('Recent activity') }}</h2>
-                        <a href="{{ route('calendar') }}" wire:navigate class="inline-flex items-center text-sm font-semibold text-[#7132f5] hover:text-[#5741d8]">
-                            {{ __('View all') }}
-                            <x-icon name="chevron-right" class="ml-1 h-3.5 w-3.5" />
-                        </a>
-                    </div>
-
-                    <div class="mt-4 divide-y divide-[#dedee5]">
-                        @forelse($activityItems as $item)
-                            <a href="{{ $item['route'] }}" wire:navigate class="group flex items-center gap-4 py-4">
-                                <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] text-white"
-                                    style="background-color: {{ $item['color'] }};">
-                                    <x-icon :name="$item['icon']" class="h-5 w-5" />
-                                </span>
-                                <span class="min-w-0 flex-1">
-                                    <span class="block truncate font-semibold text-[#101114] group-hover:text-[#7132f5]">{{ $item['title'] }}</span>
-                                    <span class="mt-1 block truncate text-sm text-[#686b82]">{{ $item['meta'] }}</span>
-                                </span>
-                                <span class="shrink-0 text-sm text-[#9497a9]">{{ $item['time'] }}</span>
-                            </a>
-                        @empty
-                            <div class="py-10 text-center">
-                                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-[12px] bg-[rgba(133,91,251,0.16)] text-[#7132f5]">
-                                    <x-icon name="check" class="h-5 w-5" />
-                                </div>
-                                <p class="mt-3 font-semibold text-[#101114]">{{ __('Nothing urgent right now') }}</p>
-                                <p class="mt-1 text-sm text-[#9497a9]">{{ __('Upcoming classwork will appear here.') }}</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </section>
-
-                {{-- Classrooms --}}
-                <section class="rounded-2xl border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                    <div class="flex items-center justify-between gap-4">
-                        <h2 class="text-xl font-bold text-[#101114]" style="font-family: 'IBM Plex Sans', sans-serif; letter-spacing: -0.5px;">{{ $isStudent ? __('Your classrooms') : __('Top classrooms') }}</h2>
-                        <a href="{{ route('classrooms') }}" wire:navigate class="inline-flex items-center text-sm font-semibold text-[#7132f5] hover:text-[#5741d8]">
-                            {{ __('View all') }}
-                            <x-icon name="chevron-right" class="ml-1 h-3.5 w-3.5" />
-                        </a>
-                    </div>
-
-                    <div class="mt-4 divide-y divide-[#dedee5]">
-                        @forelse($classrooms->take(4) as $classroom)
-                            <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="group flex items-center gap-4 py-4">
-                                <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] text-white"
-                                    style="background-color: {{ $classroom->themeCategory?->color ?? '#7132f5' }};">
-                                    <x-icon name="book-open" class="h-5 w-5" />
-                                </span>
-                                <span class="min-w-0 flex-1">
-                                    <span class="block truncate font-semibold text-[#101114] group-hover:text-[#7132f5]">{{ $classroom->name }}</span>
-                                    <span class="mt-1 block truncate text-sm text-[#686b82]">
-                                        {{ $classroom->section ?: __('No section') }}
-                                    </span>
-                                </span>
-                                <span class="shrink-0 rounded-[6px] bg-[rgba(133,91,251,0.16)] px-3 py-1 text-xs font-semibold text-[#7132f5]">
-                                    {{ $classroom->students_count ?? $classroom->students()->count() }} {{ __('students') }}
-                                </span>
-                            </a>
-                        @empty
-                            <div class="py-10 text-center">
-                                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-[12px] bg-[rgba(133,91,251,0.16)] text-[#7132f5]">
-                                    <x-icon name="academic-cap" class="h-5 w-5" />
-                                </div>
-                                <p class="mt-3 font-semibold text-[#101114]">{{ __('No classrooms yet') }}</p>
-                                <p class="mt-1 text-sm text-[#9497a9]">{{ __('Your classes will show here once you join or create one.') }}</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </section>
-            </div>
-
-            <div class="space-y-5">
-                {{-- Upcoming Assignments --}}
-                <section class="rounded-2xl border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                    <h2 class="text-xl font-bold text-[#101114]" style="font-family: 'IBM Plex Sans', sans-serif; letter-spacing: -0.5px;">{{ __('Upcoming') }}</h2>
-                    <div class="mt-4 space-y-3">
-                        @forelse($upcomingAssignments->take(5) as $assignment)
-                            <a href="{{ route('assignment.show', [$assignment->classroom, $assignment]) }}" wire:navigate
-                                class="block rounded-[12px] border border-[#dedee5] bg-white p-4 transition-all duration-300 hover:border-[rgba(113,50,245,0.3)] hover:bg-[rgba(133,91,251,0.04)]">
-                                <div class="flex items-start justify-between gap-3">
-                                    <div class="min-w-0">
-                                        <p class="truncate font-semibold text-[#101114]">{{ $assignment->title }}</p>
-                                        <p class="mt-1 truncate text-sm text-[#686b82]">{{ $assignment->classroom?->name }}</p>
-                                    </div>
-                                    <span class="shrink-0 rounded-[6px] bg-[rgba(133,91,251,0.16)] px-2.5 py-1 text-xs font-semibold text-[#7132f5]">
-                                        {{ $assignment->due_date?->translatedFormat('j M') }}
-                                    </span>
-                                </div>
-                            </a>
-                        @empty
-                            <div class="rounded-[12px] border border-dashed border-[#dedee5] bg-[rgba(133,91,251,0.04)] px-5 py-8 text-center text-sm text-[#9497a9]">
-                                {{ __('No upcoming assignments.') }}
-                            </div>
-                        @endforelse
-                    </div>
-                </section>
-
-                {{-- CTA Section --}}
-                <section class="overflow-hidden rounded-2xl border border-[#5741d8] bg-[#7132f5] p-5 text-white">
-                    <div class="flex items-start gap-4">
-                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-white/15">
-                            <x-icon name="academic-cap" class="h-5 w-5" />
-                        </div>
-                        <div>
-                            <h2 class="text-lg font-bold" style="font-family: 'IBM Plex Sans', sans-serif;">{{ __('Keep shipping progress') }}</h2>
-                            <p class="mt-2 text-sm leading-6 text-purple-100">
-                                {{ $isStudent ? __('Finish one task, check your class stream, and keep your streak alive.') : __('Review the oldest submissions first, then publish the next class update.') }}
-                            </p>
-                            <a href="{{ $primaryClassroomRoute }}" wire:navigate
-                                class="mt-4 inline-flex items-center gap-2 rounded-[10px] bg-white px-4 py-2 text-sm font-semibold text-[#7132f5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] transition hover:bg-purple-50">
-                                {{ __('Open workspace') }}
-                                <x-icon name="arrow-right" class="h-4 w-4" />
-                            </a>
-                        </div>
-                    </div>
-                </section>
             </div>
         </section>
 
+        <div class="grid min-h-0 gap-3 xl:grid-rows-[250px_minmax(0,1fr)]">
+            <a href="{{ route('profile') }}" wire:navigate
+                class="card card-border group overflow-hidden border-[#dedee5] bg-white shadow-sm transition hover:border-[rgba(113,50,245,0.3)]">
+                <div class="card-body items-center gap-0 p-5 text-center">
+                    <div class="avatar">
+                        <div class="h-20 w-20 rounded-full ring-4 ring-[rgba(133,91,251,0.16)] ring-offset-2 ring-offset-white">
+                            <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="object-cover">
+                        </div>
+                    </div>
+                    <h2 class="mt-4 max-w-full truncate text-lg font-bold text-[#101114] group-hover:text-[#7132f5]">{{ $user->name }}</h2>
+                    <p class="mt-1 text-xs text-[#686b82]">{{ __($isStudent ? 'Student' : 'Teacher') }} · {{ $classrooms->count() }} {{ __('classrooms') }}</p>
+                    <div class="mt-4 flex flex-wrap justify-center gap-2">
+                        @if($isStudent)
+                            <span class="badge border-0 bg-[rgba(133,91,251,0.16)] text-[#7132f5]">{{ __('Level') }} {{ $primaryMetric['level'] }}</span>
+                        @else
+                            <span class="badge border-0 bg-[rgba(133,91,251,0.16)] text-[#7132f5]">{{ __('Teacher') }}</span>
+                        @endif
+                        <span class="badge border-0 bg-[#f2eff5] text-[#686b82]">{{ __('View profile') }}</span>
+                    </div>
+                </div>
+            </a>
 
+            <section class="card card-border min-h-[270px] overflow-hidden border-[#dedee5] bg-white shadow-sm xl:min-h-0">
+                <div class="card-body gap-0 p-4">
+                    <h2 class="card-title text-base text-[#101114]">{{ __('Quick Stats') }}</h2>
+                    <div class="mt-3 grid min-h-0 flex-1 grid-cols-2 gap-2">
+                        @foreach($quickStats as $stat)
+                            <div class="flex min-h-24 flex-col justify-between rounded-[11px] bg-[#f7f5f9] p-3">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-[9px] bg-[rgba(133,91,251,0.14)] text-[#7132f5]">
+                                    <x-icon :name="$stat['icon']" class="h-4 w-4" />
+                                </span>
+                                <div>
+                                    <p class="truncate text-xl font-bold leading-none text-[#101114]">{{ $stat['value'] }}</p>
+                                    <p class="mt-1 truncate text-[10px] text-[#686b82]">{{ $stat['label'] }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 </div>

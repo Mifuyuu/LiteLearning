@@ -1,55 +1,40 @@
 @section('page-title', __('People') . ' - ' . $classroom->name)
 @section('breadcrumb')
     <nav class="flex items-center space-x-1 text-sm">
-        <a href="{{ route('classrooms') }}" class="text-[#686b82] hover:text-[#7132f5] transition-colors">
-            {{ auth()->user()->isTeacher() ? __('ชั้นเรียนของฉัน') : __('ห้องเรียน') }}
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-[#7132f5]">
+            {{ auth()->user()->isTeacher() ? __('My classes') : __('Classrooms') }}
         </a>
-        <i class="fas fa-chevron-right text-[#9497a9] text-xs"></i>
-        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] hover:text-[#7132f5] transition-colors">
+        <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
+        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-[#7132f5]">
             {{ $classroom->name }}
         </a>
-        <i class="fas fa-chevron-right text-[#9497a9] text-xs"></i>
-        <span class="text-[#101114] font-semibold">{{ __('People') }}</span>
+        <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
+        <span class="font-semibold text-[#101114]">{{ __('สมาชิก') }}</span>
     </nav>
 @endsection
 
 <div class="space-y-6 animate__animated animate__fadeIn"
     x-data="{ openPopover: null, showKickModal: false, kickName: '', kickId: null, kickType: '' }"
     @click.away="openPopover = null">
-    <section class="overflow-hidden rounded-2xl border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] p-6 sm:p-8">
-        <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-                <span class="inline-flex items-center gap-2 rounded-[8px] bg-[rgba(133,91,251,0.16)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#7132f5]">
-                    <i class="fas fa-users"></i>
-                    {{ __('Roster') }}
-                </span>
-                <h1 class="mt-3 text-3xl font-black tracking-tight text-[#101114] sm:text-4xl">{{ $classroom->name }}</h1>
-                <p class="mt-2 max-w-2xl text-sm leading-6 text-[#686b82]">
-                    {{ __('ดูสมาชิกทั้งหมดของห้องเรียน แยกบทบาทชัดเจน และจัดลำดับตามรูปแบบที่ต้องการ') }}
-                </p>
-            </div>
-
-            <div class="flex flex-wrap gap-2">
-                <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
-                    class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-[#7132f5] text-white' : 'bg-white text-[#686b82] border border-[#dedee5] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]' }}">
-                    {{ __('First name') }}
-                </a>
-                <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-last-name']) }}" wire:navigate
-                    class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-last-name' ? 'bg-[#7132f5] text-white' : 'bg-white text-[#686b82] border border-[#dedee5] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]' }}">
-                    {{ __('Last name') }}
-                </a>
-                <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-newest']) }}" wire:navigate
-                    class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-newest' ? 'bg-[#7132f5] text-white' : 'bg-white text-[#686b82] border border-[#dedee5] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]' }}">
-                    {{ __('Newest') }}
-                </a>
-            </div>
-        </div>
-    </section>
-
     @include('livewire.classroom.partials.subnav', ['classroom' => $classroom, 'sort' => $sort])
 
+    <section class="flex flex-wrap items-center gap-2 rounded-2xl border border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+        <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
+            class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-[#7132f5] text-white' : 'text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]' }}">
+            {{ __('First name') }}
+        </a>
+        <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-last-name']) }}" wire:navigate
+            class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-last-name' ? 'bg-[#7132f5] text-white' : 'text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]' }}">
+            {{ __('Last name') }}
+        </a>
+        <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-newest']) }}" wire:navigate
+            class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-newest' ? 'bg-[#7132f5] text-white' : 'text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]' }}">
+            {{ __('Newest') }}
+        </a>
+    </section>
+
     <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <section class="rounded-2xl border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] p-6">
+        <section class="rounded-2xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#9497a9]">{{ __('Teacher Team') }}</p>
@@ -82,20 +67,11 @@
                             </div>
                             <span class="rounded-[8px] bg-[rgba(104,107,130,0.12)] px-2 py-0.5 text-xs font-medium text-[#484b5e]">{{ __('Co-Teacher') }}</span>
                             @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
-                                <div class="relative ml-auto">
-                                    <button @click="openPopover = openPopover === 'ct-{{ $coTeacher->id }}' ? null : 'ct-{{ $coTeacher->id }}'"
-                                        class="inline-flex h-9 w-9 items-center justify-center rounded-[10px] text-[#9497a9] transition hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]">
-                                        <i class="fas fa-ellipsis"></i>
-                                    </button>
-                                    <div x-show="openPopover === 'ct-{{ $coTeacher->id }}'" x-cloak
-                                        class="absolute right-0 top-11 w-44 rounded-2xl border border-[#dedee5] bg-white py-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                                        <button @click="kickId = {{ $coTeacher->id }}; kickName = '{{ addslashes($coTeacher->name) }}'; kickType = 'co-teacher'; showKickModal = true; openPopover = null"
-                                            class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-rose-600 transition hover:bg-rose-50">
-                                            <i class="fas fa-user-minus w-4"></i>
-                                            {{ __('Remove') }}
-                                        </button>
-                                    </div>
-                                </div>
+                                <button type="button"
+                                    @click="kickId = {{ $coTeacher->id }}; kickName = @js($coTeacher->name); kickType = 'co-teacher'; showKickModal = true"
+                                    class="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-[10px] text-rose-400 transition hover:bg-rose-50 hover:text-rose-600">
+                                    <x-icon name="user-minus" class="h-4 w-4" />
+                                </button>
                             @endif
                         </div>
                     </div>
@@ -112,7 +88,7 @@
                                 placeholder="{{ __('teacher@example.com') }}">
                             <button type="submit"
                                 class="inline-flex items-center justify-center gap-2 rounded-[12px] bg-[#7132f5] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#5741d8]">
-                                <i class="fas fa-user-plus text-xs"></i>
+                                <x-icon name="user-plus" class="h-4 w-4" />
                                 {{ __('Add') }}
                             </button>
                         </div>
@@ -122,7 +98,7 @@
             @endif
         </section>
 
-        <section class="rounded-2xl border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] p-6">
+        <section class="rounded-2xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#9497a9]">{{ __('Students') }}</p>
@@ -133,9 +109,10 @@
                         {{ $students->count() }}
                     </span>
                     @if($students->count() > 0 && ($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin()))
-                        <button @click="kickId = -1; kickName = '{{ __('นักเรียนทั้งหมด') }}'; kickType = 'all'; showKickModal = true"
+                        <button type="button"
+                            @click="kickId = -1; kickName = @js(__('all students')); kickType = 'all'; showKickModal = true"
                             class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] text-[#9497a9] transition hover:bg-rose-50 hover:text-rose-600">
-                            <i class="fas fa-users-slash"></i>
+                            <x-icon name="trash" class="h-4 w-4" />
                         </button>
                     @endif
                 </div>
@@ -151,20 +128,11 @@
                                 <p class="truncate text-xs text-[#686b82]">{{ $member->email }}</p>
                             </div>
                             @if($classroom->canManageClassroom(auth()->user()))
-                                <div class="relative">
-                                    <button @click="openPopover = openPopover === 'st-{{ $member->id }}' ? null : 'st-{{ $member->id }}'"
-                                        class="inline-flex h-9 w-9 items-center justify-center rounded-[10px] text-[#9497a9] transition hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]">
-                                        <i class="fas fa-ellipsis"></i>
-                                    </button>
-                                    <div x-show="openPopover === 'st-{{ $member->id }}'" x-cloak
-                                        class="absolute right-0 top-11 w-44 rounded-2xl border border-[#dedee5] bg-white py-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                                        <button @click="kickId = {{ $member->id }}; kickName = '{{ addslashes($member->name) }}'; kickType = 'student'; showKickModal = true; openPopover = null"
-                                            class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-rose-600 transition hover:bg-rose-50">
-                                            <i class="fas fa-user-minus w-4"></i>
-                                            {{ __('Remove') }}
-                                        </button>
-                                    </div>
-                                </div>
+                                <button type="button"
+                                    @click="kickId = {{ $member->id }}; kickName = @js($member->name); kickType = 'student'; showKickModal = true"
+                                    class="inline-flex h-9 w-9 items-center justify-center rounded-[10px] text-rose-400 transition hover:bg-rose-50 hover:text-rose-600">
+                                    <x-icon name="user-minus" class="h-4 w-4" />
+                                </button>
                             @endif
                         </div>
                     </div>
@@ -176,12 +144,10 @@
     </div>
 
     <div x-show="showKickModal" x-cloak class="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4" @click.self="showKickModal = false">
-        <div class="w-full max-w-md rounded-2xl bg-white border border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] p-6">
+        <div class="w-full max-w-md rounded-2xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
             <h3 class="text-lg font-bold text-[#101114]">{{ __('Confirm removal') }}</h3>
             <p class="mt-2 text-sm leading-6 text-[#686b82]">
-                {{ __('คุณต้องการลบ') }}
-                <span class="font-semibold text-[#101114]" x-text="kickName"></span>
-                {{ __('ออกจากห้องเรียนนี้ใช่หรือไม่?') }}
+                {{ __('Remove') }} <span class="font-semibold text-[#101114]" x-text="kickName"></span>?
             </p>
 
             <div class="mt-5 flex justify-end gap-2">

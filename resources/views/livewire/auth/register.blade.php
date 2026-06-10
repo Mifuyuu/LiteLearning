@@ -24,7 +24,7 @@
                         </div>
                         <input id="name" type="text" wire:model="name" autocomplete="name"
                             placeholder="{{ __('auth.register.name_placeholder') }}"
-                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-2 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('name') border-red-500 @enderror">
+                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('name') border-red-500 @enderror">
                     </div>
                     @error('name')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -41,7 +41,7 @@
                             <i class="fas fa-envelope text-[#9497a9] text-sm"></i>
                         </div>
                         <input id="email" type="email" wire:model="email" autocomplete="email" placeholder="you@example.com"
-                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-2 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('email') border-red-500 @enderror">
+                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('email') border-red-500 @enderror">
                     </div>
                     @error('email')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -59,7 +59,7 @@
                         </div>
                         <input id="password" type="password" wire:model="password" autocomplete="new-password"
                             placeholder="{{ __('auth.register.password_placeholder') }}"
-                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-2 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('password') border-red-500 @enderror">
+                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('password') border-red-500 @enderror">
                     </div>
                     @error('password')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -77,7 +77,7 @@
                         </div>
                         <input id="password_confirmation" type="password" wire:model="password_confirmation"
                             autocomplete="new-password" placeholder="{{ __('auth.register.password_confirmation') }}"
-                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-2 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('password_confirmation') border-red-500 @enderror">
+                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('password_confirmation') border-red-500 @enderror">
                     </div>
                     @error('password_confirmation')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -136,7 +136,7 @@
                     </label>
                     <input id="otp" type="text" wire:model="otp" inputmode="numeric" pattern="\d{6}" maxlength="6" autofocus
                         autocomplete="one-time-code" placeholder="000000"
-                        class="w-full px-4 py-3 border border-[#dedee5] rounded-[10px] text-2xl font-bold text-center text-[#101114] tracking-[0.5em] focus:ring-2 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('otp') border-red-500 @enderror">
+                        class="w-full px-4 py-3 border border-[#dedee5] rounded-[10px] text-2xl font-bold text-center text-[#101114] tracking-[0.5em] focus:ring-1 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('otp') border-red-500 @enderror">
                     @error('otp')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror

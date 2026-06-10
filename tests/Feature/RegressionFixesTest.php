@@ -5,7 +5,8 @@ namespace Tests\Feature;
 use App\Livewire\Assignment\Attendance as AssignmentAttendance;
 use App\Livewire\Assignment\Create as AssignmentCreate;
 use App\Livewire\Assignment\Show as AssignmentShow;
-use App\Livewire\Classroom\Show as ClassroomShow;
+use App\Livewire\Classroom\Settings as ClassroomSettings;
+use App\Livewire\Classroom\Stream as ClassroomStream;
 use App\Livewire\Classroom\StreamComment;
 use App\Livewire\Material\Create as MaterialCreate;
 use App\Livewire\Material\Show as MaterialShow;
@@ -15,6 +16,7 @@ use App\Models\Attachment;
 use App\Models\AttendanceSession;
 use App\Models\Classroom;
 use App\Models\ClassworkItem;
+use App\Models\Comment;
 use App\Models\Material;
 use App\Models\Submission;
 use App\Models\Topic;
@@ -125,6 +127,79 @@ class RegressionFixesTest extends TestCase
             ->assertStatus(404);
     }
 
+    public function test_user_can_delete_their_own_stream_comment(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
+
+        $classworkItem = ClassworkItem::factory()->forAnnouncement()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'title' => 'Class discussion',
+        ]);
+
+        $announcement = Announcement::create([
+            'classwork_item_id' => $classworkItem->id,
+            'content' => 'Share your thoughts',
+        ]);
+
+        $comment = Comment::create([
+            'commentable_type' => Announcement::class,
+            'commentable_id' => $announcement->id,
+            'user_id' => $student->id,
+            'content' => 'My own note',
+        ]);
+
+        Livewire::actingAs($student)
+            ->test(StreamComment::class, ['announcementId' => $announcement->id])
+            ->call('deleteComment', $comment->id)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseMissing('comments', ['id' => $comment->id]);
+    }
+
+    public function test_user_cannot_delete_another_users_stream_comment(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+        /** @var User $classmate */
+        $classmate = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
+        $classroom->members()->attach($classmate->id, ['role' => 'student', 'joined_at' => now()]);
+
+        $classworkItem = ClassworkItem::factory()->forAnnouncement()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'title' => 'Class discussion',
+        ]);
+
+        $announcement = Announcement::create([
+            'classwork_item_id' => $classworkItem->id,
+            'content' => 'Share your thoughts',
+        ]);
+
+        $comment = Comment::create([
+            'commentable_type' => Announcement::class,
+            'commentable_id' => $announcement->id,
+            'user_id' => $classmate->id,
+            'content' => 'Not mine',
+        ]);
+
+        Livewire::actingAs($student)
+            ->test(StreamComment::class, ['announcementId' => $announcement->id])
+            ->call('deleteComment', $comment->id)
+            ->assertStatus(403);
+
+        $this->assertDatabaseHas('comments', ['id' => $comment->id]);
+    }
+
     public function test_co_teacher_cannot_save_classroom_settings(): void
     {
         /** @var User $owner */
@@ -142,9 +217,7 @@ class RegressionFixesTest extends TestCase
         ]);
 
         Livewire::actingAs($coTeacher)
-            ->test(ClassroomShow::class, ['classroom' => $classroom])
-            ->set('name', 'Mutated Name')
-            ->call('saveSettings')
+            ->test(ClassroomSettings::class, ['classroom' => $classroom])
             ->assertStatus(403);
 
         $this->assertDatabaseHas('classrooms', [
@@ -219,6 +292,77 @@ class RegressionFixesTest extends TestCase
         $this->assertDatabaseCount('coin_transactions', 1);
     }
 
+    public function test_attendance_checkin_rejects_expired_code(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
+
+        $assignment = Assignment::factory()->attendance()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'status' => 'published',
+        ]);
+
+        AttendanceSession::create([
+            'classwork_item_id' => $assignment->classwork_item_id,
+            'is_active' => true,
+            'current_code' => '123456',
+            'started_at' => now()->subMinute(),
+            'code_rotated_at' => now()->subSeconds(16),
+        ]);
+
+        Livewire::actingAs($student)
+            ->test(AssignmentAttendance::class, ['classroom' => $classroom, 'assignment' => $assignment])
+            ->set('enteredCode', '123456')
+            ->call('checkin');
+
+        $this->assertDatabaseMissing('submissions', [
+            'assignment_id' => $assignment->id,
+            'user_id' => $student->id,
+            'status' => 'turned_in',
+        ]);
+        $this->assertSame(0, $student->fresh()->coins);
+    }
+
+    public function test_attendance_checkin_accepts_code_during_grace_period(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
+
+        $assignment = Assignment::factory()->attendance()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'status' => 'published',
+        ]);
+
+        AttendanceSession::create([
+            'classwork_item_id' => $assignment->classwork_item_id,
+            'is_active' => true,
+            'current_code' => '123456',
+            'started_at' => now()->subMinute(),
+            'code_rotated_at' => now()->subSeconds(11),
+        ]);
+
+        Livewire::actingAs($student)
+            ->test(AssignmentAttendance::class, ['classroom' => $classroom, 'assignment' => $assignment])
+            ->set('enteredCode', '123456')
+            ->call('checkin');
+
+        $this->assertDatabaseHas('submissions', [
+            'assignment_id' => $assignment->id,
+            'user_id' => $student->id,
+            'status' => 'turned_in',
+        ]);
+    }
+
     public function test_scheduled_announcement_is_hidden_from_students_until_publish_time(): void
     {
         /** @var User $teacher */
@@ -243,13 +387,13 @@ class RegressionFixesTest extends TestCase
         ]);
 
         Livewire::actingAs($student)
-            ->test(ClassroomShow::class, ['classroom' => $classroom])
+            ->test(ClassroomStream::class, ['classroom' => $classroom])
             ->assertDontSee('Visible later');
 
         $this->travelTo(now()->addHours(2));
 
         Livewire::actingAs($student)
-            ->test(ClassroomShow::class, ['classroom' => $classroom])
+            ->test(ClassroomStream::class, ['classroom' => $classroom])
             ->assertSee('Visible later');
     }
 
@@ -276,6 +420,39 @@ class RegressionFixesTest extends TestCase
         Livewire::actingAs($student)
             ->test(MaterialShow::class, ['classroom' => $classroom, 'material' => $material])
             ->assertStatus(404);
+    }
+
+    public function test_student_cannot_comment_on_scheduled_material(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
+
+        $classworkItem = ClassworkItem::factory()->forMaterial()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'title' => 'Scheduled Material',
+            'published_at' => now()->addHour(),
+        ]);
+
+        $material = Material::create([
+            'classwork_item_id' => $classworkItem->id,
+        ]);
+
+        Livewire::actingAs($student)
+            ->test(StreamComment::class, [
+                'contentId' => $material->id,
+                'contentType' => Material::class,
+            ])
+            ->assertStatus(404);
+
+        $this->assertDatabaseMissing('comments', [
+            'commentable_type' => Material::class,
+            'commentable_id' => $material->id,
+        ]);
     }
 
     public function test_editing_assignment_preserves_existing_topic_when_left_unchanged(): void

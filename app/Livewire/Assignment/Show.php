@@ -67,6 +67,17 @@ class Show extends Component
         return $user;
     }
 
+    private function ensureSubmissionOpen(): bool
+    {
+        if ($this->assignment->canAcceptSubmission()) {
+            return true;
+        }
+
+        session()->flash('error', __('Submissions closed'));
+
+        return false;
+    }
+
     public function mount(Classroom $classroom, Assignment $assignment): void
     {
         $this->classroom = $classroom;
@@ -108,6 +119,12 @@ class Show extends Component
     public function updatedUploadedFile(): void
     {
         $user = $this->ensureStudentUser();
+
+        if (! $this->ensureSubmissionOpen()) {
+            $this->uploadedFile = null;
+
+            return;
+        }
 
         $this->validate([
             'uploadedFile' => 'file|max:25600|mimes:'.Assignment::allowedSubmissionMimes(),
@@ -163,9 +180,7 @@ class Show extends Component
         $user = $this->ensureStudentUser();
 
         // Check if submission is allowed
-        if (! $this->assignment->canAcceptSubmission()) {
-            session()->flash('error', __('Submissions closed'));
-
+        if (! $this->ensureSubmissionOpen()) {
             return;
         }
 
@@ -194,6 +209,10 @@ class Show extends Component
     {
         $user = $this->ensureStudentUser();
 
+        if (! $this->ensureSubmissionOpen()) {
+            return;
+        }
+
         if (! $this->userSubmission) {
             $this->userSubmission = $this->assignment->submissions()->firstOrCreate([
                 'user_id' => $user->id,
@@ -212,6 +231,14 @@ class Show extends Component
     public function unsubmit(): void
     {
         $this->ensureStudentUser();
+
+        if (! $this->ensureSubmissionOpen()) {
+            return;
+        }
+
+        if ($this->userSubmission?->status !== 'turned_in') {
+            return;
+        }
 
         $this->userSubmission?->unsubmit();
         $this->submissionContent = $this->userSubmission?->content ?? '';

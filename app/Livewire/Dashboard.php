@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Assignment;
 use App\Models\Submission;
 use App\Models\User;
+use App\Services\DashboardAnalyticsService;
 use App\Services\GamificationService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -14,234 +15,128 @@ use Livewire\Component;
 #[Layout('layouts.app')]
 class Dashboard extends Component
 {
-    private function buildStudentAnalytics(User $user, Collection $classrooms): array
-    {
-        $dates = collect(range(0, 6))
-            ->map(fn (int $offset) => now()->copy()->startOfDay()->subDays(6 - $offset));
-
-        $emptyChart = [
-            'labels' => $dates->map(fn ($date) => $date->translatedFormat('j M'))->all(),
-            'submissions' => array_fill(0, 7, 0),
-        ];
-
-        $classroomIds = $classrooms->pluck('id')->filter();
-
-        if ($classroomIds->isEmpty()) {
-            return [
-                'assignment_status' => [
-                    'turned_in' => 0,
-                    'graded' => 0,
-                    'returned' => 0,
-                    'missing' => 0,
-                ],
-                'totals' => [
-                    'assignments' => 0,
-                    'pending_review' => 0,
-                    'average_score' => 0,
-                ],
-                'charts' => [
-                    'assignment_status' => [
-                        'labels' => ['รอตรวจ', 'ให้คะแนนแล้ว', 'ส่งกลับมาแก้', 'ยังไม่ส่ง'],
-                        'data' => [0, 0, 0, 0],
-                    ],
-                    'classroom_progress' => [
-                        'labels' => [],
-                        'completed' => [],
-                        'remaining' => [],
-                        'colors' => [],
-                    ],
-                    'recent_activity' => $emptyChart,
-                ],
-            ];
-        }
-
-        $assignments = Assignment::query()
-            ->with([
-                'classworkItem.classroom.themeCategory',
-                'submissions' => fn ($query) => $query->where('user_id', $user->id),
-            ])
-            ->whereHas('classworkItem', fn ($q) => $q->whereIn('classroom_id', $classroomIds))
-            ->published()
-            ->whereNotIn('assignments.type', ['material', 'announcement', 'topic'])
-            ->orderBy('due_date')
-            ->get();
-
-        $statusCounts = [
-            'turned_in' => 0,
-            'graded' => 0,
-            'returned' => 0,
-            'missing' => 0,
-        ];
-
-        foreach ($assignments as $assignment) {
-            $submission = $assignment->submissions->first();
-
-            if (! $submission) {
-                $statusCounts['missing']++;
-
-                continue;
-            }
-
-            if (array_key_exists($submission->status, $statusCounts)) {
-                $statusCounts[$submission->status]++;
-
-                continue;
-            }
-
-            $statusCounts['turned_in']++;
-        }
-
-        $scoredSubmissions = $assignments
-            ->map(fn (Assignment $assignment) => $assignment->submissions->first())
-            ->filter(fn ($submission) => $submission !== null && $submission->score !== null);
-
-        $classroomProgress = $assignments
-            ->groupBy('classroom_id')
-            ->map(function (Collection $items): array {
-                $firstAssignment = $items->first();
-
-                $completed = $items->filter(function (Assignment $assignment): bool {
-                    $submission = $assignment->submissions->first();
-
-                    return $submission !== null && in_array($submission->status, ['turned_in', 'graded', 'returned'], true);
-                })->count();
-
-                return [
-                    'name' => $firstAssignment->classroom?->name ?? 'ห้องเรียน',
-                    'completed' => $completed,
-                    'remaining' => max(0, $items->count() - $completed),
-                    'color' => $firstAssignment->classroom?->themeCategory?->color ?? '#8B5CF6',
-                ];
-            })
-            ->sortByDesc(fn (array $item): int => $item['completed'] + $item['remaining'])
-            ->take(6)
-            ->values();
-
-        $submissionsByDay = $user->submissions()
-            ->whereNotNull('turned_in_at')
-            ->whereDate('turned_in_at', '>=', now()->copy()->subDays(6)->toDateString())
-            ->get()
-            ->groupBy(fn (Submission $submission): string => $submission->turned_in_at?->toDateString() ?? '');
-
-        $recentActivity = [
-            'labels' => $dates->map(fn ($date) => $date->translatedFormat('j M'))->all(),
-            'submissions' => $dates->map(function ($date) use ($submissionsByDay): int {
-                return $submissionsByDay->get($date->toDateString(), collect())->count();
-            })->all(),
-        ];
-
-        return [
-            'assignment_status' => $statusCounts,
-            'totals' => [
-                'assignments' => $assignments->count(),
-                'pending_review' => $statusCounts['turned_in'],
-                'average_score' => round((float) ($scoredSubmissions->avg('score') ?? 0), 1),
-            ],
-            'charts' => [
-                'assignment_status' => [
-                    'labels' => ['รอตรวจ', 'ให้คะแนนแล้ว', 'ส่งกลับมาแก้', 'ยังไม่ส่ง'],
-                    'data' => [
-                        $statusCounts['turned_in'],
-                        $statusCounts['graded'],
-                        $statusCounts['returned'],
-                        $statusCounts['missing'],
-                    ],
-                ],
-                'classroom_progress' => [
-                    'labels' => $classroomProgress->pluck('name')->all(),
-                    'completed' => $classroomProgress->pluck('completed')->all(),
-                    'remaining' => $classroomProgress->pluck('remaining')->all(),
-                    'colors' => $classroomProgress->pluck('color')->all(),
-                ],
-                'recent_activity' => $recentActivity,
-            ],
-        ];
-    }
-
     public function render()
     {
         /** @var User $user */
         $user = Auth::user();
         $classrooms = $user->allClassrooms();
+        $classrooms->load('themeCategory');
+        $analytics = app(DashboardAnalyticsService::class);
 
-        // Get upcoming assignments — N queries avoided by fetching per-classroom
-        // with a scoped query and sorting in PHP (classrooms are already a small set)
-        $classroomIds = $classrooms->pluck('id')->filter()->all();
-        if (empty($classroomIds)) {
-            $upcomingAssignments = collect();
-        } else {
-            $upcomingAssignments = Assignment::query()
-                ->with(['classworkItem.classroom.themeCategory'])
-                ->whereHas('classworkItem', fn ($query) => $query->whereIn('classroom_id', $classroomIds))
-                ->published()
-                ->where('due_date', '>=', now())
-                ->orderBy('due_date')
-                ->get();
-
-            if (! $user->isTeacher() && ! $user->isAdmin()) {
-                $upcomingAssignments = $upcomingAssignments->filter(function (Assignment $assignment): bool {
-                    return ! $assignment->classworkItem?->published_at?->isFuture();
-                });
-            }
-
-            $upcomingAssignments = $upcomingAssignments->sortBy('due_date')->take(10)->values();
-        }
-
-        // Stats for teachers — fix #2: use loadCount + single aggregate Submission query
-        $stats = [];
-        if ($user->isTeacher() || $user->isAdmin()) {
-            $ownedClassrooms = $user->ownedClassrooms()
-                ->where('is_archived', false)
-                ->withCount(['students', 'classworkAssignments as assignments_count'])
-                ->get();
-
-            $totalStudents = $ownedClassrooms->sum('students_count');
-            $totalAssignments = $ownedClassrooms->sum('assignments_count');
-
-            // Single aggregate query via classwork_items join
-            $assignmentIds = \App\Models\Assignment::whereHas(
-                'classworkItem',
-                fn ($q) => $q->whereIn('classroom_id', $ownedClassrooms->pluck('id'))
-            )->pluck('id');
-
-            $pendingSubmissions = Submission::whereIn('assignment_id', $assignmentIds)
-                ->where('status', 'turned_in')->count();
-
-            $stats = [
-                'classrooms' => $ownedClassrooms->count(),
-                'students' => $totalStudents,
-                'assignments' => $totalAssignments,
-                'pending' => $pendingSubmissions,
-            ];
-        }
-
-        $gamification = null;
-        $studentAnalytics = null;
-        if ($user->isStudent()) {
-            $gamificationService = app(GamificationService::class);
-            $currentLevelStartXp = $gamificationService->totalXpForLevel($user->level);
-            $nextLevelXp = $gamificationService->totalXpForLevel($user->level + 1);
-            $xpInCurrentLevel = max(0, $user->xp - $currentLevelStartXp);
-            $xpNeededInLevel = max(1, $nextLevelXp - $currentLevelStartXp);
-
-            $gamification = [
-                'coins' => $user->coins,
-                'level' => $user->level,
-                'xp' => $user->xp,
-                'achievements' => $user->achievements()->count(),
-                'xp_to_next' => max(0, $nextLevelXp - $user->xp),
-                'progress_percent' => (int) min(100, round(($xpInCurrentLevel / $xpNeededInLevel) * 100)),
-            ];
-
-            $studentAnalytics = $this->buildStudentAnalytics($user, $classrooms);
-        }
+        $viewData = $user->isStudent()
+            ? $this->studentViewData($user, $classrooms, $analytics)
+            : $this->teacherViewData($user, $analytics);
 
         return view('livewire.dashboard', [
+            'user' => $user,
             'classrooms' => $classrooms,
-            'upcomingAssignments' => $upcomingAssignments,
-            'stats' => $stats,
-            'gamification' => $gamification,
-            'studentAnalytics' => $studentAnalytics,
+            ...$viewData,
         ]);
+    }
+
+    private function studentViewData(
+        User $user,
+        Collection $classrooms,
+        DashboardAnalyticsService $analytics
+    ): array {
+        $classroomIds = $classrooms->pluck('id');
+        $assignments = Assignment::query()
+            ->with('classworkItem.classroom.themeCategory')
+            ->whereHas('classworkItem', function ($query) use ($classroomIds): void {
+                $query->whereIn('classroom_id', $classroomIds)
+                    ->where(function ($publishQuery): void {
+                        $publishQuery->whereNull('published_at')
+                            ->orWhere('published_at', '<=', now());
+                    });
+            })
+            ->published()
+            ->whereNotIn('type', ['material', 'announcement', 'topic'])
+            ->where('due_date', '>=', now())
+            ->orderBy('due_date')
+            ->take(4)
+            ->get();
+
+        $submissions = $user->submissions()
+            ->with('assignment')
+            ->whereIn('status', ['turned_in', 'graded', 'returned'])
+            ->get();
+        $scored = $submissions->whereNotNull('score');
+        $onTimeCount = $submissions->filter(
+            fn (Submission $submission): bool => ! $submission->isLate()
+        )->count();
+        $gamificationService = app(GamificationService::class);
+        $currentLevelStartXp = $gamificationService->totalXpForLevel($user->level);
+        $nextLevelXp = $gamificationService->totalXpForLevel($user->level + 1);
+        $xpInCurrentLevel = max(0, $user->xp - $currentLevelStartXp);
+        $xpNeededInLevel = max(1, $nextLevelXp - $currentLevelStartXp);
+        $activity = $analytics->studentActivity($user);
+
+        return [
+            'role' => 'student',
+            'activity' => $activity,
+            'primaryMetric' => [
+                'level' => $user->level,
+                'xp_current' => $xpInCurrentLevel,
+                'xp_required' => $xpNeededInLevel,
+                'remaining' => max(0, $nextLevelXp - $user->xp),
+                'progress_percent' => (int) min(100, round(($xpInCurrentLevel / $xpNeededInLevel) * 100)),
+            ],
+            'actionItems' => $assignments,
+            'quickStats' => [
+                ['label' => __('Coins'), 'value' => number_format($user->coins), 'icon' => 'star-solid'],
+                ['label' => __('Achievements'), 'value' => number_format($user->achievements()->count()), 'icon' => 'trophy'],
+                ['label' => __('Completed'), 'value' => number_format($submissions->count()), 'icon' => 'check-circle'],
+                ['label' => __('Average Score'), 'value' => number_format((float) ($scored->avg('score') ?? 0), 1), 'icon' => 'chart-bar'],
+            ],
+            'activitySummaries' => [
+                ['label' => __('1-year activity'), 'value' => $activity['total']],
+                ['label' => __('This week'), 'value' => $activity['current_week']],
+                [
+                    'label' => __('On-time submissions'),
+                    'value' => $submissions->isNotEmpty()
+                        ? (int) round(($onTimeCount / $submissions->count()) * 100).'%'
+                        : '0%',
+                ],
+            ],
+        ];
+    }
+
+    private function teacherViewData(User $user, DashboardAnalyticsService $analytics): array
+    {
+        $ownedClassrooms = $user->ownedClassrooms()
+            ->where('is_archived', false)
+            ->withCount(['students', 'classworkAssignments as assignments_count'])
+            ->get();
+        $classroomIds = $ownedClassrooms->pluck('id');
+        $reviewProgress = $analytics->teacherReviewProgress($user);
+        $activity = $analytics->teacherActivity($user);
+        $reviewQueue = Assignment::query()
+            ->with('classworkItem.classroom.themeCategory')
+            ->withCount([
+                'submissions as pending_count' => fn ($query) => $query->where('status', 'turned_in'),
+            ])
+            ->whereHas('classworkItem', fn ($query) => $query->whereIn('classroom_id', $classroomIds))
+            ->whereHas('submissions', fn ($query) => $query->where('status', 'turned_in'))
+            ->orderByDesc('pending_count')
+            ->take(4)
+            ->get();
+
+        return [
+            'role' => 'teacher',
+            'activity' => $activity,
+            'primaryMetric' => $reviewProgress,
+            'actionItems' => $reviewQueue,
+            'quickStats' => [
+                ['label' => __('Classrooms'), 'value' => number_format($ownedClassrooms->count()), 'icon' => 'academic-cap'],
+                ['label' => __('Students'), 'value' => number_format($ownedClassrooms->sum('students_count')), 'icon' => 'users'],
+                ['label' => __('Assignments'), 'value' => number_format($ownedClassrooms->sum('assignments_count')), 'icon' => 'document-text'],
+                ['label' => __('Pending Review'), 'value' => number_format($reviewProgress['pending']), 'icon' => 'clipboard-document-list'],
+            ],
+            'activitySummaries' => [
+                ['label' => __('1-year activity'), 'value' => $activity['total']],
+                ['label' => __('This week'), 'value' => $activity['current_week']],
+                ['label' => __('Reviews this week'), 'value' => $reviewProgress['graded_this_week']],
+            ],
+        ];
     }
 }

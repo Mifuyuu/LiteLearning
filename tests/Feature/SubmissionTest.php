@@ -7,6 +7,8 @@ use App\Models\Classroom;
 use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -119,6 +121,31 @@ class SubmissionTest extends TestCase
         ]);
     }
 
+    public function test_student_cannot_unsubmit_after_submissions_close(): void
+    {
+        $this->assignment->update([
+            'due_date' => now()->subHour(),
+            'allow_late_submission' => false,
+        ]);
+
+        Submission::where('assignment_id', $this->assignment->id)
+            ->where('user_id', $this->student->id)
+            ->update(['status' => 'turned_in', 'turned_in_at' => now()->subHours(2)]);
+
+        Livewire::actingAs($this->student)
+            ->test(\App\Livewire\Assignment\Show::class, [
+                'classroom' => $this->classroom,
+                'assignment' => $this->assignment,
+            ])
+            ->call('unsubmit');
+
+        $this->assertDatabaseHas('submissions', [
+            'assignment_id' => $this->assignment->id,
+            'user_id' => $this->student->id,
+            'status' => 'turned_in',
+        ]);
+    }
+
     // ─────────────────────────────────────────────
     // Submission blocked when closed
     // ─────────────────────────────────────────────
@@ -175,6 +202,50 @@ class SubmissionTest extends TestCase
     // ─────────────────────────────────────────────
     // Non-member cannot access assignment
     // ─────────────────────────────────────────────
+
+    public function test_draft_save_is_rejected_when_assignment_is_overdue_and_late_not_allowed(): void
+    {
+        $this->assignment->update([
+            'due_date' => now()->subHour(),
+            'allow_late_submission' => false,
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(\App\Livewire\Assignment\Show::class, [
+                'classroom' => $this->classroom,
+                'assignment' => $this->assignment,
+            ])
+            ->set('submissionContent', 'Draft after close')
+            ->call('saveDraft');
+
+        $this->assertDatabaseMissing('submissions', [
+            'assignment_id' => $this->assignment->id,
+            'user_id' => $this->student->id,
+            'content' => 'Draft after close',
+        ]);
+    }
+
+    public function test_file_upload_is_rejected_when_assignment_is_overdue_and_late_not_allowed(): void
+    {
+        Storage::fake('s3');
+
+        $this->assignment->update([
+            'due_date' => now()->subHour(),
+            'allow_late_submission' => false,
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(\App\Livewire\Assignment\Show::class, [
+                'classroom' => $this->classroom,
+                'assignment' => $this->assignment,
+            ])
+            ->set('uploadedFile', UploadedFile::fake()->create('late.pdf', 10, 'application/pdf'));
+
+        $this->assertDatabaseMissing('attachments', [
+            'file_name' => 'late.pdf',
+            'uploaded_by' => $this->student->id,
+        ]);
+    }
 
     public function test_outsider_cannot_view_assignment(): void
     {

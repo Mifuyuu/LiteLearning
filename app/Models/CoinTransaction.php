@@ -17,6 +17,7 @@ class CoinTransaction extends Model
         'source',
         'reference_type',
         'reference_id',
+        'idempotency_key',
         'metadata',
         'happened_at',
     ];

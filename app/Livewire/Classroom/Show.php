@@ -2,14 +2,11 @@
 
 namespace App\Livewire\Classroom;
 
-use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Classroom;
-use App\Models\ThemeCategory;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -20,49 +17,6 @@ class Show extends Component
     #[Locked]
     public Classroom $classroom;
 
-    public string $name = '';
-
-    public string $section = '';
-
-    public string $description = '';
-
-    public ?int $theme_category_id = null;
-
-    public string $deleteConfirm = '';
-
-    public bool $showDeleteAnnouncementModal = false;
-
-    public ?int $deleteAnnouncementId = null;
-
-    protected function canEditSettings(): bool
-    {
-        /** @var User $user */
-        $user = Auth::user();
-
-        return $this->classroom->isOwnedBy($user) || $user->isAdmin();
-    }
-
-    private function deleteAssignmentRecord(Assignment $assignment): void
-    {
-        DB::transaction(function () use ($assignment): void {
-            foreach ($assignment->attachments as $attachment) {
-                Storage::disk('s3')->delete($attachment->file_path);
-                $attachment->delete();
-            }
-
-            $assignment->comments()->delete();
-
-            foreach ($assignment->submissions()->with('attachments')->get() as $submission) {
-                foreach ($submission->attachments as $attachment) {
-                    Storage::disk('s3')->delete($attachment->file_path);
-                    $attachment->delete();
-                }
-            }
-
-            $assignment->classworkItem?->delete();
-        });
-    }
-
     public function mount(Classroom $classroom): void
     {
         /** @var User $user */
@@ -70,11 +24,6 @@ class Show extends Component
         abort_unless($classroom->hasAccess($user), 404);
 
         $this->classroom = $classroom;
-        $this->name = $classroom->name;
-        $this->section = $classroom->section ?? '';
-        $this->description = $classroom->description ?? '';
-        $this->theme_category_id = $classroom->theme_category_id;
-
         $this->loadClassroomRelations();
     }
 
@@ -172,73 +121,6 @@ class Show extends Component
         ]), navigate: true);
     }
 
-    public function overviewTopics(): array
-    {
-        $groups = [];
-
-        foreach ($this->classroom->topics as $topic) {
-            $items = collect()
-                ->merge(
-                    $this->classroom->assignments
-                        ->where('topic_id', $topic->id)
-                        ->map(fn (Assignment $assignment) => [
-                            'kind' => 'assignment',
-                            'model' => $assignment,
-                            'created_at' => $assignment->created_at,
-                        ])
-                )
-                ->merge(
-                    $this->classroom->materials
-                        ->where('topic_id', $topic->id)
-                        ->map(fn ($material) => [
-                            'kind' => 'material',
-                            'model' => $material,
-                            'created_at' => $material->created_at,
-                        ])
-                )
-                ->sortByDesc('created_at')
-                ->values();
-
-            if ($items->isNotEmpty()) {
-                $groups[] = [
-                    'name' => $topic->name,
-                    'items' => $items,
-                ];
-            }
-        }
-
-        $general = collect()
-            ->merge(
-                $this->classroom->assignments
-                    ->whereNull('topic_id')
-                    ->map(fn (Assignment $assignment) => [
-                        'kind' => 'assignment',
-                        'model' => $assignment,
-                        'created_at' => $assignment->created_at,
-                    ])
-            )
-            ->merge(
-                $this->classroom->materials
-                    ->whereNull('topic_id')
-                    ->map(fn ($material) => [
-                        'kind' => 'material',
-                        'model' => $material,
-                        'created_at' => $material->created_at,
-                    ])
-            )
-            ->sortByDesc('created_at')
-            ->values();
-
-        if ($general->isNotEmpty()) {
-            $groups[] = [
-                'name' => __('General'),
-                'items' => $general,
-            ];
-        }
-
-        return $groups;
-    }
-
     protected function canManageClassroom(): bool
     {
         /** @var User $user */
@@ -247,129 +129,77 @@ class Show extends Component
         return $this->classroom->canManageClassroom($user);
     }
 
-    public function saveSettings()
+    private function visibleSubmissionAssignments(): Collection
     {
-        if (! $this->canEditSettings()) {
-            abort(403);
-        }
-
-        $this->validate([
-            'name' => 'required|string|max:255',
-            'section' => 'nullable|string|max:255',
-            'description' => 'nullable|string|max:2000',
-            'theme_category_id' => 'nullable|integer|exists:theme_categories,id',
-        ]);
-
-        $this->classroom->update([
-            'name' => $this->name,
-            'section' => $this->section,
-            'description' => $this->description,
-            'theme_category_id' => $this->theme_category_id,
-        ]);
-
-        $this->classroom->refresh();
-        $this->loadClassroomRelations();
-
-        $this->dispatch('classroom-updated', [
-            'id' => $this->classroom->id,
-            'name' => $this->name,
-            'color' => $this->classroom->themeCategory?->color ?? '#8B5CF6',
-        ]);
-        $this->dispatch('notify', message: __('Classroom settings saved successfully.'));
+        return $this->classroom->assignments
+            ->whereNotIn('type', ['announcement', 'material', 'topic'])
+            ->values();
     }
 
-    public function toggleArchive(): void
+    private function pendingAssignments(Collection $assignments): Collection
     {
         /** @var User $user */
         $user = Auth::user();
-        abort_unless($this->classroom->isOwnedBy($user), 403);
 
-        $this->classroom->is_archived = ! $this->classroom->is_archived;
-        $this->classroom->save();
+        if ($this->classroom->canManageClassroom($user)) {
+            $studentCount = $this->classroom->students->count();
 
-        $this->dispatch('notify', message: $this->classroom->is_archived ? __('Classroom archived.') : __('Classroom restored.'));
+            return $assignments->filter(
+                fn (Assignment $assignment): bool => $assignment->submittedCount() < $studentCount
+            )->values();
+        }
+
+        return $assignments->filter(function (Assignment $assignment) use ($user): bool {
+            $submission = $assignment->submissions->firstWhere('user_id', $user->id);
+
+            return ! $submission?->isTurnedIn();
+        })->values();
     }
 
-    public function deleteClassroom()
+    private function completedAssignments(Collection $assignments): Collection
     {
         /** @var User $user */
         $user = Auth::user();
-        abort_unless($this->classroom->isOwnedBy($user), 403);
 
-        if (trim($this->deleteConfirm) !== $this->classroom->name) {
-            $this->addError('deleteConfirm', __('Please type the classroom name exactly to confirm deletion.'));
+        if ($this->classroom->canManageClassroom($user)) {
+            $studentCount = $this->classroom->students->count();
 
-            return;
+            return $assignments->filter(
+                fn (Assignment $assignment): bool => $studentCount > 0 && $assignment->submittedCount() >= $studentCount
+            )->values();
         }
 
-        $classroomName = $this->classroom->name;
-        $this->classroom->delete();
+        return $assignments->filter(function (Assignment $assignment) use ($user): bool {
+            $submission = $assignment->submissions->firstWhere('user_id', $user->id);
 
-        session()->flash('message', __('Classroom ":name" was deleted.', ['name' => $classroomName]));
-
-        return redirect()->route('classrooms');
+            return (bool) $submission?->isTurnedIn();
+        })->values();
     }
 
-    public function confirmDeleteAnnouncement(int $id): void
+    private function lastNameKey(string $name): string
     {
-        $this->deleteAnnouncementId = $id;
-        $this->showDeleteAnnouncementModal = true;
+        $parts = preg_split('/\s+/u', trim($name)) ?: [$name];
+
+        return mb_strtolower((string) end($parts));
     }
 
-    public function deleteAnnouncement(?int $id = null): void
+    private function sortUsers(Collection $users): Collection
     {
-        $announcementId = $id ?? $this->deleteAnnouncementId;
-
-        if (! $announcementId) {
-            return;
-        }
-
-        $announcement = Announcement::findOrFail($announcementId);
-        abort_unless($announcement->classroom_id === $this->classroom->id, 404);
-
-        /** @var User $user */
-        $user = Auth::user();
-        if ($announcement->user_id !== $user->id && ! $this->classroom->canManageClassroom($user)) {
-            abort(403);
-        }
-
-        DB::transaction(function () use ($announcement): void {
-            foreach ($announcement->attachments as $attachment) {
-                Storage::disk('s3')->delete($attachment->file_path);
-                $attachment->delete();
-            }
-
-            $announcement->comments()->delete();
-            $announcement->classworkItem?->delete();
-        });
-
-        $this->showDeleteAnnouncementModal = false;
-        $this->deleteAnnouncementId = null;
-        $this->loadClassroomRelations();
-    }
-
-    public function deleteAssignment(int $id)
-    {
-        if (! $this->canManageClassroom()) {
-            abort(403);
-        }
-
-        $assignment = Assignment::whereHas(
-            'classworkItem',
-            fn ($query) => $query->where('classroom_id', $this->classroom->id)
-        )
-            ->where('id', $id)
-            ->firstOrFail();
-
-        $this->deleteAssignmentRecord($assignment);
-        $this->loadClassroomRelations();
+        return $users
+            ->sortBy(fn (User $user) => $this->lastNameKey($user->name).'|'.mb_strtolower($user->name))
+            ->values();
     }
 
     public function render()
     {
+        $assignments = $this->visibleSubmissionAssignments();
+
         return view('livewire.classroom.show', [
-            'themes' => ThemeCategory::active()->orderBy('planet_number')->get(),
-            'topicGroups' => $this->overviewTopics(),
+            'assignmentCount' => $assignments->count(),
+            'coTeachers' => $this->sortUsers($this->classroom->coTeachers),
+            'completedAssignments' => $this->completedAssignments($assignments),
+            'pendingAssignments' => $this->pendingAssignments($assignments),
+            'students' => $this->sortUsers($this->classroom->students),
         ])->title($this->classroom->name);
     }
 }

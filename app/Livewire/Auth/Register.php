@@ -33,21 +33,28 @@ class Register extends Component
 
     public int $resendCooldown = 0;
 
-    public function register(): void
+    private function registrationRules(): array
     {
-        $this->validate([
+        return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
             'password_confirmation' => 'required',
             'role' => 'required|in:student,teacher',
-        ]);
+        ];
+    }
+
+    public function register(): void
+    {
+        $this->validate($this->registrationRules());
 
         $this->sendOtp();
     }
 
     public function sendOtp(): void
     {
+        $this->validate($this->registrationRules());
+
         $throttleKey = 'otp-resend:'.$this->email;
 
         if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
@@ -117,6 +124,13 @@ class Register extends Component
         RateLimiter::clear($throttleKey);
 
         $userData = $record->user_data;
+        if (! in_array($userData['role'] ?? null, ['student', 'teacher'], true)) {
+            $record->delete();
+            $this->addError('role', __('Invalid role.'));
+
+            return;
+        }
+
         $record->delete();
 
         $user = User::create([

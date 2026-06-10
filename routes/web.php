@@ -8,7 +8,9 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Classroom\GradeReport;
 use App\Livewire\Classroom\Index as ClassroomIndex;
 use App\Livewire\Classroom\People;
+use App\Livewire\Classroom\Settings as ClassroomSettings;
 use App\Livewire\Classroom\Show as ClassroomShow;
+use App\Livewire\Classroom\Stream as ClassroomStream;
 use App\Livewire\Classroom\Work as ClassroomWork;
 use App\Livewire\Dashboard;
 use App\Livewire\Material\Create as MaterialCreate;
@@ -64,6 +66,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('not_admin')->group(function () {
         Route::get('/classrooms', ClassroomIndex::class)->name('classrooms');
         Route::get('/c/{classroom}', ClassroomShow::class)->name('classroom.show');
+        Route::get('/c/{classroom}/stream', ClassroomStream::class)->name('classroom.stream');
+        Route::get('/c/{classroom}/settings', ClassroomSettings::class)->name('classroom.settings');
         Route::get('/w/{classroom}/t/{scope?}', ClassroomWork::class)->name('classroom.work');
         Route::get('/r/{classroom}/{sort?}', People::class)->name('classroom.roster');
         Route::get('/c/{classroom}/people', function (Classroom $classroom) {

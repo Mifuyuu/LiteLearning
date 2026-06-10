@@ -57,7 +57,7 @@
     </style>
 </head>
 
-<body class="h-full overflow-hidden font-sans antialiased text-[#101114]" x-data="{ sidebarOpen: true, mobileSidebar: false }">
+<body class="h-full overflow-hidden bg-[#f3f4f6] font-sans antialiased text-[#101114]" x-data="{ sidebarOpen: true, mobileSidebar: false }">
     {{-- Loading bar (shown during wire:navigate transitions) --}}
     <div x-data x-ref="bar" x-on:livewire:navigate-start.window="$refs.bar.style.opacity = '1'"
         x-on:livewire:navigate-end.window="$refs.bar.style.opacity = '0'" class="livewire-progress" style="opacity: 0;">
@@ -66,7 +66,7 @@
     <div class="relative z-10 flex h-screen overflow-clip">
         <!-- Sidebar -->
         <aside
-            class="fixed inset-y-0 left-0 z-30 flex w-72 -translate-x-full flex-col overflow-hidden border-r border-[#dedee5] bg-white transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:translate-x-0 lg:shrink-0"
+            class="fixed inset-y-0 left-0 z-30 flex w-72 -translate-x-full flex-col overflow-hidden bg-white transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:translate-x-0 lg:shrink-0"
             :class="{ '-translate-x-full': !mobileSidebar, 'translate-x-0': mobileSidebar }">
             <div class="flex h-[88px] shrink-0 items-center gap-3 px-6">
                 <div class="flex h-11 w-11 items-center justify-center rounded-[12px] bg-[#7132f5] text-white">
@@ -308,7 +308,7 @@
             @click="mobileSidebar = false"></div>
 
         <!-- Main Content -->
-        <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <div class="flex min-w-0 flex-1 flex-col overflow-hidden bg-[#f3f4f6]">
             <!-- Mobile Header (Visible only on mobile/tablet screens) -->
             <header class="z-10 shrink-0 border-b border-[#dedee5] bg-white lg:hidden">
                 <div class="mx-auto flex h-[60px] w-full items-center justify-between px-4 sm:px-6">
@@ -330,7 +330,8 @@
 
             <!-- Page Content -->
             <main class="flex-1 min-h-0 overflow-x-hidden overflow-y-auto px-4 py-6 sm:px-6" style="scrollbar-gutter: stable">
-                <div class="mx-auto w-full max-w-7xl">
+                <div data-content-width="{{ request()->routeIs('dashboard') ? 'full' : 'contained' }}"
+                    class="w-full {{ request()->routeIs('dashboard') ? 'max-w-none' : 'mx-auto max-w-7xl' }}">
                     @hasSection('content')
                         @yield('content')
                     @else

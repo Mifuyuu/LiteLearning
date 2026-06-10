@@ -5,9 +5,11 @@ namespace Tests\Feature;
 use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Classroom;
+use App\Models\EmailOtpVerification;
 use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -88,9 +90,9 @@ class SecurityTest extends TestCase
         $announcement = Announcement::factory()->create(['user_id' => $teacherB->id, 'classroom_id' => $classroomB->id]);
 
         // Teacher A tries to delete an announcement from Classroom B
-        // by calling deleteAnnouncement on their own Classroom A component
+        // by calling deleteAnnouncement on their own Classroom A stream component
         Livewire::actingAs($teacherA)
-            ->test(\App\Livewire\Classroom\Show::class, ['classroom' => $classroomA])
+            ->test(\App\Livewire\Classroom\Stream::class, ['classroom' => $classroomA])
             ->call('deleteAnnouncement', $announcement->id)
             ->assertStatus(404);
     }
@@ -143,6 +145,24 @@ class SecurityTest extends TestCase
             ->assertRedirect();
 
         $this->assertDatabaseHas('classrooms', ['name' => 'Legit Classroom']);
+    }
+
+    public function test_registration_send_otp_rejects_admin_role_when_called_directly(): void
+    {
+        Notification::fake();
+
+        Livewire::test(\App\Livewire\Auth\Register::class)
+            ->set('name', 'Mallory')
+            ->set('email', 'mallory@example.com')
+            ->set('password', 'password123')
+            ->set('password_confirmation', 'password123')
+            ->set('role', 'admin')
+            ->call('sendOtp')
+            ->assertHasErrors('role');
+
+        $this->assertFalse(
+            EmailOtpVerification::where('email', 'mallory@example.com')->exists()
+        );
     }
 
     // ──────────────────────────────────────────────

@@ -7,12 +7,14 @@ use App\Models\Achievement;
 use App\Models\Assignment;
 use App\Models\Classroom;
 use App\Models\ClassworkItem;
+use App\Models\CoinTransaction;
 use App\Models\Comment;
 use App\Models\StoreItem;
 use App\Models\Submission;
 use App\Models\User;
 use App\Services\GamificationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class GamificationTest extends TestCase
@@ -85,6 +87,107 @@ class GamificationTest extends TestCase
         $this->svc->awardCoins($teacher, 50, 'test');
 
         $this->assertNull($teacher->gamification()->first());
+    }
+
+    public function test_assignment_turn_in_reward_is_awarded_only_once(): void
+    {
+        $assignment = Assignment::factory()->create();
+
+        $this->svc->awardForAssignmentTurnedIn($this->student, $assignment->id);
+        $this->svc->awardForAssignmentTurnedIn($this->student, $assignment->id);
+
+        $this->student->refresh();
+
+        $this->assertSame(10, $this->student->coins);
+        $this->assertSame(20, $this->student->xp);
+        $this->assertDatabaseCount('coin_transactions', 1);
+    }
+
+    public function test_legacy_assignment_reward_prevents_duplicate_award(): void
+    {
+        $assignment = Assignment::factory()->create();
+        $gamification = $this->student->gamification()->create([
+            'coins' => 10,
+            'xp' => 20,
+            'level' => 1,
+        ]);
+
+        CoinTransaction::create([
+            'user_id' => $this->student->id,
+            'amount' => 10,
+            'type' => 'earn',
+            'source' => 'assignment_turned_in',
+            'reference_type' => 'assignment',
+            'reference_id' => $assignment->id,
+            'happened_at' => now()->subDay(),
+        ]);
+
+        $this->svc->awardForAssignmentTurnedIn($this->student, $assignment->id);
+
+        $gamification->refresh();
+
+        $this->assertSame(10, $gamification->coins);
+        $this->assertSame(20, $gamification->xp);
+        $this->assertDatabaseCount('coin_transactions', 1);
+    }
+
+    public function test_idempotency_migration_backfills_legacy_event_reward(): void
+    {
+        $assignment = Assignment::factory()->create();
+        $transaction = CoinTransaction::create([
+            'user_id' => $this->student->id,
+            'amount' => 10,
+            'type' => 'earn',
+            'source' => 'assignment_turned_in',
+            'reference_type' => 'assignment',
+            'reference_id' => $assignment->id,
+            'happened_at' => now()->subDay(),
+        ]);
+
+        $migration = require database_path('migrations/2026_06_10_000000_add_idempotency_key_to_coin_transactions_table.php');
+        $migration->down();
+        $migration->up();
+
+        $this->assertDatabaseHas('coin_transactions', [
+            'id' => $transaction->id,
+            'idempotency_key' => "assignment_turned_in:{$this->student->id}:{$assignment->id}",
+        ]);
+    }
+
+    public function test_assignment_reward_rolls_back_when_xp_award_fails(): void
+    {
+        $assignment = Assignment::factory()->create();
+        $service = new class extends GamificationService
+        {
+            public function awardXp(User $user, int $amount): void
+            {
+                throw new \RuntimeException('XP storage unavailable');
+            }
+        };
+
+        try {
+            $service->awardForAssignmentTurnedIn($this->student, $assignment->id);
+            $this->fail('Expected XP failure to be thrown.');
+        } catch (\RuntimeException $exception) {
+            $this->assertSame('XP storage unavailable', $exception->getMessage());
+        }
+
+        $this->assertDatabaseCount('coin_transactions', 0);
+        $this->assertNull($this->student->gamification()->first());
+    }
+
+    public function test_classroom_join_reward_is_awarded_only_once(): void
+    {
+        $classroom = Classroom::factory()->create();
+
+        $this->svc->awardForClassroomJoined($this->student, $classroom->id);
+        $this->svc->awardForClassroomJoined($this->student, $classroom->id);
+
+        $this->student->refresh();
+
+        $this->assertSame(15, $this->student->coins);
+        $this->assertSame(25, $this->student->xp);
+        $this->assertDatabaseCount('coin_transactions', 1);
     }
 
     // ─────────────────────────────────────────────
@@ -371,6 +474,33 @@ class GamificationTest extends TestCase
 
         $gam = $this->student->gamification()->first();
         $this->assertEquals(150, $gam->coins);
+    }
+
+    public function test_store_equip_hides_internal_exception_details(): void
+    {
+        $item = StoreItem::create([
+            'code' => 'safe-error-test',
+            'name' => 'Safe Error Test',
+            'type' => 'avatar_frame',
+            'value' => 'frame-test',
+            'price' => 0,
+            'is_active' => true,
+        ]);
+
+        $service = \Mockery::mock(GamificationService::class);
+        $service->shouldReceive('equipItem')
+            ->once()
+            ->andThrow(new \RuntimeException('SQLSTATE secret database detail'));
+        $this->app->instance(GamificationService::class, $service);
+
+        Livewire::actingAs($this->student)
+            ->test(\App\Livewire\Student\Store::class)
+            ->call('equip', $item->id)
+            ->assertDispatched(
+                'notify',
+                message: __('Unable to equip item. Please try again.'),
+                type: 'error'
+            );
     }
 
     private function createAchievement(string $code): Achievement

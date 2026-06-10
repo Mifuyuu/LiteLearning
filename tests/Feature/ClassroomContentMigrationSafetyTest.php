@@ -2,7 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Livewire\Classroom\Show as ClassroomShow;
+use App\Livewire\Classroom\Stream as ClassroomStream;
+use App\Livewire\Classroom\Work as ClassroomWork;
 use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Classroom;
@@ -52,10 +53,12 @@ class ClassroomContentMigrationSafetyTest extends TestCase
         ]);
 
         Livewire::actingAs($student)
-            ->test(ClassroomShow::class, ['classroom' => $classroom])
+            ->test(ClassroomStream::class, ['classroom' => $classroom])
             ->assertSee($announcement->content)
-            ->assertDontSee('Announcement hidden from another classroom')
-            ->call('setTab', 'classwork')
+            ->assertDontSee('Announcement hidden from another classroom');
+
+        Livewire::actingAs($student)
+            ->test(ClassroomWork::class, ['classroom' => $classroom])
             ->assertSee($publishedAssignment->title)
             ->assertDontSee('Assignment hidden from another classroom');
     }

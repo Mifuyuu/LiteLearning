@@ -33,8 +33,11 @@ class Store extends Component
         try {
             $gamificationService->equipItem($user, $item);
             $this->dispatch('notify', message: __('Item equipped!'), type: 'success');
-        } catch (\Exception $e) {
+        } catch (GamificationException $e) {
             $this->dispatch('notify', message: __($e->getMessage()), type: 'error');
+        } catch (\Throwable $e) {
+            report($e);
+            $this->dispatch('notify', message: __('Unable to equip item. Please try again.'), type: 'error');
         }
     }
 

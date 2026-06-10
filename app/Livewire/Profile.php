@@ -101,8 +101,9 @@ class Profile extends Component
                 $message = $field === 'avatar' ? __('อัปเดตรูปโปรไฟล์เรียบร้อยแล้ว') : __('อัปเดตรูปปกเรียบร้อยแล้ว');
                 $this->dispatch('notify', message: $message);
             }
-        } catch (\Exception $e) {
-            $this->dispatch('notify', message: __('อัปโหลดไม่สำเร็จ: ').$e->getMessage());
+        } catch (\Throwable $e) {
+            report($e);
+            $this->dispatch('notify', message: __('Upload failed. Please try again.'), type: 'error');
         }
     }
 

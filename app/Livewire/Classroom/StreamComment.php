@@ -63,6 +63,20 @@ class StreamComment extends Component
         $this->dispatch('comment-added');
     }
 
+    public function deleteComment(int $commentId): void
+    {
+        $commentable = $this->resolveCommentable();
+
+        $comment = Comment::where('commentable_type', $commentable::class)
+            ->where('commentable_id', $commentable->getKey())
+            ->findOrFail($commentId);
+
+        abort_unless($comment->user_id === Auth::id(), 403);
+
+        $comment->delete();
+        $this->dispatch('comment-deleted');
+    }
+
     private function resolveCommentable(): Model
     {
         $allowedTypes = [
@@ -84,11 +98,7 @@ class StreamComment extends Component
 
         abort_unless($classroom?->hasAccess($user), 404);
 
-        if (
-            $commentable instanceof Announcement
-            && $commentable->classworkItem?->published_at?->isFuture()
-            && ! $classroom->canManageClassroom($user)
-        ) {
+        if ($commentable->classworkItem?->published_at?->isFuture() && ! $classroom->canManageClassroom($user)) {
             abort(404);
         }
 

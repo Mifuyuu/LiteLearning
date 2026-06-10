@@ -3,6 +3,11 @@
 @import "cropperjs/dist/cropper.css";
 @import "./gamestyleicons.css";
 @plugin "@tailwindcss/typography";
+@plugin "daisyui" {
+    themes: light --default;
+    include: card, badge, avatar, tooltip;
+    logs: false;
+}
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -62,6 +67,47 @@
 body {
     background: #ffffff;
     color: var(--ll-ink);
+}
+
+.dashboard-liquid-progress {
+    position: relative;
+    height: 1.25rem;
+    overflow: hidden;
+    border-radius: 9999px;
+    background: rgba(133, 91, 251, 0.12);
+}
+
+.dashboard-liquid-fill {
+    position: relative;
+    display: block;
+    height: 100%;
+    min-width: 0.35rem;
+    overflow: hidden;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #7132f5, #a855f7, #d946ef);
+}
+
+.dashboard-liquid-wave {
+    position: absolute;
+    top: -1.1rem;
+    left: -25%;
+    width: 150%;
+    height: 1.6rem;
+    border-radius: 42%;
+    background: rgba(255, 255, 255, 0.24);
+    animation: dashboard-liquid-wave 4s linear infinite;
+}
+
+@keyframes dashboard-liquid-wave {
+    to {
+        transform: translateX(20%) rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-liquid-wave {
+        animation: none;
+    }
 }
 
 /* ─── Custom scrollbar ───────────────────────────────────────────────── */
