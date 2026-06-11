@@ -34,3 +34,5 @@ config.yml
 /.agents
 /.codex
 AGENTS.md
+/.github
+/.superpowers

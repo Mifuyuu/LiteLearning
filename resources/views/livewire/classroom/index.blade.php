@@ -1,5 +1,6 @@
 @section('page-title', auth()->user()->isTeacher() ? __('ชั้นเรียนของฉัน') : __('Classrooms'))
-<div class="animate__animated animate__fadeIn">
+<div data-empty-state-layout="{{ $classrooms->isEmpty() ? 'remaining-content' : 'classroom-grid' }}"
+    class="flex min-h-[calc(100dvh-6.75rem)] flex-col animate__animated animate__fadeIn lg:min-h-[calc(100dvh-3rem)]">
 
     {{-- ── Search / filter bar ── --}}
     <div class="bg-white border border-[#dedee5] rounded-2xl shadow-[rgba(0,0,0,0.03)_0px_4px_24px] px-4 py-3">
@@ -32,9 +33,16 @@
 
     {{-- ── Empty state ── --}}
     @if($classrooms->isEmpty())
-        <div class="flex flex-col items-center justify-center py-24 gap-5 text-center">
-            <img src="/images/planets/planet_01.svg" alt="planet" class="w-28 h-28 opacity-30" />
-            <p class="text-[#9497a9] text-sm">ยังไม่มีห้องเรียน</p>
+        <div data-classroom-empty-state data-empty-state-centered="true"
+            class="flex min-h-0 flex-1 items-center justify-center">
+            <div class="flex flex-col items-center gap-5 text-center">
+                <div data-empty-state-image-crop
+                    class="relative h-44 w-52 overflow-hidden sm:h-52 sm:w-64">
+                    <img src="{{ asset('images/empty.webp') }}" alt=""
+                        class="absolute left-0 top-0 h-auto w-[25rem] max-w-none -translate-x-[5.2rem] -translate-y-[3.5rem] select-none sm:w-[30rem] sm:-translate-x-[6.25rem] sm:-translate-y-[4.25rem]" />
+                </div>
+                <p class="text-base font-medium text-[#686b82]">ยังไม่มีดวงดาวที่ค้นพบ...</p>
+            </div>
         </div>
 
     @else

@@ -16,6 +16,20 @@ class DashboardTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_dashboard_progress_gradient_ends_with_light_purple(): void
+    {
+        $css = file_get_contents(resource_path('css/app.css'));
+
+        $this->assertStringContainsString(
+            'linear-gradient(90deg, #7132f5, #a855f7, #c4b5fd)',
+            $css
+        );
+        $this->assertStringNotContainsString(
+            'linear-gradient(90deg, #7132f5, #a855f7, #d946ef)',
+            $css
+        );
+    }
+
     protected function tearDown(): void
     {
         Carbon::setTestNow();
@@ -23,7 +37,7 @@ class DashboardTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_student_activity_aggregates_events_into_one_year(): void
+    public function test_student_activity_aggregates_events_into_current_calendar_year(): void
     {
         Carbon::setTestNow('2026-06-11 12:00:00');
 
@@ -57,24 +71,45 @@ class DashboardTest extends TestCase
             'updated_at' => now()->subDay()->setTime(10, 0),
         ])->save();
 
-        $oldComment = Comment::create([
+        $previousYearComment = Comment::create([
             'user_id' => $student->id,
             'commentable_type' => Assignment::class,
             'commentable_id' => $assignment->id,
-            'content' => 'Old activity',
+            'content' => 'Previous year activity',
         ]);
-        $oldComment->forceFill([
-            'created_at' => now()->subWeeks(54),
-            'updated_at' => now()->subWeeks(54),
+        $previousYearComment->forceFill([
+            'created_at' => Carbon::parse('2025-12-31 10:00:00'),
+            'updated_at' => Carbon::parse('2025-12-31 10:00:00'),
         ])->save();
 
         $activity = app(DashboardAnalyticsService::class)->studentActivity($student);
         $yesterday = collect($activity['days'])->firstWhere('date', now()->subDay()->toDateString());
 
+        $this->assertSame(2026, $activity['year']);
+        $this->assertSame('2026-01-01', $activity['start_date']);
+        $this->assertSame('2026-12-31', $activity['end_date']);
         $this->assertCount(371, $activity['days']);
         $this->assertSame(53, $activity['week_count']);
         $this->assertSame(3, $yesterday['count']);
         $this->assertSame(3, $activity['total']);
+        $this->assertFalse(collect($activity['days'])->firstWhere('date', '2025-12-31')['is_in_year']);
+        $this->assertTrue(collect($activity['days'])->firstWhere('date', '2026-01-01')['is_in_year']);
+    }
+
+    public function test_activity_calendar_supports_a_leap_year_that_spans_fifty_four_weeks(): void
+    {
+        Carbon::setTestNow('2012-06-11 12:00:00');
+
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+
+        $activity = app(DashboardAnalyticsService::class)->studentActivity($student);
+
+        $this->assertSame(2012, $activity['year']);
+        $this->assertSame('2012-01-01', $activity['start_date']);
+        $this->assertSame('2012-12-31', $activity['end_date']);
+        $this->assertCount(378, $activity['days']);
+        $this->assertSame(54, $activity['week_count']);
     }
 
     public function test_teacher_activity_and_review_progress_use_owned_classrooms(): void
@@ -126,7 +161,14 @@ class DashboardTest extends TestCase
             ->assertOk()
             ->assertSee('data-content-width="full"', false)
             ->assertSee('data-dashboard-role="student"', false)
+            ->assertSee('data-liquid-bubbles', false)
+            ->assertSee('data-liquid-bubble', false)
+            ->assertDontSee('data-liquid-wave', false)
+            ->assertSee('outline-2', false)
             ->assertSee('data-activity-heatmap', false)
+            ->assertSee('data-activity-cell', false)
+            ->assertSee('aspect-square', false)
+            ->assertDontSee('shadow-sm', false)
             ->assertSee(__('Current Level'))
             ->assertSee(__('Quick Stats'));
     }
@@ -140,6 +182,10 @@ class DashboardTest extends TestCase
             ->get(route('dashboard'))
             ->assertOk()
             ->assertSee('data-dashboard-role="teacher"', false)
+            ->assertSee('data-liquid-bubbles', false)
+            ->assertSee('data-liquid-bubble', false)
+            ->assertDontSee('data-liquid-wave', false)
+            ->assertSee('outline-2', false)
             ->assertSee('data-activity-heatmap', false)
             ->assertSee(__('Pending Review'))
             ->assertSee(__('Review Queue'));

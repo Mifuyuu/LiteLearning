@@ -11,6 +11,38 @@ class ClassroomIndexTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_student_without_classrooms_sees_centered_empty_state(): void
+    {
+        /** @var User $student */
+        $student = User::factory()->createOne(['role' => 'student']);
+
+        $this->actingAs($student)
+            ->get(route('classrooms'))
+            ->assertOk()
+            ->assertSee('data-classroom-empty-state', false)
+            ->assertSee('data-empty-state-layout="remaining-content"', false)
+            ->assertSee('data-empty-state-centered="true"', false)
+            ->assertSee('data-empty-state-image-crop', false)
+            ->assertSee('/images/empty.webp', false)
+            ->assertSeeText('ยังไม่มีดวงดาวที่ค้นพบ...');
+    }
+
+    public function test_teacher_without_classrooms_sees_centered_empty_state(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->createOne(['role' => 'teacher']);
+
+        $this->actingAs($teacher)
+            ->get(route('classrooms'))
+            ->assertOk()
+            ->assertSee('data-classroom-empty-state', false)
+            ->assertSee('data-empty-state-layout="remaining-content"', false)
+            ->assertSee('data-empty-state-centered="true"', false)
+            ->assertSee('data-empty-state-image-crop', false)
+            ->assertSee('/images/empty.webp', false)
+            ->assertSeeText('ยังไม่มีดวงดาวที่ค้นพบ...');
+    }
+
     public function test_student_classrooms_page_shows_only_active_enrolled_classrooms_without_filter_controls(): void
     {
         /** @var User $student */

@@ -11,66 +11,64 @@ use Illuminate\Support\Collection;
 
 class DashboardAnalyticsService
 {
-    private const ACTIVITY_WEEKS = 53;
-
     public function studentActivity(User $user): array
     {
-        [$start, $end] = $this->activityRange();
+        [$yearStart, $yearEnd, $gridStart, $gridEnd] = $this->activityRange();
         $events = collect();
 
         $submissions = $user->submissions()
-            ->where(function ($query) use ($start, $end): void {
-                $query->whereBetween('turned_in_at', [$start, $end])
-                    ->orWhereBetween('graded_at', [$start, $end]);
+            ->where(function ($query) use ($yearStart, $yearEnd): void {
+                $query->whereBetween('turned_in_at', [$yearStart, $yearEnd])
+                    ->orWhereBetween('graded_at', [$yearStart, $yearEnd]);
             })
             ->get(['turned_in_at', 'graded_at']);
 
         foreach ($submissions as $submission) {
-            if ($submission->turned_in_at?->between($start, $end)) {
+            if ($submission->turned_in_at?->between($yearStart, $yearEnd)) {
                 $events->push($submission->turned_in_at);
             }
 
-            if ($submission->graded_at?->between($start, $end)) {
+            if ($submission->graded_at?->between($yearStart, $yearEnd)) {
                 $events->push($submission->graded_at);
             }
         }
 
         Comment::query()
             ->where('user_id', $user->id)
-            ->whereBetween('created_at', [$start, $end])
+            ->whereBetween('created_at', [$yearStart, $yearEnd])
             ->pluck('created_at')
             ->each(fn ($date) => $events->push(Carbon::parse($date)));
 
-        return $this->buildActivity($events, $start);
+        return $this->buildActivity($events, $yearStart, $yearEnd, $gridStart, $gridEnd);
     }
 
     public function teacherActivity(User $user): array
     {
-        [$start, $end] = $this->activityRange();
+        [$yearStart, $yearEnd, $gridStart, $gridEnd] = $this->activityRange();
         $classroomIds = $user->ownedClassrooms()->pluck('id');
         $events = collect();
 
         ClassworkItem::query()
             ->where('user_id', $user->id)
             ->whereIn('classroom_id', $classroomIds)
-            ->whereBetween('created_at', [$start, $end])
+            ->whereBetween('created_at', [$yearStart, $yearEnd])
             ->pluck('created_at')
             ->each(fn ($date) => $events->push(Carbon::parse($date)));
 
         Submission::query()
             ->whereNotNull('graded_at')
-            ->whereBetween('graded_at', [$start, $end])
+            ->whereBetween('graded_at', [$yearStart, $yearEnd])
             ->whereHas('assignment.classworkItem', fn ($query) => $query->whereIn('classroom_id', $classroomIds))
             ->pluck('graded_at')
             ->each(fn ($date) => $events->push(Carbon::parse($date)));
 
         Comment::query()
             ->where('user_id', $user->id)
-            ->whereBetween('created_at', [$start, $end])
+            ->whereBetween('created_at', [$yearStart, $yearEnd])
             ->pluck('created_at')
             ->each(fn ($date) => $events->push(Carbon::parse($date)));
 
-        return $this->buildActivity($events, $start);
+        return $this->buildActivity($events, $yearStart, $yearEnd, $gridStart, $gridEnd);
     }
 
     public function teacherReviewProgress(User $user): array
@@ -96,36 +94,54 @@ class DashboardAnalyticsService
 
     private function activityRange(): array
     {
-        $start = now()->startOfWeek()->subWeeks(self::ACTIVITY_WEEKS - 1)->startOfDay();
-        $end = now()->endOfWeek()->endOfDay();
+        $yearStart = now()->startOfYear()->startOfDay();
+        $yearEnd = now()->endOfYear()->endOfDay();
+        $gridStart = $yearStart->copy()->startOfWeek(Carbon::MONDAY)->startOfDay();
+        $gridEnd = $yearEnd->copy()->endOfWeek(Carbon::SUNDAY)->endOfDay();
 
-        return [$start, $end];
+        return [$yearStart, $yearEnd, $gridStart, $gridEnd];
     }
 
-    private function buildActivity(Collection $events, Carbon $start): array
-    {
+    private function buildActivity(
+        Collection $events,
+        Carbon $yearStart,
+        Carbon $yearEnd,
+        Carbon $gridStart,
+        Carbon $gridEnd
+    ): array {
         $counts = $events
             ->map(fn ($date): string => Carbon::parse($date)->timezone(config('app.timezone'))->toDateString())
             ->countBy();
         $maximum = max(1, (int) $counts->max());
-        $dayCount = self::ACTIVITY_WEEKS * 7;
-        $days = collect(range(0, $dayCount - 1))->map(function (int $offset) use ($counts, $maximum, $start): array {
-            $date = $start->copy()->addDays($offset);
-            $count = (int) $counts->get($date->toDateString(), 0);
+        $dayCount = $gridStart->diffInDays($gridEnd) + 1;
+        $days = collect(range(0, $dayCount - 1))->map(function (int $offset) use (
+            $counts,
+            $maximum,
+            $yearStart,
+            $yearEnd,
+            $gridStart
+        ): array {
+            $date = $gridStart->copy()->addDays($offset);
+            $isInYear = $date->betweenIncluded($yearStart, $yearEnd);
+            $count = $isInYear ? (int) $counts->get($date->toDateString(), 0) : 0;
 
             return [
                 'date' => $date->toDateString(),
                 'label' => $date->translatedFormat('j M Y'),
                 'count' => $count,
                 'level' => $this->activityLevel($count, $maximum),
+                'is_in_year' => $isInYear,
                 'is_future' => $date->isFuture(),
             ];
         });
 
         return [
-            'start_date' => $start->toDateString(),
-            'end_date' => $start->copy()->addDays($dayCount - 1)->toDateString(),
-            'week_count' => self::ACTIVITY_WEEKS,
+            'year' => $yearStart->year,
+            'start_date' => $yearStart->toDateString(),
+            'end_date' => $yearEnd->toDateString(),
+            'grid_start_date' => $gridStart->toDateString(),
+            'grid_end_date' => $gridEnd->toDateString(),
+            'week_count' => (int) ($dayCount / 7),
             'days' => $days->all(),
             'total' => $days->sum('count'),
             'current_week' => $days

@@ -4,20 +4,14 @@
     $isStudent = $role === 'student';
     $displayName = trim(explode(' ', $user->name)[0] ?? $user->name);
     $activityDays = collect($activity['days']);
-    $monthLabels = $activityDays
-        ->chunk(7)
-        ->values()
-        ->map(function ($week, int $index) use ($activityDays): array {
-            $date = \Illuminate\Support\Carbon::parse($week->first()['date']);
-            $previousMonth = $index > 0
-                ? \Illuminate\Support\Carbon::parse($activityDays[($index - 1) * 7]['date'])->month
-                : null;
+    $activityGridStart = \Illuminate\Support\Carbon::parse($activity['grid_start_date']);
+    $monthLabels = collect(range(1, 12))
+        ->map(function (int $month) use ($activity, $activityGridStart): array {
+            $date = \Illuminate\Support\Carbon::create($activity['year'], $month, 1);
 
             return [
-                'week' => $index + 1,
-                'label' => $index === 0 || $date->month !== $previousMonth
-                    ? $date->translatedFormat('M')
-                    : '',
+                'week' => intdiv((int) $activityGridStart->diffInDays($date), 7) + 1,
+                'label' => $date->translatedFormat('M'),
             ];
         });
     $activityLevelClasses = [
@@ -41,7 +35,7 @@
             </p>
         </div>
         <a href="{{ route('calendar') }}" wire:navigate
-            class="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-white px-3 py-2 text-sm font-semibold text-[#7132f5] shadow-sm transition hover:bg-[rgba(133,91,251,0.08)]">
+            class="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-white px-3 py-2 text-sm font-semibold text-[#7132f5] transition hover:bg-[rgba(133,91,251,0.08)]">
             <x-icon name="calendar-days" class="h-4 w-4" />
             <span class="hidden sm:inline">{{ __('Calendar') }}</span>
         </a>
@@ -49,7 +43,7 @@
 
     <div class="grid min-h-0 flex-1 gap-3 xl:grid-cols-[minmax(220px,0.78fr)_minmax(380px,1.55fr)_minmax(220px,0.78fr)]">
         <div class="grid min-h-0 gap-3 xl:grid-rows-[180px_minmax(0,1fr)]">
-            <section class="card card-border overflow-hidden border-[#dedee5] bg-white shadow-sm">
+            <section class="card card-border overflow-hidden border-[#dedee5] bg-white">
                 <div class="card-body gap-0 p-5">
                     @if($isStudent)
                         <div class="flex items-start justify-between gap-3">
@@ -61,11 +55,16 @@
                                 {{ number_format($primaryMetric['xp_current']) }} / {{ number_format($primaryMetric['xp_required']) }} XP
                             </span>
                         </div>
-                        <div class="dashboard-liquid-progress mt-5" role="progressbar"
+                        <div class="dashboard-liquid-progress mt-5 outline-2 outline-[rgba(113,50,245,0.28)]" role="progressbar"
                             aria-label="{{ __('Level progress') }}" aria-valuemin="0" aria-valuemax="100"
                             aria-valuenow="{{ $primaryMetric['progress_percent'] }}">
                             <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%">
-                                <span class="dashboard-liquid-wave"></span>
+                                <span data-liquid-bubbles class="dashboard-liquid-bubbles" aria-hidden="true">
+                                    <span data-liquid-bubble></span>
+                                    <span data-liquid-bubble></span>
+                                    <span data-liquid-bubble></span>
+                                    <span data-liquid-bubble></span>
+                                </span>
                             </span>
                         </div>
                         <p class="mt-2 text-xs text-[#686b82]">
@@ -81,11 +80,16 @@
                                 {{ number_format($primaryMetric['graded_this_week']) }} {{ __('reviewed') }}
                             </span>
                         </div>
-                        <div class="dashboard-liquid-progress mt-5" role="progressbar"
+                        <div class="dashboard-liquid-progress mt-5 outline-2 outline-[rgba(113,50,245,0.28)]" role="progressbar"
                             aria-label="{{ __('Review progress') }}" aria-valuemin="0" aria-valuemax="100"
                             aria-valuenow="{{ $primaryMetric['progress_percent'] }}">
                             <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%">
-                                <span class="dashboard-liquid-wave"></span>
+                                <span data-liquid-bubbles class="dashboard-liquid-bubbles" aria-hidden="true">
+                                    <span data-liquid-bubble></span>
+                                    <span data-liquid-bubble></span>
+                                    <span data-liquid-bubble></span>
+                                    <span data-liquid-bubble></span>
+                                </span>
                             </span>
                         </div>
                         <p class="mt-2 text-xs text-[#686b82]">{{ __('Weekly review completion') }} · {{ $primaryMetric['progress_percent'] }}%</p>
@@ -93,7 +97,7 @@
                 </div>
             </section>
 
-            <section class="card card-border min-h-[330px] overflow-hidden border-[#dedee5] bg-white shadow-sm xl:min-h-0">
+            <section class="card card-border min-h-[330px] overflow-hidden border-[#dedee5] bg-white xl:min-h-0">
                 <div class="card-body min-h-0 gap-0 p-4">
                     <div class="flex shrink-0 items-center justify-between gap-3">
                         <h2 class="card-title text-base text-[#101114]">{{ $isStudent ? __('Up Next') : __('Review Queue') }}</h2>
@@ -131,7 +135,7 @@
         </div>
 
         <section data-activity-heatmap
-            class="card card-border min-h-[510px] overflow-hidden border-[#dedee5] bg-white shadow-sm xl:min-h-0">
+            class="card card-border min-h-[510px] overflow-hidden border-[#dedee5] bg-white xl:min-h-0">
             <div class="card-body flex h-full min-h-0 flex-col gap-0 p-4 sm:p-5">
                 <div class="flex shrink-0 items-start justify-between gap-4">
                     <div>
@@ -152,7 +156,7 @@
                     <div class="grid min-w-[720px] grid-cols-[24px_minmax(0,1fr)] gap-2">
                         <span></span>
                         <div class="grid text-[10px] font-medium text-[#9497a9]"
-                            style="grid-template-columns: repeat({{ $activity['week_count'] }}, minmax(0, 1fr));">
+                            style="grid-template-columns: repeat({{ $activity['week_count'] }}, 0.75rem); gap: 0.25rem;">
                             @foreach($monthLabels as $month)
                                 <span class="whitespace-nowrap" style="grid-column: {{ $month['week'] }};">{{ $month['label'] }}</span>
                             @endforeach
@@ -161,11 +165,11 @@
                             <span>{{ __('Mon') }}</span><span></span><span>{{ __('Wed') }}</span><span></span>
                             <span>{{ __('Fri') }}</span><span></span><span>{{ __('Sun') }}</span>
                         </div>
-                        <div class="grid min-h-[250px] grid-flow-col grid-rows-[repeat(7,minmax(0,1fr))] gap-1"
-                            style="grid-template-columns: repeat({{ $activity['week_count'] }}, minmax(0, 1fr));">
+                        <div class="grid grid-flow-col grid-rows-7 gap-1"
+                            style="grid-template-columns: repeat({{ $activity['week_count'] }}, 0.75rem);">
                             @foreach($activityDays as $day)
-                                <span tabindex="0"
-                                    class="tooltip tooltip-top min-h-4 rounded-[4px] outline-none ring-[#7132f5] transition hover:ring-2 focus:ring-2 {{ $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
+                                <span data-activity-cell tabindex="0"
+                                    class="tooltip tooltip-top aspect-square size-3 rounded-[3px] outline-none ring-[#7132f5] transition hover:ring-2 focus:ring-2 {{ ! $day['is_in_year'] || $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
                                     data-tip="{{ $day['label'] }} · {{ $day['count'] }} {{ __('activities') }}"
                                     aria-label="{{ $day['label'] }}: {{ $day['count'] }} {{ __('activities') }}"></span>
                             @endforeach
@@ -186,7 +190,7 @@
 
         <div class="grid min-h-0 gap-3 xl:grid-rows-[250px_minmax(0,1fr)]">
             <a href="{{ route('profile') }}" wire:navigate
-                class="card card-border group overflow-hidden border-[#dedee5] bg-white shadow-sm transition hover:border-[rgba(113,50,245,0.3)]">
+                class="card card-border group overflow-hidden border-[#dedee5] bg-white transition hover:border-[rgba(113,50,245,0.3)]">
                 <div class="card-body items-center gap-0 p-5 text-center">
                     <div class="avatar">
                         <div class="h-20 w-20 rounded-full ring-4 ring-[rgba(133,91,251,0.16)] ring-offset-2 ring-offset-white">
@@ -206,7 +210,7 @@
                 </div>
             </a>
 
-            <section class="card card-border min-h-[270px] overflow-hidden border-[#dedee5] bg-white shadow-sm xl:min-h-0">
+            <section class="card card-border min-h-[270px] overflow-hidden border-[#dedee5] bg-white xl:min-h-0">
                 <div class="card-body gap-0 p-4">
                     <h2 class="card-title text-base text-[#101114]">{{ __('Quick Stats') }}</h2>
                     <div class="mt-3 grid min-h-0 flex-1 grid-cols-2 gap-2">
