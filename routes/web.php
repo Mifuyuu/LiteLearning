@@ -35,7 +35,7 @@ Route::get('/', function () {
 // Auth routes (guest only)
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
-    Route::get('/register', Register::class)->name('register');
+    Route::get('/register/{role?}', Register::class)->name('register');
 });
 
 // Logout

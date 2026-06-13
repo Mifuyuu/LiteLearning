@@ -5,15 +5,7 @@
     $displayName = trim(explode(' ', $user->name)[0] ?? $user->name);
     $activityDays = collect($activity['days']);
     $activityGridStart = \Illuminate\Support\Carbon::parse($activity['grid_start_date']);
-    $monthLabels = collect(range(1, 12))
-        ->map(function (int $month) use ($activity, $activityGridStart): array {
-            $date = \Illuminate\Support\Carbon::create($activity['year'], $month, 1);
-
-            return [
-                'week' => intdiv((int) $activityGridStart->diffInDays($date), 7) + 1,
-                'label' => $date->translatedFormat('M'),
-            ];
-        });
+    $monthLabels = $activity['month_labels'];
     $activityLevelClasses = [
         0 => 'bg-[#ece9f0]',
         1 => 'bg-[#e2d4ff]',
@@ -139,7 +131,7 @@
             <div class="card-body flex h-full min-h-0 flex-col gap-0 p-4 sm:p-5">
                 <div class="flex shrink-0 items-start justify-between gap-4">
                     <div>
-                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#7132f5]">{{ __('1-year activity') }}</p>
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#7132f5]">{{ __('6-month activity') }}</p>
                         <h2 class="card-title mt-1 text-lg text-[#101114]">
                             {{ $isStudent ? __('Learning consistency') : __('Teaching activity') }}
                         </h2>
@@ -188,7 +180,7 @@
             </div>
         </section>
 
-        <div class="grid min-h-0 gap-3 xl:grid-rows-[250px_minmax(0,1fr)]">
+        <div class="grid min-h-0 gap-3 xl:grid-rows-[290px_minmax(0,1fr)]">
             <a href="{{ route('profile') }}" wire:navigate
                 class="card card-border group overflow-hidden border-[#dedee5] bg-white transition hover:border-[rgba(113,50,245,0.3)]">
                 <div class="card-body items-center gap-0 p-5 text-center">
@@ -210,12 +202,12 @@
                 </div>
             </a>
 
-            <section class="card card-border min-h-[270px] overflow-hidden border-[#dedee5] bg-white xl:min-h-0">
+            <section class="card card-border min-h-[230px] overflow-hidden border-[#dedee5] bg-white xl:min-h-0">
                 <div class="card-body gap-0 p-4">
                     <h2 class="card-title text-base text-[#101114]">{{ __('Quick Stats') }}</h2>
                     <div class="mt-3 grid min-h-0 flex-1 grid-cols-2 gap-2">
                         @foreach($quickStats as $stat)
-                            <div class="flex min-h-24 flex-col justify-between rounded-[11px] bg-[#f7f5f9] p-3">
+                            <div class="flex min-h-20 flex-col justify-between rounded-[11px] bg-[#f7f5f9] p-3">
                                 <span class="flex h-8 w-8 items-center justify-center rounded-[9px] bg-[rgba(133,91,251,0.14)] text-[#7132f5]">
                                     <x-icon :name="$stat['icon']" class="h-4 w-4" />
                                 </span>

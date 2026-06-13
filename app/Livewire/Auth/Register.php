@@ -26,12 +26,22 @@ class Register extends Component
 
     public string $role = 'student';
 
+    public bool $showRoleSelector = true;
+
     // Step 2 — OTP verification
     public string $otp = '';
 
     public bool $otpSent = false;
 
     public int $resendCooldown = 0;
+
+    public function mount(?string $role = null): void
+    {
+        if ($role && in_array($role, ['student', 'teacher'], true)) {
+            $this->role = $role;
+            $this->showRoleSelector = false;
+        }
+    }
 
     private function registrationRules(): array
     {

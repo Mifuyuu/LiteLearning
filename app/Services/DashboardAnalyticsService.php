@@ -94,12 +94,12 @@ class DashboardAnalyticsService
 
     private function activityRange(): array
     {
-        $yearStart = now()->startOfYear()->startOfDay();
-        $yearEnd = now()->endOfYear()->endOfDay();
-        $gridStart = $yearStart->copy()->startOfWeek(Carbon::MONDAY)->startOfDay();
-        $gridEnd = $yearEnd->copy()->endOfWeek(Carbon::SUNDAY)->endOfDay();
+        $gridEnd = now()->endOfWeek(Carbon::SUNDAY)->endOfDay();
+        $gridStart = now()->subWeeks(25)->startOfWeek(Carbon::MONDAY)->startOfDay();
+        $rangeStart = $gridStart->copy();
+        $rangeEnd = now()->endOfDay();
 
-        return [$yearStart, $yearEnd, $gridStart, $gridEnd];
+        return [$rangeStart, $rangeEnd, $gridStart, $gridEnd];
     }
 
     private function buildActivity(
@@ -135,6 +135,23 @@ class DashboardAnalyticsService
             ];
         });
 
+        $monthLabels = [];
+        $current = $gridStart->copy();
+        $end = $gridEnd->copy();
+        $lastMonth = null;
+        while ($current->lte($end)) {
+            $monthVal = $current->month;
+            if ($monthVal !== $lastMonth) {
+                $weekIndex = intdiv((int) $gridStart->diffInDays($current), 7) + 1;
+                $monthLabels[] = [
+                    'week' => $weekIndex,
+                    'label' => $current->translatedFormat('M'),
+                ];
+                $lastMonth = $monthVal;
+            }
+            $current->addWeek();
+        }
+
         return [
             'year' => $yearStart->year,
             'start_date' => $yearStart->toDateString(),
@@ -147,6 +164,7 @@ class DashboardAnalyticsService
             'current_week' => $days
                 ->filter(fn (array $day): bool => Carbon::parse($day['date'])->isCurrentWeek())
                 ->sum('count'),
+            'month_labels' => $monthLabels,
         ];
     }
 

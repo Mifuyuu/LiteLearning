@@ -138,7 +138,7 @@
                         </p>
 
                         <div class="fade-up-enter delay-300 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <a href="{{ route('register') }}" class="btn-3d btn-3d--indigo rounded-xl px-8 py-4 text-base w-full sm:w-auto">
+                            <a href="{{ route('register', ['role' => 'teacher']) }}" class="btn-3d btn-3d--indigo rounded-xl px-8 py-4 text-base w-full sm:w-auto">
                                 เริ่มสร้างห้องเรียนฟรี <i class="fa-solid fa-arrow-right ml-2"></i>
                             </a>
                             <a href="#features" class="btn-3d btn-3d--white rounded-xl px-8 py-4 text-base font-bold w-full sm:w-auto">
@@ -272,6 +272,9 @@
                                         <p class="mt-1 text-[#9497a9] leading-relaxed">ตรวจงานจากคิวได้อัตโนมัติ
                                             ไม่ต้องคลิกเปลี่ยนหน้า จัดการเอกสารและคะแนนอย่างเป็นระบบ ลดเวลาทำสรุปคะแนน
                                         </p>
+                                         <a href="{{ route('register', ['role' => 'teacher']) }}" class="inline-block mt-2 text-sm font-semibold text-[#c4b5fd] hover:text-white transition-colors">
+                                             สมัครใช้งานสำหรับผู้สอน <i class="fa-solid fa-chevron-right ml-1 text-xs"></i>
+                                         </a>
                                     </div>
                                 </div>
                                 <div class="flex gap-4">
@@ -283,6 +286,9 @@
                                         <p class="mt-1 text-[#9497a9] leading-relaxed">เช็กงานค้าง ส่งงาน
                                             และพูดคุยกับเพื่อนได้ทันที รู้สึกเหมือนกำลังเล่นเกมสะสมเลเวล
                                             ให้รางวัลความขยันด้วยตนเอง</p>
+                                         <a href="{{ route('register', ['role' => 'student']) }}" class="inline-block mt-2 text-sm font-semibold text-[#c4b5fd] hover:text-white transition-colors">
+                                             สมัครใช้งานสำหรับนักเรียน <i class="fa-solid fa-chevron-right ml-1 text-xs"></i>
+                                         </a>
                                     </div>
                                 </div>
                             </div>

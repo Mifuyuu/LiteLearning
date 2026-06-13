@@ -83,13 +83,13 @@ class Dashboard extends Component
             ],
             'actionItems' => $assignments,
             'quickStats' => [
-                ['label' => __('Coins'), 'value' => number_format($user->coins), 'icon' => 'star-solid'],
+                ['label' => __('Coins'), 'value' => number_format($user->coins), 'icon' => 'star'],
                 ['label' => __('Achievements'), 'value' => number_format($user->achievements()->count()), 'icon' => 'trophy'],
                 ['label' => __('Completed'), 'value' => number_format($submissions->count()), 'icon' => 'check-circle'],
                 ['label' => __('Average Score'), 'value' => number_format((float) ($scored->avg('score') ?? 0), 1), 'icon' => 'chart-bar'],
             ],
             'activitySummaries' => [
-                ['label' => __('1-year activity'), 'value' => $activity['total']],
+                ['label' => __('6-month activity'), 'value' => $activity['total']],
                 ['label' => __('This week'), 'value' => $activity['current_week']],
                 [
                     'label' => __('On-time submissions'),
@@ -133,7 +133,7 @@ class Dashboard extends Component
                 ['label' => __('Pending Review'), 'value' => number_format($reviewProgress['pending']), 'icon' => 'clipboard-document-list'],
             ],
             'activitySummaries' => [
-                ['label' => __('1-year activity'), 'value' => $activity['total']],
+                ['label' => __('6-month activity'), 'value' => $activity['total']],
                 ['label' => __('This week'), 'value' => $activity['current_week']],
                 ['label' => __('Reviews this week'), 'value' => $reviewProgress['graded_this_week']],
             ],

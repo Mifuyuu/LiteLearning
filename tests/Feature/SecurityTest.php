@@ -230,4 +230,25 @@ class SecurityTest extends TestCase
             ->call('login')
             ->assertRedirect(route('admin.dashboard'));
     }
+
+    public function test_registration_with_role_parameter_sets_role_and_hides_selector(): void
+    {
+        Livewire::test(\App\Livewire\Auth\Register::class, ['role' => 'teacher'])
+            ->assertSet('role', 'teacher')
+            ->assertSet('showRoleSelector', false)
+            ->assertDontSee('บทบาทของคุณ');
+
+        Livewire::test(\App\Livewire\Auth\Register::class, ['role' => 'student'])
+            ->assertSet('role', 'student')
+            ->assertSet('showRoleSelector', false)
+            ->assertDontSee('บทบาทของคุณ');
+    }
+
+    public function test_registration_without_role_parameter_shows_selector(): void
+    {
+        Livewire::test(\App\Livewire\Auth\Register::class)
+            ->assertSet('role', 'student')
+            ->assertSet('showRoleSelector', true)
+            ->assertSee('บทบาทของคุณ');
+    }
 }

@@ -6,9 +6,29 @@
             <div class="w-10 h-10 bg-[#7132f5] rounded-[12px] flex items-center justify-center shrink-0 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
                 <i class="fas fa-user-plus text-white text-lg"></i>
             </div>
-            <h2 class="text-2xl font-bold text-[#101114]" style="font-family: 'IBM Plex Sans', sans-serif; letter-spacing: -0.5px;">{{ __('auth.register.title') }}</h2>
+            <h2 class="text-2xl font-bold text-[#101114]" style="font-family: 'IBM Plex Sans', sans-serif; letter-spacing: -0.5px;">
+                @if (!$showRoleSelector)
+                    @if ($role === 'teacher')
+                        สมัครสมาชิกสำหรับคุณครู
+                    @else
+                        สมัครสมาชิกสำหรับนักเรียน
+                    @endif
+                @else
+                    {{ __('auth.register.title') }}
+                @endif
+            </h2>
         </div>
-        <p class="text-[#9497a9] mb-6">{{ __('auth.register.description') }}</p>
+        <p class="text-[#9497a9] mb-6">
+            @if (!$showRoleSelector)
+                @if ($role === 'teacher')
+                    สร้างบัญชีผู้สอนเพื่อเริ่มต้นสร้างห้องเรียนและสื่อการสอนของคุณ
+                @else
+                    สร้างบัญชีผู้เรียนเพื่อเข้าร่วมห้องเรียนและสะสมเหรียญรางวัล
+                @endif
+            @else
+                {{ __('auth.register.description') }}
+            @endif
+        </p>
 
         @if (!$otpSent)
             {{-- Step 1: Registration Form --}}
@@ -85,6 +105,7 @@
                 </div>
 
                 {{-- Role Selection --}}
+                @if ($showRoleSelector)
                 <div>
                     <label class="block text-sm font-medium text-[#686b82] mb-2">บทบาทของคุณ</label>
                     <div class="grid grid-cols-2 gap-4">
@@ -107,6 +128,7 @@
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
+                @endif
 
                 {{-- Submit --}}
                 <button type="submit"

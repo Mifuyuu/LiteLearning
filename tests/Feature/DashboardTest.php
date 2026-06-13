@@ -37,7 +37,7 @@ class DashboardTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_student_activity_aggregates_events_into_current_calendar_year(): void
+    public function test_student_activity_aggregates_events_into_six_month_range(): void
     {
         Carbon::setTestNow('2026-06-11 12:00:00');
 
@@ -85,18 +85,18 @@ class DashboardTest extends TestCase
         $activity = app(DashboardAnalyticsService::class)->studentActivity($student);
         $yesterday = collect($activity['days'])->firstWhere('date', now()->subDay()->toDateString());
 
-        $this->assertSame(2026, $activity['year']);
-        $this->assertSame('2026-01-01', $activity['start_date']);
-        $this->assertSame('2026-12-31', $activity['end_date']);
-        $this->assertCount(371, $activity['days']);
-        $this->assertSame(53, $activity['week_count']);
+        $this->assertSame(2025, $activity['year']);
+        $this->assertSame('2025-12-15', $activity['start_date']);
+        $this->assertSame('2026-06-11', $activity['end_date']);
+        $this->assertCount(182, $activity['days']);
+        $this->assertSame(26, $activity['week_count']);
         $this->assertSame(3, $yesterday['count']);
-        $this->assertSame(3, $activity['total']);
-        $this->assertFalse(collect($activity['days'])->firstWhere('date', '2025-12-31')['is_in_year']);
-        $this->assertTrue(collect($activity['days'])->firstWhere('date', '2026-01-01')['is_in_year']);
+        $this->assertSame(4, $activity['total']);
+        $this->assertTrue(collect($activity['days'])->firstWhere('date', '2025-12-31')['is_in_year']);
+        $this->assertFalse(collect($activity['days'])->firstWhere('date', '2026-06-12')['is_in_year']);
     }
 
-    public function test_activity_calendar_supports_a_leap_year_that_spans_fifty_four_weeks(): void
+    public function test_activity_calendar_correctly_builds_twenty_six_weeks_for_leap_year(): void
     {
         Carbon::setTestNow('2012-06-11 12:00:00');
 
@@ -105,11 +105,11 @@ class DashboardTest extends TestCase
 
         $activity = app(DashboardAnalyticsService::class)->studentActivity($student);
 
-        $this->assertSame(2012, $activity['year']);
-        $this->assertSame('2012-01-01', $activity['start_date']);
-        $this->assertSame('2012-12-31', $activity['end_date']);
-        $this->assertCount(378, $activity['days']);
-        $this->assertSame(54, $activity['week_count']);
+        $this->assertSame(2011, $activity['year']);
+        $this->assertSame('2011-12-19', $activity['start_date']);
+        $this->assertSame('2012-06-11', $activity['end_date']);
+        $this->assertCount(182, $activity['days']);
+        $this->assertSame(26, $activity['week_count']);
     }
 
     public function test_teacher_activity_and_review_progress_use_owned_classrooms(): void
