@@ -5,11 +5,17 @@ namespace App\Livewire;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 
+#[Lazy]
 #[Layout('layouts.app')]
 class Settings extends Component
 {
+    public function placeholder()
+    {
+        return view('livewire.placeholders.generic', ['pageTitle' => __('Settings')]);
+    }
     const NAME_MAX_LENGTH = 50;
 
     public string $name = '';

@@ -9,12 +9,18 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
+#[Lazy]
 #[Layout('layouts.app')]
 class Profile extends Component
 {
+    public function placeholder()
+    {
+        return view('livewire.placeholders.generic', ['pageTitle' => __('Profile')]);
+    }
     use WithFileUploads;
 
     public User $user;

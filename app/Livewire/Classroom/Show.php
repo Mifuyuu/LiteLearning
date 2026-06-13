@@ -8,12 +8,18 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 
+#[Lazy]
 #[Layout('layouts.app')]
 class Show extends Component
 {
+    public function placeholder(array $params = [])
+    {
+        return view('livewire.placeholders.classroom-show', $params);
+    }
     #[Locked]
     public Classroom $classroom;
 

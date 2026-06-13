@@ -1,6 +1,6 @@
 @section('page-title', __('admin.achievements.title'))
 
-<div class="space-y-6 animate__animated animate__fadeIn">
+<div class="space-y-6 ">
     <!-- Header -->
     <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">

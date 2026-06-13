@@ -9,12 +9,18 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 
+#[Lazy]
 #[Layout('layouts.app')]
 class Stream extends Component
 {
+    public function placeholder(array $params = [])
+    {
+        return view('livewire.placeholders.classroom-stream', $params);
+    }
     #[Locked]
     public Classroom $classroom;
 

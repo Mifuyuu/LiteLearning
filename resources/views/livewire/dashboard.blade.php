@@ -16,7 +16,45 @@
 @endphp
 
 <div data-dashboard-role="{{ $role }}"
-    class="flex min-h-full flex-col gap-3 animate__animated animate__fadeIn xl:h-[calc(100vh-3rem)] xl:min-h-[560px] xl:overflow-hidden">
+    class="flex min-h-full flex-col gap-3  xl:h-[calc(100vh-3rem)] xl:min-h-[560px] xl:overflow-hidden">
+    <style>
+        /* Mobile (default) */
+        .activity-grid-cols {
+            grid-template-columns: repeat({{ $activity['week_count'] }}, 0.5rem) !important;
+            gap: 1px !important;
+        }
+        .activity-cell {
+            width: 0.5rem !important;
+            height: 0.5rem !important;
+            border-radius: 0px !important;
+        }
+
+        /* Tablets & Medium screens */
+        @media (min-width: 640px) {
+            .activity-grid-cols {
+                grid-template-columns: repeat({{ $activity['week_count'] }}, 0.75rem) !important;
+                gap: 0.25rem !important;
+            }
+            .activity-cell {
+                width: 0.75rem !important;
+                height: 0.75rem !important;
+                border-radius: 3px !important;
+            }
+        }
+
+        /* Large screens (desktop) */
+        @media (min-width: 1280px) {
+            .activity-grid-cols {
+                grid-template-columns: repeat({{ $activity['week_count'] }}, minmax(0, 1fr)) !important;
+                gap: 0.25rem !important;
+            }
+            .activity-cell {
+                width: 100% !important;
+                height: auto !important;
+                border-radius: 3px !important;
+            }
+        }
+    </style>
     <header class="flex shrink-0 items-center justify-between gap-4">
         <div class="min-w-0">
             <h1 class="truncate text-2xl font-bold tracking-tight text-[#101114]">
@@ -89,7 +127,7 @@
                 </div>
             </section>
 
-            <section class="card card-border min-h-[330px] overflow-hidden border-[#dedee5] bg-white xl:min-h-0">
+            <section class="card card-border overflow-hidden border-[#dedee5] bg-white">
                 <div class="card-body min-h-0 gap-0 p-4">
                     <div class="flex shrink-0 items-center justify-between gap-3">
                         <h2 class="card-title text-base text-[#101114]">{{ $isStudent ? __('Up Next') : __('Review Queue') }}</h2>
@@ -127,7 +165,7 @@
         </div>
 
         <section data-activity-heatmap
-            class="card card-border min-h-[510px] overflow-hidden border-[#dedee5] bg-white xl:min-h-0">
+            class="card card-border border-[#dedee5] bg-white">
             <div class="card-body flex h-full min-h-0 flex-col gap-0 p-4 sm:p-5">
                 <div class="flex shrink-0 items-start justify-between gap-4">
                     <div>
@@ -143,12 +181,10 @@
                         {{ number_format($activity['total']) }} {{ __('activities') }}
                     </span>
                 </div>
-
-                <div class="mt-5 min-h-0 flex-1 overflow-x-auto">
-                    <div class="grid min-w-[720px] grid-cols-[24px_minmax(0,1fr)] gap-2">
+                 <div class="mt-5 min-h-0 flex-1 overflow-visible">
+                    <div class="grid xl:min-w-0 w-max xl:w-full grid-cols-[24px_max-content] xl:grid-cols-[24px_minmax(0,1fr)] gap-2">
                         <span></span>
-                        <div class="grid text-[10px] font-medium text-[#9497a9]"
-                            style="grid-template-columns: repeat({{ $activity['week_count'] }}, 0.75rem); gap: 0.25rem;">
+                        <div class="activity-grid-cols grid text-[10px] font-medium text-[#9497a9]">
                             @foreach($monthLabels as $month)
                                 <span class="whitespace-nowrap" style="grid-column: {{ $month['week'] }};">{{ $month['label'] }}</span>
                             @endforeach
@@ -157,11 +193,10 @@
                             <span>{{ __('Mon') }}</span><span></span><span>{{ __('Wed') }}</span><span></span>
                             <span>{{ __('Fri') }}</span><span></span><span>{{ __('Sun') }}</span>
                         </div>
-                        <div class="grid grid-flow-col grid-rows-7 gap-1"
-                            style="grid-template-columns: repeat({{ $activity['week_count'] }}, 0.75rem);">
+                        <div class="activity-grid-cols grid grid-flow-col grid-rows-7 gap-1">
                             @foreach($activityDays as $day)
                                 <span data-activity-cell tabindex="0"
-                                    class="tooltip tooltip-top aspect-square size-3 rounded-[3px] outline-none ring-[#7132f5] transition hover:ring-2 focus:ring-2 {{ ! $day['is_in_year'] || $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
+                                    class="activity-cell tooltip tooltip-top aspect-square size-3 rounded-[3px] outline-none ring-[#7132f5] transition hover:ring-2 focus:ring-2 {{ ! $day['is_in_year'] || $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
                                     data-tip="{{ $day['label'] }} · {{ $day['count'] }} {{ __('activities') }}"
                                     aria-label="{{ $day['label'] }}: {{ $day['count'] }} {{ __('activities') }}"></span>
                             @endforeach
@@ -180,10 +215,10 @@
             </div>
         </section>
 
-        <div class="grid min-h-0 gap-3 xl:grid-rows-[290px_minmax(0,1fr)]">
+        <div class="grid min-h-0 gap-3 xl:grid-rows-[340px_minmax(0,1fr)]">
             <a href="{{ route('profile') }}" wire:navigate
                 class="card card-border group overflow-hidden border-[#dedee5] bg-white transition hover:border-[rgba(113,50,245,0.3)]">
-                <div class="card-body items-center gap-0 p-5 text-center">
+                <div class="card-body items-center justify-center gap-0 p-5 text-center">
                     <div class="avatar">
                         <div class="h-20 w-20 rounded-full ring-4 ring-[rgba(133,91,251,0.16)] ring-offset-2 ring-offset-white">
                             <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="object-cover">
@@ -202,7 +237,7 @@
                 </div>
             </a>
 
-            <section class="card card-border min-h-[230px] overflow-hidden border-[#dedee5] bg-white xl:min-h-0">
+            <section class="card card-border overflow-hidden border-[#dedee5] bg-white">
                 <div class="card-body gap-0 p-4">
                     <h2 class="card-title text-base text-[#101114]">{{ __('Quick Stats') }}</h2>
                     <div class="mt-3 grid min-h-0 flex-1 grid-cols-2 gap-2">

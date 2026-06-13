@@ -5,7 +5,7 @@
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
     themes: light --default;
-    include: card, badge, avatar, tooltip;
+    include: card, badge, avatar, tooltip, skeleton;
     logs: false;
 }
 
@@ -482,10 +482,7 @@ select:focus {
     50%       { transform: translateY(-20px); }
 }
 
-/* ─── Livewire progress bar ──────────────────────────────────────────── */
-.livewire-progress {
-    background: linear-gradient(90deg, #855bfb, #7132f5, #5741d8) !important;
-}
+
 
 /* ─── Panel & Surface utilities ──────────────────────────────────────── */
 .ll-panel {

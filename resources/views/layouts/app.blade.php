@@ -26,42 +26,14 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 
-    {{-- Livewire navigate loading bar --}}
     <style>
         [x-cloak] {
             display: none !important;
-        }
-
-        .livewire-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #855bfb, #7132f5, #5741d8);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            z-index: 9999;
-            transition: opacity 0.2s;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: 200% 0;
-            }
-
-            100% {
-                background-position: -200% 0;
-            }
         }
     </style>
 </head>
 
 <body class="h-full overflow-hidden bg-[#f3f4f6] font-sans antialiased text-[#101114]" x-data="{ sidebarOpen: true, mobileSidebar: false }">
-    {{-- Loading bar (shown during wire:navigate transitions) --}}
-    <div x-data x-ref="bar" x-on:livewire:navigate-start.window="$refs.bar.style.opacity = '1'"
-        x-on:livewire:navigate-end.window="$refs.bar.style.opacity = '0'" class="livewire-progress" style="opacity: 0;">
-    </div>
 
     <div class="relative z-10 flex h-screen overflow-clip">
         <!-- Sidebar -->
@@ -79,7 +51,7 @@
             </div>
 
             <!-- Navigation -->
-            <nav class="flex-1 min-h-0 space-y-1 overflow-y-auto px-4 pb-5" style="scrollbar-gutter: stable">
+            <nav class="flex-1 min-h-0 space-y-1 overflow-y-auto px-4 pb-5">
                 @php
                     $navItemClass = fn(bool $isActive): string => $isActive
                         ? 'bg-[rgba(133,91,251,0.16)] text-[#7132f5] rounded-[12px]'
@@ -99,6 +71,8 @@
                     $isStoreActive = request()->routeIs('store');
                     $isLeaderboardActive = request()->routeIs('leaderboard');
                     $isAchievementsActive = request()->routeIs('achievements');
+                    $isProfileActive = request()->routeIs('profile');
+                    $isSettingsActive = request()->routeIs('settings');
 
                     // Admin routes
                     $isAdminDashboardActive = request()->routeIs('admin.dashboard');
@@ -218,6 +192,8 @@
                         </div>
                     </div>
                 @endif
+
+                <!-- Account Section -->
             </nav>
 
             <!-- Sidebar Footer -->
@@ -232,69 +208,44 @@
                     @endif
                 </div>
 
-                <!-- Profile and Notifications footer -->
-                <div class="flex items-center justify-between gap-2">
-                    <!-- User Menu Dropdown (opens upwards) -->
-                    <div x-data="{ open: false }" class="relative flex-1" id="sidebar-user-dropdown">
-                        <button @click="open = !open" aria-haspopup="menu" aria-controls="sidebar-user-menu-list"
-                            :aria-expanded="open ? 'true' : 'false'"
-                            class="flex w-full items-center space-x-2.5 rounded-[12px] border border-[#dedee5] bg-white p-1.5 transition-colors hover:bg-[rgba(133,91,251,0.08)] cursor-pointer">
+                <!-- Footer Menu Items Group -->
+                <div class="space-y-1">
+                    <!-- Settings Button (attached to bottom) -->
+                    <a href="{{ route('settings') }}" wire:navigate
+                        class="flex w-full items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $isSettingsActive ? 'bg-[rgba(133,91,251,0.16)] text-[#7132f5]' : 'text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]' }}">
+                        <x-icon name="cog-6-tooth{{ $isSettingsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
+                        {{ __('Settings') }}
+                    </a>
+
+                    <!-- Report Issue Button -->
+                    <button x-data @click="$dispatch('openReportModal')"
+                        class="flex w-full items-center px-3 py-2.5 text-sm font-bold text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5] rounded-[8px] transition-colors cursor-pointer">
+                        <x-icon name="flag" class="mr-3 h-5 w-5" />
+                        {{ __('report.button') }}
+                    </button>
+
+                    <!-- Profile footer -->
+                    <div class="mt-1.5 flex w-full items-center justify-between rounded-[8px] border border-[#dedee5] bg-white p-1">
+                        <!-- Profile Link -->
+                        <a href="{{ route('profile') }}" wire:navigate
+                            class="flex flex-1 items-center space-x-2.5 bg-transparent p-1.5 transition-colors hover:bg-[rgba(133,91,251,0.08)] cursor-pointer rounded-[6px] min-w-0">
                             <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
                                 class="w-8 h-8 rounded-full object-cover shrink-0">
                             <span class="text-sm font-medium text-[#101114] truncate max-w-[110px]">{{ auth()->user()->name }}</span>
-                        </button>
+                        </a>
 
-                        <div x-show="open" x-cloak @click.outside="open = false"
-                            x-transition:enter="transition ease-out duration-100"
-                            x-transition:enter-start="opacity-0 scale-95"
-                            x-transition:enter-end="opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="opacity-100 scale-100"
-                            x-transition:leave-end="opacity-0 scale-95"
-                            class="absolute bottom-full left-0 mb-2 w-56 rounded-[16px] border border-[#dedee5] bg-white py-1 z-50 shadow-[rgba(0,0,0,0.08)_0px_-4px_24px]">
-                            <div role="menu" id="sidebar-user-menu-list" class="outline-none">
-                                <div class="px-4 py-3 border-b border-[#dedee5]">
-                                    <p class="text-sm font-medium text-gray-900 truncate max-w-[200px]">
-                                        {{ auth()->user()->name }}
-                                    </p>
-                                    <p class="text-xs text-gray-500 truncate max-w-[200px]">
-                                        {{ auth()->user()->email }}
-                                    </p>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-[8px] text-xs font-medium mt-1 capitalize"
-                                        style="background: rgba(133,91,251,0.16); color: #7132f5;">
-                                        {{ __(ucfirst(auth()->user()->role)) }}
-                                    </span>
-                                </div>
-                                <a href="{{ route('profile') }}" wire:navigate role="menuitem"
-                                    class="flex items-center px-4 py-2 text-sm text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5] cursor-pointer">
-                                    <x-icon name="user" class="mr-3 h-4 w-4" /> {{ __('Profile') }}
-                                </a>
-                                <a href="{{ route('settings') }}" wire:navigate role="menuitem"
-                                    class="flex items-center px-4 py-2 text-sm text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5] cursor-pointer">
-                                    <x-icon name="cog-6-tooth" class="mr-3 h-4 w-4" /> {{ __('Settings') }}
-                                </a>
-                                <button @click="open = false; $dispatch('openReportModal')" role="menuitem"
-                                    class="w-full text-left flex items-center px-4 py-2 text-sm text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5] cursor-pointer">
-                                    <x-icon name="flag" class="mr-3 h-4 w-4" />
-                                    {{ __('report.button') }}
-                                </button>
-                                <hr class="my-1 border-[#dedee5]">
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" role="menuitem"
-                                        class="flex w-full items-center px-4 py-2 text-sm text-red-500 hover:bg-red-50 cursor-pointer">
-                                        <x-icon name="arrow-right-on-rectangle" class="mr-3 h-4 w-4" /> {{ __('Sign Out') }}
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+                        <!-- Sign Out Button -->
+                        <form method="POST" action="{{ route('logout') }}" class="shrink-0 flex items-center">
+                            @csrf
+                            <button type="submit"
+                                class="relative rounded-[6px] p-2 text-[#686b82] transition-colors hover:bg-red-50 hover:text-red-600 cursor-pointer shrink-0"
+                                title="{{ __('Sign Out') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+                                    <path fill-rule="evenodd" d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6ZM5.78 8.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 0 0 0 1.06l3 3a.75.75 0 0 0 1.06-1.06l-1.72-1.72H15a.75.75 0 0 0 0-1.5H4.06l1.72-1.72a.75.75 0 0 0 0-1.06Z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </form>
                     </div>
-
-                    <!-- Notifications Button -->
-                    <button
-                        class="relative rounded-[12px] border border-[#dedee5] bg-white p-2.5 text-[#686b82] transition-colors hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5] cursor-pointer shrink-0">
-                        <x-icon name="bell" class="h-5 w-5" />
-                    </button>
                 </div>
             </div>
         </aside>
@@ -317,7 +268,7 @@
                             class="mr-3 p-2 rounded-md text-gray-500 hover:text-gray-800 hover:bg-gray-100 cursor-pointer">
                             <x-icon name="bars-3" class="h-5 w-5" />
                         </button>
-                        <h1 class="text-base font-semibold text-slate-800">
+                        <h1 id="mobile-page-title" class="text-base font-semibold text-slate-800">
                             @hasSection('breadcrumb')
                                 @yield('breadcrumb')
                             @else
@@ -330,8 +281,8 @@
 
             <!-- Page Content -->
             <main class="flex-1 min-h-0 overflow-x-hidden overflow-y-auto px-4 py-6 sm:px-6" style="scrollbar-gutter: stable">
-                <div data-content-width="{{ request()->routeIs('dashboard') ? 'full' : 'contained' }}"
-                    class="w-full {{ request()->routeIs('dashboard') ? 'max-w-none' : 'mx-auto max-w-7xl' }}">
+                <div data-content-width="{{ (request()->routeIs('dashboard') || request()->routeIs('store')) ? 'full' : 'contained' }}"
+                    class="w-full {{ (request()->routeIs('dashboard') || request()->routeIs('store')) ? 'max-w-none' : 'mx-auto max-w-7xl' }}">
                     @hasSection('content')
                         @yield('content')
                     @else

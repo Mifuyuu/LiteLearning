@@ -1,6 +1,6 @@
 @section('page-title', auth()->user()->isTeacher() ? __('ชั้นเรียนของฉัน') : __('Classrooms'))
 <div data-empty-state-layout="{{ $classrooms->isEmpty() ? 'remaining-content' : 'classroom-grid' }}"
-    class="flex min-h-[calc(100dvh-6.75rem)] flex-col animate__animated animate__fadeIn lg:min-h-[calc(100dvh-3rem)]">
+    class="flex min-h-[calc(100dvh-6.75rem)] flex-col  lg:min-h-[calc(100dvh-3rem)]">
 
     {{-- ── Search / filter bar ── --}}
     <div class="bg-white border border-[#dedee5] rounded-2xl shadow-[rgba(0,0,0,0.03)_0px_4px_24px] px-4 py-3">

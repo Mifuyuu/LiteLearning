@@ -1,4 +1,4 @@
-<div class="animate__animated animate__fadeIn">
+<div class="">
     <div class="rounded-2xl border border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="flex items-center space-x-3 mb-2">
             <div class="w-10 h-10 bg-[#7132f5] rounded-[12px] flex items-center justify-center shrink-0 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">

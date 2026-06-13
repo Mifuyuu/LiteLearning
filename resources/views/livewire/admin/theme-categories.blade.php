@@ -1,5 +1,5 @@
 @section('page-title', __('Theme Categories'))
-<div class="space-y-6 animate__animated animate__fadeIn" x-data="{
+<div class="space-y-6 " x-data="{
     deleteModal: false,
     deleteId: null,
     deleteName: '',

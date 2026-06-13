@@ -1,4 +1,4 @@
-<div class="animate__animated animate__fadeIn">
+<div class="">
     @if($classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin())
         {{-- ──────────────────────────────────────────────
         Teacher: Attendance Session Controls

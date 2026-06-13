@@ -7,12 +7,21 @@ use App\Models\ThemeCategory;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 
+#[Lazy]
 #[Layout('layouts.app')]
 class Settings extends Component
 {
+    public function placeholder(array $params = [])
+    {
+        $title = isset($params['classroom'])
+            ? __('Settings') . ' - ' . $params['classroom']->name
+            : __('Settings');
+        return view('livewire.placeholders.generic', array_merge($params, ['pageTitle' => $title]));
+    }
     #[Locked]
     public Classroom $classroom;
 

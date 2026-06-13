@@ -1,4 +1,4 @@
-<div class="animate__animated animate__fadeIn">
+<div class="">
     <div class="rounded-2xl border border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
 
         {{-- Header --}}

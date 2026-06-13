@@ -7,11 +7,17 @@ use App\Models\StoreItem;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 
+#[Lazy]
 #[Layout('layouts.app')]
 class Store extends Component
 {
+    public function placeholder()
+    {
+        return view('livewire.placeholders.store');
+    }
     public function purchase(int $itemId, GamificationService $gamificationService)
     {
         $user = Auth::user();

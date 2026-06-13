@@ -6,11 +6,17 @@ use App\Models\Achievement;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 
+#[Lazy]
 #[Layout('layouts.app')]
 class Achievements extends Component
 {
+    public function placeholder()
+    {
+        return view('livewire.placeholders.achievements');
+    }
     public function render()
     {
         /** @var User $user */

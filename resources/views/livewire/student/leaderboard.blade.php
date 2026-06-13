@@ -1,6 +1,6 @@
 @section('page-title', __('Leaderboard'))
 
-<div class="max-w-4xl mx-auto space-y-4 animate__animated animate__fadeIn">
+<div class="max-w-4xl mx-auto space-y-4 ">
 
     {{-- Header --}}
     <div>

@@ -13,7 +13,7 @@
     </nav>
 @endsection
 
-<div class="space-y-6 animate__animated animate__fadeIn"
+<div class="space-y-6 "
     x-data="{ openPopover: null, showKickModal: false, kickName: '', kickId: null, kickType: '' }"
     @click.away="openPopover = null">
     @include('livewire.classroom.partials.subnav', ['classroom' => $classroom, 'sort' => $sort])

@@ -12,7 +12,7 @@
     </nav>
 @endsection
 
-<div class="animate__animated animate__fadeIn" x-data="{ copiedToast: false, showDeleteModal: false }">
+<div class="" x-data="{ copiedToast: false, showDeleteModal: false }">
     <!-- Back -->
     <a href="{{ route('classroom.show', $classroom) }}"
         class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">

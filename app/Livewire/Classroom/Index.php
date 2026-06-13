@@ -5,11 +5,17 @@ namespace App\Livewire\Classroom;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 
+#[Lazy]
 #[Layout('layouts.app')]
 class Index extends Component
 {
+    public function placeholder()
+    {
+        return view('livewire.placeholders.classroom-index');
+    }
     public string $search = '';
 
     public bool $showArchived = false;

@@ -1,4 +1,4 @@
-<div class="animate__animated animate__fadeIn" x-data="{
+<div class="" x-data="{
     showCropper: false,
     cropType: 'avatar',
     imageUrl: null,
@@ -72,14 +72,11 @@
         $completion = $profileStats['achievement_total'] > 0
             ? (int) round(($profileStats['achievements'] / $profileStats['achievement_total']) * 100)
             : 0;
-        $roleTone = $user->isStudent()
-            ? 'bg-sky-100 text-sky-700'
-            : ($user->isTeacher() ? 'bg-indigo-100 text-indigo-700' : 'bg-rose-100 text-rose-700');
     @endphp
 
     <div class="space-y-5">
         <section class="overflow-hidden rounded-[12px] border border-slate-200 bg-white">
-            <div class="relative h-64 overflow-hidden bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_24%),linear-gradient(135deg,#3b1fa8,#7132f5_48%,#855bfb)]">
+            <div class="relative h-48 overflow-hidden bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_24%),linear-gradient(135deg,#3b1fa8,#7132f5_48%,#855bfb)]">
                 @if($user->cover_image)
                     <img src="{{ $user->cover_image_url }}" alt="{{ $user->name }}"
                         class="absolute inset-0 h-full w-full object-cover">
@@ -99,9 +96,9 @@
                 </div>
             </div>
 
-            <div class="grid gap-6 px-5 pb-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-7">
-                <div class="-mt-20 flex min-w-0 flex-col gap-5 sm:flex-row sm:items-end">
-                    <div class="relative inline-block shrink-0 group">
+            <div class="px-5 pb-6 lg:px-7">
+                <div class="flex min-w-0 flex-col gap-20 sm:flex-row sm:items-start">
+                    <div class="-mt-10 sm:-mt-12 ml-14 sm:ml-16 relative inline-block shrink-0 group">
                         <x-user-avatar :user="$user" size="w-36 h-36" border="border-4 border-white" shadow="shadow-none">
                             <label
                                 class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-slate-950/45 opacity-0 transition group-hover:opacity-100">
@@ -116,38 +113,19 @@
                         </div>
                     </div>
 
-                    <div class="min-w-0 pb-1">
+                    <div class="min-w-0 pb-1 sm:pt-4">
                         <div class="flex flex-wrap items-center gap-2">
                             <h1 class="truncate text-3xl font-black text-slate-950 sm:text-4xl {{ $user->active_name_color ?? '' }}">
                                 {{ $user->name }}
                             </h1>
-                            <span class="rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide {{ $roleTone }}">
+                            <span class="inline-flex items-center gap-1 rounded-full bg-[rgba(133,91,251,0.16)] px-2.5 py-1 text-xs font-black uppercase tracking-wide text-[#7132f5]">
+                                <x-icon name="user-solid" class="h-3.5 w-3.5 shrink-0" />
                                 {{ __(ucfirst($user->role)) }}
                             </span>
                         </div>
-                        <p class="mt-1 truncate text-sm text-slate-500">{{ $user->email }}</p>
                         <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
                             {{ $user->bio ?: __('Learning profile, classroom progress, and badge collection.') }}
                         </p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 self-end sm:grid-cols-4 lg:grid-cols-2">
-                    <div class="rounded-[12px] border border-[#dedee5] bg-[rgba(133,91,251,0.04)] p-4">
-                        <p class="text-2xl font-black text-[#7132f5]">{{ number_format($profileStats['level']) }}</p>
-                        <p class="text-xs font-semibold text-[#686b82]">{{ __('Level') }}</p>
-                    </div>
-                    <div class="rounded-[12px] border border-[#dedee5] bg-[rgba(133,91,251,0.04)] p-4">
-                        <p class="text-2xl font-black text-[#7132f5]">{{ number_format($profileStats['xp']) }}</p>
-                        <p class="text-xs font-semibold text-[#686b82]">{{ __('XP') }}</p>
-                    </div>
-                    <div class="rounded-[12px] border border-[#dedee5] bg-[rgba(133,91,251,0.04)] p-4">
-                        <p class="text-2xl font-black text-[#7132f5]">{{ number_format($profileStats['coins']) }}</p>
-                        <p class="text-xs font-semibold text-[#686b82]">{{ __('Coins') }}</p>
-                    </div>
-                    <div class="rounded-[12px] border border-[#dedee5] bg-[rgba(133,91,251,0.04)] p-4">
-                        <p class="text-2xl font-black text-[#7132f5]">{{ number_format($profileStats['achievements']) }}</p>
-                        <p class="text-xs font-semibold text-[#686b82]">{{ __('Badges') }}</p>
                     </div>
                 </div>
             </div>

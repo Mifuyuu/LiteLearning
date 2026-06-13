@@ -10,11 +10,17 @@ use App\Services\GamificationService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 
+#[Lazy]
 #[Layout('layouts.app')]
 class Dashboard extends Component
 {
+    public function placeholder()
+    {
+        return view('livewire.placeholders.dashboard');
+    }
     public function render()
     {
         /** @var User $user */

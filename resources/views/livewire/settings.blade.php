@@ -1,6 +1,6 @@
 @section('page-title', __('Settings'))
 
-<div class="animate__animated animate__fadeIn">
+<div class="">
     <div class="space-y-4">
 
         {{-- Page Header --}}

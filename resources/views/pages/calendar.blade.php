@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('page-title', __('Calendar'))
 @section('content')
-    <div class="animate__animated animate__fadeIn">
+    <div class="">
         <div class="flex items-center gap-3 mb-6">
             <div class="w-10 h-10 rounded-xl bg-indigo-100 border border-indigo-200 flex items-center justify-center">
                 <i class="fas fa-calendar-alt text-indigo-600"></i>
@@ -24,11 +24,10 @@
         @endphp
 
         @if($upcoming->isEmpty())
-            <div class="card-3d rounded-2xl p-16 text-center">
-                <div class="w-16 h-16 bg-indigo-100 border border-indigo-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-check-circle text-indigo-600 text-2xl"></i>
-                </div>
-                <p class="text-gray-500">{{ __('No upcoming deadlines!') }}</p>
+            <div class="border border-[#dedee5] rounded-xl p-16 text-center bg-white">
+                <img src="{{ asset('images/spacesuit_sleep.webp') }}" alt=""
+                    class="w-44 h-auto sm:w-52 mx-auto mb-5 select-none" />
+                <p class="text-base font-medium text-[#686b82]">{{ __('No upcoming deadlines!') }}</p>
             </div>
         @else
             <div class="space-y-6">
@@ -56,7 +55,7 @@
                                     $themeBorder = $themeColor.'33';
                                 @endphp
                                 <a href="{{ route('assignment.show', ['classroom' => $a->classworkItem->classroom, 'assignment' => $a]) }}"
-                                   class="card-3d rounded-xl flex items-center gap-4 p-4 transition-colors duration-150 group {{ $isUrgent ? 'border-red-200 bg-red-50/80 hover:bg-red-100/70' : 'hover:bg-gray-50' }}"
+                                   class="border rounded-xl flex items-center gap-4 p-4 transition-colors duration-150 group {{ $isUrgent ? 'border-red-200 bg-red-50/80 hover:bg-red-100/70' : 'hover:bg-gray-50' }}"
                                    style="border-color: {{ $isUrgent ? '#fecaca' : $themeBorder }}; background-color: {{ $isUrgent ? '#fef2f2' : $themeBg }};">
                                     <div class="w-3 h-3 rounded-full shrink-0 ring-2 ring-white"
                                          style="background-color: {{ $themeColor }}"></div>

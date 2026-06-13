@@ -8,7 +8,7 @@
 
             {{-- Modal --}}
             <div
-                class="relative bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 z-10 animate__animated animate__fadeInUp animate__faster">
+                class="relative bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 z-10 Up animate__faster">
 
                 {{-- Header --}}
                 <div class="flex items-center justify-between mb-5">

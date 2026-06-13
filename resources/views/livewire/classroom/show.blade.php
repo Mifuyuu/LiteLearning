@@ -14,7 +14,7 @@
     $themeColor = $classroom->themeCategory?->color ?? '#7132f5';
 @endphp
 
-<div class="space-y-5 animate__animated animate__fadeIn">
+<div class="space-y-5 ">
     @include('livewire.classroom.partials.subnav', ['classroom' => $classroom])
 
     <section class="overflow-hidden rounded-[12px] border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">

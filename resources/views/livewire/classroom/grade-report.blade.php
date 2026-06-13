@@ -17,7 +17,7 @@
     $cellPadding = $display === 'compact' ? 'px-2 py-2' : 'px-3 py-3';
 @endphp
 
-<div class="space-y-6 animate__animated animate__fadeIn">
+<div class="space-y-6 ">
     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(168,85,247,0.18),_transparent_30%),linear-gradient(135deg,#ffffff_0%,#faf5ff_42%,#eef2ff_100%)] p-6 shadow-sm sm:p-8">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
