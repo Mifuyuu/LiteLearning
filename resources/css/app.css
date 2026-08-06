@@ -3,7 +3,7 @@
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
     themes: light --default;
-    include: card, badge, avatar, tooltip, skeleton, toggle;
+    include: card, badge, avatar, tooltip, skeleton, toggle, checkbox;
     logs: false;
 }
 
@@ -21,8 +21,8 @@
 :root {
     color-scheme: light dark;
     /* ── daisyUI primary override (brand blue) ──────── */
-    --color-primary: oklch(55% 0.19 260);
-    --color-primary-content: oklch(98% 0.005 260);
+    --color-primary: oklch(52.46% 0.2217 264.39);
+    --color-primary-content: oklch(98% 0.005 264);
     /* ── LiteLearning Brand (blue) ──────────────────── */
     --ll-blue:            #2563eb;
     --ll-blue-dark:       #1d4ed8;

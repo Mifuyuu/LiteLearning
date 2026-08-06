@@ -4,7 +4,7 @@
 
     {{-- ── Search / filter bar ── --}}
     <div class="bg-white border border-[#dedee5] rounded-xl shadow-[rgba(0,0,0,0.03)_0px_4px_24px] px-4 py-3">
-        <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex flex-wrap items-center gap-3">
 
             {{-- Search --}}
             <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-50 border border-[#dedee5] flex-1 sm:flex-none">
@@ -18,16 +18,20 @@
             @endif
 
             @if(auth()->user()->isTeacher())
-                {{-- Archived checkbox for teacher --}}
-                <label class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm cursor-pointer transition-all"
-                    :class="$wire.showArchived ? 'bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]' : 'text-[#686b82] hover:text-[#101114]'">
-                    <input type="checkbox" wire:model.live="showArchived" class="rounded border-[#dedee5] text-[var(--ll-blue)] focus:ring-[var(--ll-blue)]">
-                    {{ 'แสดงเก็บถาวร' }}
-                </label>
+                {{-- Archived checkbox + count: share one row on mobile --}}
+                <div class="flex items-center justify-between w-full sm:contents">
+                    <label class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm cursor-pointer text-[#686b82]">
+                        <input type="checkbox" wire:model.live="showArchived" class="checkbox checkbox-sm">
+                        {{ 'แสดงเก็บถาวร' }}
+                    </label>
+
+                    {{-- Count (mobile only) --}}
+                    <span class="sm:hidden text-sm text-[#9497a9]">ค้นพบดาวเคราะห์ {{ $classrooms->count() }} ดวง</span>
+                </div>
             @endif
 
-            {{-- Count --}}
-            <span class="w-full sm:w-auto sm:ml-auto text-sm text-[#9497a9] text-right sm:text-left">ค้นพบดาวเคราะห์ {{ $classrooms->count() }} ดวง</span>
+            {{-- Count (sm+) --}}
+            <span class="hidden sm:block ml-auto text-sm text-[#9497a9]">ค้นพบดาวเคราะห์ {{ $classrooms->count() }} ดวง</span>
         </div>
     </div>
 
