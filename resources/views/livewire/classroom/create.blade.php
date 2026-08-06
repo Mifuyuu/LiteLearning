@@ -46,9 +46,23 @@
                     {{-- Planet / Theme Picker --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'เลือกธีมห้องเรียน' }}</label>
-                        <div class="dropdown block w-full">
-                                <button type="button" tabindex="0" role="button"
-                                    class="w-full flex items-center justify-between gap-3 rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm transition hover:border-blue-300">
+                        <div x-data="{
+                                open: false,
+                                top: 0, left: 0, width: 0,
+                                toggle(btn) {
+                                    if (!this.open) {
+                                        const r = btn.getBoundingClientRect();
+                                        this.top = r.bottom + 4;
+                                        this.left = r.left;
+                                        this.width = r.width;
+                                    }
+                                    this.open = !this.open;
+                                }
+                            }" class="relative w-full">
+                                <button type="button"
+                                    @click="toggle($el)"
+                                    @click.outside="open = false"
+                                    class="w-full flex items-center justify-between gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm transition hover:border-blue-300">
                                     @if($theme_category_id)
                                         @php $selected = $themes->find($theme_category_id); @endphp
                                         @if($selected)
@@ -57,19 +71,34 @@
                                                     alt="{{ $selected->name }}" class="h-8 w-8 object-contain" />
                                                 <span class="font-medium text-gray-900">{{ $selected->name }}</span>
                                             </span>
+                                        @else
+                                            <span class="text-gray-400">{{ 'เลือกธีม...' }}</span>
                                         @endif
                                     @else
                                         <span class="text-gray-400">{{ 'เลือกธีม...' }}</span>
                                     @endif
-                                    <x-icon name="chevron-down" class="h-4 w-4 shrink-0 text-gray-400" />
+                                    <span :class="open ? 'rotate-180' : ''" class="inline-flex shrink-0 transition-transform duration-200">
+                                        <x-icon name="chevron-down" class="h-4 w-4 text-gray-400" />
+                                    </span>
                                 </button>
-                                <ul tabindex="-1" class="dropdown-content menu z-50 mt-1 max-h-40 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                                <ul x-show="open"
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 -translate-y-1"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="opacity-100 translate-y-0"
+                                    x-transition:leave-end="opacity-0 -translate-y-1"
+                                    x-cloak
+                                    :style="`position:fixed; top:${top}px; left:${left}px; width:${width}px; z-index:9999;`"
+                                    class="max-h-40 overflow-y-auto rounded-lg border border-gray-200 bg-white p-1.5 shadow-lg [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                                 @foreach($themes as $theme)
                                     @php $pn = str_pad($theme->planet_number, 2, '0', STR_PAD_LEFT); @endphp
                                     <li>
-                                        <button type="button" wire:click="$set('theme_category_id', {{ $theme->id }})"
+                                        <button type="button"
+                                            wire:click="$set('theme_category_id', {{ $theme->id }})"
+                                            @click="open = false"
                                             @class([
-                                                'flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm transition',
+                                                'flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-sm transition',
                                                 'bg-blue-50 text-blue-700 font-medium' => $theme_category_id == $theme->id,
                                                 'text-gray-700 hover:bg-gray-50' => $theme_category_id != $theme->id,
                                             ])>
@@ -89,7 +118,7 @@
                             {{ 'ยกเลิก' }}
                         </button>
                         <button type="submit"
-                            class="btn-3d btn-3d--indigo px-6 py-2.5 text-sm font-medium rounded-lg transition-colors">
+                            class="btn-3d btn-3d--blue px-6 py-2.5 text-sm font-medium rounded-lg transition-colors">
                             <span wire:loading.remove wire:target="create">{{ 'สร้างห้องเรียน' }}</span>
                             <span wire:loading wire:target="create"><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" />
                                 {{ 'กำลังสร้าง...' }}</span>
