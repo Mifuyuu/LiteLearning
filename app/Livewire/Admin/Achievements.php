@@ -76,10 +76,10 @@ class Achievements extends Component
         if ($this->editingId) {
             $achievement = Achievement::findOrFail($this->editingId);
             $achievement->update($data);
-            $this->dispatch('notify', message: __('admin.achievements.updated'));
+            $this->dispatch('notify', message: 'อัปเดตความสำเร็จแล้ว');
         } else {
             Achievement::create($data);
-            $this->dispatch('notify', message: __('admin.achievements.created'));
+            $this->dispatch('notify', message: 'เพิ่มความสำเร็จแล้ว');
         }
 
         $this->showModal = false;
@@ -90,13 +90,13 @@ class Achievements extends Component
         $achievement->is_active = ! $achievement->is_active;
         $achievement->save();
 
-        $this->dispatch('notify', message: __('admin.achievements.status_updated'));
+        $this->dispatch('notify', message: 'อัปเดตสถานะความสำเร็จแล้ว');
     }
 
     public function delete(Achievement $achievement): void
     {
         $achievement->delete();
-        $this->dispatch('notify', message: __('admin.achievements.deleted'));
+        $this->dispatch('notify', message: 'ลบความสำเร็จแล้ว');
     }
 
     public function render()

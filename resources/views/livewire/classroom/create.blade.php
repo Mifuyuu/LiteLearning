@@ -11,76 +11,88 @@
             <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
                 @click.outside="$wire.set('showModal', false)">
                 <div class="flex items-center justify-between p-6 border-b border-gray-200">
-                    <h3 class="text-xl font-bold text-gray-900">{{ __('Create Classroom') }}</h3>
+                    <h3 class="text-xl font-bold text-gray-900">{{ 'สร้างห้องเรียน' }}</h3>
                     <button wire:click="$set('showModal', false)"
-                        class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
-                        <i class="fas fa-times"></i>
+                        class="p-2.5 text-gray-400 hover:text-gray-600 rounded-xl hover:bg-gray-100 transition">
+                        <x-icon name="x-mark" class="h-5 w-5" />
                     </button>
                 </div>
 
-                <form wire:submit="create" class="p-6 space-y-4">
+                <form wire:submit.prevent="create" class="p-6 space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Class Name *') }}</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'ชื่อห้องเรียน *' }}</label>
                         <input wire:model="name" type="text"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            placeholder="{{ __('e.g., Mathematics 101') }}">
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="{{ 'เช่น คณิตศาสตร์ 101' }}">
                         @error('name') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Section') }}</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'ห้อง' }}</label>
                             <input wire:model="section" type="text"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                placeholder="{{ __('e.g., Section A') }}">
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="{{ 'เช่น ห้อง 1/A' }}">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Description') }}</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'รายละเอียด' }}</label>
                         <textarea wire:model="description" rows="3"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            placeholder="{{ __('Add a description...') }}"></textarea>
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="{{ 'เพิ่มคำอธิบาย...' }}"></textarea>
                     </div>
 
                     {{-- Planet / Theme Picker --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('เลือกธีมห้องเรียน') }}</label>
-                        <div class="grid grid-cols-8 gap-2 max-h-48 overflow-y-auto rounded-lg">
-                            @foreach($themes as $theme)
-                                @php $pn = str_pad($theme->planet_number, 2, '0', STR_PAD_LEFT); @endphp
-                                <button type="button" wire:click="$set('theme_category_id', {{ $theme->id }})"
-                                    title="{{ $theme->name }}"
-                                    @class([
-                                        'aspect-square rounded-xl border-2 p-1.5 transition-all',
-                                        'border-indigo-500 bg-indigo-50' => $theme_category_id == $theme->id,
-                                        'border-gray-200 hover:border-indigo-300 hover:bg-gray-50' => $theme_category_id != $theme->id,
-                                    ])>
-                                    <img src="/images/planets/planet_{{ $pn }}.svg"
-                                        alt="{{ $theme->name }}" class="w-full h-full object-contain" />
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'เลือกธีมห้องเรียน' }}</label>
+                        <div class="dropdown block w-full">
+                                <button type="button" tabindex="0" role="button"
+                                    class="w-full flex items-center justify-between gap-3 rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm transition hover:border-blue-300">
+                                    @if($theme_category_id)
+                                        @php $selected = $themes->find($theme_category_id); @endphp
+                                        @if($selected)
+                                            <span class="flex items-center gap-3">
+                                                <img src="/images/planets/planet_{{ str_pad($selected->planet_number, 2, '0', STR_PAD_LEFT) }}.svg"
+                                                    alt="{{ $selected->name }}" class="h-8 w-8 object-contain" />
+                                                <span class="font-medium text-gray-900">{{ $selected->name }}</span>
+                                            </span>
+                                        @endif
+                                    @else
+                                        <span class="text-gray-400">{{ 'เลือกธีม...' }}</span>
+                                    @endif
+                                    <x-icon name="chevron-down" class="h-4 w-4 shrink-0 text-gray-400" />
                                 </button>
-                            @endforeach
+                                <ul tabindex="-1" class="dropdown-content menu z-50 mt-1 max-h-40 w-full overflow-y-auto rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                                @foreach($themes as $theme)
+                                    @php $pn = str_pad($theme->planet_number, 2, '0', STR_PAD_LEFT); @endphp
+                                    <li>
+                                        <button type="button" wire:click="$set('theme_category_id', {{ $theme->id }})"
+                                            @class([
+                                                'flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm transition',
+                                                'bg-blue-50 text-blue-700 font-medium' => $theme_category_id == $theme->id,
+                                                'text-gray-700 hover:bg-gray-50' => $theme_category_id != $theme->id,
+                                            ])>
+                                            <span>{{ $theme->name }}</span>
+                                            <img src="/images/planets/planet_{{ $pn }}.svg"
+                                                alt="{{ $theme->name }}" class="h-10 w-10 shrink-0 rounded-lg object-contain" />
+                                        </button>
+                                    </li>
+                                @endforeach
+                            </ul>
                         </div>
-                        @if($theme_category_id)
-                            @php $selected = $themes->find($theme_category_id); @endphp
-                            @if($selected)
-                                <p class="mt-1.5 text-xs text-indigo-600 font-medium">
-                                    <i class="fas fa-check-circle mr-1"></i>{{ $selected->name }}
-                                </p>
-                            @endif
-                        @endif
                     </div>
 
                     <div class="flex justify-end gap-3 pt-4">
                         <button type="button" wire:click="$set('showModal', false)"
                             class="px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                            {{ __('Cancel') }}
+                            {{ 'ยกเลิก' }}
                         </button>
                         <button type="submit"
                             class="btn-3d btn-3d--indigo px-6 py-2.5 text-sm font-medium rounded-lg transition-colors">
-                            <span wire:loading.remove wire:target="create">{{ __('Create Class') }}</span>
-                            <span wire:loading wire:target="create"><i class="fas fa-spinner fa-spin mr-1"></i>
-                                {{ __('Creating...') }}</span>
+                            <span wire:loading.remove wire:target="create">{{ 'สร้างห้องเรียน' }}</span>
+                            <span wire:loading wire:target="create"><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" />
+                                {{ 'กำลังสร้าง...' }}</span>
                         </button>
                     </div>
                 </form>

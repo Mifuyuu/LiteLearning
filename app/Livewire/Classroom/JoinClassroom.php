@@ -30,7 +30,7 @@ class JoinClassroom extends Component
         // S7: rate limit classroom join attempts
         $key = 'join-classroom:'.auth()->id();
         if (cache()->has($key) && cache()->get($key) >= 5) {
-            $this->addError('code', __('Too many attempts. Please wait a minute.'));
+            $this->addError('code', 'พยายามมากเกินไป กรุณารอสักครู่');
 
             return;
         }
@@ -42,7 +42,7 @@ class JoinClassroom extends Component
         $classroom = Classroom::where('code', strtoupper($this->code))->first();
 
         if (! $classroom) {
-            $this->addError('code', __('No classroom found with this code.'));
+            $this->addError('code', 'ไม่พบห้องเรียนด้วยรหัสนี้');
 
             return;
         }
@@ -51,13 +51,13 @@ class JoinClassroom extends Component
         $user = Auth::user();
 
         if ($classroom->isOwnedBy($user)) {
-            $this->addError('code', __('You are the teacher of this classroom.'));
+            $this->addError('code', 'คุณเป็นครูเจ้าของห้องเรียนนี้');
 
             return;
         }
 
         if ($classroom->hasMember($user)) {
-            $this->addError('code', __('You are already a member of this classroom.'));
+            $this->addError('code', 'คุณเป็นสมาชิกของห้องเรียนนี้อยู่แล้ว');
 
             return;
         }

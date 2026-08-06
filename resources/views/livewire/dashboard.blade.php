@@ -1,4 +1,4 @@
-@section('page-title', __('Dashboard'))
+@section('page-title', 'แดชบอร์ด')
 
 @php
     $isStudent = $role === 'student';
@@ -6,13 +6,13 @@
     $activityDays = collect($activity['days']);
     $activityGridStart = \Illuminate\Support\Carbon::parse($activity['grid_start_date']);
     $monthLabels = $activity['month_labels'];
-    $activityLevelClasses = [
-        0 => 'bg-[#ece9f0]',
-        1 => 'bg-[#e2d4ff]',
-        2 => 'bg-[#bea1fb]',
-        3 => 'bg-[#9363ef]',
-        4 => 'bg-[#7132f5]',
-    ];
+     $activityLevelClasses = [
+         0 => 'bg-[#ece9f0]',
+         1 => 'bg-[#dbeafe]',
+         2 => 'bg-[#93c5fd]',
+         3 => 'bg-[#60a5fa]',
+         4 => 'bg-[#3b82f6]',
+     ];
 @endphp
 
 <div data-dashboard-role="{{ $role }}"
@@ -58,16 +58,16 @@
     <header class="flex shrink-0 items-center justify-between gap-4">
         <div class="min-w-0">
             <h1 class="truncate text-2xl font-bold tracking-tight text-[#101114]">
-                {{ __('Hello, :name', ['name' => $displayName]) }}
+                สวัสดี, {{ $displayName }}
             </h1>
             <p class="mt-0.5 truncate text-sm text-[#686b82]">
-                {{ $isStudent ? __('See how your learning is growing today.') : __('Start with the submissions that need your attention.') }}
+                {{ $isStudent ? 'ดูว่าการเรียนรู้ของคุณกำลังเติบโตอย่างไรในวันนี้' : 'เริ่มต้นจากงานที่ต้องตรวจสอบ' }}
             </p>
         </div>
         <a href="{{ route('calendar') }}" wire:navigate
-            class="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-white px-3 py-2 text-sm font-semibold text-[#7132f5] transition hover:bg-[rgba(133,91,251,0.08)]">
+            class="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-white px-3 py-2 text-sm font-semibold text-[var(--ll-blue)] transition hover:bg-[var(--ll-blue-hover)]">
             <x-icon name="calendar-days" class="h-4 w-4" />
-            <span class="hidden sm:inline">{{ __('Calendar') }}</span>
+            <span class="hidden sm:inline">ปฏิทิน</span>
         </a>
     </header>
 
@@ -78,15 +78,15 @@
                     @if($isStudent)
                         <div class="flex items-start justify-between gap-3">
                             <div>
-                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#7132f5]">{{ __('Current Level') }}</p>
+                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[var(--ll-blue)]">เลเวลปัจจุบัน</p>
                                 <p class="mt-2 text-5xl font-bold leading-none text-[#101114]">{{ $primaryMetric['level'] }}</p>
                             </div>
-                            <span class="rounded-[9px] bg-[rgba(133,91,251,0.16)] px-2.5 py-1 text-xs font-bold text-[#7132f5]">
+                            <span class="rounded-[9px] bg-[var(--ll-blue-subtle)] px-2.5 py-1 text-xs font-bold text-[var(--ll-blue)]">
                                 {{ number_format($primaryMetric['xp_current']) }} / {{ number_format($primaryMetric['xp_required']) }} XP
                             </span>
                         </div>
-                        <div class="dashboard-liquid-progress mt-5 outline-2 outline-[rgba(113,50,245,0.28)]" role="progressbar"
-                            aria-label="{{ __('Level progress') }}" aria-valuemin="0" aria-valuemax="100"
+                        <div class="dashboard-liquid-progress mt-5 outline-2 outline-[rgba(37,99,235,0.28)]" role="progressbar"
+                            aria-label="ความคืบหน้าเลเวล" aria-valuemin="0" aria-valuemax="100"
                             aria-valuenow="{{ $primaryMetric['progress_percent'] }}">
                             <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%">
                                 <span data-liquid-bubbles class="dashboard-liquid-bubbles" aria-hidden="true">
@@ -98,20 +98,20 @@
                             </span>
                         </div>
                         <p class="mt-2 text-xs text-[#686b82]">
-                            {{ __(':xp XP until level :level', ['xp' => number_format($primaryMetric['remaining']), 'level' => $primaryMetric['level'] + 1]) }}
+                            อีก {{ number_format($primaryMetric['remaining']) }} XP จะถึงเลเวล {{ $primaryMetric['level'] + 1 }}
                         </p>
                     @else
                         <div class="flex items-start justify-between gap-3">
                             <div>
-                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#7132f5]">{{ __('Pending Review') }}</p>
+                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[var(--ll-blue)]">รอตรวจ</p>
                                 <p class="mt-2 text-5xl font-bold leading-none text-[#101114]">{{ number_format($primaryMetric['pending']) }}</p>
                             </div>
-                            <span class="rounded-[9px] bg-[rgba(133,91,251,0.16)] px-2.5 py-1 text-xs font-bold text-[#7132f5]">
-                                {{ number_format($primaryMetric['graded_this_week']) }} {{ __('reviewed') }}
+                            <span class="rounded-[9px] bg-[var(--ll-blue-subtle)] px-2.5 py-1 text-xs font-bold text-[var(--ll-blue)]">
+                                {{ number_format($primaryMetric['graded_this_week']) }} ตรวจแล้ว
                             </span>
                         </div>
-                        <div class="dashboard-liquid-progress mt-5 outline-2 outline-[rgba(113,50,245,0.28)]" role="progressbar"
-                            aria-label="{{ __('Review progress') }}" aria-valuemin="0" aria-valuemax="100"
+                        <div class="dashboard-liquid-progress mt-5 outline-2 outline-[rgba(37,99,235,0.28)]" role="progressbar"
+                            aria-label="ความคืบหน้าการตรวจ" aria-valuemin="0" aria-valuemax="100"
                             aria-valuenow="{{ $primaryMetric['progress_percent'] }}">
                             <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%">
                                 <span data-liquid-bubbles class="dashboard-liquid-bubbles" aria-hidden="true">
@@ -122,7 +122,7 @@
                                 </span>
                             </span>
                         </div>
-                        <p class="mt-2 text-xs text-[#686b82]">{{ __('Weekly review completion') }} · {{ $primaryMetric['progress_percent'] }}%</p>
+                        <p class="mt-2 text-xs text-[#686b82]">การตรวจงานประจำสัปดาห์ · {{ $primaryMetric['progress_percent'] }}%</p>
                     @endif
                 </div>
             </section>
@@ -130,33 +130,33 @@
             <section class="card card-border overflow-hidden border-[#dedee5] bg-white">
                 <div class="card-body min-h-0 gap-0 p-4">
                     <div class="flex shrink-0 items-center justify-between gap-3">
-                        <h2 class="card-title text-base text-[#101114]">{{ $isStudent ? __('Up Next') : __('Review Queue') }}</h2>
+                        <h2 class="card-title text-base text-[#101114]">{{ $isStudent ? 'กำลังจะถึง' : 'คิวตรวจงาน' }}</h2>
                         <a href="{{ $isStudent ? route('calendar') : route('to-review') }}" wire:navigate
-                            class="text-xs font-bold text-[#7132f5] hover:text-[#5741d8]">{{ __('View all') }}</a>
+                            class="text-xs font-bold text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)]">ดูทั้งหมด</a>
                     </div>
                     <div class="mt-2 min-h-0 divide-y divide-[#ece9f0] overflow-hidden">
                         @forelse($actionItems as $item)
                             <a href="{{ $isStudent ? route('assignment.show', [$item->classroom, $item]) : route('to-review') }}"
                                 wire:navigate class="group flex items-center gap-3 py-3">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-white"
-                                    style="background-color: {{ $item->classroom?->themeCategory?->color ?? '#7132f5' }}">
+                                    style="background-color: {{ $item->classroom?->themeCategory?->color ?? '#2563eb' }}">
                                     <x-icon name="{{ $isStudent ? 'document-text' : 'clipboard-document-list' }}" class="h-4 w-4" />
                                 </span>
                                 <span class="min-w-0 flex-1">
-                                    <span class="block truncate text-sm font-semibold text-[#101114] group-hover:text-[#7132f5]">{{ $item->title }}</span>
+                                    <span class="block truncate text-sm font-semibold text-[#101114] group-hover:text-[var(--ll-blue)]">{{ $item->title }}</span>
                                     <span class="mt-0.5 block truncate text-xs text-[#686b82]">{{ $item->classroom?->name }}</span>
                                 </span>
-                                <span class="shrink-0 rounded-[7px] bg-[rgba(133,91,251,0.12)] px-2 py-1 text-[11px] font-bold text-[#7132f5]">
+                                <span class="shrink-0 rounded-[7px] bg-[rgba(37,99,235,0.12)] px-2 py-1 text-[11px] font-bold text-[var(--ll-blue)]">
                                     {{ $isStudent ? $item->due_date?->translatedFormat('j M') : $item->pending_count }}
                                 </span>
                             </a>
                         @empty
                             <div class="flex h-full min-h-48 flex-col items-center justify-center text-center">
-                                <span class="flex h-11 w-11 items-center justify-center rounded-[12px] bg-[rgba(133,91,251,0.12)] text-[#7132f5]">
+                                <span class="flex h-11 w-11 items-center justify-center rounded-[12px] bg-[rgba(37,99,235,0.12)] text-[var(--ll-blue)]">
                                     <x-icon name="check-circle" class="h-5 w-5" />
                                 </span>
-                                <p class="mt-3 text-sm font-semibold text-[#101114]">{{ __('Nothing urgent right now') }}</p>
-                                <p class="mt-1 text-xs text-[#9497a9]">{{ $isStudent ? __('Upcoming work will appear here.') : __('New submissions will appear here.') }}</p>
+                                <p class="mt-3 text-sm font-semibold text-[#101114]">ไม่มีอะไรเร่งด่วนตอนนี้</p>
+                                <p class="mt-1 text-xs text-[#9497a9]">{{ $isStudent ? 'งานที่กำลังจะถึงจะแสดงที่นี่' : 'งานที่ส่งใหม่จะแสดงที่นี่' }}</p>
                             </div>
                         @endforelse
                     </div>
@@ -169,16 +169,16 @@
             <div class="card-body flex h-full min-h-0 flex-col gap-0 p-4 sm:p-5">
                 <div class="flex shrink-0 items-start justify-between gap-4">
                     <div>
-                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#7132f5]">{{ __('6-month activity') }}</p>
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-[var(--ll-blue)]">กิจกรรมในรอบ 6 เดือน</p>
                         <h2 class="card-title mt-1 text-lg text-[#101114]">
-                            {{ $isStudent ? __('Learning consistency') : __('Teaching activity') }}
+                            {{ $isStudent ? 'ความสม่ำเสมอในการเรียนรู้' : 'กิจกรรมการสอน' }}
                         </h2>
                         <p class="mt-1 text-xs text-[#686b82]">
-                            {{ $isStudent ? __('Submissions, attendance, comments, and grades') : __('Classwork, reviews, and comments') }}
+                            {{ $isStudent ? 'การส่งงาน, การเข้าเรียน, ความคิดเห็น และคะแนน' : 'งานในชั้นเรียน, การตรวจงาน และความคิดเห็น' }}
                         </p>
                     </div>
-                    <span class="rounded-[9px] bg-[rgba(133,91,251,0.12)] px-2.5 py-1.5 text-xs font-bold text-[#7132f5]">
-                        {{ number_format($activity['total']) }} {{ __('activities') }}
+                    <span class="rounded-[9px] bg-[rgba(37,99,235,0.12)] px-2.5 py-1.5 text-xs font-bold text-[var(--ll-blue)]">
+                        {{ number_format($activity['total']) }} กิจกรรม
                     </span>
                 </div>
                  <div class="mt-5 min-h-0 flex-1 overflow-visible">
@@ -190,15 +190,15 @@
                             @endforeach
                         </div>
                         <div class="grid grid-rows-7 gap-1 text-[9px] text-[#9497a9]">
-                            <span>{{ __('Mon') }}</span><span></span><span>{{ __('Wed') }}</span><span></span>
-                            <span>{{ __('Fri') }}</span><span></span><span>{{ __('Sun') }}</span>
+                            <span>จ.</span><span></span><span>พ.</span><span></span>
+                            <span>ศ.</span><span></span><span>อา.</span>
                         </div>
                         <div class="activity-grid-cols grid grid-flow-col grid-rows-7 gap-1">
                             @foreach($activityDays as $day)
                                 <span data-activity-cell tabindex="0"
-                                    class="activity-cell tooltip tooltip-top aspect-square size-3 rounded-[3px] outline-none ring-[#7132f5] transition hover:ring-2 focus:ring-2 {{ ! $day['is_in_year'] || $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
-                                    data-tip="{{ $day['label'] }} · {{ $day['count'] }} {{ __('activities') }}"
-                                    aria-label="{{ $day['label'] }}: {{ $day['count'] }} {{ __('activities') }}"></span>
+                                    class="activity-cell tooltip tooltip-top aspect-square size-3 rounded-[3px] outline-none ring-[var(--ll-blue)] transition hover:ring-2 focus:ring-2 {{ ! $day['is_in_year'] || $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
+                                    data-tip="{{ $day['label'] }} · {{ $day['count'] }} กิจกรรม"
+                                    aria-label="{{ $day['label'] }}: {{ $day['count'] }} กิจกรรม"></span>
                             @endforeach
                         </div>
                     </div>
@@ -217,33 +217,33 @@
 
         <div class="grid min-h-0 gap-3 xl:grid-rows-[340px_minmax(0,1fr)]">
             <a href="{{ route('profile') }}" wire:navigate
-                class="card card-border group overflow-hidden border-[#dedee5] bg-white transition hover:border-[rgba(113,50,245,0.3)]">
+                class="card card-border group overflow-hidden border-[#dedee5] bg-white transition hover:border-[rgba(37,99,235,0.3)]">
                 <div class="card-body items-center justify-center gap-0 p-5 text-center">
                     <div class="avatar">
-                        <div class="h-20 w-20 rounded-full ring-4 ring-[rgba(133,91,251,0.16)] ring-offset-2 ring-offset-white">
+                            <div class="h-20 w-20 rounded-full">
                             <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="object-cover">
                         </div>
                     </div>
-                    <h2 class="mt-4 max-w-full truncate text-lg font-bold text-[#101114] group-hover:text-[#7132f5]">{{ $user->name }}</h2>
-                    <p class="mt-1 text-xs text-[#686b82]">{{ __($isStudent ? 'Student' : 'Teacher') }} · {{ $classrooms->count() }} {{ __('classrooms') }}</p>
+                    <h2 class="mt-4 max-w-full truncate text-lg font-bold text-[#101114] group-hover:text-[var(--ll-blue)]">{{ $user->name }}</h2>
+                    <p class="mt-1 text-xs text-[#686b82]">{{ $isStudent ? 'นักเรียน' : 'ครู' }} · {{ $classrooms->count() }} ห้องเรียน</p>
                     <div class="mt-4 flex flex-wrap justify-center gap-2">
                         @if($isStudent)
-                            <span class="badge border-0 bg-[rgba(133,91,251,0.16)] text-[#7132f5]">{{ __('Level') }} {{ $primaryMetric['level'] }}</span>
+                            <span class="badge border-0 bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">เลเวล {{ $primaryMetric['level'] }}</span>
                         @else
-                            <span class="badge border-0 bg-[rgba(133,91,251,0.16)] text-[#7132f5]">{{ __('Teacher') }}</span>
+                            <span class="badge border-0 bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">ครู</span>
                         @endif
-                        <span class="badge border-0 bg-[#f2eff5] text-[#686b82]">{{ __('View profile') }}</span>
+                        <span class="badge border-0 bg-[#f2eff5] text-[#686b82]">ดูโปรไฟล์</span>
                     </div>
                 </div>
             </a>
 
             <section class="card card-border overflow-hidden border-[#dedee5] bg-white">
                 <div class="card-body gap-0 p-4">
-                    <h2 class="card-title text-base text-[#101114]">{{ __('Quick Stats') }}</h2>
+                    <h2 class="card-title text-base text-[#101114]">สถิติด่วน</h2>
                     <div class="mt-3 grid min-h-0 flex-1 grid-cols-2 gap-2">
                         @foreach($quickStats as $stat)
                             <div class="flex min-h-20 flex-col justify-between rounded-[11px] bg-[#f7f5f9] p-3">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-[9px] bg-[rgba(133,91,251,0.14)] text-[#7132f5]">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-[9px] bg-[rgba(37,99,235,0.14)] text-[var(--ll-blue)]">
                                     <x-icon :name="$stat['icon']" class="h-4 w-4" />
                                 </span>
                                 <div>

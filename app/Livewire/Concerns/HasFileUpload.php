@@ -45,12 +45,6 @@ trait HasFileUpload
 
     protected function generateAttachmentId(): string
     {
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        $id = '';
-        for ($i = 0; $i < 8; $i++) {
-            $id .= $chars[random_int(0, strlen($chars) - 1)];
-        }
-
-        return $id;
+        return \Illuminate\Support\Str::random(8);
     }
 }

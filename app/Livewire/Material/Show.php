@@ -75,7 +75,7 @@ class Show extends Component
         $this->isEditTab = false;
         $this->material->refresh();
 
-        session()->flash('message', __('Material updated'));
+        session()->flash('message', 'อัปเดตเอกสารแล้ว');
     }
 
     public function deleteMaterial(): void

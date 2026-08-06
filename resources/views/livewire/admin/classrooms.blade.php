@@ -1,4 +1,4 @@
-@section('page-title', __('admin.classrooms.title'))
+@section('page-title', 'จัดการห้องเรียน')
 
 <div class="space-y-6 ">
     <!-- Filters and Search -->
@@ -6,25 +6,25 @@
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
             <div class="relative w-full sm:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                    <i class="fas fa-search"></i>
+                    <x-icon name="magnifying-glass" class="h-4 w-4" />
                 </span>
                 <input type="text" wire:model.live.debounce.300ms="search"
-                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all"
-                    placeholder="{{ __('admin.classrooms.search_placeholder') }}">
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                    placeholder="ค้นหาด้วยชื่อหรือรหัส...">
             </div>
 
             <div class="w-full sm:w-auto">
                 <div class="relative" x-data="{ open: false }">
                     <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
-                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-48">
-                        <i class="fas fa-filter text-gray-400 text-xs"></i>
+                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-48">
+                        <x-icon name="funnel" class="h-4 w-4 text-gray-400" />
                         <span>
-                            @if($statusFilter === '') {{ __('admin.classrooms.filter_all') }}
-                            @elseif($statusFilter === 'active') {{ __('admin.classrooms.filter_active') }}
-                            @else {{ __('admin.classrooms.filter_archived') }}
+                            @if($statusFilter === '') ห้องเรียนทั้งหมด
+                            @elseif($statusFilter === 'active') เฉพาะที่ใช้งาน
+                            @else เฉพาะที่ถูกเก็บถาวร
                             @endif
                         </span>
-                        <i class="fas fa-chevron-down text-[10px] text-gray-400 ml-auto"></i>
+                        <x-icon name="chevron-down" class="h-3.5 w-3.5 text-gray-400 ml-auto" />
                     </button>
                     <div x-show="open" x-cloak @click.outside="open = false"
                         x-transition:enter="transition ease-out duration-100"
@@ -35,21 +35,21 @@
                         <div role="menu">
                             <button type="button" role="menuitem" wire:click="$set('statusFilter', '')"
                                 @click="open = false"
-                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === '' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
-                                {{ __('admin.classrooms.filter_all') }}
-                                @if($statusFilter === '') <i class="fas fa-check text-xs"></i> @endif
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === '' ? 'text-blue-700 bg-blue-50' : 'text-gray-700' }}">
+ห้องเรียนทั้งหมด
+                                 @if($statusFilter === '') <x-icon name="check" class="h-4 w-4" /> @endif
                             </button>
                             <button type="button" role="menuitem" wire:click="$set('statusFilter', 'active')"
                                 @click="open = false"
-                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'active' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
-                                {{ __('admin.classrooms.filter_active') }}
-                                @if($statusFilter === 'active') <i class="fas fa-check text-xs"></i> @endif
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'active' ? 'text-blue-700 bg-blue-50' : 'text-gray-700' }}">
+เฉพาะที่ใช้งาน
+                                 @if($statusFilter === 'active') <x-icon name="check" class="h-4 w-4" /> @endif
                             </button>
                             <button type="button" role="menuitem" wire:click="$set('statusFilter', 'archived')"
                                 @click="open = false"
-                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'archived' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
-                                {{ __('admin.classrooms.filter_archived') }}
-                                @if($statusFilter === 'archived') <i class="fas fa-check text-xs"></i> @endif
+                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'archived' ? 'text-blue-700 bg-blue-50' : 'text-gray-700' }}">
+เฉพาะที่ถูกเก็บถาวร
+                                 @if($statusFilter === 'archived') <x-icon name="check" class="h-4 w-4" /> @endif
                             </button>
                         </div>
                     </div>
@@ -64,11 +64,11 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
                     <tr>
-                        <th class="px-6 py-3 text-left">{{ __('admin.classrooms.col_classroom') }}</th>
-                        <th class="px-6 py-3 text-left">{{ __('admin.classrooms.col_teacher') }}</th>
-                        <th class="px-6 py-3 text-left">{{ __('admin.classrooms.col_students') }}</th>
-                        <th class="px-6 py-3 text-left">{{ __('admin.classrooms.col_status') }}</th>
-                        <th class="px-6 py-3 text-right">{{ __('admin.classrooms.col_actions') }}</th>
+                        <th class="px-6 py-3 text-left">ห้องเรียน</th>
+                        <th class="px-6 py-3 text-left">ครูผู้สอน</th>
+                        <th class="px-6 py-3 text-left">นักเรียน</th>
+                        <th class="px-6 py-3 text-left">สถานะ</th>
+                        <th class="px-6 py-3 text-right">การดำเนินการ</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-100">
@@ -98,28 +98,28 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    <i class="fas fa-users mr-1.5 opacity-50"></i>
+                                    <x-icon name="users" class="h-4 w-4 mr-1.5 opacity-50" />
                                     {{ $classroom->members->count() }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold {{ $classroom->is_archived ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }}">
-                                    {{ $classroom->is_archived ? __('admin.classrooms.status_archived') : __('admin.classrooms.status_active') }}
+                                    {{ $classroom->is_archived ? 'เก็บถาวรแล้ว' : 'ใช้งาน' }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right font-medium">
                                 <div class="flex justify-end gap-3 text-gray-400">
                                     <a href="{{ route('classroom.show', $classroom) }}"
-                                        class="hover:text-indigo-600 transition-colors p-1"
-                                        title="{{ __('admin.classrooms.view') }}">
-                                        <i class="fas fa-external-link-alt"></i>
+                                        class="hover:text-blue-600 transition-colors p-1"
+                                        title="ดู">
+                                        <x-icon name="arrow-top-right-on-square" class="h-4 w-4" />
                                     </a>
                                     <button type="button"
                                         @click="$dispatch('open-delete-classroom', { id: {{ $classroom->id }}, name: '{{ addslashes($classroom->name) }}' })"
                                         class="hover:text-red-600 transition-colors p-1"
-                                        title="{{ __('admin.classrooms.delete') }}">
-                                        <i class="fas fa-trash-alt"></i>
+                                        title="ลบ">
+                                        <x-icon name="trash" class="h-4 w-4" />
                                     </button>
                                 </div>
                             </td>
@@ -128,8 +128,8 @@
                         <tr>
                             <td colspan="5" class="px-6 py-12 text-center text-gray-500">
                                 <div class="flex flex-col items-center">
-                                    <i class="fas fa-chalkboard text-4xl mb-3 opacity-20"></i>
-                                    <p>{{ __('admin.classrooms.empty') }}</p>
+                                    <x-icon name="academic-cap" class="h-9 w-9 mb-3 opacity-20" />
+                                    <p>ไม่พบห้องเรียน</p>
                                 </div>
                             </td>
                         </tr>
@@ -157,26 +157,26 @@
                         class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
                         <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                             <div>
-                                <h4 class="text-base font-semibold text-gray-900">{{ __('ยืนยันการลบ') }}</h4>
+                                <h4 class="text-base font-semibold text-gray-900">ยืนยันการลบ</h4>
                                 <p class="text-sm font-medium text-gray-700 mt-1" x-text="deleteName"></p>
                             </div>
                             <button type="button" @click="showDeleteModal = false"
                                 class="text-gray-400 hover:text-gray-600 transition-colors">
-                                <i class="fas fa-xmark text-lg"></i>
+                                <x-icon name="x-mark" class="h-5 w-5" />
                             </button>
                         </div>
                         <div class="px-6 py-5">
                             <p class="text-sm text-gray-500 mb-4">
-                                {{ __('คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? การกระทำนี้ไม่สามารถย้อนกลับได้') }}
+                                คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? การกระทำนี้ไม่สามารถย้อนกลับได้
                             </p>
                             <div class="flex justify-end gap-2">
                                 <button type="button" @click="showDeleteModal = false"
                                     class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                                    <i class="fas fa-xmark mr-1.5"></i>{{ __('ยกเลิก') }}
+                                    <x-icon name="x-mark" class="h-4 w-4 mr-1.5" />ยกเลิก
                                 </button>
                                 <button type="button" @click="$wire.deleteClassroom(deleteId); showDeleteModal = false"
                                     class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
-                                    <i class="fas fa-trash-alt mr-1.5"></i>{{ __('ลบ') }}
+                                    <x-icon name="trash" class="h-4 w-4 mr-1.5" />ลบ
                                 </button>
                             </div>
                         </div>

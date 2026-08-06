@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('user_gamifications', function (Blueprint $table) {
-            $table->index(['level', 'xp']);
-        });
+        try {
+            Schema::table('user_gamifications', function (Blueprint $table) {
+                $table->index(['level', 'xp']);
+            });
+        } catch (\Exception) {
+            // Index already exists (fresh install has it from base migration)
+        }
     }
 
     /**
@@ -21,8 +25,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('user_gamifications', function (Blueprint $table) {
-            $table->dropIndex(['level', 'xp']);
-        });
+        try {
+            Schema::table('user_gamifications', function (Blueprint $table) {
+                $table->dropIndex(['level', 'xp']);
+            });
+        } catch (\Exception) {
+            // Index already dropped or never existed
+        }
     }
 };

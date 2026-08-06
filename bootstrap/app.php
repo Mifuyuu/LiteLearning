@@ -14,10 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
 
         $middleware->alias([
-            'teacher' => \App\Http\Middleware\EnsureUserIsTeacher::class,
-            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
-            'not_admin' => \App\Http\Middleware\EnsureUserIsNotAdmin::class,
-            'student' => \App\Http\Middleware\EnsureUserIsStudent::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         ]);
 
@@ -26,5 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $e) {
+            if (str_starts_with(request()->path(), 'livewire-')) {
+                return response('Not Found', 404);
+            }
+        });
     })->create();

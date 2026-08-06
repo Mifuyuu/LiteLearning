@@ -21,29 +21,49 @@ class Dashboard extends Component
     {
         return view('livewire.placeholders.dashboard');
     }
-    public function render()
+
+    public string $role = 'student';
+
+    public array $viewData = [];
+
+    public Collection $classrooms;
+
+    public function mount(): void
+    {
+        $this->refreshViewData();
+    }
+
+    private function refreshViewData(): void
     {
         /** @var User $user */
         $user = Auth::user();
-        $classrooms = $user->allClassrooms();
-        $classrooms->load('themeCategory');
+        $this->classrooms = $user->allClassrooms()->load('themeCategory');
         $analytics = app(DashboardAnalyticsService::class);
 
-        $viewData = $user->isStudent()
-            ? $this->studentViewData($user, $classrooms, $analytics)
-            : $this->teacherViewData($user, $analytics);
+        if ($user->isStudent()) {
+            $this->role = 'student';
+            $this->viewData = $this->buildStudentView($user, $this->classrooms, $analytics, 6);
+        } else {
+            $this->role = 'teacher';
+            $this->viewData = $this->buildTeacherView($user, $analytics, 6);
+        }
+    }
 
+    public function render()
+    {
         return view('livewire.dashboard', [
-            'user' => $user,
-            'classrooms' => $classrooms,
-            ...$viewData,
+            'role' => $this->role,
+            'user' => Auth::user(),
+            'classrooms' => $this->classrooms,
+            ...$this->viewData,
         ]);
     }
 
-    private function studentViewData(
+    private function buildStudentView(
         User $user,
         Collection $classrooms,
-        DashboardAnalyticsService $analytics
+        DashboardAnalyticsService $analytics,
+        int $months = 6
     ): array {
         $classroomIds = $classrooms->pluck('id');
         $assignments = Assignment::query()
@@ -75,7 +95,7 @@ class Dashboard extends Component
         $nextLevelXp = $gamificationService->totalXpForLevel($user->level + 1);
         $xpInCurrentLevel = max(0, $user->xp - $currentLevelStartXp);
         $xpNeededInLevel = max(1, $nextLevelXp - $currentLevelStartXp);
-        $activity = $analytics->studentActivity($user);
+        $activity = $analytics->studentActivity($user, $months);
 
         return [
             'role' => 'student',
@@ -89,16 +109,16 @@ class Dashboard extends Component
             ],
             'actionItems' => $assignments,
             'quickStats' => [
-                ['label' => __('Coins'), 'value' => number_format($user->coins), 'icon' => 'star'],
-                ['label' => __('Achievements'), 'value' => number_format($user->achievements()->count()), 'icon' => 'trophy'],
-                ['label' => __('Completed'), 'value' => number_format($submissions->count()), 'icon' => 'check-circle'],
-                ['label' => __('Average Score'), 'value' => number_format((float) ($scored->avg('score') ?? 0), 1), 'icon' => 'chart-bar'],
+                ['label' => 'เหรียญ', 'value' => number_format($user->coins), 'icon' => 'star'],
+                ['label' => 'ความสำเร็จ', 'value' => number_format($user->achievements()->count()), 'icon' => 'trophy'],
+                ['label' => 'สำเร็จแล้ว', 'value' => number_format($submissions->count()), 'icon' => 'check-circle'],
+                ['label' => 'คะแนนเฉลี่ย', 'value' => number_format((float) ($scored->avg('score') ?? 0), 1), 'icon' => 'chart-bar'],
             ],
             'activitySummaries' => [
-                ['label' => __('6-month activity'), 'value' => $activity['total']],
-                ['label' => __('This week'), 'value' => $activity['current_week']],
+                ['label' => 'กิจกรรมในรอบ 6 เดือน', 'value' => $activity['total']],
+                ['label' => 'สัปดาห์นี้', 'value' => $activity['current_week']],
                 [
-                    'label' => __('On-time submissions'),
+                    'label' => 'ส่งงานตรงเวลา',
                     'value' => $submissions->isNotEmpty()
                         ? (int) round(($onTimeCount / $submissions->count()) * 100).'%'
                         : '0%',
@@ -107,7 +127,7 @@ class Dashboard extends Component
         ];
     }
 
-    private function teacherViewData(User $user, DashboardAnalyticsService $analytics): array
+    private function buildTeacherView(User $user, DashboardAnalyticsService $analytics, int $months = 6): array
     {
         $ownedClassrooms = $user->ownedClassrooms()
             ->where('is_archived', false)
@@ -115,7 +135,7 @@ class Dashboard extends Component
             ->get();
         $classroomIds = $ownedClassrooms->pluck('id');
         $reviewProgress = $analytics->teacherReviewProgress($user);
-        $activity = $analytics->teacherActivity($user);
+        $activity = $analytics->teacherActivity($user, $months);
         $reviewQueue = Assignment::query()
             ->with('classworkItem.classroom.themeCategory')
             ->withCount([
@@ -133,15 +153,15 @@ class Dashboard extends Component
             'primaryMetric' => $reviewProgress,
             'actionItems' => $reviewQueue,
             'quickStats' => [
-                ['label' => __('Classrooms'), 'value' => number_format($ownedClassrooms->count()), 'icon' => 'academic-cap'],
-                ['label' => __('Students'), 'value' => number_format($ownedClassrooms->sum('students_count')), 'icon' => 'users'],
-                ['label' => __('Assignments'), 'value' => number_format($ownedClassrooms->sum('assignments_count')), 'icon' => 'document-text'],
-                ['label' => __('Pending Review'), 'value' => number_format($reviewProgress['pending']), 'icon' => 'clipboard-document-list'],
+                ['label' => 'ห้องเรียน', 'value' => number_format($ownedClassrooms->count()), 'icon' => 'academic-cap'],
+                ['label' => 'นักเรียน', 'value' => number_format($ownedClassrooms->sum('students_count')), 'icon' => 'users'],
+                ['label' => 'งานที่มอบหมาย', 'value' => number_format($ownedClassrooms->sum('assignments_count')), 'icon' => 'document-text'],
+                ['label' => 'รอตรวจ', 'value' => number_format($reviewProgress['pending']), 'icon' => 'clipboard-document-list'],
             ],
             'activitySummaries' => [
-                ['label' => __('6-month activity'), 'value' => $activity['total']],
-                ['label' => __('This week'), 'value' => $activity['current_week']],
-                ['label' => __('Reviews this week'), 'value' => $reviewProgress['graded_this_week']],
+                ['label' => 'กิจกรรมในรอบ 6 เดือน', 'value' => $activity['total']],
+                ['label' => 'สัปดาห์นี้', 'value' => $activity['current_week']],
+                ['label' => 'ตรวจงานสัปดาห์นี้', 'value' => $reviewProgress['graded_this_week']],
             ],
         ];
     }

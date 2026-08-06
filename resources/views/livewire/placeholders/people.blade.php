@@ -1,4 +1,4 @@
-@section('page-title', (isset($classroom) ? (__('People') . ' - ' . $classroom->name) : __('People')))
+@section('page-title', (isset($classroom) ? ('สมาชิก' . ' - ' . $classroom->name) : 'สมาชิก'))
 <div class="space-y-6">
     @if(isset($classroom))
         @include('livewire.classroom.partials.subnav', ['classroom' => $classroom])
@@ -25,7 +25,7 @@
 
             <div class="space-y-3">
                 @for($i = 0; $i < 2; $i++)
-                    <div class="rounded-[12px] border border-[#dedee5] bg-[rgba(133,91,251,0.04)] p-4">
+                    <div class="rounded-[12px] border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
                         <div class="flex items-center gap-3">
                             <div class="skeleton h-11 w-11 rounded-2xl shrink-0"></div>
                             <div class="space-y-2 min-w-0 flex-1">

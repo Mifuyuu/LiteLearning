@@ -16,16 +16,16 @@ class DashboardTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_dashboard_progress_gradient_ends_with_light_purple(): void
+    public function test_dashboard_progress_gradient_uses_brand_blue(): void
     {
         $css = file_get_contents(resource_path('css/app.css'));
 
         $this->assertStringContainsString(
-            'linear-gradient(90deg, #7132f5, #a855f7, #c4b5fd)',
+            'linear-gradient(90deg, #2563eb, #3b82f6, #93c5fd)',
             $css
         );
         $this->assertStringNotContainsString(
-            'linear-gradient(90deg, #7132f5, #a855f7, #d946ef)',
+            'linear-gradient(90deg, #7132f5, #a855f7, #c4b5fd)',
             $css
         );
     }
@@ -86,10 +86,10 @@ class DashboardTest extends TestCase
         $yesterday = collect($activity['days'])->firstWhere('date', now()->subDay()->toDateString());
 
         $this->assertSame(2025, $activity['year']);
-        $this->assertSame('2025-12-15', $activity['start_date']);
+        $this->assertSame('2025-12-08', $activity['start_date']);
         $this->assertSame('2026-06-11', $activity['end_date']);
-        $this->assertCount(182, $activity['days']);
-        $this->assertSame(26, $activity['week_count']);
+        $this->assertCount(189, $activity['days']);
+        $this->assertSame(27, $activity['week_count']);
         $this->assertSame(3, $yesterday['count']);
         $this->assertSame(4, $activity['total']);
         $this->assertTrue(collect($activity['days'])->firstWhere('date', '2025-12-31')['is_in_year']);
@@ -106,10 +106,10 @@ class DashboardTest extends TestCase
         $activity = app(DashboardAnalyticsService::class)->studentActivity($student);
 
         $this->assertSame(2011, $activity['year']);
-        $this->assertSame('2011-12-19', $activity['start_date']);
+        $this->assertSame('2011-12-05', $activity['start_date']);
         $this->assertSame('2012-06-11', $activity['end_date']);
-        $this->assertCount(182, $activity['days']);
-        $this->assertSame(26, $activity['week_count']);
+        $this->assertCount(196, $activity['days']);
+        $this->assertSame(28, $activity['week_count']);
     }
 
     public function test_teacher_activity_and_review_progress_use_owned_classrooms(): void
@@ -169,8 +169,8 @@ class DashboardTest extends TestCase
             ->assertSee('data-activity-cell', false)
             ->assertSee('aspect-square', false)
             ->assertDontSee('shadow-sm', false)
-            ->assertSee(__('Current Level'))
-            ->assertSee(__('Quick Stats'));
+            ->assertSee('เลเวลปัจจุบัน')
+            ->assertSee('สถิติด่วน');
     }
 
     public function test_teacher_dashboard_renders_review_focused_cards(): void
@@ -187,7 +187,7 @@ class DashboardTest extends TestCase
             ->assertDontSee('data-liquid-wave', false)
             ->assertSee('outline-2', false)
             ->assertSee('data-activity-heatmap', false)
-            ->assertSee(__('Pending Review'))
-            ->assertSee(__('Review Queue'));
+            ->assertSee('รอตรวจ')
+            ->assertSee('คิวตรวจงาน');
     }
 }

@@ -11,13 +11,20 @@ use Livewire\Component;
 #[Layout('layouts.app')]
 class Leaderboard extends Component
 {
+    public int $limit = 7;
+
     public function placeholder()
     {
         return view('livewire.placeholders.leaderboard');
     }
+
+    public function loadMore(): void
+    {
+        $this->limit += 10;
+    }
+
     public function render()
     {
-        // Get top 50 students ordered by level (desc) and xp (desc)
         $topStudents = UserGamification::select('user_gamifications.*')
             ->join('users', 'users.id', '=', 'user_gamifications.user_id')
             ->where('users.role', 'student')

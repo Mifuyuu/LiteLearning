@@ -35,7 +35,8 @@ Route::get('/', function () {
 // Auth routes (guest only)
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
-    Route::get('/register/{role?}', Register::class)->name('register');
+    Route::get('/register', Register::class)->name('register');
+    Route::get('/forgot-password', \App\Livewire\Auth\ForgotPassword::class)->name('password.request');
 });
 
 // Logout
@@ -51,19 +52,20 @@ Route::post('/logout', function () {
 Route::middleware('auth')->group(function () {
 
     // Dashboard (not for admin)
-    Route::middleware('not_admin')->group(function () {
+    Route::middleware('role:not_admin')->group(function () {
         Route::get('/dashboard', Dashboard::class)->name('dashboard');
     });
 
     // Gamification (Student only)
-    Route::middleware('student')->group(function () {
+    Route::middleware('role:student')->group(function () {
         Route::get('/store', \App\Livewire\Student\Store::class)->name('store');
+        Route::get('/inventory', \App\Livewire\Student\Inventory::class)->name('inventory');
         Route::get('/leaderboard', \App\Livewire\Student\Leaderboard::class)->name('leaderboard');
         Route::get('/achievements', \App\Livewire\Student\Achievements::class)->name('achievements');
     });
 
     // Classrooms (not for admin)
-    Route::middleware('not_admin')->group(function () {
+    Route::middleware('role:not_admin')->group(function () {
         Route::get('/classrooms', ClassroomIndex::class)->name('classrooms');
         Route::get('/c/{classroom}', ClassroomShow::class)->name('classroom.show');
         Route::get('/c/{classroom}/stream', ClassroomStream::class)->name('classroom.stream');
@@ -79,7 +81,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Assignments — create route MUST come before {assignment} wildcard
-    Route::middleware('teacher')->group(function () {
+    Route::middleware('role:teacher')->group(function () {
         Route::get('/c/{classroom}/a/create', AssignmentCreate::class)->name('assignment.create');
         Route::get('/c/{classroom}/m/create', MaterialCreate::class)->name('material.create');
         Route::get('/c/{classroom}/a/{assignment}/g/{submission}', Grade::class)->name('assignment.grade');
@@ -97,14 +99,14 @@ Route::middleware('auth')->group(function () {
 
     // Calendar & To-Review
     Route::view('/calendar', 'pages.calendar')->name('calendar');
-    Route::view('/to-review', 'pages.to-review')->name('to-review');
+    Route::get('/to-review', \App\Livewire\ToReview::class)->name('to-review');
 
     // Profile & Settings
-    Route::get('/profile', \App\Livewire\Profile::class)->name('profile');
+    Route::get('/profile/{user?}', \App\Livewire\Profile::class)->name('profile');
     Route::get('/settings', Settings::class)->name('settings');
 
     // Admin Routes
-    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', \App\Livewire\Admin\Dashboard::class)->name('dashboard');
         Route::get('/users', \App\Livewire\Admin\Users::class)->name('users');
         Route::get('/classrooms', \App\Livewire\Admin\Classrooms::class)->name('classrooms');

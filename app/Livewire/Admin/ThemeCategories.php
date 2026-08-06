@@ -82,10 +82,10 @@ class ThemeCategories extends Component
         if ($this->editingId) {
             $category = ThemeCategory::findOrFail($this->editingId);
             $category->update($data);
-            $this->dispatch('notify', message: __('อัปเดต category สำเร็จ'), type: 'success');
+            $this->dispatch('notify', message: 'อัปเดตหมวดหมู่สำเร็จ', type: 'success');
         } else {
             ThemeCategory::create($data);
-            $this->dispatch('notify', message: __('สร้าง category สำเร็จ'), type: 'success');
+            $this->dispatch('notify', message: 'สร้างหมวดหมู่สำเร็จ', type: 'success');
         }
 
         $this->showModal = false;
@@ -95,7 +95,7 @@ class ThemeCategories extends Component
     public function delete(ThemeCategory $category): void
     {
         $category->delete();
-        $this->dispatch('notify', message: __('ลบ category สำเร็จ'), type: 'success');
+        $this->dispatch('notify', message: 'ลบหมวดหมู่สำเร็จ', type: 'success');
     }
 
     public function render()

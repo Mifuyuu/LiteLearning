@@ -26,8 +26,6 @@ class Register extends Component
 
     public string $role = 'student';
 
-    public bool $showRoleSelector = true;
-
     // Step 2 — OTP verification
     public string $otp = '';
 
@@ -35,12 +33,14 @@ class Register extends Component
 
     public int $resendCooldown = 0;
 
-    public function mount(?string $role = null): void
+    public function getIsTeacherProperty(): bool
     {
-        if ($role && in_array($role, ['student', 'teacher'], true)) {
-            $this->role = $role;
-            $this->showRoleSelector = false;
-        }
+        return $this->role === 'teacher';
+    }
+
+    public function setIsTeacherProperty(bool $value): void
+    {
+        $this->role = $value ? 'teacher' : 'student';
     }
 
     private function registrationRules(): array
@@ -69,7 +69,7 @@ class Register extends Component
 
         if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('otp', __('ส่งรหัสบ่อยเกินไป กรุณารอ :seconds วินาที', ['seconds' => $seconds]));
+            $this->addError('otp', 'ส่งรหัสบ่อยเกินไป กรุณารอ ' . $seconds . ' วินาที');
 
             return;
         }
@@ -110,7 +110,7 @@ class Register extends Component
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('otp', __('ลองผิดบ่อยเกินไป กรุณารอ :seconds วินาที', ['seconds' => $seconds]));
+            $this->addError('otp', 'ลองผิดบ่อยเกินไป กรุณารอ ' . $seconds . ' วินาที');
 
             return;
         }
@@ -118,7 +118,7 @@ class Register extends Component
         $record = EmailOtpVerification::where('email', $this->email)->latest()->first();
 
         if (! $record || $record->isExpired()) {
-            $this->addError('otp', __('รหัสหมดอายุแล้ว กรุณาขอรหัสใหม่'));
+            $this->addError('otp', 'รหัสหมดอายุแล้ว กรุณาขอรหัสใหม่');
             $this->otpSent = false;
 
             return;
@@ -126,7 +126,7 @@ class Register extends Component
 
         if (! Hash::check($this->otp, $record->otp)) {
             RateLimiter::hit($throttleKey, 300);
-            $this->addError('otp', __('รหัสไม่ถูกต้อง'));
+            $this->addError('otp', 'รหัสไม่ถูกต้อง');
 
             return;
         }
@@ -136,7 +136,7 @@ class Register extends Component
         $userData = $record->user_data;
         if (! in_array($userData['role'] ?? null, ['student', 'teacher'], true)) {
             $record->delete();
-            $this->addError('role', __('Invalid role.'));
+            $this->addError('role', 'บทบาทไม่ถูกต้อง');
 
             return;
         }
@@ -148,6 +148,7 @@ class Register extends Component
             'email' => $userData['email'],
             'password' => $userData['password'],
             'role' => $userData['role'],
+            'email_verified_at' => now(),
         ]);
 
         Auth::login($user);

@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('classwork_items')) {
+            return;
+        }
+
         Schema::create('classwork_items', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['assignment', 'material']);
@@ -112,6 +116,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (!Schema::hasColumn('assignments', 'classwork_item_id')) {
+            return;
+        }
+
         Schema::table('assignments', function (Blueprint $table) {
             $table->foreignId('user_id')->nullable()->after('classwork_item_id')->constrained()->cascadeOnDelete();
             $table->foreignId('classroom_id')->nullable()->after('user_id')->constrained()->cascadeOnDelete();

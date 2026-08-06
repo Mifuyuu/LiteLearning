@@ -4,6 +4,7 @@ namespace App\Livewire\Student;
 
 use App\Models\Achievement;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Lazy;
@@ -17,29 +18,37 @@ class Achievements extends Component
     {
         return view('livewire.placeholders.achievements');
     }
-    public function render()
+
+    private Collection $allAchievements;
+
+    private array $unlockedIds = [];
+
+    public function mount(): void
     {
         /** @var User $user */
         $user = Auth::user();
-
-        $allAchievements = Achievement::query()
+        $this->allAchievements = Achievement::query()
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
-        $unlockedAchievementIds = $user->achievements()
+        $this->unlockedIds = $user->achievements()
             ->pluck('achievements.id')
             ->all();
-        $unlockedLookup = array_flip($unlockedAchievementIds);
-        $unlockedCount = count($unlockedAchievementIds);
-        $totalCount = $allAchievements->count();
+    }
+
+    public function render()
+    {
+        $unlockedCount = count($this->unlockedIds);
+        $totalCount = $this->allAchievements->count();
 
         return view('livewire.student.achievements', [
-            'allAchievements' => $allAchievements,
-            'unlockedAchievementIds' => $unlockedAchievementIds,
-            'unlockedLookup' => $unlockedLookup,
+            'allAchievements' => $this->allAchievements,
+            'unlockedAchievementIds' => $this->unlockedIds,
+            'unlockedLookup' => array_flip($this->unlockedIds),
             'unlockedCount' => $unlockedCount,
             'totalCount' => $totalCount,
-            'completionPercent' => $totalCount > 0 ? (int) round(($unlockedCount / $totalCount) * 100) : 0,
+            'completionPercent' => $totalCount > 0
+                ? (int) round(($unlockedCount / $totalCount) * 100) : 0,
         ]);
     }
 }

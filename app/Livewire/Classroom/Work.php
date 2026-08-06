@@ -132,6 +132,6 @@ class Work extends Component
             'pendingAssignments' => $pendingAssignments,
             'completedAssignments' => $completedAssignments,
             'assignmentCount' => $assignments->count(),
-        ])->title($this->classroom->name.' - '.__('Work'));
+        ])->title($this->classroom->name.' - '.'งานในชั้นเรียน');
     }
 }

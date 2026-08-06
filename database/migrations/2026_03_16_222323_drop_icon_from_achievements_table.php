@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (!Schema::hasColumn('achievements', 'icon')) {
+            return;
+        }
+
         Schema::table('achievements', function (Blueprint $table) {
             $table->dropColumn('icon');
         });
@@ -15,6 +19,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (Schema::hasColumn('achievements', 'icon')) {
+            return;
+        }
+
         Schema::table('achievements', function (Blueprint $table) {
             $table->string('icon')->nullable()->after('description');
         });

@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (!Schema::hasColumn('users', 'active_name_color')) {
+            return;
+        }
+
         DB::transaction(function () {
             // Mark active name_color items (SQLite + MySQL compatible correlated subquery)
             DB::statement("
@@ -46,6 +50,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (Schema::hasColumn('users', 'active_name_color')) {
+            return;
+        }
+
         Schema::table('users', function (Blueprint $table) {
             $table->string('active_name_color')->nullable()->after('bio');
             $table->string('active_avatar_frame')->nullable()->after('active_name_color');

@@ -1,24 +1,24 @@
 <div class="">
     <div class="rounded-2xl border border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="flex items-center space-x-3 mb-2">
-            <div class="w-10 h-10 bg-[#7132f5] rounded-[12px] flex items-center justify-center shrink-0 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                <i class="fas fa-graduation-cap text-white text-lg"></i>
+            <div class="w-10 h-10 bg-[var(--ll-blue)] rounded-[12px] flex items-center justify-center shrink-0 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+                <x-icon name="academic-cap" class="h-5 w-5 text-white" />
             </div>
-            <h2 class="text-2xl font-bold text-[#101114]" style="font-family: 'IBM Plex Sans', sans-serif; letter-spacing: -0.5px;">{{ __('Welcome back') }}</h2>
+            <h2 class="text-2xl font-bold text-[#101114]" style="letter-spacing: -0.5px;">ยินดีต้อนรับกลับ</h2>
         </div>
-        <p class="text-[#9497a9] mb-6">{{ __('Sign in to your account to continue') }}</p>
+        <p class="text-[#9497a9] mb-6">เข้าสู่ระบบเพื่อดำเนินการต่อ</p>
 
-        <form wire:submit="login" class="space-y-5">
+        <form wire:submit.prevent="login" class="space-y-5">
             {{-- Email --}}
             <div>
                 <label for="email"
-                    class="block text-sm font-medium text-[#686b82] mb-1">{{ __('Email address') }}</label>
+                    class="block text-sm font-medium text-[#686b82] mb-1">อีเมล</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-envelope text-[#9497a9]"></i>
+                        <x-icon name="envelope" class="h-4 w-4 text-[#9497a9]" />
                     </div>
                     <input wire:model="email" type="email" id="email"
-                        class="block w-full pl-10 pr-3 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('email') border-red-500 @enderror"
+                        class="block w-full pl-10 pr-3 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('email') border-red-500 @enderror"
                         placeholder="you@example.com">
                 </div>
                 @error('email') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
@@ -26,42 +26,45 @@
 
             {{-- Password --}}
             <div>
-                <label for="password" class="block text-sm font-medium text-[#686b82] mb-1">{{ __('Password') }}</label>
+                <label for="password" class="block text-sm font-medium text-[#686b82] mb-1">รหัสผ่าน</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-lock text-[#9497a9]"></i>
+                        <x-icon name="lock" class="h-4 w-4 text-[#9497a9]" />
                     </div>
                     <input wire:model="password" type="password" id="password"
-                        class="block w-full pl-10 pr-3 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[#7132f5] focus:border-[#7132f5] transition-colors @error('password') border-red-500 @enderror"
+                        class="block w-full pl-10 pr-3 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('password') border-red-500 @enderror"
                         placeholder="••••••••">
                 </div>
                 @error('password') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
             </div>
 
-            {{-- Remember me --}}
+            {{-- Remember me + Forgot password --}}
             <div class="flex items-center justify-between">
                 <label class="flex items-center">
                     <input wire:model="remember" type="checkbox"
-                        class="rounded border-[#dedee5] text-[#7132f5] focus:ring-[#7132f5]">
-                    <span class="ml-2 text-sm text-[#686b82]">{{ __('Remember me') }}</span>
+                        class="rounded border-[#dedee5] text-[var(--ll-blue)] focus:ring-[var(--ll-blue)]">
+                    <span class="ml-2 text-sm text-[#686b82]">จดจำฉัน</span>
                 </label>
+                <a href="{{ route('password.request') }}"
+                    class="text-sm text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)] font-medium transition-colors">
+                    ลืมรหัสผ่าน?
+                </a>
             </div>
 
             {{-- Submit --}}
             <button type="submit"
-                class="w-full flex justify-center items-center rounded-[12px] bg-[#7132f5] px-4 py-[13px] text-sm font-semibold text-white transition hover:bg-[#5741d8] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7132f5]">
-                <span wire:loading.remove wire:target="login"><i
-                        class="fas fa-arrow-right-to-bracket mr-2"></i>{{ __('Sign in') }}</span>
-                <span wire:loading wire:target="login"><i class="fas fa-spinner fa-spin mr-2"></i>
-                    {{ __('Signing in...') }}</span>
+                class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-[12px] px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ll-blue)]">
+                <span wire:loading.remove wire:target="login"><x-icon name="arrow-right-on-rectangle" class="h-4 w-4 mr-2" />เข้าสู่ระบบ</span>
+                <span wire:loading wire:target="login"><x-icon name="spinner" class="h-4 w-4 mr-2 animate-spin" />
+                    กำลังเข้าสู่ระบบ...</span>
             </button>
         </form>
 
         <div class="mt-6 text-center">
             <p class="text-sm text-[#686b82]">
-                {{ __('Don\'t have an account?') }}
+                ยังไม่มีบัญชี?
                 <a href="{{ route('register') }}"
-                    class="font-semibold text-[#7132f5] hover:text-[#5741d8] transition-colors">{{ __('Create one') }}</a>
+                    class="font-semibold text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)] transition-colors">สร้างบัญชี</a>
             </p>
         </div>
     </div>

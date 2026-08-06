@@ -23,9 +23,9 @@ class Classrooms extends Component
 
     public function deleteClassroom(Classroom $classroom)
     {
-        // In a real app, we might want a confirmation modal
+        abort_unless(auth()->user()->isAdmin(), 403);
         $classroom->delete();
-        $this->dispatch('notify', message: __('Classroom deleted.'));
+        $this->dispatch('notify', message: 'ลบห้องเรียนแล้ว');
     }
 
     public function render()

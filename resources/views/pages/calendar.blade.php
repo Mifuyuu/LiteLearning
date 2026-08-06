@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('page-title', __('Calendar'))
+@section('page-title', 'ปฏิทิน')
 @section('content')
     <div class="">
         <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 border border-indigo-200 flex items-center justify-center">
-                <i class="fas fa-calendar-alt text-indigo-600"></i>
+            <div class="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center">
+                <x-icon name="calendar-days" class="h-6 w-6 text-blue-600" />
             </div>
-            <h2 class="text-2xl font-bold text-gray-900">{{ __('Calendar') }}</h2>
+            <h2 class="text-2xl font-bold text-gray-900">{{ 'ปฏิทิน' }}</h2>
         </div>
 
         @php
@@ -27,14 +27,14 @@
             <div class="border border-[#dedee5] rounded-xl p-16 text-center bg-white">
                 <img src="{{ asset('images/spacesuit_sleep.webp') }}" alt=""
                     class="w-44 h-auto sm:w-52 mx-auto mb-5 select-none" />
-                <p class="text-base font-medium text-[#686b82]">{{ __('No upcoming deadlines!') }}</p>
+                <p class="text-base font-medium text-[#686b82]">{{ 'ไม่มีภารกิจที่กำลังจะหมดอายุ!' }}</p>
             </div>
         @else
             <div class="space-y-6">
                 @foreach($upcoming->groupBy(fn($a) => $a->due_date->format('Y-m-d')) as $date => $assignments)
                     <div>
                         <div class="flex items-center gap-3 mb-3">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-[#6366f1]">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">
                                 {{ \Carbon\Carbon::parse($date)->translatedFormat('l') }}
                             </span>
                             <span class="text-sm font-medium text-gray-500">
@@ -42,7 +42,7 @@
                             </span>
                             <div class="flex-1 h-px bg-gray-200"></div>
                             <span class="text-xs text-gray-500 bg-white border border-gray-200 rounded-full px-2 py-0.5">
-                                {{ $assignments->count() }} {{ __('item') }}
+                                {{ $assignments->count() }} {{ 'รายการ' }}
                             </span>
                         </div>
 
@@ -72,10 +72,10 @@
                                             {{ $a->due_date->translatedFormat('H:i') }}
                                         </span>
                                         @if($isUrgent)
-                                            <p class="text-xs text-red-500 mt-0.5">{{ __('Due soon') }}</p>
+                                            <p class="text-xs text-red-500 mt-0.5">{{ 'ใกล้กำหนดส่ง' }}</p>
                                         @endif
                                     </div>
-                                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                    <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />
                                 </a>
                             @endforeach
                         </div>

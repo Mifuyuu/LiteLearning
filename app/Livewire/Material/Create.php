@@ -96,7 +96,7 @@ class Create extends Component
                 ]);
             }
 
-            session()->flash('message', __('Material created successfully.'));
+            session()->flash('message', 'สร้างเอกสารเรียบร้อยแล้ว');
 
             $this->redirect(
                 route('material.show', ['classroom' => $this->classroom, 'material' => $material]),

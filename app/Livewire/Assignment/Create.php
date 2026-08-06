@@ -7,7 +7,6 @@ use App\Livewire\Concerns\HasTopicSelector;
 use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Classroom;
-use App\Services\GamificationService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -191,8 +190,6 @@ class Create extends Component
                     ]);
                 }
             }
-
-            app(GamificationService::class)->awardForAssignmentCreated($user, $assignment->id);
 
             $this->redirect(route('assignment.show', [
                 'classroom' => $this->classroom,

@@ -1,7 +1,7 @@
 @php
     $pillClass = fn (bool $active): string => $active
-        ? 'bg-[rgba(133,91,251,0.16)] text-[#7132f5]'
-        : 'text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]';
+        ? 'bg-[rgba(37,99,235,0.16)] text-[#2563eb]'
+        : 'text-[#686b82] hover:bg-[rgba(37,99,235,0.08)] hover:text-[#2563eb]';
     $iconName = fn (string $name, bool $active): string => $active ? $name . '-solid' : $name;
     $sort = $sort ?? 'sort-last-name';
     $display = $display ?? 'default';
@@ -12,28 +12,28 @@
     <a href="{{ route('classroom.show', $classroom) }}" wire:navigate
         class="inline-flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-bold transition-colors {{ $pillClass($active) }}">
         <x-icon :name="$iconName('home', $active)" class="h-4 w-4" />
-        <span class="hidden sm:inline">{{ __('หน้าหลัก') }}</span>
+        <span class="hidden sm:inline">{{ 'หน้าหลัก' }}</span>
     </a>
 
     @php $active = request()->routeIs('classroom.stream'); @endphp
     <a href="{{ route('classroom.stream', $classroom) }}" wire:navigate
         class="inline-flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-bold transition-colors {{ $pillClass($active) }}">
         <x-icon :name="$iconName('chat-bubble-left-ellipsis', $active)" class="h-4 w-4" />
-        <span class="hidden sm:inline">{{ __('กระดานสนทนา') }}</span>
+        <span class="hidden sm:inline">{{ 'กระดานสนทนา' }}</span>
     </a>
 
     @php $active = request()->routeIs('classroom.work'); @endphp
     <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
         class="inline-flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-bold transition-colors {{ $pillClass($active) }}">
         <x-icon :name="$iconName('clipboard-document-list', $active)" class="h-4 w-4" />
-        <span class="hidden sm:inline">{{ __('Classwork') }}</span>
+        <span class="hidden sm:inline">{{ 'งานในชั้นเรียน' }}</span>
     </a>
 
     @php $active = request()->routeIs('classroom.roster'); @endphp
     <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => $sort]) }}" wire:navigate
         class="inline-flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-bold transition-colors {{ $pillClass($active) }}">
         <x-icon :name="$iconName('users', $active)" class="h-4 w-4" />
-        <span class="hidden sm:inline">{{ __('สมาชิก') }}</span>
+        <span class="hidden sm:inline">{{ 'สมาชิก' }}</span>
     </a>
 
     @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
@@ -41,7 +41,7 @@
         <a href="{{ route('classroom.settings', $classroom) }}" wire:navigate
             class="inline-flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-bold transition-colors {{ $pillClass($active) }}">
             <x-icon name="cog-6-tooth" class="h-4 w-4" />
-            <span class="hidden sm:inline">{{ __('Settings') }}</span>
+            <span class="hidden sm:inline">{{ 'ตั้งค่า' }}</span>
         </a>
     @endif
 
@@ -50,7 +50,7 @@
         <a href="{{ route('classroom.gradebook', ['classroom' => $classroom, 'sort' => $sort, 'display' => $display]) }}" wire:navigate
             class="ml-auto inline-flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-bold transition-colors {{ $pillClass($active) }}">
             <x-icon :name="$iconName('chart-bar', $active)" class="h-4 w-4" />
-            <span class="hidden sm:inline">{{ __('Gradebook') }}</span>
+            <span class="hidden sm:inline">{{ 'สมุดเกรด' }}</span>
         </a>
     @endif
 </nav>

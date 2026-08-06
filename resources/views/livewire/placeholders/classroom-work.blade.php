@@ -1,4 +1,4 @@
-@section('page-title', (isset($classroom) ? (__('Work') . ' - ' . $classroom->name) : __('Work')))
+@section('page-title', (isset($classroom) ? ('งานในชั้นเรียน' . ' - ' . $classroom->name) : 'งานในชั้นเรียน'))
 <div class="space-y-6">
     @if(isset($classroom))
         @include('livewire.classroom.partials.subnav', ['classroom' => $classroom])

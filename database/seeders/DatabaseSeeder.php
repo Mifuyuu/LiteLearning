@@ -5,7 +5,9 @@ namespace Database\Seeders;
 use App\Models\Announcement;
 use App\Models\Assignment;
 use App\Models\Classroom;
+use App\Models\ClassworkItem;
 use App\Models\Comment;
+use App\Models\Material;
 use App\Models\Submission;
 use App\Models\ThemeCategory;
 use App\Models\User;
@@ -14,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -118,10 +121,18 @@ class DatabaseSeeder extends Seeder
             $feedOrder = 1;
 
             foreach ($blueprint['announcements'] as $announcementData) {
-                $announcement = Announcement::create([
-                    'user_id' => $teacher->id,
+                $slugBase = Str::slug($announcementData['title']);
+                $classworkItem = ClassworkItem::create([
+                    'type' => 'announcement',
                     'classroom_id' => $classroom->id,
+                    'user_id' => $teacher->id,
                     'title' => $announcementData['title'],
+                    'slug' => Str::substr($slugBase, 0, 25) . '-' . Str::random(6),
+                    'published_at' => now(),
+                ]);
+
+                $announcement = Announcement::create([
+                    'classwork_item_id' => $classworkItem->id,
                     'content' => $announcementData['content'],
                 ]);
 
@@ -147,30 +158,50 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
 
+            $topicsByName = \App\Models\Topic::where('classroom_id', $classroom->id)
+                ->pluck('id', 'name');
+
             foreach ($blueprint['assignments'] as $assignmentIndex => $assignmentData) {
                 $dueDate = $assignmentData['days'] !== null
                     ? now()->copy()->addDays($assignmentData['days'])->setTime(23, 59)
                     : null;
 
-                $assignment = Assignment::create([
-                    'user_id' => $teacher->id,
+                $type = $assignmentData['type'];
+                $skipAssignment = in_array($type, ['material', 'attendance'], true);
+                $slugBase = Str::slug($assignmentData['title']);
+                $classworkItem = ClassworkItem::create([
+                    'type' => $skipAssignment ? $type : 'assignment',
                     'classroom_id' => $classroom->id,
+                    'user_id' => $teacher->id,
+                    'topic_id' => $topicsByName[$assignmentData['topic']] ?? null,
                     'title' => $assignmentData['title'],
+                    'slug' => Str::substr($slugBase, 0, 25) . '-' . Str::random(6),
                     'description' => 'รายละเอียดงาน: '.$assignmentData['title'].' โปรดอ่านคำชี้แจงให้ครบและส่งภายในเวลาที่กำหนด',
+                    'published_at' => now(),
+                ]);
+
+                if ($skipAssignment) {
+                    if ($type === 'material') {
+                        \App\Models\Material::create(['classwork_item_id' => $classworkItem->id]);
+                    }
+                    continue;
+                }
+
+                $assignment = Assignment::create([
+                    'classwork_item_id' => $classworkItem->id,
                     'max_score' => $assignmentData['max_score'],
                     'exp_reward' => $assignmentData['max_score'] > 0 ? 30 : 0,
                     'coin_reward' => $assignmentData['max_score'] > 0 ? 10 : 0,
                     'due_date' => $dueDate,
                     'status' => 'published',
                     'type' => $assignmentData['type'],
-                    'topic' => $assignmentData['topic'],
                     'allow_late_submission' => in_array($assignmentData['type'], ['project', 'file'], true),
                 ]);
 
                 foreach ($assignmentData['submission_states'] as $studentIndex => $status) {
                     $student = $enrolledStudents[$studentIndex] ?? null;
 
-                    if (! $student || in_array($assignmentData['type'], ['material', 'announcement', 'topic'], true)) {
+                    if (! $student) {
                         continue;
                     }
 
@@ -219,16 +250,22 @@ class DatabaseSeeder extends Seeder
         $this->call(GamificationFeaturesSeeder::class);
         $this->call(LeaderboardSeeder::class);
 
+        $makeUser = function (array $data): User {
+            $user = User::firstOrNew(['email' => $data['email']]);
+            if (!$user->exists) {
+                $user->fill([
+                    'name' => $data['name'],
+                    'password' => Hash::make('password'),
+                    'role' => $data['role'],
+                    'email_verified_at' => now(),
+                ]);
+                $user->save();
+            }
+            return $user;
+        };
+
         // Create admin
-        $admin = User::updateOrCreate(
-            ['email' => 'admin@litelearning.com'],
-            [
-                'name' => 'Admin User',
-                'password' => Hash::make('password'),
-                'role' => 'admin',
-                'email_verified_at' => now(),
-            ]
-        );
+        $admin = $makeUser(['email' => 'admin@litelearning.com', 'name' => 'Admin User', 'role' => 'admin']);
 
         // Create teachers
         $teachers = collect();
@@ -239,15 +276,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($teacherData as $data) {
-            $teachers->push(User::updateOrCreate(
-                ['email' => $data['email']],
-                [
-                    'name' => $data['name'],
-                    'password' => Hash::make('password'),
-                    'role' => 'teacher',
-                    'email_verified_at' => now(),
-                ]
-            ));
+            $teachers->push($makeUser(['name' => $data['name'], 'email' => $data['email'], 'role' => 'teacher']));
         }
 
         // Create students
@@ -261,15 +290,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($studentData as $data) {
-            $students->push(User::updateOrCreate(
-                ['email' => $data['email']],
-                [
-                    'name' => $data['name'],
-                    'password' => Hash::make('password'),
-                    'role' => 'student',
-                    'email_verified_at' => now(),
-                ]
-            ));
+            $students->push($makeUser(['name' => $data['name'], 'email' => $data['email'], 'role' => 'student']));
         }
 
         $moreStudents = User::factory(10)->create(['role' => 'student']);

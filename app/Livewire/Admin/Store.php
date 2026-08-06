@@ -83,10 +83,10 @@ class Store extends Component
         if ($this->editingId) {
             $item = StoreItem::findOrFail($this->editingId);
             $item->update($this->form);
-            $this->dispatch('notify', message: __('admin.store.updated'));
+            $this->dispatch('notify', message: 'อัปเดตสินค้าแล้ว');
         } else {
             StoreItem::create($this->form);
-            $this->dispatch('notify', message: __('admin.store.created'));
+            $this->dispatch('notify', message: 'เพิ่มสินค้าแล้ว');
         }
 
         $this->showModal = false;
@@ -98,13 +98,13 @@ class Store extends Component
         $item->is_active = ! $item->is_active;
         $item->save();
 
-        $this->dispatch('notify', message: __('admin.store.status_updated'));
+        $this->dispatch('notify', message: 'อัปเดตสถานะสินค้าแล้ว');
     }
 
     public function delete(StoreItem $item)
     {
         $item->delete();
-        $this->dispatch('notify', message: __('admin.store.deleted'));
+        $this->dispatch('notify', message: 'ลบสินค้าแล้ว');
     }
 
     public function render()

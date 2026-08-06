@@ -12,6 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasColumn('announcements', 'user_id')) {
+            return;
+        }
+
         // 1. Alter classwork_items.type enum to include 'announcement' and 'attendance'
         if (DB::getDriverName() === 'sqlite') {
             // SQLite enum() generates a CHECK constraint that can't be altered.
@@ -151,6 +155,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (!Schema::hasColumn('announcements', 'classwork_item_id')) {
+            return;
+        }
+
         // 1. Re-add columns to announcements
         Schema::table('announcements', function (Blueprint $table) {
             $table->foreignId('user_id')->nullable()->after('classwork_item_id')->constrained()->cascadeOnDelete();

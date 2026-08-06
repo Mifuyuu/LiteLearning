@@ -33,7 +33,7 @@ class Users extends Component
     public function toggleStatus(User $user)
     {
         if ($user->id === auth()->id()) {
-            $this->dispatch('notify', message: __('admin.users.toggle_self_error'));
+            $this->dispatch('notify', message: 'คุณไม่สามารถปิดใช้งานบัญชีของตัวเองได้!');
 
             return;
         }
@@ -41,19 +41,19 @@ class Users extends Component
         $user->is_active = ! $user->is_active;
         $user->save();
 
-        $this->dispatch('notify', message: __('admin.users.status_updated'));
+        $this->dispatch('notify', message: 'อัปเดตสถานะผู้ใช้สำเร็จ');
     }
 
     public function updateRole(User $user, $newRole)
     {
         if (! in_array($newRole, ['admin', 'teacher', 'student'], true)) {
-            $this->dispatch('notify', message: __('Invalid role.'));
+            $this->dispatch('notify', message: 'บทบาทไม่ถูกต้อง');
 
             return;
         }
 
         if ($user->id === auth()->id() && $newRole !== 'admin') {
-            $this->dispatch('notify', message: __('admin.users.role_self_error'));
+            $this->dispatch('notify', message: 'คุณไม่สามารถยกเลิกบทบาทผู้ดูแลของตัวเองได้!');
 
             return;
         }
@@ -61,19 +61,19 @@ class Users extends Component
         $user->role = $newRole;
         $user->save();
 
-        $this->dispatch('notify', message: __('admin.users.role_updated', ['role' => ucfirst($newRole)]));
+        $this->dispatch('notify', message: 'อัปเดตบทบาทผู้ใช้เป็น ' . ucfirst($newRole) . ' แล้ว');
     }
 
     public function deleteUser(User $user)
     {
         if ($user->id === auth()->id()) {
-            $this->dispatch('notify', message: __('admin.users.toggle_self_error'));
+            $this->dispatch('notify', message: 'คุณไม่สามารถปิดใช้งานบัญชีของตัวเองได้!');
 
             return;
         }
 
         $user->delete();
-        $this->dispatch('notify', message: __('admin.users.deleted'));
+        $this->dispatch('notify', message: 'ลบผู้ใช้แล้ว');
     }
 
     public function render()

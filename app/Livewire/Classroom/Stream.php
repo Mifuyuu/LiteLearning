@@ -70,7 +70,7 @@ class Stream extends Component
             return;
         }
 
-        $announcement = Announcement::findOrFail($announcementId);
+        $announcement = Announcement::with('classworkItem')->findOrFail($announcementId);
         abort_unless($announcement->classroom_id === $this->classroom->id, 404);
 
         /** @var User $user */
@@ -97,6 +97,6 @@ class Stream extends Component
     public function render()
     {
         return view('livewire.classroom.stream')
-            ->title($this->classroom->name.' - '.__('กระดานสนทนา'));
+            ->title($this->classroom->name.' - '.'กระดานสนทนา');
     }
 }

@@ -28,6 +28,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_active',
     ];
 
+    public function fill(array $attributes)
+    {
+        if ($this->exists && array_key_exists('role', $attributes)) {
+            throw new \LogicException('Role cannot be changed via fill() on an existing user. Use $user->role = \'...\' directly for explicit role changes.');
+        }
+
+        return parent::fill($attributes);
+    }
+
     protected $hidden = [
         'password',
         'remember_token',

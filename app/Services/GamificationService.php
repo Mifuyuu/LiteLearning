@@ -21,61 +21,6 @@ class GamificationService
         return $user->isStudent();
     }
 
-    private function awardEventReward(
-        User $user,
-        int $coins,
-        int $xp,
-        string $source,
-        string $referenceType,
-        int $referenceId
-    ): bool {
-        if (! $this->isEligible($user)) {
-            return false;
-        }
-
-        return DB::transaction(function () use ($user, $coins, $xp, $source, $referenceType, $referenceId): bool {
-            $alreadyAwarded = CoinTransaction::query()
-                ->where('user_id', $user->id)
-                ->where('source', $source)
-                ->where('reference_type', $referenceType)
-                ->where('reference_id', $referenceId)
-                ->exists();
-
-            if ($alreadyAwarded) {
-                return false;
-            }
-
-            $now = now();
-            $inserted = DB::table('coin_transactions')->insertOrIgnore([
-                'user_id' => $user->id,
-                'amount' => $coins,
-                'type' => 'earn',
-                'source' => $source,
-                'reference_type' => $referenceType,
-                'reference_id' => $referenceId,
-                'idempotency_key' => "{$source}:{$user->id}:{$referenceId}",
-                'metadata' => null,
-                'happened_at' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
-
-            if ($inserted === 0) {
-                return false;
-            }
-
-            $gamification = $user->gamification()->firstOrCreate(
-                ['user_id' => $user->id],
-                ['coins' => 0, 'xp' => 0, 'level' => 1]
-            );
-            $gamification->increment('coins', $coins);
-
-            $this->awardXp($user, $xp);
-
-            return true;
-        });
-    }
-
     public function awardCoins(User $user, int $amount, string $source, ?string $referenceType = null, ?int $referenceId = null, array $metadata = []): void
     {
         if (! $this->isEligible($user)) {
@@ -124,20 +69,10 @@ class GamificationService
 
         $newXp = $gamification->xp + $amount;
         $newLevel = $this->resolveLevelFromXp($newXp);
-        $levelUps = max(0, $newLevel - $gamification->level);
-
         $gamification->update([
             'xp' => $newXp,
             'level' => $newLevel,
         ]);
-
-        if ($levelUps > 0) {
-            $bonusCoins = $levelUps * 20;
-            $this->awardCoins($user, $bonusCoins, 'level_up', null, null, [
-                'levels_gained' => $levelUps,
-                'new_level' => $newLevel,
-            ]);
-        }
 
         if ($newLevel >= 5) {
             $this->unlockAchievement($user, 'level_up');
@@ -166,6 +101,15 @@ class GamificationService
             'unlocked_at' => now(),
         ]);
 
+        // ponytail: session flash, existing toast shows it on next render
+        session()->push('new_achievements', [
+            'name' => $achievement->name,
+            'description' => $achievement->description,
+            'badge_image' => $achievement->badge_image,
+            'coin_reward' => (int) $achievement->coin_reward,
+            'xp_reward' => (int) $achievement->xp_reward,
+        ]);
+
         if ($achievement->coin_reward > 0) {
             $this->awardCoins($user, (int) $achievement->coin_reward, 'achievement', Achievement::class, $achievement->id, [
                 'code' => $achievement->code,
@@ -177,15 +121,9 @@ class GamificationService
         }
     }
 
-    public function awardForClassroomCreated(User $user, int $classroomId): void
-    {
-        $this->awardCoins($user, 30, 'classroom_created', 'classroom', $classroomId);
-        $this->awardXp($user, 40);
-    }
-
     public function awardForClassroomJoined(User $user, int $classroomId): void
     {
-        if (! $this->awardEventReward($user, 15, 25, 'classroom_joined', 'classroom', $classroomId)) {
+        if (! $this->isEligible($user)) {
             return;
         }
 
@@ -198,15 +136,9 @@ class GamificationService
         }
     }
 
-    public function awardForAssignmentCreated(User $user, int $assignmentId): void
-    {
-        $this->awardCoins($user, 20, 'assignment_created', 'assignment', $assignmentId);
-        $this->awardXp($user, 30);
-    }
-
     public function awardForAssignmentTurnedIn(User $user, int $assignmentId): void
     {
-        if (! $this->awardEventReward($user, 10, 20, 'assignment_turned_in', 'assignment', $assignmentId)) {
+        if (! $this->isEligible($user)) {
             return;
         }
 
@@ -290,31 +222,26 @@ class GamificationService
 
     private function hasCompletedAnyClassroom(User $user): bool
     {
-        $classroomIds = $user->enrolledClassrooms()->pluck('classrooms.id');
-
-        foreach ($classroomIds as $classroomId) {
-            $assignmentIds = Assignment::query()
-                ->whereHas('classworkItem', fn ($query) => $query->where('classroom_id', $classroomId))
-                ->where('status', 'published')
-                ->whereNotIn('type', ['announcement', 'material', 'topic'])
-                ->pluck('id');
-
-            if ($assignmentIds->isEmpty()) {
-                continue;
-            }
-
-            $completedCount = $user->submissions()
-                ->whereIn('assignment_id', $assignmentIds)
-                ->whereIn('status', ['turned_in', 'graded', 'returned'])
-                ->distinct('assignment_id')
-                ->count('assignment_id');
-
-            if ($completedCount >= $assignmentIds->count()) {
-                return true;
-            }
-        }
-
-        return false;
+        // Single query: join the full chain and check if any classroom
+        // has all its published assignments completed by this user.
+        return DB::table('classroom_user')
+            ->where('classroom_user.user_id', $user->id)
+            ->join('classrooms', 'classrooms.id', '=', 'classroom_user.classroom_id')
+            ->join('classwork_items', 'classwork_items.classroom_id', '=', 'classrooms.id')
+            ->join('assignments', function ($join) {
+                $join->on('assignments.classwork_item_id', '=', 'classwork_items.id')
+                    ->where('assignments.status', 'published')
+                    ->whereNotIn('assignments.type', ['announcement', 'material', 'topic']);
+            })
+            ->leftJoin('submissions', function ($join) use ($user) {
+                $join->on('submissions.assignment_id', '=', 'assignments.id')
+                    ->where('submissions.user_id', $user->id)
+                    ->whereIn('submissions.status', ['turned_in', 'graded', 'returned']);
+            })
+            ->groupBy('classrooms.id')
+            ->havingRaw('COUNT(assignments.id) > 0')
+            ->havingRaw('COUNT(assignments.id) = COUNT(submissions.assignment_id)')
+            ->exists();
     }
 
     /**
@@ -350,15 +277,11 @@ class GamificationService
     public function purchaseItem(User $user, StoreItem $item): void
     {
         if (! $this->isEligible($user)) {
-            throw new GamificationException(__('Only students can purchase items.'));
+            throw new GamificationException(__('app.store_student_only'));
         }
 
         if (! $item->is_active) {
-            throw new GamificationException(__('This item is no longer available.'));
-        }
-
-        if ($user->storeItems()->where('store_item_id', $item->id)->exists()) {
-            throw new GamificationException(__('You already own this item.'));
+            throw new GamificationException(__('app.store_item_unavailable'));
         }
 
         DB::transaction(function () use ($user, $item) {
@@ -368,7 +291,7 @@ class GamificationService
             );
 
             if ($user->storeItems()->where('store_item_id', $item->id)->exists()) {
-                throw new GamificationException(__('You already own this item.'));
+                throw new GamificationException(__('app.store_already_owned'));
             }
 
             $coinsDeducted = UserGamification::query()
@@ -377,7 +300,7 @@ class GamificationService
                 ->decrement('coins', $item->price);
 
             if ($coinsDeducted === 0) {
-                throw new GamificationException(__('Not enough coins.'));
+                throw new GamificationException(__('app.store_insufficient_coins'));
             }
 
             // Record transaction
@@ -394,7 +317,7 @@ class GamificationService
             try {
                 $user->storeItems()->attach($item->id);
             } catch (QueryException $exception) {
-                throw new GamificationException(__('You already own this item.'), previous: $exception);
+                throw new GamificationException(__('app.store_already_owned'), previous: $exception);
             }
         });
     }
@@ -407,11 +330,11 @@ class GamificationService
     public function equipItem(User $user, StoreItem $item): void
     {
         if (! $this->isEligible($user)) {
-            throw new GamificationException(__('Only students can equip items.'));
+            throw new GamificationException(__('app.store_equip_student_only'));
         }
 
         if (! $user->storeItems()->where('store_item_id', $item->id)->exists()) {
-            throw new GamificationException(__('You do not own this item.'));
+            throw new GamificationException(__('app.store_not_owned'));
         }
 
         DB::transaction(function () use ($user, $item) {

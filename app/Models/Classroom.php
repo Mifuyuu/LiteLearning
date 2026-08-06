@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Str;
 
 class Classroom extends Model
@@ -46,37 +47,51 @@ class Classroom extends Model
         });
     }
 
+    // Override save() to retry on unique constraint violation.
+    // The race window between exists() check in generateUniqueCode/slug
+    // and the actual INSERT is closed by catching the DB exception
+    // and regenerating new values on collision.
+    public function save(array $options = []): bool
+    {
+        $maxAttempts = 3;
+
+        for ($i = 0; $i < $maxAttempts; $i++) {
+            try {
+                return parent::save($options);
+            } catch (UniqueConstraintViolationException $e) {
+                if ($i === $maxAttempts - 1) {
+                    throw $e;
+                }
+
+                $this->code = self::generateUniqueCode();
+                $this->slug = self::generateUniqueSlug();
+            }
+        }
+
+        return false;
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';
     }
 
-    // Fix #1: retry on UniqueConstraintViolationException instead of relying on a loop
-    // that has a race condition between the exists() check and the INSERT.
     public static function generateUniqueCode(): string
     {
-        while (true) {
+        do {
             $code = strtoupper(Str::random(6));
-            if (! self::where('code', $code)->exists()) {
-                return $code;
-            }
-            // If we somehow get here after the DB unique index fires a collision,
-            // the outer creating() hook will retry via the exception handler.
-        }
+        } while (self::where('code', $code)->exists());
+
+        return $code;
     }
 
     public static function generateUniqueSlug(): string
     {
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        while (true) {
-            $slug = '';
-            for ($i = 0; $i < 16; $i++) {
-                $slug .= $chars[random_int(0, strlen($chars) - 1)];
-            }
-            if (! self::where('slug', $slug)->exists()) {
-                return $slug;
-            }
-        }
+        do {
+            $slug = Str::random(16);
+        } while (self::where('slug', $slug)->exists());
+
+        return $slug;
     }
 
     // Relationships

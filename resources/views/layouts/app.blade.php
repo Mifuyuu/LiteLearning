@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? __('Dashboard') }}</title>
+    <link rel="icon" href="{{ asset('images/favicon.png') }}">
+    <title>{{ $title ?? 'แดชบอร์ด' }}</title>
 
     <!-- Fonts (preconnect + preload for instant rendering) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,27 +36,25 @@
 
 <body class="h-full overflow-hidden bg-[#f3f4f6] font-sans antialiased text-[#101114]" x-data="{ sidebarOpen: true, mobileSidebar: false }">
 
+    {{-- safelist: dynamic name-color classes from store_items.value (Tailwind v4 JIT scan) --}}
+    <div class="hidden text-red-500 text-blue-500 text-amber-500 text-purple-600"></div>
+
     <div class="relative z-10 flex h-screen overflow-clip">
         <!-- Sidebar -->
         <aside
             class="fixed inset-y-0 left-0 z-30 flex w-72 -translate-x-full flex-col overflow-hidden bg-white transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:translate-x-0 lg:shrink-0"
             :class="{ '-translate-x-full': !mobileSidebar, 'translate-x-0': mobileSidebar }">
-            <div class="flex h-[88px] shrink-0 items-center gap-3 px-6">
-                <div class="flex h-11 w-11 items-center justify-center rounded-[12px] bg-[#7132f5] text-white">
-                    <x-icon name="academic-cap" class="h-6 w-6" />
-                </div>
-                <div class="min-w-0">
-                    <p class="text-xl font-bold leading-tight tracking-tight text-[#7132f5]" style="letter-spacing: -0.5px">LiteLearning</p>
-                    <p class="truncate text-xs font-medium text-[#9497a9]">{{ __(ucfirst(auth()->user()->role)) }}</p>
-                </div>
+            <div class="flex h-[88px] shrink-0 items-center px-6">
+                <img src="{{ asset('images/LiteLearn.svg') }}" alt="LiteLearning"
+                    class="h-11 w-auto">
             </div>
 
             <!-- Navigation -->
             <nav class="flex-1 min-h-0 space-y-1 overflow-y-auto px-4 pb-5">
                 @php
                     $navItemClass = fn(bool $isActive): string => $isActive
-                        ? 'bg-[rgba(133,91,251,0.16)] text-[#7132f5] rounded-[12px]'
-                        : 'text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5] rounded-[12px]';
+                        ? 'bg-[rgba(59,130,246,0.16)] text-[#2563eb] rounded-[12px]'
+                        : 'text-[#686b82] hover:bg-[rgba(59,130,246,0.08)] hover:text-[#2563eb] rounded-[12px]';
 
                     $isDashboardActive = request()->routeIs('dashboard');
                     $isClassroomsActive = request()->routeIs('classrooms')
@@ -69,6 +68,7 @@
                     $isToReviewActive = request()->routeIs('to-review');
 
                     $isStoreActive = request()->routeIs('store');
+                    $isInventoryActive = request()->routeIs('inventory');
                     $isLeaderboardActive = request()->routeIs('leaderboard');
                     $isAchievementsActive = request()->routeIs('achievements');
                     $isProfileActive = request()->routeIs('profile');
@@ -87,14 +87,14 @@
                     <a href="{{ route('dashboard') }}" wire:navigate
                         class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isDashboardActive) }}">
                         <x-icon name="home{{ $isDashboardActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                        {{ __('Dashboard') }}
+                        {{ 'แดชบอร์ด' }}
                     </a>
 
                     @if(!auth()->user()->isTeacher())
                         <a href="{{ route('classrooms') }}" wire:navigate
                             class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isClassroomsActive) }}">
                             <x-icon name="academic-cap{{ $isClassroomsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                            {{ __('Classrooms') }}
+                            {{ 'ห้องเรียน' }}
                         </a>
                     @endif
 
@@ -102,7 +102,7 @@
                     <a href="{{ route('calendar') }}" wire:navigate
                         class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isCalendarActive) }}">
                         <x-icon name="calendar-days{{ $isCalendarActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                        {{ __('Calendar') }}
+                        {{ 'ปฏิทิน' }}
                     </a>
                     @endif
 
@@ -110,24 +110,29 @@
                         <a href="{{ route('achievements') }}" wire:navigate
                             class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isAchievementsActive) }}">
                             <x-icon name="star{{ $isAchievementsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                            {{ __('Achievements & Badges') }}
+                            {{ 'ความสำเร็จ' }}
                         </a>
                         <a href="{{ route('leaderboard') }}" wire:navigate
                             class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isLeaderboardActive) }}">
                             <x-icon name="trophy{{ $isLeaderboardActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                            {{ __('Leaderboard') }}
+                            {{ 'กระดานผู้นำ' }}
                         </a>
                         <a href="{{ route('store') }}" wire:navigate
                             class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isStoreActive) }}">
                             <x-icon name="shopping-bag{{ $isStoreActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                            {{ __('store.title') }}
+                            {{ 'ร้านค้า' }}
+                        </a>
+                        <a href="{{ route('inventory') }}" wire:navigate
+                            class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isInventoryActive) }}">
+                            <x-icon name="backpack{{ $isInventoryActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
+                            {{ 'คลังเก็บของ' }}
                         </a>
                     @endif
 
                     @if(auth()->user()->isTeacher())
                         <div class="pt-4">
                             <p class="px-3 text-xs font-medium text-[#9497a9] uppercase tracking-widest">
-                                {{ __('Teaching') }}
+                                {{ 'การสอน' }}
                             </p>
                             <div class="mt-2 space-y-1">
                 @php
@@ -136,12 +141,12 @@
                                 <a href="{{ route('classrooms') }}" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isMyClassesActive) }}">
                                     <x-icon name="academic-cap{{ $isMyClassesActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                    {{ __('ชั้นเรียนของฉัน') }}
+                                    {{ 'ชั้นเรียนของฉัน' }}
                                 </a>
                                 <a href="{{ route('to-review') }}" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isToReviewActive) }}">
                                     <x-icon name="clipboard-document-list{{ $isToReviewActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                    {{ __('To Review') }}
+                                    {{ 'รอตรวจ' }}
                                 </a>
                             </div>
                         </div>
@@ -151,43 +156,43 @@
                     {{-- Admin-only navigation --}}
                     <div class="pt-2">
                         <p class="px-3 text-xs font-semibold text-gray-400/70 uppercase tracking-wider">
-                            {{ __('Administration') }}
+                            {{ 'การจัดการระบบ' }}
                         </p>
                         <div class="mt-2 space-y-1">
                             <a href="{{ route('admin.dashboard') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isAdminDashboardActive) }}">
                                 <x-icon name="chart-bar{{ $isAdminDashboardActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                {{ __('Admin Dashboard') }}
+                                {{ 'แดชบอร์ดผู้ดูแล' }}
                             </a>
                             <a href="{{ route('admin.users') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isAdminUsersActive) }}">
                                 <x-icon name="users{{ $isAdminUsersActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                {{ __('User Management') }}
+                                {{ 'จัดการผู้ใช้' }}
                             </a>
                             <a href="{{ route('admin.classrooms') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isAdminClassroomsActive) }}">
                                 <x-icon name="academic-cap{{ $isAdminClassroomsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                {{ __('Classroom Management') }}
+                                {{ 'จัดการห้องเรียน' }}
                             </a>
                             <a href="{{ route('admin.store') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isAdminStoreActive) }}">
                                 <x-icon name="shopping-bag{{ $isAdminStoreActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                {{ __('Store Management') }}
+                                {{ 'จัดการร้านค้า' }}
                             </a>
                             <a href="{{ route('admin.achievements') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isAdminAchievementsActive) }}">
                                 <x-icon name="trophy{{ $isAdminAchievementsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                {{ __('Achievements') }}
+                                {{ 'ความสำเร็จ' }}
                             </a>
                             <a href="{{ route('admin.theme-categories') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isAdminThemeCategoriesActive) }}">
                                 <x-icon name="sparkles{{ $isAdminThemeCategoriesActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                {{ __('Theme Categories') }}
+                                {{ 'หมวดหมู่ธีม' }}
                             </a>
                             <a href="{{ route('admin.reports') }}" wire:navigate
                                 class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isAdminReportsActive) }}">
                                 <x-icon name="flag{{ $isAdminReportsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                {{ __('Bug Reports') }}
+                                {{ 'รายงานปัญหา' }}
                             </a>
                         </div>
                     </div>
@@ -202,8 +207,8 @@
                 <div class="w-full">
                     @if(auth()->user()->isTeacher())
                         <button x-data @click="$dispatch('open-create-classroom')"
-                            class="btn-3d btn-3d--indigo w-full flex items-center justify-center gap-1.5 py-2.5 text-sm font-bold rounded-xl cursor-pointer">
-                            <x-icon name="plus" class="h-4 w-4" />{{ __('Create Class') }}
+                            class="btn-3d btn-3d--blue w-full flex items-center justify-center gap-1.5 py-2.5 text-sm font-bold rounded-xl cursor-pointer">
+                            <x-icon name="plus" class="h-4 w-4" />{{ 'สร้างห้องเรียน' }}
                         </button>
                     @endif
                 </div>
@@ -212,23 +217,23 @@
                 <div class="space-y-1">
                     <!-- Settings Button (attached to bottom) -->
                     <a href="{{ route('settings') }}" wire:navigate
-                        class="flex w-full items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $isSettingsActive ? 'bg-[rgba(133,91,251,0.16)] text-[#7132f5]' : 'text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5]' }}">
+                        class="flex w-full items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $isSettingsActive ? 'bg-[rgba(59,130,246,0.16)] text-[#2563eb]' : 'text-[#686b82] hover:bg-[rgba(59,130,246,0.08)] hover:text-[#2563eb]' }}">
                         <x-icon name="cog-6-tooth{{ $isSettingsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                        {{ __('Settings') }}
+                        {{ 'ตั้งค่า' }}
                     </a>
 
                     <!-- Report Issue Button -->
                     <button x-data @click="$dispatch('openReportModal')"
-                        class="flex w-full items-center px-3 py-2.5 text-sm font-bold text-[#686b82] hover:bg-[rgba(133,91,251,0.08)] hover:text-[#7132f5] rounded-[8px] transition-colors cursor-pointer">
+                        class="flex w-full items-center px-3 py-2.5 text-sm font-bold text-[#686b82] hover:bg-[rgba(59,130,246,0.08)] hover:text-[#2563eb] rounded-[8px] transition-colors cursor-pointer">
                         <x-icon name="flag" class="mr-3 h-5 w-5" />
-                        {{ __('report.button') }}
+                        {{ 'รายงานปัญหา / เสนอแนะ' }}
                     </button>
 
                     <!-- Profile footer -->
                     <div class="mt-1.5 flex w-full items-center justify-between rounded-[8px] border border-[#dedee5] bg-white p-1">
                         <!-- Profile Link -->
                         <a href="{{ route('profile') }}" wire:navigate
-                            class="flex flex-1 items-center space-x-2.5 bg-transparent p-1.5 transition-colors hover:bg-[rgba(133,91,251,0.08)] cursor-pointer rounded-[6px] min-w-0">
+                            class="flex flex-1 items-center space-x-2.5 bg-transparent p-1.5 transition-colors hover:bg-[rgba(59,130,246,0.08)] cursor-pointer rounded-[6px] min-w-0">
                             <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
                                 class="w-8 h-8 rounded-full object-cover shrink-0">
                             <span class="text-sm font-medium text-[#101114] truncate max-w-[110px]">{{ auth()->user()->name }}</span>
@@ -239,7 +244,7 @@
                             @csrf
                             <button type="submit"
                                 class="relative rounded-[6px] p-2 text-[#686b82] transition-colors hover:bg-red-50 hover:text-red-600 cursor-pointer shrink-0"
-                                title="{{ __('Sign Out') }}">
+                                title="ออกจากระบบ">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
                                     <path fill-rule="evenodd" d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6ZM5.78 8.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 0 0 0 1.06l3 3a.75.75 0 0 0 1.06-1.06l-1.72-1.72H15a.75.75 0 0 0 0-1.5H4.06l1.72-1.72a.75.75 0 0 0 0-1.06Z" clip-rule="evenodd" />
                                 </svg>
@@ -272,7 +277,7 @@
                             @hasSection('breadcrumb')
                                 @yield('breadcrumb')
                             @else
-                                @yield('page-title', __('Dashboard'))
+                                @yield('page-title', 'แดชบอร์ด')
                             @endif
                         </h1>
                     </div>
@@ -281,7 +286,7 @@
 
             <!-- Page Content -->
             <main class="flex-1 min-h-0 overflow-x-hidden overflow-y-auto px-4 py-6 sm:px-6" style="scrollbar-gutter: stable">
-                <div data-content-width="{{ (request()->routeIs('dashboard') || request()->routeIs('store')) ? 'full' : 'contained' }}"
+                <div data-content-width="{{ (request()->routeIs('dashboard')) ? 'full' : 'contained' }}"
                     class="w-full {{ (request()->routeIs('dashboard') || request()->routeIs('store')) ? 'max-w-none' : 'mx-auto max-w-7xl' }}">
                     @hasSection('content')
                         @yield('content')
@@ -294,36 +299,63 @@
     </div>
 
     <div x-data="{ 
-            show: {{ session()->has('message') ? 'true' : 'false' }}, 
-            message: '{{ session('message') }}',
-            type: '{{ session('type', 'success') }}'
+            toasts: [],
+            addToast(message, type = 'success', badgeImage = '') {
+                const id = Date.now() + Math.random();
+                this.toasts.push({ id, message, type, badgeImage, leaving: false, visible: false });
+                requestAnimationFrame(() => {
+                    const t = this.toasts.find(t => t.id === id);
+                    if (t) t.visible = true;
+                });
+                const duration = badgeImage ? 5000 : 3000;
+                setTimeout(() => this.dismissToast(id), duration);
+            },
+            dismissToast(id) {
+                const t = this.toasts.find(t => t.id === id);
+                if (t) t.leaving = true;
+                setTimeout(() => this.removeToast(id), 300);
+            },
+            removeToast(id) {
+                this.toasts = this.toasts.filter(t => t.id !== id);
+            }
         }" @notify.window="
-            message = $event.detail.message; 
-            type = $event.detail.type || 'success';
-            show = true; 
-            setTimeout(() => show = false, 3000);
-        " x-init="if(show) setTimeout(() => show = false, 3000)" x-show="show" x-cloak
-        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
-        x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2"
-        class="fixed bottom-4 right-4 z-100 w-[calc(100%-2rem)] max-w-sm rounded-lg border-2 p-4 text-sm"
-        :class="{
-            'bg-green-50 border-green-300 text-green-800': type === 'success',
-            'bg-red-50 border-red-300 text-red-800': type === 'error',
-            'bg-blue-50 border-blue-300 text-blue-800': type === 'info'
-        }">
-        <div class="flex items-start gap-2">
-            <span class="mt-0.5">
-                <x-icon name="check-circle" class="h-5 w-5" />
-            </span>
-            <p class="flex-1" x-text="message"></p>
-            <button type="button" @click="show = false" class="cursor-pointer transition-colors" :class="{
-                    'text-green-600 hover:text-green-800': type === 'success',
-                    'text-red-600 hover:text-red-800': type === 'error',
-                    'text-blue-600 hover:text-blue-800': type === 'info'
-                }">
-                <x-icon name="x-mark" class="h-4 w-4" />
-            </button>
+            addToast($event.detail.message, $event.detail.type || 'success');
+        " x-init="
+            const newAchievements = {{ json_encode(session()->pull('new_achievements', []), JSON_UNESCAPED_UNICODE) }};
+            if (newAchievements.length > 0) {
+                const badgeImage = newAchievements.length === 1 ? (newAchievements[0].badge_image || '') : '';
+                addToast('🎉 ' + newAchievements.map(a => a.name).join(', '), 'success', badgeImage);
+            }
+            @if(session()->has('message'))
+                addToast('{{ session('message') }}', '{{ session('type', 'success') }}');
+            @endif
+        ">
+        <div class="fixed bottom-4 right-4 z-100 flex flex-col items-end space-y-3">
+            <template x-for="toast in toasts" :key="toast.id">
+            <div x-show="toast.visible && !toast.leaving" x-cloak
+                x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 translate-y-2"
+                class="rounded-lg border border-[#dedee5] bg-white p-4 text-sm text-[#101114] shadow-lg">
+                <div class="flex items-center gap-2">
+                    <span class="shrink-0" x-show="!toast.badgeImage" :class="{
+                        'text-green-500': toast.type === 'success',
+                        'text-red-500': toast.type === 'error',
+                        'text-[var(--ll-blue)]': toast.type === 'info'
+                    }">
+                        <x-icon name="check-circle" class="h-5 w-5" x-show="toast.type === 'success'" />
+                        <x-icon name="exclamation-circle" class="h-5 w-5" x-show="toast.type === 'error'" />
+                        <x-icon name="information-circle" class="h-5 w-5" x-show="toast.type === 'info'" />
+                    </span>
+                    <img x-show="toast.badgeImage" :src="toast.badgeImage" class="h-10 w-10 mt-0.5" />
+                    <p class="flex-1" x-text="toast.message"></p>
+                    <button type="button" @click.stop="dismissToast(toast.id)" class="cursor-pointer transition-colors shrink-0 text-[#9497a9] hover:text-[#686b82]">
+                        <x-icon name="x-mark" class="h-4 w-4" />
+                    </button>
+                </div>
+            </div>
+        </template>
         </div>
     </div>
 

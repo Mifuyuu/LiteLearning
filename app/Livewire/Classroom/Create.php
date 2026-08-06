@@ -4,7 +4,6 @@ namespace App\Livewire\Classroom;
 
 use App\Models\Classroom;
 use App\Models\ThemeCategory;
-use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -55,8 +54,6 @@ class Create extends Component
             'description' => $this->description,
             'theme_category_id' => $this->theme_category_id,
         ]);
-
-        app(GamificationService::class)->awardForClassroomCreated($user, $classroom->id);
 
         $this->showModal = false;
         $this->dispatch('classroom-created');

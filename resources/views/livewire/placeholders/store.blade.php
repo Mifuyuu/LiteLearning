@@ -1,5 +1,5 @@
-@section('page-title', __('store.title'))
-<div class="space-y-6">
+@section('page-title', 'ร้านค้าของตกแต่ง')
+<div class="max-w-4xl mx-auto space-y-6">
     <style>
         /* Light-toned custom scrollbar styles for store horizontal containers */
         .store-scrollbar::-webkit-scrollbar {

@@ -35,7 +35,7 @@ class ReportBug extends Component
         // I5: rate limit bug reports (3 per 10 minutes)
         $key = 'report-bug:'.Auth::id();
         if (cache()->has($key) && cache()->get($key) >= 3) {
-            $this->dispatch('notify', message: __('Too many reports. Please wait before submitting again.'));
+            $this->dispatch('notify', message: 'คุณส่งรายงานบ่อยเกินไป กรุณารอสักครู่แล้วลองอีกครั้ง');
 
             return;
         }
@@ -57,7 +57,7 @@ class ReportBug extends Component
         ]);
 
         $this->showModal = false;
-        $this->dispatch('notify', message: __('report.success'));
+        $this->dispatch('notify', message: 'ส่งรายงานสำเร็จ ขอบคุณสำหรับข้อมูล!');
     }
 
     public function render()

@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasColumn('coin_transactions', 'idempotency_key')) {
+            return;
+        }
+
         Schema::table('coin_transactions', function (Blueprint $table): void {
             $table->string('idempotency_key')->nullable()->unique()->after('reference_id');
         });
@@ -42,6 +46,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (!Schema::hasColumn('coin_transactions', 'idempotency_key')) {
+            return;
+        }
+
         Schema::table('coin_transactions', function (Blueprint $table): void {
             $table->dropUnique(['idempotency_key']);
             $table->dropColumn('idempotency_key');

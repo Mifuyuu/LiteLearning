@@ -85,25 +85,25 @@ class People extends Component
         $target = User::where('email', $this->inviteCoTeacherEmail)->first();
 
         if (! $target) {
-            $this->addError('inviteCoTeacherEmail', __('ไม่พบผู้ใช้งานนี้ในระบบ'));
+            $this->addError('inviteCoTeacherEmail', 'ไม่พบผู้ใช้งานนี้ในระบบ');
 
             return;
         }
 
         if ($this->classroom->isOwnedBy($target)) {
-            $this->addError('inviteCoTeacherEmail', __('ผู้ใช้นี้เป็นเจ้าของห้องอยู่แล้ว'));
+            $this->addError('inviteCoTeacherEmail', 'ผู้ใช้นี้เป็นเจ้าของห้องอยู่แล้ว');
 
             return;
         }
 
         if (! $target->isTeacher() && ! $target->isAdmin()) {
-            $this->addError('inviteCoTeacherEmail', __('สามารถเพิ่ม Co-Teacher ได้เฉพาะบัญชีอาจารย์เท่านั้น'));
+            $this->addError('inviteCoTeacherEmail', 'สามารถเพิ่มผู้สอนร่วมได้เฉพาะบัญชีอาจารย์เท่านั้น');
 
             return;
         }
 
         if ($this->classroom->isCoTeacher($target)) {
-            $this->addError('inviteCoTeacherEmail', __('ผู้ใช้นี้เป็น Co-Teacher อยู่แล้ว'));
+            $this->addError('inviteCoTeacherEmail', 'ผู้ใช้นี้เป็นผู้สอนร่วมอยู่แล้ว');
 
             return;
         }
@@ -115,7 +115,7 @@ class People extends Component
         ]);
 
         $this->reset('inviteCoTeacherEmail');
-        $this->dispatch('notify', message: __('เพิ่ม Co-Teacher เรียบร้อยแล้ว'));
+        $this->dispatch('notify', message: 'เพิ่มผู้สอนร่วมเรียบร้อยแล้ว');
     }
 
     public function removeCoTeacher(int $userId)
@@ -127,7 +127,7 @@ class People extends Component
         }
 
         $this->classroom->members()->detach($userId);
-        $this->dispatch('notify', message: __('ลบ Co-Teacher เรียบร้อยแล้ว'));
+        $this->dispatch('notify', message: 'ลบผู้สอนร่วมเรียบร้อยแล้ว');
     }
 
     public function removeMember(int $userId)
@@ -143,7 +143,7 @@ class People extends Component
         }
 
         $this->classroom->members()->detach($userId);
-        $this->dispatch('notify', message: __('Member removed successfully.'));
+        $this->dispatch('notify', message: 'นำสมาชิกออกเรียบร้อยแล้ว');
     }
 
     public function removeAllMembers()
@@ -155,7 +155,7 @@ class People extends Component
         }
 
         $this->classroom->students()->detach();
-        $this->dispatch('notify', message: __('All students removed successfully.'));
+        $this->dispatch('notify', message: 'นำนักเรียนทั้งหมดออกเรียบร้อยแล้ว');
     }
 
     public function render()
@@ -163,6 +163,6 @@ class People extends Component
         return view('livewire.classroom.people', [
             'coTeachers' => $this->sortUsers($this->classroom->coTeachers),
             'students' => $this->sortUsers($this->classroom->students),
-        ])->title($this->classroom->name.' - '.__('People'));
+        ])->title($this->classroom->name.' - '.'สมาชิก');
     }
 }

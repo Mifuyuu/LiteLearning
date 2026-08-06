@@ -27,7 +27,7 @@ class ProfileUploadTest extends TestCase
         // Simulated base64 avatar (small transparent dot)
         $base64Image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 
-        Livewire::test(\App\Livewire\Profile::class)
+        Livewire::test(\App\Livewire\Settings::class)
             ->set('avatar', $base64Image)
             ->call('uploadAvatar', $base64Image)
             ->assertHasNoErrors();
@@ -47,7 +47,7 @@ class ProfileUploadTest extends TestCase
         // Simulated base64 cover
         $base64Image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 
-        Livewire::test(\App\Livewire\Profile::class)
+        Livewire::test(\App\Livewire\Settings::class)
             ->set('cover_image', $base64Image)
             ->call('uploadCoverImage', $base64Image)
             ->assertHasNoErrors();
@@ -62,17 +62,17 @@ class ProfileUploadTest extends TestCase
         $this->assertTrue(Storage::disk('public')->exists($user->cover_image));
     }
 
-    public function test_profile_upload_hides_internal_exception_details(): void
+    public function test_settings_upload_hides_internal_exception_details(): void
     {
         Storage::fake('public');
         $user = User::factory()->create();
 
         Livewire::actingAs($user)
-            ->test(\App\Livewire\Profile::class)
+            ->test(\App\Livewire\Settings::class)
             ->call('uploadAvatar', 'data:image/png;base64,invalid-data')
             ->assertDispatched(
                 'notify',
-                message: __('Upload failed. Please try again.'),
+                message: 'อัปโหลดล้มเหลว กรุณาลองอีกครั้ง',
                 type: 'error'
             );
     }

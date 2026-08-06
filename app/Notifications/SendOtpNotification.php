@@ -19,11 +19,11 @@ class SendOtpNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('รหัสยืนยันอีเมลของคุณ'))
-            ->greeting(__('สวัสดี!'))
-            ->line(__('รหัสยืนยันอีเมลของคุณคือ:'))
+            ->subject('รหัสยืนยันอีเมลของคุณ')
+            ->greeting('สวัสดี!')
+            ->line('รหัสยืนยันอีเมลของคุณคือ:')
             ->line('**'.$this->otp.'**')
-            ->line(__('รหัสนี้จะหมดอายุใน 10 นาที'))
-            ->line(__('หากคุณไม่ได้สมัครสมาชิก กรุณาเพิกเฉยต่ออีเมลนี้'));
+            ->line('รหัสนี้จะหมดอายุใน 10 นาที')
+            ->line('หากคุณไม่ได้สมัครสมาชิก กรุณาเพิกเฉยต่ออีเมลนี้');
     }
 }

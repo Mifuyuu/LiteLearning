@@ -1,4 +1,4 @@
-@section('page-title', __('Theme Categories'))
+@section('page-title', 'หมวดหมู่ธีม')
 <div class="space-y-6 " x-data="{
     deleteModal: false,
     deleteId: null,
@@ -11,21 +11,21 @@
     <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h2 class="text-xl font-bold text-gray-800">{{ __('Theme Categories') }}</h2>
-                <p class="text-sm text-gray-500 mt-0.5">{{ __('จัดการหมวดหมู่ธีมสำหรับห้องเรียน') }}</p>
+                <h2 class="text-xl font-bold text-gray-800">หมวดหมู่ธีม</h2>
+                <p class="text-sm text-gray-500 mt-0.5">จัดการธีมห้องเรียน</p>
             </div>
             <div class="flex items-center gap-3">
                 <div class="relative">
-                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <x-icon name="magnifying-glass" class="h-4 w-4 text-gray-400" />
                     <input
                         wire:model.live.debounce.300ms="search"
                         type="text"
-                        placeholder="{{ __('ค้นหา...') }}"
-                        class="pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 w-48"
+                        placeholder="ค้นหา..."
+                        class="pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 w-48"
                     />
                 </div>
                 <button wire:click="openCreate" class="btn-3d btn-3d--indigo px-4 py-2 rounded-xl text-sm">
-                    <i class="fas fa-plus mr-1.5"></i>{{ __('เพิ่ม Category') }}
+                    <x-icon name="plus" class="h-4 w-4 mr-1.5" />เพิ่มหมวดหมู่
                 </button>
             </div>
         </div>
@@ -36,11 +36,11 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-20">{{ __('ดาว') }}</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-32">{{ __('สี') }}</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-40">{{ __('ชื่อ') }}</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell w-28">{{ __('สถานะ') }}</th>
-                    <th class="px-6 py-3 text-right text-sm font-bold text-gray-500 uppercase tracking-wider w-36">{{ __('การดำเนินการ') }}</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-20">ดาว</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-32">สี</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-40">ชื่อ</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell w-28">สถานะ</th>
+                    <th class="px-6 py-3 text-right text-sm font-bold text-gray-500 uppercase tracking-wider w-36">การดำเนินการ</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -60,29 +60,29 @@
                         </td>
                         <td class="px-4 py-2">
                             <div class="text-sm font-semibold text-gray-800">{{ $category->name }}</div>
-                            <div class="text-xs text-gray-400 mt-0.5">{{ __('ดาวเคราะห์') }} #{{ $category->planet_number }}</div>
+                            <div class="text-xs text-gray-400 mt-0.5">ดาวเคราะห์ #{{ $category->planet_number }}</div>
                         </td>
                         <td class="px-4 py-2 hidden sm:table-cell">
                             @if ($category->is_active)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <i class="fas fa-circle text-[8px] mr-1.5"></i>{{ __('ใช้งาน') }}
+                                    <x-icon name="circle" class="h-2 w-2 mr-1.5" />ใช้งาน
                                 </span>
                             @else
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
-                                    <i class="fas fa-circle text-[8px] mr-1.5"></i>{{ __('ปิดใช้งาน') }}
+                                    <x-icon name="circle" class="h-2 w-2 mr-1.5" />ปิดใช้งาน
                                 </span>
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right">
                             <div class="flex justify-end gap-3 text-gray-400">
                                 <button wire:click="openEdit({{ $category->id }})"
-                                    class="hover:text-indigo-600 transition-colors p-1">
-                                    <i class="fas fa-edit"></i>
+                                    class="hover:text-blue-600 transition-colors p-1">
+                                    <x-icon name="pencil" class="h-4 w-4" />
                                 </button>
                                 <button
                                     @click="openDelete({{ $category->id }}, '{{ addslashes($category->name) }}')"
                                     class="hover:text-red-600 transition-colors p-1">
-                                    <i class="fas fa-trash-alt"></i>
+                                    <x-icon name="trash" class="h-4 w-4" />
                                 </button>
                             </div>
                         </td>
@@ -90,7 +90,7 @@
                 @empty
                     <tr>
                         <td colspan="5" class="px-6 py-12 text-center text-gray-500 italic text-sm">
-                            {{ $search ? __('ไม่พบ category ที่ค้นหา') : __('ยังไม่มี theme category') }}
+                            {{ $search ? 'ไม่พบหมวดหมู่ที่ค้นหา' : 'ยังไม่มีหมวดหมู่ธีม' }}
                         </td>
                     </tr>
                 @endforelse
@@ -137,25 +137,25 @@
             >
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
                     <h3 class="text-base font-bold text-gray-800">
-                        {{ $editingId ? __('แก้ไข Theme Category') : __('เพิ่ม Theme Category') }}
+                        {{ $editingId ? 'แก้ไขหมวดหมู่ธีม' : 'เพิ่มหมวดหมู่' }}
                     </h3>
                     <button wire:click="$set('showModal', false)" class="text-gray-400 hover:text-gray-600 transition-colors">
-                        <i class="fas fa-times"></i>
+                        <x-icon name="x-mark" class="h-4 w-4" />
                     </button>
                 </div>
 
                 <div class="px-6 py-5 space-y-5">
                     {{-- Name --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('ชื่อ') }} <span class="text-red-500">*</span></label>
-                        <input wire:model="form.name" type="text" placeholder="{{ __('เช่น วิทยาศาสตร์, คณิตศาสตร์') }}"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ <span class="text-red-500">*</span></label>
+                        <input wire:model="form.name" type="text" placeholder="เช่น วิทยาศาสตร์, คณิตศาสตร์"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         @error('form.name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     {{-- Color --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('สี') }} <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">สี <span class="text-red-500">*</span></label>
                         <div class="flex items-center gap-2">
                             <input type="color"
                                 x-model="localColor"
@@ -164,20 +164,20 @@
                             <input type="text" maxlength="7" placeholder="#6B3FBF"
                                 x-model="localColor"
                                 @blur="$wire.set('form.color', localColor)"
-                                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono" />
+                                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono" />
                         </div>
                         @error('form.color') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     {{-- Planet Picker --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('ดาวเคราะห์') }} <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">ดาวเคราะห์ <span class="text-red-500">*</span></label>
                         <div class="grid grid-cols-8 gap-2 max-h-48 overflow-y-auto">
                             @for ($p = 1; $p <= 23; $p++)
                                 @php $pn = str_pad($p, 2, '0', STR_PAD_LEFT); @endphp
                                 <button type="button"
                                     @click="localPlanet = {{ $p }}; $wire.set('form.planet_number', {{ $p }})"
-                                    :class="localPlanet == {{ $p }} ? 'border-indigo-500 bg-indigo-50 shadow-md' : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'"
+                                    :class="localPlanet == {{ $p }} ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'"
                                     class="aspect-square rounded-xl border-2 p-1 transition-all">
                                     <img src="/images/planets/planet_{{ $pn }}.svg" alt="planet {{ $pn }}" class="w-full h-full object-contain" />
                                 </button>
@@ -189,18 +189,18 @@
                     {{-- Active toggle --}}
                     <div class="flex items-center gap-3">
                         <input wire:model="form.is_active" type="checkbox" id="is_active"
-                            class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" />
-                        <label for="is_active" class="text-sm font-medium text-gray-700">{{ __('เปิดใช้งาน') }}</label>
+                            class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+                        <label for="is_active" class="text-sm font-medium text-gray-700">เปิดใช้งาน</label>
                     </div>
                 </div>
 
                 <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
                     <button wire:click="$set('showModal', false)"
                         class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-colors">
-                        {{ __('ยกเลิก') }}
+                        ยกเลิก
                     </button>
                     <button wire:click="save" class="btn-3d btn-3d--indigo px-5 py-2 rounded-xl text-sm">
-                        {{ $editingId ? __('บันทึกการแก้ไข') : __('สร้าง Category') }}
+                        {{ $editingId ? 'บันทึกการแก้ไข' : 'สร้างหมวดหมู่' }}
                     </button>
                 </div>
             </div>
@@ -223,20 +223,20 @@
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6" @click.stop>
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                        <i class="fas fa-trash text-red-500"></i>
+                        <x-icon name="trash" class="h-4 w-4 text-red-500" />
                     </div>
                     <div>
-                        <h3 class="text-base font-bold text-gray-800">{{ __('ลบ Category') }}</h3>
-                        <p class="text-sm text-gray-500">{{ __('ยืนยันการลบ') }} "<span x-text="deleteName"></span>"?</p>
+                        <h3 class="text-base font-bold text-gray-800">ลบหมวดหมู่</h3>
+                        <p class="text-sm text-gray-500">ยืนยันการลบ "<span x-text="deleteName"></span>"?</p>
                     </div>
                 </div>
                 <div class="flex justify-end gap-3">
                     <button @click="deleteModal = false" class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">
-                        {{ __('ยกเลิก') }}
+                        ยกเลิก
                     </button>
                     <button @click="$wire.delete(deleteId); deleteModal = false"
                         class="btn-3d btn-3d--red px-4 py-2 rounded-xl text-sm">
-                        {{ __('ลบ') }}
+                        ลบ
                     </button>
                 </div>
             </div>

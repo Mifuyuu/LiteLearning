@@ -265,6 +265,6 @@ class GradeReport extends Component
             'stats' => $this->stats,
             'topics' => $this->topics,
             'types' => $this->types,
-        ])->title($this->classroom->name.' - '.__('Gradebook'));
+        ])->title($this->classroom->name.' - '.'สมุดเกรด');
     }
 }

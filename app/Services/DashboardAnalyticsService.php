@@ -11,9 +11,9 @@ use Illuminate\Support\Collection;
 
 class DashboardAnalyticsService
 {
-    public function studentActivity(User $user): array
+    public function studentActivity(User $user, int $months = 6): array
     {
-        [$yearStart, $yearEnd, $gridStart, $gridEnd] = $this->activityRange();
+        [$yearStart, $yearEnd, $gridStart, $gridEnd] = $this->activityRange($months);
         $events = collect();
 
         $submissions = $user->submissions()
@@ -42,9 +42,9 @@ class DashboardAnalyticsService
         return $this->buildActivity($events, $yearStart, $yearEnd, $gridStart, $gridEnd);
     }
 
-    public function teacherActivity(User $user): array
+    public function teacherActivity(User $user, int $months = 6): array
     {
-        [$yearStart, $yearEnd, $gridStart, $gridEnd] = $this->activityRange();
+        [$yearStart, $yearEnd, $gridStart, $gridEnd] = $this->activityRange($months);
         $classroomIds = $user->ownedClassrooms()->pluck('id');
         $events = collect();
 
@@ -92,10 +92,10 @@ class DashboardAnalyticsService
         ];
     }
 
-    private function activityRange(): array
+    private function activityRange(int $months = 6): array
     {
         $gridEnd = now()->endOfWeek(Carbon::SUNDAY)->endOfDay();
-        $gridStart = now()->subWeeks(25)->startOfWeek(Carbon::MONDAY)->startOfDay();
+        $gridStart = now()->subMonths($months)->startOfWeek(Carbon::MONDAY)->startOfDay();
         $rangeStart = $gridStart->copy();
         $rangeEnd = now()->endOfDay();
 

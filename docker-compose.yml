@@ -2,7 +2,7 @@ services:
   # Database Service
   mariadb:
     image: mariadb:10.11
-    container_name: litelearning_mariadb
+    container_name: mariadb
     restart: unless-stopped
     ports:
       - "3306:3306"
@@ -10,7 +10,7 @@ services:
       - .env.docker
     volumes:
       - ./mysql-init:/docker-entrypoint-initdb.d
-      - litelearning_mariadb_data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword" ]
       interval: 5s
@@ -20,7 +20,7 @@ services:
   # phpMyAdmin Service
   phpmyadmin:
     image: phpmyadmin:latest
-    container_name: litelearning_phpmyadmin
+    container_name: phpmyadmin
     restart: unless-stopped
     ports:
       - "8080:80"
@@ -35,7 +35,7 @@ services:
   # MinIO (S3 Storage)
   minio:
     image: minio/minio:latest
-    container_name: litelearning-minio
+    container_name: minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
     environment:
@@ -55,7 +55,7 @@ services:
   # MinIO Setup (Buckets)
   minio-setup:
     image: minio/mc:latest
-    container_name: litelearning-minio-setup
+    container_name: minio-setup
     depends_on:
       minio:
         condition: service_healthy
@@ -70,7 +70,7 @@ services:
   # Cloudflared (Tunnel)
   cloudflared:
     image: cloudflare/cloudflared:latest
-    container_name: litelearning-cloudflared
+    container_name: cloudflared
     restart: unless-stopped
     command: tunnel run
     volumes:
@@ -80,5 +80,5 @@ services:
       - "host.docker.internal:host-gateway"
 
 volumes:
-  litelearning_mariadb_data:
+  mariadb_data:
   minio_data:

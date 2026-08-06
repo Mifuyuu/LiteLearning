@@ -1,4 +1,4 @@
-@section('page-title', (isset($classroom) ? (__('กระดานสนทนา') . ' - ' . $classroom->name) : __('กระดานสนทนา')))
+@section('page-title', (isset($classroom) ? ('กระดานสนทนา' . ' - ' . $classroom->name) : 'กระดานสนทนา'))
 <div class="space-y-5">
     @if(isset($classroom))
         @include('livewire.classroom.partials.subnav', ['classroom' => $classroom])
@@ -17,7 +17,7 @@
 
         <div class="mt-5 space-y-3">
             @for($i = 0; $i < 3; $i++)
-                <div class="rounded-[12px] border border-[#dedee5] bg-[rgba(133,91,251,0.02)] p-4 space-y-3">
+                <div class="rounded-[12px] border border-[#dedee5] bg-[rgba(37,99,235,0.02)] p-4 space-y-3">
                     <div class="flex items-start gap-3">
                         <div class="skeleton h-10 w-10 shrink-0 rounded-[10px]"></div>
                         <div class="min-w-0 flex-1 space-y-2">

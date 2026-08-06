@@ -213,14 +213,14 @@ class Assignment extends Model
     public function typeLabel(): string
     {
         return match ($this->type) {
-            'attendance' => __('Attendance'),
-            'file' => __('File Upload'),
-            'question' => __('Question'),
-            'topic' => __('Topic'),
-            'material' => __('Material'),
-            'announcement' => __('Announcement'),
-            'project' => __('Project'),
-            default => __(ucfirst($this->type)),
+            'attendance' => __('app.type_attendance'),
+            'file' => __('app.type_file'),
+            'question' => __('app.type_question'),
+            'topic' => __('app.type_topic'),
+            'material' => __('app.type_material'),
+            'announcement' => __('app.type_announcement'),
+            'project' => __('app.type_project'),
+            default => ucfirst($this->type),
         };
     }
 
@@ -246,22 +246,14 @@ class Assignment extends Model
         $diff = $this->due_date->diff(now());
 
         if ($diff->days >= 1) {
-            return __('Overdue by :days days :hours hours', [
-                'days' => $diff->days,
-                'hours' => $diff->h,
-            ]);
+            return __('app.overdue_days', ['days' => $diff->days, 'hours' => $diff->h]);
         }
 
         if ($diff->h >= 1) {
-            return __('Overdue by :hours hours :minutes minutes', [
-                'hours' => $diff->h,
-                'minutes' => $diff->i,
-            ]);
+            return __('app.overdue_hours', ['hours' => $diff->h, 'minutes' => $diff->i]);
         }
 
-        return __('Overdue by :minutes minutes', [
-            'minutes' => max(1, $diff->i),
-        ]);
+        return __('app.overdue_minutes', ['minutes' => max(1, $diff->i)]);
     }
 
     /**

@@ -16,6 +16,9 @@ return [
         'numeric' => ':attribute ต้องมีค่าอย่างน้อย :min',
         'string' => ':attribute ต้องมีความยาวอย่างน้อย :min ตัวอักษร',
     ],
+    'size' => [
+        'string' => ':attribute ต้องมีความยาว :size ตัวอักษร',
+    ],
     'nullable' => ':attribute สามารถเว้นว่างได้',
     'required' => 'กรุณากรอก :attribute',
     'required_if' => 'กรุณากรอก :attribute',

@@ -16,16 +16,11 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['admin', 'teacher', 'student'])->default('student')->index();
             $table->boolean('is_active')->default(true);
-            $table->timestamp('setup_completed_at')->nullable();
             $table->string('avatar')->nullable();
             $table->string('cover_image')->nullable();
             $table->text('bio')->nullable();
-            $table->string('active_name_color')->nullable();
-            $table->string('active_avatar_frame')->nullable();
             $table->rememberToken();
             $table->timestamps();
-            $table->string('locale')->default('en');
-
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -128,30 +123,35 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('classwork_items', function (Blueprint $table) {
+            $table->id();
+            $table->string('type');
+            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('topic_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('title');
+            $table->string('slug', 32)->unique();
+            $table->longText('description')->nullable();
+            $table->timestamp('published_at')->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
-            $table->string('slug', 16)->unique()->nullable();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('classroom_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->string('title')->nullable();
+            $table->foreignId('classwork_item_id')->unique()->constrained('classwork_items')->cascadeOnDelete();
             $table->text('content');
             $table->timestamps();
         });
 
         Schema::create('assignments', function (Blueprint $table) {
             $table->id();
-            $table->string('slug', 16)->unique()->nullable();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('classroom_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->string('title');
-            $table->text('description')->nullable();
+            $table->foreignId('classwork_item_id')->unique()->constrained('classwork_items')->cascadeOnDelete();
             $table->integer('max_score')->default(100);
             $table->unsignedInteger('exp_reward')->default(0);
             $table->unsignedInteger('coin_reward')->default(0);
             $table->dateTime('due_date')->nullable();
-            $table->enum('status', ['draft', 'published', 'closed'])->default('draft')->index();
+            $table->string('status')->default('draft')->index();
             $table->string('type')->default('question');
-            $table->string('topic')->nullable();
             $table->boolean('allow_late_submission')->default(true);
             $table->timestamps();
             $table->index('due_date');
@@ -159,12 +159,7 @@ return new class extends Migration
 
         Schema::create('materials', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('classroom_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->string('title');
-            $table->string('slug', 16)->unique();
-            $table->text('description')->nullable();
-            $table->foreignId('topic_id')->nullable()->constrained('topics')->nullOnDelete();
+            $table->foreignId('classwork_item_id')->unique()->constrained('classwork_items')->cascadeOnDelete();
             $table->timestamps();
         });
 
@@ -197,8 +192,7 @@ return new class extends Migration
 
         Schema::create('attendance_sessions', function (Blueprint $table) {
             $table->id();
-            $table->string('slug', 16)->unique()->nullable();
-            $table->foreignId('assignment_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('classwork_item_id')->unique()->constrained('classwork_items')->cascadeOnDelete();
             $table->string('current_code', 6)->nullable();
             $table->boolean('is_active')->default(false);
             $table->dateTime('started_at')->nullable();
@@ -219,7 +213,6 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->string('icon')->nullable();
             $table->string('badge_image')->nullable();
             $table->integer('coin_reward')->default(0);
             $table->integer('xp_reward')->default(0);
@@ -242,6 +235,7 @@ return new class extends Migration
             $table->integer('xp')->default(0);
             $table->integer('level')->default(1);
             $table->timestamps();
+            $table->index(['level', 'xp']);
         });
 
         Schema::create('coin_transactions', function (Blueprint $table) {
@@ -252,6 +246,7 @@ return new class extends Migration
             $table->string('source')->nullable();
             $table->string('reference_type')->nullable();
             $table->unsignedBigInteger('reference_id')->nullable();
+            $table->string('idempotency_key')->nullable()->unique();
             $table->text('metadata')->nullable();
             $table->timestamp('happened_at')->nullable();
             $table->timestamps();
@@ -276,6 +271,7 @@ return new class extends Migration
         Schema::create('user_store_items', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('store_item_id')->constrained()->cascadeOnDelete();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->primary(['user_id', 'store_item_id']);
         });
@@ -317,9 +313,8 @@ return new class extends Migration
         Schema::dropIfExists('materials');
         Schema::dropIfExists('assignments');
         Schema::dropIfExists('announcements');
+        Schema::dropIfExists('classwork_items');
         Schema::dropIfExists('topics');
-        Schema::dropIfExists('classroom_contents');
-        Schema::dropIfExists('classroom_sidebar_preferences');
         Schema::dropIfExists('classroom_user');
         Schema::dropIfExists('classrooms');
         Schema::dropIfExists('theme_categories');

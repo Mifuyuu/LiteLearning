@@ -73,7 +73,7 @@ class Show extends Component
             return true;
         }
 
-        session()->flash('error', __('Submissions closed'));
+        session()->flash('error', 'ปิดรับงานแล้ว');
 
         return false;
     }
@@ -153,7 +153,7 @@ class Show extends Component
         $this->uploadedFile = null;
         $this->userSubmission->refresh();
 
-        session()->flash('message', __('File uploaded successfully'));
+        session()->flash('message', 'อัปโหลดไฟล์เรียบร้อย');
     }
 
     public function removeFile(int $attachmentId): void
@@ -225,7 +225,7 @@ class Show extends Component
             'content' => $this->submissionContent,
         ]);
 
-        session()->flash('message', __('Draft saved'));
+        session()->flash('message', 'บันทึกฉบับร่างแล้ว');
     }
 
     public function unsubmit(): void
@@ -311,7 +311,7 @@ class Show extends Component
         $this->isEditTab = false;
         $this->assignment->refresh();
 
-        session()->flash('message', __('Assignment updated'));
+        session()->flash('message', 'อัปเดตงานแล้ว');
     }
 
     public function deleteAssignment(): void

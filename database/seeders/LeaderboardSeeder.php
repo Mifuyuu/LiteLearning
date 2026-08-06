@@ -35,7 +35,7 @@ class LeaderboardSeeder extends Seeder
         ];
 
         foreach ($students as $data) {
-            $user = User::updateOrCreate(
+            $user = User::firstOrCreate(
                 ['email' => $data['email']],
                 [
                     'name' => $data['name'],

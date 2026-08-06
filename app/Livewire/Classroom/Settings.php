@@ -18,8 +18,8 @@ class Settings extends Component
     public function placeholder(array $params = [])
     {
         $title = isset($params['classroom'])
-            ? __('Settings') . ' - ' . $params['classroom']->name
-            : __('Settings');
+            ? 'ตั้งค่า' . ' - ' . $params['classroom']->name
+            : 'ตั้งค่า';
         return view('livewire.placeholders.generic', array_merge($params, ['pageTitle' => $title]));
     }
     #[Locked]
@@ -71,7 +71,7 @@ class Settings extends Component
             'name' => $this->name,
             'color' => $this->classroom->themeCategory?->color ?? '#8B5CF6',
         ]);
-        $this->dispatch('notify', message: __('Classroom settings saved successfully.'));
+        $this->dispatch('notify', message: 'บันทึกการตั้งค่าห้องเรียนเรียบร้อยแล้ว');
     }
 
     public function toggleArchive(): void
@@ -83,7 +83,7 @@ class Settings extends Component
         $this->classroom->is_archived = ! $this->classroom->is_archived;
         $this->classroom->save();
 
-        $this->dispatch('notify', message: $this->classroom->is_archived ? __('Classroom archived.') : __('Classroom restored.'));
+        $this->dispatch('notify', message: $this->classroom->is_archived ? 'เก็บถาวรห้องเรียนแล้ว' : 'กู้คืนห้องเรียนแล้ว');
     }
 
     public function deleteClassroom()
@@ -93,7 +93,7 @@ class Settings extends Component
         abort_unless($this->classroom->isOwnedBy($user), 403);
 
         if (trim($this->deleteConfirm) !== $this->classroom->name) {
-            $this->addError('deleteConfirm', __('Please type the classroom name exactly to confirm deletion.'));
+            $this->addError('deleteConfirm', 'กรุณาพิมพ์ชื่อห้องเรียนให้ตรงเพื่อยืนยันการลบ');
 
             return;
         }
@@ -101,7 +101,7 @@ class Settings extends Component
         $classroomName = $this->classroom->name;
         $this->classroom->delete();
 
-        session()->flash('message', __('Classroom ":name" was deleted.', ['name' => $classroomName]));
+        session()->flash('message', 'ลบห้องเรียน "' . $classroomName . '" เรียบร้อยแล้ว');
 
         return redirect()->route('classrooms');
     }
@@ -110,6 +110,6 @@ class Settings extends Component
     {
         return view('livewire.classroom.settings', [
             'themes' => ThemeCategory::active()->orderBy('planet_number')->get(),
-        ])->title($this->classroom->name.' - '.__('Settings'));
+        ])->title($this->classroom->name.' - '.'ตั้งค่า');
     }
 }

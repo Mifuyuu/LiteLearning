@@ -1,4 +1,4 @@
-@section('page-title', __('Dashboard'))
+@section('page-title', 'แดชบอร์ด')
 <div class="flex min-h-full flex-col gap-3 xl:h-[calc(100vh-3rem)] xl:min-h-[560px] xl:overflow-hidden">
     <style>
         /* Mobile (default) */

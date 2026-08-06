@@ -31,7 +31,7 @@ class Login extends Component
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('email', "Too many login attempts. Please try again in {$seconds} seconds.");
+            $this->addError('email', "คุณพยายามเข้าสู่ระบบหลายครั้งเกินไป กรุณาลองอีกครั้งใน {$seconds} วินาที");
 
             return;
         }
@@ -53,7 +53,7 @@ class Login extends Component
         }
 
         // Generic error message to prevent enumeration attacks
-        $this->addError('password', __('The provided credentials do not match our records.'));
+        $this->addError('password', 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
     }
 
     public function render()

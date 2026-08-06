@@ -3,6 +3,7 @@
 namespace App\Livewire\Classroom;
 
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Lazy;
@@ -20,40 +21,63 @@ class Index extends Component
 
     public bool $showArchived = false;
 
-    public function render()
+    private ?Collection $cachedClassrooms = null;
+
+    public function updatedSearch(): void
     {
+        $this->cachedClassrooms = null;
+    }
+
+    public function updatedShowArchived(): void
+    {
+        $this->cachedClassrooms = null;
+    }
+
+    public function getClassroomsProperty(): Collection
+    {
+        if ($this->cachedClassrooms !== null) {
+            return $this->cachedClassrooms;
+        }
+
         /** @var User $user */
         $user = Auth::user();
 
         if ($user->isTeacher()) {
-            $ownedClassrooms = $user->ownedClassrooms()
+            $owned = $user->ownedClassrooms()
                 ->when(! $this->showArchived, fn ($q) => $q->where('is_archived', false))
                 ->with('teacher', 'themeCategory')
                 ->get();
 
-            $coTeachingClassrooms = $user->enrolledClassrooms()
+            $coTeaching = $user->enrolledClassrooms()
                 ->wherePivot('role', 'co-teacher')
                 ->when(! $this->showArchived, fn ($q) => $q->where('is_archived', false))
                 ->with('teacher', 'themeCategory')
                 ->get();
 
-            $classrooms = $ownedClassrooms
-                ->merge($coTeachingClassrooms)
-                ->unique('id')
-                ->when($this->search, fn ($collection) => $collection->filter(
-                    fn ($classroom) => str_contains(strtolower($classroom->name), strtolower($this->search))
-                ))
-                ->values();
+            $this->cachedClassrooms = $owned->merge($coTeaching)->unique('id');
         } else {
-            $classrooms = $user->enrolledClassrooms()
+            $this->cachedClassrooms = $user->enrolledClassrooms()
                 ->where('is_archived', false)
-                ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
                 ->with('teacher', 'themeCategory')
                 ->get();
         }
 
+        if ($this->search) {
+            $this->cachedClassrooms = $this->cachedClassrooms->filter(
+                fn ($classroom) => str_contains(
+                    strtolower($classroom->name),
+                    strtolower($this->search)
+                )
+            )->values();
+        }
+
+        return $this->cachedClassrooms;
+    }
+
+    public function render()
+    {
         return view('livewire.classroom.index', [
-            'classrooms' => $classrooms,
+            'classrooms' => $this->classrooms,
         ]);
     }
 }

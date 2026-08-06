@@ -1,4 +1,4 @@
-@section('page-title', __('admin.store.title'))
+@section('page-title', 'จัดการร้านค้า')
 
 <div class="space-y-6 ">
     <!-- Header -->
@@ -6,22 +6,22 @@
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
             <div class="relative w-full sm:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                    <i class="fas fa-search"></i>
+                    <x-icon name="magnifying-glass" class="h-4 w-4" />
                 </span>
                 <input type="text" wire:model.live.debounce.300ms="search"
-                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all"
-                    placeholder="{{ __('admin.store.search_placeholder') }}">
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                    placeholder="ค้นหาสินค้า...">
             </div>
 
             <div class="flex items-center gap-4">
                 <span class="text-sm text-gray-500 font-medium">
-                    {{ __('admin.store.total_items') }} <span
+                    สินค้าทั้งหมด: <span
                         class="text-gray-900 font-bold">{{ \App\Models\StoreItem::count() }}</span>
                 </span>
                 <button wire:click="openCreate"
-                    class="btn-3d btn-3d--indigo inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-colors">
-                    <i class="fas fa-plus"></i>
-                    {{ __('admin.store.create') }}
+                    class="btn-3d btn-3d--blue inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-colors">
+                    <x-icon name="plus" class="h-4 w-4" />
+                    เพิ่มสินค้า
                 </button>
             </div>
         </div>
@@ -33,11 +33,11 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
                     <tr>
-                        <th class="px-6 py-3 text-left">{{ __('admin.store.col_item') }}</th>
-                        <th class="px-6 py-3 text-left">{{ __('admin.store.col_type') }}</th>
-                        <th class="px-6 py-3 text-left">{{ __('admin.store.col_price') }}</th>
-                        <th class="px-6 py-3 text-left">{{ __('admin.store.col_status') }}</th>
-                        <th class="px-6 py-3 text-right">{{ __('admin.store.col_actions') }}</th>
+                        <th class="px-6 py-3 text-left">สินค้า</th>
+                        <th class="px-6 py-3 text-left">ประเภท</th>
+                        <th class="px-6 py-3 text-left">ราคา</th>
+                        <th class="px-6 py-3 text-left">สถานะ</th>
+                        <th class="px-6 py-3 text-right">การดำเนินการ</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-100">
@@ -46,8 +46,8 @@
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
                                     <div
-                                        class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold shrink-0">
-                                        <i class="fas fa-cube"></i>
+                                        class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold shrink-0">
+                                        <x-icon name="cube" class="h-4 w-4" />
                                     </div>
                                     <div class="ml-4">
                                         <div class="text-sm font-bold text-gray-900 truncate max-w-48">{{ $item->name }}
@@ -58,32 +58,32 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide bg-indigo-50 text-indigo-700">
+                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide bg-blue-50 text-blue-700">
                                     {{ $item->type }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="text-sm font-bold text-gray-900 truncate max-w-48">
-                                    {{ $item->price }} <i class="fas fa-coins text-amber-500 ml-1"></i>
+                                    {{ $item->price }} <x-icon name="banknotes" class="h-4 w-4 text-amber-500 ml-1" />
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <button wire:click="toggleActive({{ $item->id }})"
                                     class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold transition-colors
                                                                                         {{ $item->is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' }}">
-                                    {{ $item->is_active ? __('admin.store.status_active') : __('admin.store.status_inactive') }}
+                                    {{ $item->is_active ? 'เปิดใช้งาน' : 'ปิดใช้งาน' }}
                                 </button>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">
                                 <div class="flex justify-end gap-3 text-gray-400">
                                     <button wire:click="openEdit({{ $item->id }})"
-                                        class="hover:text-indigo-600 transition-colors p-1" title="{{ __('Edit') }}">
-                                        <i class="fas fa-edit"></i>
+                                        class="hover:text-blue-600 transition-colors p-1" title="แก้ไข">
+                                        <x-icon name="pencil" class="h-4 w-4" />
                                     </button>
                                     <button type="button"
                                         @click="$dispatch('open-delete-item', { id: {{ $item->id }}, name: '{{ addslashes($item->name) }}' })"
-                                        class="hover:text-red-600 transition-colors p-1" title="{{ __('Delete') }}">
-                                        <i class="fas fa-trash-alt"></i>
+                                        class="hover:text-red-600 transition-colors p-1" title="ลบ">
+                                        <x-icon name="trash" class="h-4 w-4" />
                                     </button>
                                 </div>
                             </td>
@@ -91,7 +91,7 @@
                     @empty
                         <tr>
                             <td colspan="5" class="px-6 py-12 text-center text-gray-500 italic">
-                                {{ __('admin.store.empty') }}
+                                ไม่พบสินค้าในร้านค้า
                             </td>
                         </tr>
                     @endforelse
@@ -123,27 +123,27 @@
                 class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
                 <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                     <div>
-                        <h4 class="text-base font-semibold text-gray-900">{{ __('ยืนยันการลบ') }}</h4>
+                        <h4 class="text-base font-semibold text-gray-900">ยืนยันการลบ</h4>
                         <p class="text-sm font-medium text-gray-700 mt-1" x-text="deleteName"></p>
                     </div>
                     <button type="button" @click="showDeleteModal = false"
                         class="text-gray-400 hover:text-gray-600 transition-colors">
-                        <i class="fas fa-xmark text-lg"></i>
+                        <x-icon name="x-mark" class="h-5 w-5" />
                     </button>
                 </div>
                 <div class="px-6 py-5">
                     <p class="text-sm text-gray-500 mb-4">
-                        {{ __('คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? การกระทำนี้ไม่สามารถย้อนกลับได้') }}
+                        คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? การกระทำนี้ไม่สามารถย้อนกลับได้
                     </p>
                     <div class="flex justify-end gap-2">
                         <button type="button" @click="showDeleteModal = false"
                             class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                            <i class="fas fa-xmark mr-1.5"></i>{{ __('ยกเลิก') }}
+                            <x-icon name="x-mark" class="h-4 w-4 mr-1.5" />ยกเลิก
                         </button>
                         <button type="button"
                             @click="$wire.delete(deleteId); showDeleteModal = false"
                             class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
-                            <i class="fas fa-trash-alt mr-1.5"></i>{{ __('ลบ') }}
+                            <x-icon name="trash" class="h-4 w-4 mr-1.5" />ลบ
                         </button>
                     </div>
                 </div>
@@ -162,10 +162,10 @@
             <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
                 <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                     <h3 class="text-lg font-bold text-gray-900">
-                        {{ $editingId ? __('admin.store.edit_title') : __('admin.store.create_title') }}
+                        {{ $editingId ? 'แก้ไขสินค้า' : 'เพิ่มสินค้าใหม่' }}
                     </h3>
                     <button wire:click="$set('showModal', false)" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times text-xl"></i>
+                        <x-icon name="x-mark" class="h-5 w-5" />
                     </button>
                 </div>
 
@@ -173,24 +173,24 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label
-                                class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.store.field_code') }}</label>
+                                class="block text-sm font-semibold text-gray-700 mb-1">รหัสสินค้า</label>
                             <input type="text" wire:model="form.code"
-                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             @error('form.code') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div x-data="{ open: false }">
                             <label
-                                class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.store.field_type') }}</label>
+                                class="block text-sm font-semibold text-gray-700 mb-1">ประเภท</label>
                             <div class="relative">
                                 <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
-                                    class="flex w-full items-center justify-between px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    class="flex w-full items-center justify-between px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <span>
                                         @if($form['type'] === 'name_color') Name Color
                                         @elseif($form['type'] === 'avatar_frame') Avatar Frame
-                                        @else {{ __('admin.store.field_type') }}
+                                        @else ประเภท
                                         @endif
                                     </span>
-                                    <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+                                    <x-icon name="chevron-down" class="h-3.5 w-3.5 text-gray-400" />
                                 </button>
                                 <div x-show="open" x-cloak @click.outside="open = false"
                                     x-transition:enter="transition ease-out duration-100"
@@ -203,18 +203,16 @@
                                     <div role="menu">
                                         <button type="button" role="menuitem"
                                             wire:click="$set('form.type', 'name_color')" @click="open = false"
-                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['type'] ?? '') === 'name_color' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['type'] ?? '') === 'name_color' ? 'text-blue-700 bg-blue-50' : 'text-gray-700' }}">
                                             Name Color
-                                            @if(($form['type'] ?? '') === 'name_color') <i
-                                                class="fas fa-check text-xs"></i>
+                                            @if(($form['type'] ?? '') === 'name_color') <x-icon name="check" class="h-4 w-4" />
                                             @endif
                                         </button>
                                         <button type="button" role="menuitem"
                                             wire:click="$set('form.type', 'avatar_frame')" @click="open = false"
-                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['type'] ?? '') === 'avatar_frame' ? 'text-indigo-700 bg-indigo-50' : 'text-gray-700' }}">
+                                            class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ($form['type'] ?? '') === 'avatar_frame' ? 'text-blue-700 bg-blue-50' : 'text-gray-700' }}">
                                             Avatar Frame
-                                            @if(($form['type'] ?? '') === 'avatar_frame') <i
-                                            class="fas fa-check text-xs"></i> @endif
+                                            @if(($form['type'] ?? '') === 'avatar_frame') <x-icon name="check" class="h-4 w-4" /> @endif
                                         </button>
                                     </div>
                                 </div>
@@ -223,35 +221,35 @@
                     </div>
                     <div>
                         <label
-                            class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.store.field_name') }}</label>
+                            class="block text-sm font-semibold text-gray-700 mb-1">ชื่อ</label>
                         <input type="text" wire:model="form.name"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         @error('form.name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label
-                            class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.store.field_description') }}</label>
+                            class="block text-sm font-semibold text-gray-700 mb-1">คำอธิบาย</label>
                         <textarea wire:model="form.description" rows="2"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"></textarea>
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
                     <div>
                         <label
-                            class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.store.field_value') }}</label>
+                            class="block text-sm font-semibold text-gray-700 mb-1">ค่า</label>
                         <input type="text" wire:model="form.value"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono">
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono">
                         @error('form.value') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex items-end gap-4">
                         <div class="flex-1">
                             <label
-                                class="block text-sm font-semibold text-gray-700 mb-1">{{ __('admin.store.field_price') }}</label>
+                                class="block text-sm font-semibold text-gray-700 mb-1">ราคา</label>
                             <input type="number" wire:model="form.price" min="0"
-                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                         <label class="flex items-center gap-2 pb-2 cursor-pointer select-none">
-                            <input type="checkbox" wire:model="form.is_active" class="w-4 h-4 text-indigo-600 rounded">
+                            <input type="checkbox" wire:model="form.is_active" class="w-4 h-4 text-blue-600 rounded">
                             <span
-                                class="text-sm font-semibold text-gray-700">{{ __('admin.store.field_active') }}</span>
+                                class="text-sm font-semibold text-gray-700">เปิดใช้งาน</span>
                         </label>
                     </div>
                 </div>
@@ -259,11 +257,11 @@
                 <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
                     <button wire:click="$set('showModal', false)"
                         class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                        {{ __('Cancel') }}
+                        ยกเลิก
                     </button>
                     <button wire:click="save"
-                        class="btn-3d btn-3d--indigo px-6 py-2 text-sm font-bold rounded-lg transition-colors">
-                        {{ __('admin.store.save') }}
+                        class="btn-3d btn-3d--blue px-6 py-2 text-sm font-bold rounded-lg transition-colors">
+                        บันทึกสินค้า
                     </button>
                 </div>
             </div>

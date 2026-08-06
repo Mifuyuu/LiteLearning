@@ -1,9 +1,9 @@
-@section('page-title', isset($classroom) ? $classroom->name : __('Classroom'))
+@section('page-title', isset($classroom) ? $classroom->name : 'ห้องเรียน')
 @if(isset($classroom))
 @section('breadcrumb')
     <nav class="flex items-center gap-1 text-sm">
-        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-[#7132f5]">
-            {{ auth()->user()->isTeacher() ? __('My classes') : __('Classrooms') }}
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+            {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <span class="font-semibold text-[#101114]">{{ Illuminate\Support\Str::limit($classroom->name, 30) }}</span>
@@ -17,7 +17,7 @@
 
     {{-- Classroom Cover Card --}}
     <div class="overflow-hidden rounded-[12px] border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-        <div class="h-2 w-full" style="background-color: {{ isset($classroom) ? ($classroom->themeCategory?->color ?? '#7132f5') : '#7132f5' }};"></div>
+        <div class="h-2 w-full" style="background-color: {{ isset($classroom) ? ($classroom->themeCategory?->color ?? '#2563eb') : '#2563eb' }};"></div>
         <div class="p-5 sm:p-6">
             <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                 <div class="min-w-0 flex-1 space-y-2">
@@ -73,7 +73,7 @@
                     <div class="skeleton h-3 w-20"></div>
                     <div class="skeleton h-5 w-28"></div>
                 </div>
-                <div class="flex items-center justify-between gap-3 rounded-[10px] border border-[#dedee5] bg-[rgba(133,91,251,0.04)] px-4 py-3">
+                <div class="flex items-center justify-between gap-3 rounded-[10px] border border-[#dedee5] bg-[var(--ll-blue-faint)] px-4 py-3">
                     <div class="skeleton h-8 w-28"></div>
                     <div class="skeleton h-9 w-9 rounded-[9px]"></div>
                 </div>

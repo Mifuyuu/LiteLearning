@@ -2,11 +2,11 @@
 @section('breadcrumb')
     <nav class="flex items-center space-x-1 text-sm">
         <a href="{{ route('classrooms') }}"
-            class="text-gray-500 hover:text-indigo-600 transition-colors">{{ auth()->user()->isTeacher() ? __('ชั้นเรียนของฉัน') : __('ห้องเรียน') }}</a>
-        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-        <a href="{{ route('classroom.show', $classroom) }}" class="text-gray-500 hover:text-indigo-600 transition-colors"
+            class="text-gray-500 hover:text-blue-600 transition-colors">{{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}</a>
+        <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />
+        <a href="{{ route('classroom.show', $classroom) }}" class="text-gray-500 hover:text-blue-600 transition-colors"
             title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 20) }}</a>
-        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+        <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />
         <span class="text-gray-800 font-semibold"
             title="{{ $assignment->title }}">{{ \Illuminate\Support\Str::limit($assignment->title, 30) }}</span>
     </nav>
@@ -16,7 +16,7 @@
     <!-- Back -->
     <a href="{{ route('classroom.show', $classroom) }}"
         class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
-        <i class="fas fa-arrow-left mr-2"></i> {{ __('Back to :name', ['name' => $classroom->name]) }}
+        <x-icon name="arrow-left" class="h-4 w-4 mr-2" /> กลับไปที่ {{ $classroom->name }}
     </a>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -30,7 +30,7 @@
                             <div class="flex items-start min-w-0">
                                 <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0"
                                     style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20; color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
-                                    <i class="fas {{ $assignment->typeIcon() }} text-base sm:text-lg"></i>
+                                    <x-icon :name="$assignment->typeIcon()" class="h-5 w-5" />
                                 </div>
                                 <div class="ml-3 sm:ml-4 min-w-0">
                                     <div class="flex items-center gap-2 flex-wrap">
@@ -52,7 +52,7 @@
                                 <div class="relative ml-auto sm:ml-0" x-data="{ open: false }">
                                     <button @click.stop="open = !open" type="button"
                                         class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer">
-                                        <i class="fas fa-ellipsis-vertical"></i>
+                                        <x-icon name="ellipsis-vertical" class="h-4 w-4" />
                                     </button>
                                     <div x-show="open" x-cloak @click.outside="open = false"
                                         x-transition:enter="transition ease-out duration-100"
@@ -65,18 +65,18 @@
                                         <button
                                             @click.stop="navigator.clipboard.writeText('{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}'); open = false; copiedToast = true; setTimeout(() => copiedToast = false, 2000)"
                                             class="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                            <i class="fas fa-link w-5 text-gray-400"></i>
-                                            <span class="ml-2">{{ __('Copy link') }}</span>
+                                            <x-icon name="link" class="h-5 w-5 text-gray-400" />
+                                            <span class="ml-2">คัดลอกลิงก์</span>
                                         </button>
                                         <button wire:click="openEditTab" @click.stop="open = false"
                                             class="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                            <i class="fas fa-pen w-5 text-gray-400"></i>
-                                            <span class="ml-2">{{ __('Edit') }}</span>
+                                            <x-icon name="pencil" class="h-5 w-5 text-gray-400" />
+                                            <span class="ml-2">แก้ไข</span>
                                         </button>
                                         <button @click="showDeleteModal = true; open = false"
                                             class="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                            <i class="fas fa-trash-alt w-5 text-red-400"></i>
-                                            <span class="ml-2">{{ __('Delete') }}</span>
+                                            <x-icon name="trash" class="h-5 w-5 text-red-400" />
+                                            <span class="ml-2">ลบ</span>
                                         </button>
                                     </div>
                                 </div>
@@ -85,18 +85,18 @@
 
                         <div class="mt-4 flex items-center gap-4 text-sm flex-wrap">
                             <span class="text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                {{ __('Due') }}:
-                                {{ $assignment->due_date ? $assignment->due_date->translatedFormat('j M Y, H:i') : __('No due date') }}
+                                <x-icon name="clock" class="h-4 w-4 mr-1" />
+                                กำหนดส่ง:
+                                {{ $assignment->due_date ? $assignment->due_date->translatedFormat('j M Y, H:i') : 'ไม่มีกำหนด' }}
                             </span>
                             @if($assignment->type !== 'material' && $assignment->type !== 'attendance')
                                 <span class="inline-flex items-center text-gray-500">
-                                    <x-icon name="bolt" class="text-purple-600 mr-1 h-4 w-4 shrink-0" />
-                                    {{ $assignment->exp_reward }} {{ __('EXP') }}
+                                    <x-icon name="bolt" class="text-blue-600 mr-1 h-4 w-4 shrink-0" />
+                                    {{ $assignment->exp_reward }} EXP
                                 </span>
                                 <span class="inline-flex items-center text-gray-500">
                                     <x-icon name="star-solid" class="text-amber-500 mr-1 h-4 w-4 shrink-0" />
-                                    {{ $assignment->coin_reward }} {{ __('Coins') }}
+                                    {{ $assignment->coin_reward }} เหรียญ
                                 </span>
                             @endif
 
@@ -104,15 +104,15 @@
                             @if($assignment->isOverdue())
                                 @if($assignment->canSubmitLate())
                                     <span class="text-red-500 font-medium text-xs px-2 py-0.5 bg-red-50 rounded-full">
-                                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                                        <x-icon name="exclamation-triangle" class="h-4 w-4 mr-1" />
                                         {{ $assignment->overdueDescription() }}
                                     </span>
                                     <span class="text-amber-600 text-xs px-2 py-0.5 bg-amber-50 rounded-full">
-                                        {{ __('Late submission allowed') }}
+                                        อนุญาตให้ส่งงานล่าช้า
                                     </span>
                                 @else
                                     <span class="text-red-600 font-medium text-xs px-2 py-0.5 bg-red-50 rounded-full">
-                                        <i class="fas fa-lock mr-1"></i>{{ __('Submissions closed') }}
+                                        <x-icon name="lock" class="h-4 w-4 mr-1" />ปิดรับงานแล้ว
                                     </span>
                                 @endif
                             @endif
@@ -130,7 +130,7 @@
                         <!-- Attachments -->
                         @if($assignment->attachments->count())
                             <div class="mt-4">
-                                <h3 class="text-sm font-semibold text-gray-700 mb-3">{{ __('Attachments') }}</h3>
+                                <h3 class="text-sm font-semibold text-gray-700 mb-3">ไฟล์แนบ</h3>
                                 <div class="space-y-3">
                                     @foreach($assignment->attachments as $attachment)
                                         @php
@@ -142,15 +142,25 @@
                                             $attachId = $attachment->id;
                                             $sizeKb = round(($attachment->file_size ?? 0) / 1024);
                                             $sizeLabel = $sizeKb >= 1024 ? round($sizeKb / 1024, 1) . ' MB' : $sizeKb . ' KB';
-                                            $icon = match (true) {
-                                                $isImage => 'fa-image text-green-500',
-                                                $isPdf => 'fa-file-pdf text-red-500',
-                                                $isVideo => 'fa-file-video text-purple-500',
-                                                in_array($ext, ['doc', 'docx']) => 'fa-file-word text-blue-500',
-                                                in_array($ext, ['xls', 'xlsx']) => 'fa-file-excel text-green-600',
-                                                in_array($ext, ['ppt', 'pptx']) => 'fa-file-powerpoint text-orange-500',
-                                                in_array($ext, ['zip', 'rar', '7z']) => 'fa-file-zipper text-yellow-600',
-                                                default => 'fa-file text-gray-400',
+                                            $iconName = match (true) {
+                                                $isImage => 'photo',
+                                                $isPdf => 'document-text',
+                                                $isVideo => 'document-text',
+                                                in_array($ext, ['doc', 'docx']) => 'document-text',
+                                                in_array($ext, ['xls', 'xlsx']) => 'document-text',
+                                                in_array($ext, ['ppt', 'pptx']) => 'document-text',
+                                                in_array($ext, ['zip', 'rar', '7z']) => 'document-text',
+                                                default => 'document',
+                                            };
+                                            $iconColor = match (true) {
+                                                $isImage => 'text-green-500',
+                                                $isPdf => 'text-red-500',
+                                                $isVideo => 'text-blue-500',
+                                                in_array($ext, ['doc', 'docx']) => 'text-blue-500',
+                                                in_array($ext, ['xls', 'xlsx']) => 'text-green-600',
+                                                in_array($ext, ['ppt', 'pptx']) => 'text-orange-500',
+                                                in_array($ext, ['zip', 'rar', '7z']) => 'text-yellow-600',
+                                                default => 'text-gray-400',
                                             };
                                         @endphp
                                         <div class="border border-gray-200 rounded-xl overflow-hidden"
@@ -167,7 +177,7 @@
                                             @if($isVideo)
                                                 <video controls class="w-full max-h-96 bg-black">
                                                     <source src="{{ $url }}" type="{{ $attachment->file_type ?? 'video/mp4' }}">
-                                                    {{ __('Your browser does not support the video tag.') }}
+                                                    เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
                                                 </video>
                                             @endif
 
@@ -179,13 +189,13 @@
                                             {{-- File info bar --}}
                                             <a href="{{ $url }}" target="_blank"
                                                 class="flex items-center p-3 bg-gray-50 hover:bg-gray-100 transition-colors {{ ($isImage || $isVideo || $isPdf) ? 'border-t border-gray-200' : '' }}">
-                                                <i class="fas {{ $icon }} mr-3 text-lg"></i>
+                                                <x-icon :name="$iconName" class="mr-3 h-5 w-5 {{ $iconColor }}" />
                                                 <div class="flex-1 min-w-0">
                                                     <p class="text-sm font-medium text-gray-700 truncate">{{ $attachment->file_name }}
                                                     </p>
                                                     <p class="text-xs text-gray-400">{{ $sizeLabel }}</p>
                                                 </div>
-                                                <i class="fas fa-arrow-up-right-from-square text-gray-400 ml-2"></i>
+                                                <x-icon name="arrow-top-right-on-square" class="h-4 w-4 text-gray-400 ml-2" />
                                             </a>
                                         </div>
                                     @endforeach
@@ -206,14 +216,14 @@
                 @if($submissions !== null && ($classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin()))
                     <div class="mt-6 bg-white rounded-xl border border-gray-200 overflow-hidden">
                         <div class="p-4 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-900">{{ __('Student Work') }}</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">งานนักเรียน</h3>
                             <div class="flex gap-4 mt-2 text-sm text-gray-500">
-                                <span><i class="fas fa-check-circle text-green-500 mr-1"></i>
-                                    {{ $assignment->submittedCount() }} {{ __('Turned in') }}</span>
-                                <span><i class="fas fa-star text-amber-500 mr-1"></i> {{ $assignment->gradedCount() }}
-                                    {{ __('Graded') }}</span>
+                                <span><x-icon name="check-circle" class="h-4 w-4 mr-1 text-green-500" />
+                                    {{ $assignment->submittedCount() }} ส่งแล้ว</span>
+                                <span><x-icon name="star" class="h-4 w-4 mr-1 text-amber-500" /> {{ $assignment->gradedCount() }}
+                                    ให้คะแนนแล้ว</span>
                                 @if($assignment->averageScore())
-                                    <span><i class="fas fa-chart-line text-blue-500 mr-1"></i> {{ __('Average') }}:
+                                    <span><x-icon name="chart-bar" class="h-4 w-4 mr-1 text-blue-500" /> เฉลี่ย:
                                         {{ round($assignment->averageScore()) }}/{{ $assignment->max_score }}</span>
                                 @endif
                             </div>
@@ -228,23 +238,23 @@
                                             <p class="text-sm font-medium text-gray-900">{{ $sub->user->name }}</p>
                                             <p class="text-xs text-gray-500">
                                                 @if($sub->status === 'turned_in')
-                                                    <span class="text-blue-600">{{ __('Turned in') }}
+                                                    <span class="text-blue-600">ส่งแล้ว
                                                         {{ $sub->turned_in_at?->diffForHumans() }}</span>
                                                 @elseif($sub->status === 'graded')
-                                                    <span class="text-green-600">{{ __('Graded') }}:
+                                                    <span class="text-green-600">ให้คะแนนแล้ว:
                                                         {{ $sub->score }}/{{ $assignment->max_score }}</span>
                                                 @elseif($sub->status === 'returned')
-                                                    <span class="text-purple-600">{{ __('Returned') }}</span>
+                                                    <span class="text-blue-600">ส่งคืนแล้ว</span>
                                                 @else
-                                                    <span class="text-gray-400">{{ __('Not turned in') }}</span>
+                                                    <span class="text-gray-400">ยังไม่ส่ง</span>
                                                 @endif
                                             </p>
                                         </div>
                                     </div>
                                     @if($sub->isTurnedIn())
                                         <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $sub]) }}"
-                                            class="px-3 py-1.5 text-xs font-medium bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors">
-                                            <i class="fas fa-{{ $sub->isGraded() ? 'eye' : 'pen' }} mr-1"></i>{{ $sub->isGraded() ? __('View Grade') : __('Grade') }}
+                                            class="px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors">
+                                            <x-icon :name="$sub->isGraded() ? 'eye' : 'pencil'" class="h-4 w-4 mr-1" />{{ $sub->isGraded() ? 'ดูคะแนน' : 'ให้คะแนน' }}
                                         </a>
                                     @endif
                                 </div>
@@ -258,42 +268,42 @@
                 {{-- ────────────────────────────────────────────── --}}
                 <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                     <div class="p-5 border-b border-gray-200 flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-900">{{ __('Edit Assignment') }}</h3>
+                        <h3 class="text-lg font-semibold text-gray-900">แก้ไขงาน</h3>
                         <button wire:click="cancelEditTab" type="button"
                             class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
-                            <i class="fas fa-arrow-left mr-1.5"></i>{{ __('Back') }}
+                            <x-icon name="arrow-left" class="h-4 w-4 mr-1.5" />กลับ
                         </button>
                     </div>
 
-                    <form wire:submit="saveAssignment" class="p-5 space-y-4">
+                    <form wire:submit.prevent="saveAssignment" class="p-5 space-y-4">
                         <!-- Type Badge (read-only) -->
                         @php
                             $typeInfo = [
-                                'announcement' => ['icon' => 'fa-bullhorn', 'label' => 'Announcement'],
-                                'question' => ['icon' => 'fa-pen-to-square', 'label' => 'Question'],
-                                'file' => ['icon' => 'fa-cloud-arrow-up', 'label' => 'File Upload'],
-                                'attendance' => ['icon' => 'fa-clipboard-check', 'label' => 'Attendance'],
-                                'material' => ['icon' => 'fa-book-open', 'label' => 'Material'],
-                                'project' => ['icon' => 'fa-diagram-project', 'label' => 'Project'],
+                                    'announcement' => ['icon' => 'megaphone', 'label' => 'ประกาศ'],
+                                    'question' => ['icon' => 'pencil-square', 'label' => 'คำถาม'],
+                                    'file' => ['icon' => 'arrow-up-tray', 'label' => 'อัปโหลดไฟล์'],
+                                    'attendance' => ['icon' => 'clipboard-document-check', 'label' => 'เช็คชื่อ'],
+                                    'material' => ['icon' => 'book-open', 'label' => 'เอกสาร'],
+                                    'project' => ['icon' => 'squares-2x2', 'label' => 'โปรเจกต์'],
                             ];
-                            $current = $typeInfo[$editType] ?? ['icon' => 'fa-pen-to-square', 'label' => ucfirst($editType)];
+                            $current = $typeInfo[$editType] ?? ['icon' => 'pencil-square', 'label' => ucfirst($editType)];
                         @endphp
                         <div class="flex items-center gap-3 bg-white px-5 py-3.5 rounded-xl border border-gray-200">
                             <div class="w-9 h-9 rounded-full flex items-center justify-center"
                                 style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20; color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
-                                <i class="fas {{ $current['icon'] }}"></i>
+                                <x-icon :name="$current['icon']" class="h-4 w-4" />
                             </div>
                             <div>
-                                <p class="text-xs text-gray-400 leading-none mb-0.5">{{ __('Type') }}</p>
+                                <p class="text-xs text-gray-400 leading-none mb-0.5">ประเภท</p>
                                 <p class="text-sm font-semibold" style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
-                                    {{ __($current['label']) }}</p>
+                                    {{ $current['label'] }}</p>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Title *') }}</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ *</label>
                             <input wire:model="editTitle" type="text" maxlength="50"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <div class="mt-1 flex justify-between items-center">
                                 @error('editTitle') <p class="text-sm text-red-500">{{ $message }}</p> @else <span></span> @enderror
                                 <span class="text-xs" :class="$wire.editTitle.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
@@ -303,8 +313,8 @@
 
                         @if($editType !== 'attendance')
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Description') }}</label>
-                                <div wire:ignore x-data="tiptapEditor({ wireModel: 'editDescription', placeholder: '{{ __('Add a description or instructions for this assignment...') }}' })">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">รายละเอียด</label>
+                                <div wire:ignore x-data="tiptapEditor({ wireModel: 'editDescription', placeholder: 'เพิ่มรายละเอียดหรือคำแนะนำสำหรับงานนี้...' })">
                                     <x-tiptap-toolbar />
                                     <div x-ref="editorEl"
                                         class="min-h-[150px] border border-gray-200 rounded-b-lg p-3 focus:outline-none prose prose-sm max-w-none">
@@ -318,23 +328,23 @@
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        {{ $editType === 'attendance' ? __('Attendance Points') : __('Points') }}
+                                        {{ $editType === 'attendance' ? 'คะแนนเช็คชื่อ' : 'คะแนน' }}
                                     </label>
                                     <input wire:model="editMaxScore" type="number" min="0" max="1000"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     @error('editMaxScore') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                                        <x-icon name="bolt" class="text-purple-600 mr-1.5 h-4 w-4 shrink-0" />{{ __('EXP Reward') }}
+                                        <x-icon name="bolt" class="text-blue-600 mr-1.5 h-4 w-4 shrink-0" />รางวัล EXP
                                     </label>
                                     <input wire:model="editExpReward" type="number" min="0" max="9999"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     @error('editExpReward') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                                        <x-icon name="star-solid" class="text-amber-500 mr-1.5 h-4 w-4 shrink-0" />{{ __('Coin Reward') }}
+                                        <x-icon name="star-solid" class="text-amber-500 mr-1.5 h-4 w-4 shrink-0" />รางวัลเหรียญ
                                     </label>
                                     <input wire:model="editCoinReward" type="number" min="0" max="9999"
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
@@ -343,9 +353,9 @@
 
                                 @if($editType !== 'attendance')
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Due Date') }}</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">วันกำหนดส่ง</label>
                                         <input wire:model="editDueDate" type="datetime-local"
-                                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                         @error('editDueDate') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                                     </div>
                                 @endif
@@ -358,40 +368,40 @@
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input wire:model="editAllowLateSubmission" type="checkbox" class="sr-only peer">
                                     <div
-                                        class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600">
+                                        class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600">
                                     </div>
                                 </label>
                                 <span class="text-sm text-gray-700">
-                                    {{ __('Allow late submission') }}
+                                    อนุญาตให้ส่งงานล่าช้า
                                 </span>
                             </div>
                         @endif
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Topic') }}</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ</label>
                             <input wire:model="editTopic" type="text"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             @error('editTopic') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Status') }}</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">สถานะ</label>
                             <select wire:model="editStatus"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                <option value="draft">{{ __('Draft') }}</option>
-                                <option value="published">{{ __('Published') }}</option>
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="draft">ฉบับร่าง</option>
+                                <option value="published">เผยแพร่แล้ว</option>
                             </select>
                             @error('editStatus') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="pt-2 flex justify-end gap-2">
                             <button wire:click="cancelEditTab" type="button"
-                                class="px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">{{ __('Cancel') }}</button>
+                                class="px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">ยกเลิก</button>
                             <button type="submit"
-                                class="btn-3d btn-3d--indigo px-5 py-2.5 text-sm font-medium rounded-lg transition-colors">
-                                <span wire:loading.remove wire:target="saveAssignment">{{ __('Update Assignment') }}</span>
-                                <span wire:loading wire:target="saveAssignment"><i class="fas fa-spinner fa-spin mr-1"></i>
-                                    {{ __('Saving...') }}</span>
+                                class="btn-3d btn-3d--blue px-5 py-2.5 text-sm font-medium rounded-lg transition-colors">
+                                <span wire:loading.remove wire:target="saveAssignment">อัปเดตงาน</span>
+                                <span wire:loading wire:target="saveAssignment"><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" />
+                                    กำลังบันทึก...</span>
                             </button>
                         </div>
                     </form>
@@ -407,18 +417,18 @@
                 <div class="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-0">
                     <div class="p-4 border-b border-gray-200">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">{{ __('Your Work') }}</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">งานของคุณ</h3>
                             @if($userSubmission)
                                             <span
                                                 class="text-xs px-2.5 py-1 rounded-full font-medium capitalize
                                                     {{ $userSubmission->status === 'turned_in' ? 'bg-blue-100 text-blue-700' :
                                 ($userSubmission->status === 'graded' ? 'bg-green-100 text-green-700' :
-                                    ($userSubmission->status === 'returned' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700')) }}">
+                                    ($userSubmission->status === 'returned' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700')) }}">
                                                 {{ str_replace('_', ' ', $userSubmission->status) }}
                                             </span>
                             @else
                                 <span
-                                    class="text-xs px-2.5 py-1 rounded-full font-medium bg-gray-100 text-gray-600">{{ __('Assigned') }}</span>
+                                    class="text-xs px-2.5 py-1 rounded-full font-medium bg-gray-100 text-gray-600">มอบหมายแล้ว</span>
                             @endif
                         </div>
 
@@ -428,9 +438,8 @@
                                 class="mt-2 p-2 rounded-lg {{ $assignment->canSubmitLate() ? 'bg-amber-50 border border-amber-200' : 'bg-red-50 border border-red-200' }}">
                                 <p
                                     class="text-xs font-medium {{ $assignment->canSubmitLate() ? 'text-amber-700' : 'text-red-700' }}">
-                                    <i
-                                        class="fas {{ $assignment->canSubmitLate() ? 'fa-exclamation-triangle' : 'fa-lock' }} mr-1"></i>
-                                    {{ $assignment->canSubmitLate() ? $assignment->overdueDescription() : __('Submissions closed') }}
+                                    <x-icon :name="$assignment->canSubmitLate() ? 'exclamation-triangle' : 'lock'" class="h-4 w-4 mr-1" />
+                                    {{ $assignment->canSubmitLate() ? $assignment->overdueDescription() : 'ปิดรับงานแล้ว' }}
                                 </p>
                             </div>
                         @endif
@@ -454,22 +463,30 @@
                                 <div class="mb-3"
                                     x-data="{
                                         isDragging: false,
-                                        isUploading: false,
+                                        uploadProgress: {},
+                                        get uploading() {
+                                            return Object.keys(this.uploadProgress).length > 0;
+                                        },
                                         uploadFiles(files) {
                                             if (!files.length) return;
-                                            this.isUploading = true;
                                             let index = 0;
                                             const uploadNext = () => {
-                                                if (index >= files.length) {
-                                                    this.isUploading = false;
-                                                    return;
-                                                }
-                                                $wire.upload('uploadedFile', files[index], () => {
-                                                    index++;
-                                                    uploadNext();
-                                                }, () => {
-                                                    this.isUploading = false;
-                                                });
+                                                if (index >= files.length) return;
+                                                let file = files[index];
+                                                this.uploadProgress[file.name] = 0;
+                                                $wire.upload('uploadedFile', file,
+                                                    () => {
+                                                        delete this.uploadProgress[file.name];
+                                                        index++;
+                                                        uploadNext();
+                                                    },
+                                                    (progress) => { this.uploadProgress[file.name] = progress.detail.progress; },
+                                                    () => {
+                                                        delete this.uploadProgress[file.name];
+                                                        index++;
+                                                        uploadNext();
+                                                    }
+                                                );
                                             };
                                             uploadNext();
                                         }
@@ -478,18 +495,29 @@
                                     @dragleave.prevent="isDragging = false"
                                     @dragover.prevent
                                     @drop.prevent="isDragging = false; uploadFiles($event.dataTransfer.files)">
-                                    <label :class="isDragging ? 'border-indigo-400 bg-indigo-50' : 'border-gray-300 bg-gray-50'"
+                                    <label :class="isDragging ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-gray-50'"
                                         class="flex flex-col items-center justify-center w-full py-6 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-                                        <i class="fas fa-cloud-arrow-up text-gray-400 text-2xl mb-2"></i>
-                                        <p class="text-sm text-gray-500">{{ __('Drag files here or click to upload') }}</p>
-                                        <p class="text-xs text-gray-400 mt-1">{{ __('Max file size: 25MB') }}</p>
+                                        <x-icon name="arrow-up-tray" class="h-7 w-7 text-gray-400 mb-2" />
+                                        <p class="text-sm text-gray-500">ลากไฟล์มาที่นี่หรือคลิกเพื่ออัปโหลด</p>
+                                        <p class="text-xs text-gray-400 mt-1">ขนาดไฟล์สูงสุด: 25MB รองรับหลายไฟล์</p>
                                         <input x-ref="fileInput" type="file" class="hidden" multiple
                                             @change="uploadFiles($event.target.files); $event.target.value = ''">
                                     </label>
-                                    <div x-show="isUploading" class="mt-2 text-center">
-                                        <i class="fas fa-spinner fa-spin text-indigo-500 mr-1"></i>
-                                        <span class="text-sm text-gray-500">{{ __('Uploading...') }}</span>
-                                    </div>
+
+                                    {{-- Progress bars --}}
+                                    <template x-for="(pct, name) in uploadProgress" :key="name">
+                                        <div class="mt-2 p-2 bg-gray-50 border border-gray-200 rounded-lg">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <span class="text-xs text-gray-600 truncate mr-2" x-text="name"></span>
+                                                <span class="text-xs font-medium text-blue-600 shrink-0" x-text="pct + '%'"></span>
+                                            </div>
+                                            <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-full bg-blue-500 rounded-full transition-all duration-200"
+                                                    :style="'width: ' + pct + '%'"></div>
+                                            </div>
+                                        </div>
+                                    </template>
+
                                     @error('uploadedFile') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                                 </div>
 
@@ -499,15 +527,15 @@
                                         @foreach($userSubmission->attachments as $attachment)
                                             <div class="flex items-center p-2 bg-gray-50 border border-gray-200 rounded-lg"
                                                 wire:key="file-{{ $attachment->id }}">
-                                                <i class="fas {{ $attachment->icon }} text-gray-400 mr-2 text-sm"></i>
+                                                <x-icon :name="$attachment->icon" class="h-4 w-4 text-gray-400 mr-2" />
                                                 <div class="flex-1 min-w-0">
                                                     <p class="text-xs font-medium text-gray-700 truncate">{{ $attachment->file_name }}</p>
                                                     <p class="text-xs text-gray-400">{{ $attachment->formatted_size }}</p>
                                                 </div>
                                                 <button wire:click="removeFile({{ $attachment->id }})"
-                                                    wire:confirm="{{ __('Remove this file?') }}"
+                                                    wire:confirm="ลบไฟล์นี้?"
                                                     class="p-1 text-gray-400 hover:text-red-500 rounded transition-colors">
-                                                    <i class="fas fa-times text-xs"></i>
+                                                    <x-icon name="x-mark" class="h-4 w-4" />
                                                 </button>
                                             </div>
                                         @endforeach
@@ -516,43 +544,43 @@
                             @else
                                 {{-- Text submission for 'question' type --}}
                                 <textarea wire:model="submissionContent" rows="6"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mb-3"
-                                    placeholder="{{ __('Type your answer here...') }}" @if(!$assignment->canAcceptSubmission())
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-3"
+                                    placeholder="พิมพ์คำตอบของคุณที่นี่..." @if(!$assignment->canAcceptSubmission())
                                     disabled @endif></textarea>
                             @endif
 
                             @if($assignment->canAcceptSubmission())
                                 <div class="flex flex-col gap-2">
                                     <button wire:click="turnIn"
-                                        class="btn-3d btn-3d--indigo w-full py-2.5 text-sm font-medium rounded-lg transition-colors">
-                                        <span wire:loading.remove wire:target="turnIn">{{ __('Turn In') }}</span>
-                                        <span wire:loading wire:target="turnIn"><i class="fas fa-spinner fa-spin mr-1"></i>
-                                            {{ __('Submitting...') }}</span>
+                                        class="btn-3d btn-3d--blue w-full py-2.5 text-sm font-medium rounded-lg transition-colors">
+                                        <span wire:loading.remove wire:target="turnIn">ส่งงาน</span>
+                                        <span wire:loading wire:target="turnIn"><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" />
+                                            กำลังส่ง...</span>
                                     </button>
                                     @if(!$assignment->isFile())
                                         <button wire:click="saveDraft"
                                             class="w-full py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
-                                            {{ __('Save Draft') }}
+                                            บันทึกฉบับร่าง
                                         </button>
                                     @endif
                                 </div>
                             @else
                                 <div class="text-center py-4">
-                                    <i class="fas fa-lock text-red-300 text-2xl mb-2"></i>
-                                    <p class="text-sm text-red-500 font-medium">{{ __('Submissions closed') }}</p>
+                                    <x-icon name="lock" class="h-7 w-7 text-red-300 mb-2" />
+                                    <p class="text-sm text-red-500 font-medium">ปิดรับงานแล้ว</p>
                                     <p class="text-xs text-gray-400 mt-1">{{ $assignment->overdueDescription() }}</p>
                                 </div>
                             @endif
 
                         @elseif($userSubmission->status === 'turned_in')
                             <div class="text-center">
-                                <i class="fas fa-check-circle text-blue-500 text-3xl mb-2"></i>
-                                <p class="text-sm text-gray-700 font-medium">{{ __('Turned in') }}</p>
+                                <x-icon name="check-circle" class="h-7 w-7 text-blue-500 mb-2" />
+                                <p class="text-sm text-gray-700 font-medium">ส่งแล้ว</p>
                                 <p class="text-xs text-gray-500 mt-1">
                                     {{ $userSubmission->turned_in_at?->translatedFormat('j M, H:i') }}</p>
                                 <button wire:click="unsubmit"
                                     class="mt-3 w-full py-2 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
-                                    {{ __('Unsubmit') }}
+                                    ยกเลิกการส่ง
                                 </button>
                             </div>
                         @endif
@@ -568,43 +596,43 @@
                     @if($assignment->requiresSubmission())
                         <div class="space-y-3 text-sm">
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-500">{{ __('Max Score') }}</span>
+                                <span class="text-gray-500">คะแนนเต็ม</span>
                                 <span class="font-semibold text-gray-900">{{ $assignment->max_score }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="inline-flex items-center text-gray-500"><x-icon name="bolt" class="text-purple-600 mr-1 h-4 w-4 shrink-0" />{{ __('EXP Reward') }}</span>
-                                <span class="font-semibold text-purple-700">{{ $assignment->exp_reward }}</span>
+                                <span class="inline-flex items-center text-gray-500"><x-icon name="bolt" class="text-blue-600 mr-1 h-4 w-4 shrink-0" />รางวัล EXP</span>
+                                <span class="font-semibold text-blue-700">{{ $assignment->exp_reward }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="inline-flex items-center text-gray-500"><x-icon name="star-solid" class="text-amber-500 mr-1 h-4 w-4 shrink-0" />{{ __('Coin Reward') }}</span>
+                                <span class="inline-flex items-center text-gray-500"><x-icon name="star-solid" class="text-amber-500 mr-1 h-4 w-4 shrink-0" />รางวัลเหรียญ</span>
                                 <span class="font-semibold text-amber-700">{{ $assignment->coin_reward }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-500">{{ __('Turned in') }}</span>
+                                <span class="text-gray-500">ส่งแล้ว</span>
                                 <span class="font-semibold text-gray-900">{{ $assignment->submittedCount() }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-500">{{ __('Graded') }}</span>
+                                <span class="text-gray-500">ให้คะแนนแล้ว</span>
                                 <span class="font-semibold text-gray-900">{{ $assignment->gradedCount() }}</span>
                             </div>
                             @if($assignment->averageScore())
                                 <div class="flex items-center justify-between">
-                                    <span class="text-gray-500">{{ __('Average') }}</span>
+                                    <span class="text-gray-500">เฉลี่ย</span>
                                     <span class="font-semibold text-gray-900">{{ round($assignment->averageScore(), 1) }}</span>
                                 </div>
                             @endif
                             <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                                <span class="text-gray-500">{{ __('Allow late submission') }}</span>
+                                <span class="text-gray-500">อนุญาตให้ส่งงานล่าช้า</span>
                                 <span
                                     class="text-xs px-2 py-0.5 rounded-full font-medium {{ $assignment->allow_late_submission ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                    {{ $assignment->allow_late_submission ? __('Yes') : __('No') }}
+                                    {{ $assignment->allow_late_submission ? 'ใช่' : 'ไม่' }}
                                 </span>
                             </div>
                         </div>
                     @else
                         <div class="text-center py-4">
-                            <i class="fas fa-book-open text-gray-300 text-3xl mb-2"></i>
-                            <p class="text-sm text-gray-500">{{ __('This is a material - no submission required.') }}</p>
+                            <x-icon name="book-open" class="h-7 w-7 text-gray-300 mb-2" />
+                            <p class="text-sm text-gray-500">นี่คือเอกสาร - ไม่ต้องส่งงาน</p>
                         </div>
                     @endif
                 </div>
@@ -623,25 +651,25 @@
                     @click.stop>
                     <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                         <div>
-                            <h4 class="text-base font-semibold text-gray-900">{{ __('Delete Assignment') }}</h4>
+                            <h4 class="text-base font-semibold text-gray-900">ลบงาน</h4>
                             <p class="text-sm text-gray-500 mt-1">
-                                {{ __('Are you sure you want to delete this assignment? This action cannot be undone.') }}
+                                คุณแน่ใจหรือว่าต้องการลบงานนี้? การกระทำนี้ไม่สามารถยกเลิกได้
                             </p>
                         </div>
                         <button type="button" @click="showDeleteModal = false"
                             class="text-gray-400 hover:text-gray-600 transition-colors">
-                            <i class="fas fa-xmark text-lg"></i>
+                            <x-icon name="x-mark" class="h-5 w-5" />
                         </button>
                     </div>
                     <div class="px-6 py-5">
                         <div class="flex justify-end gap-2">
                             <button type="button" @click="showDeleteModal = false"
                                 class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                                <i class="fas fa-xmark mr-1.5"></i>{{ __('Cancel') }}
+                                <x-icon name="x-mark" class="h-4 w-4 mr-1.5" />ยกเลิก
                             </button>
                             <button type="button" @click="$wire.deleteAssignment(); showDeleteModal = false"
                                 class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
-                                <i class="fas fa-trash-alt mr-1.5"></i>{{ __('Delete') }}
+                                <x-icon name="trash" class="h-4 w-4 mr-1.5" />ลบ
                             </button>
                         </div>
                     </div>
@@ -658,8 +686,8 @@
         x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 translate-y-4"
         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-60 px-4 py-2.5 bg-gray-800 text-white text-sm rounded-lg shadow-lg flex items-center gap-2">
-        <i class="fas fa-check-circle text-green-400"></i>
-        {{ __('Link copied!') }}
+        <x-icon name="check-circle" class="h-4 w-4 text-green-400" />
+        คัดลอกลิงก์แล้ว!
     </div>
 
 </div>
