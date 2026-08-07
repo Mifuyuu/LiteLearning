@@ -62,8 +62,6 @@
 @endphp
 
 <div class="space-y-6 ">
-    @include('livewire.classroom.partials.subnav', ['classroom' => $classroom])
-
     <section class="flex flex-wrap items-center gap-2 rounded-2xl border border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         @foreach($scopeLinks as $key => $label)
             <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => $key]) }}" wire:navigate

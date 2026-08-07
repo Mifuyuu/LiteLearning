@@ -11,9 +11,6 @@
 @endsection
 @endif
 <div class="space-y-5">
-    @if(isset($classroom))
-        @include('livewire.classroom.partials.subnav', ['classroom' => $classroom])
-    @endif
 
     {{-- Classroom Cover Card --}}
     <div class="overflow-hidden rounded-[12px] border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">

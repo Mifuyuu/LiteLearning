@@ -18,8 +18,6 @@
 @endphp
 
 <div class="space-y-5 ">
-    @include('livewire.classroom.partials.subnav', ['classroom' => $classroom])
-
     <section class="rounded-[12px] border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>

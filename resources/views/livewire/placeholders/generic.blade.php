@@ -1,8 +1,5 @@
 @if(isset($pageTitle))@section('page-title', $pageTitle)@endif
-<div class="w-full space-y-6">
-    @if(isset($classroom))
-        @include('livewire.classroom.partials.subnav', ['classroom' => $classroom])
-    @endif
+<div class="max-w-4xl mx-auto space-y-6">
 
     <div class="skeleton h-8 w-48"></div>
     <div class="rounded-2xl border border-[#dedee5] bg-white p-6 space-y-4 shadow-sm">

@@ -1,6 +1,6 @@
 @section('page-title', 'รอตรวจ')
 
-<div class="space-y-6">
+<div class="max-w-4xl mx-auto space-y-6">
     {{-- Header --}}
     <div>
         <h2 class="text-2xl font-bold text-gray-900">รอตรวจ</h2>

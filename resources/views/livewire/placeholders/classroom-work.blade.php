@@ -1,8 +1,5 @@
 @section('page-title', (isset($classroom) ? ('งานในชั้นเรียน' . ' - ' . $classroom->name) : 'งานในชั้นเรียน'))
 <div class="space-y-6">
-    @if(isset($classroom))
-        @include('livewire.classroom.partials.subnav', ['classroom' => $classroom])
-    @endif
 
     {{-- Filter bar mockup --}}
     <section class="flex flex-wrap items-center gap-2 rounded-2xl border border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">

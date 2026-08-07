@@ -16,8 +16,6 @@
 <div class="space-y-6 "
     x-data="{ openPopover: null, showKickModal: false, kickName: '', kickId: null, kickType: '' }"
     @click.away="openPopover = null">
-    @include('livewire.classroom.partials.subnav', ['classroom' => $classroom, 'sort' => $sort])
-
     <section class="flex flex-wrap items-center gap-2 rounded-2xl border border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
             class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-[var(--ll-blue)] text-white' : 'text-[#686b82] hover:bg-[var(--ll-blue-hover)] hover:text-[var(--ll-blue)]' }}">

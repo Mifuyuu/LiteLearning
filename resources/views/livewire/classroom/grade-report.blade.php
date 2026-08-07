@@ -52,8 +52,6 @@
         </div>
     </section>
 
-    @include('livewire.classroom.partials.subnav', ['classroom' => $classroom, 'sort' => $sort, 'display' => $display])
-
     <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">งานที่มอบหมาย</p>
