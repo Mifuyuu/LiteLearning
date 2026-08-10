@@ -33,7 +33,7 @@ class Users extends Component
     public function toggleStatus(User $user)
     {
         if ($user->id === auth()->id()) {
-            $this->dispatch('notify', message: 'คุณไม่สามารถปิดใช้งานบัญชีของตัวเองได้!');
+            $this->dispatch('notify', message: __('messages.admin.cannot_self_disable'));
 
             return;
         }
@@ -41,19 +41,19 @@ class Users extends Component
         $user->is_active = ! $user->is_active;
         $user->save();
 
-        $this->dispatch('notify', message: 'อัปเดตสถานะผู้ใช้สำเร็จ');
+        $this->dispatch('notify', message: __('messages.admin.user_status_updated'));
     }
 
     public function updateRole(User $user, $newRole)
     {
         if (! in_array($newRole, ['admin', 'teacher', 'student'], true)) {
-            $this->dispatch('notify', message: 'บทบาทไม่ถูกต้อง');
+            $this->dispatch('notify', message: __('messages.admin.role_invalid'));
 
             return;
         }
 
         if ($user->id === auth()->id() && $newRole !== 'admin') {
-            $this->dispatch('notify', message: 'คุณไม่สามารถยกเลิกบทบาทผู้ดูแลของตัวเองได้!');
+            $this->dispatch('notify', message: __('messages.admin.cannot_self_demote'));
 
             return;
         }
@@ -61,19 +61,19 @@ class Users extends Component
         $user->role = $newRole;
         $user->save();
 
-        $this->dispatch('notify', message: 'อัปเดตบทบาทผู้ใช้เป็น ' . ucfirst($newRole) . ' แล้ว');
+        $this->dispatch('notify', message: __('messages.admin.user_role_updated', ['role' => ucfirst($newRole)]));
     }
 
     public function deleteUser(User $user)
     {
         if ($user->id === auth()->id()) {
-            $this->dispatch('notify', message: 'คุณไม่สามารถปิดใช้งานบัญชีของตัวเองได้!');
+            $this->dispatch('notify', message: __('messages.admin.cannot_self_disable'));
 
             return;
         }
 
         $user->delete();
-        $this->dispatch('notify', message: 'ลบผู้ใช้แล้ว');
+        $this->dispatch('notify', message: __('messages.admin.user_deleted'));
     }
 
     public function render()

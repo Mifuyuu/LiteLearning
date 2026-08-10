@@ -25,7 +25,6 @@
 </head>
 
 <body class="space-bg font-sans antialiased auth-page">
-    <canvas id="starfield-guest" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;"></canvas>
     <div class="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 auth-page-shell relative z-10">
         <!-- Content -->
         <div class="w-full max-w-md">
@@ -34,35 +33,6 @@
     </div>
 
     @livewireScripts
-
-    <script>
-    (function() {
-        const canvas = document.getElementById('starfield-guest');
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        function init() {
-            stars = [];
-            for (let i = 0; i < 180; i++) {
-                stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 1.5 + 0.3, o: Math.random(), d: (Math.random() * 0.005 + 0.001) * (Math.random() > 0.5 ? 1 : -1) });
-            }
-        }
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            stars.forEach(s => {
-                s.o += s.d;
-                if (s.o > 1 || s.o < 0.1) s.d *= -1;
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(180,160,255,${s.o})`;
-                ctx.fill();
-            });
-            requestAnimationFrame(draw);
-        }
-        window.addEventListener('resize', () => { resize(); init(); });
-        resize(); init(); draw();
-    })();
-    </script>
 </body>
 
 </html>

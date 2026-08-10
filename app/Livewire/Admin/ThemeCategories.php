@@ -34,13 +34,16 @@ class ThemeCategories extends Component
         'form.planet_number' => 'required|integer|min:1|max:23',
     ];
 
-    protected array $messages = [
-        'form.name.required' => 'กรุณาระบุชื่อ category',
-        'form.color.regex' => 'กรุณาระบุสีในรูปแบบ hex (#RRGGBB)',
-        'form.planet_number.required' => 'กรุณาเลือกดาวเคราะห์',
-        'form.planet_number.min' => 'หมายเลขดาวเคราะห์ต้องอยู่ระหว่าง 1-21',
-        'form.planet_number.max' => 'หมายเลขดาวเคราะห์ต้องอยู่ระหว่าง 1-23',
-    ];
+    protected function messages(): array
+    {
+        return [
+            'form.name.required' => __('messages.admin.theme_name_required'),
+            'form.color.regex' => __('messages.admin.theme_color_hex'),
+            'form.planet_number.required' => __('messages.admin.theme_planet_required'),
+            'form.planet_number.min' => __('messages.admin.theme_planet_range', ['min' => 1, 'max' => 21]),
+            'form.planet_number.max' => __('messages.admin.theme_planet_range', ['min' => 1, 'max' => 23]),
+        ];
+    }
 
     public function updatingSearch(): void
     {
@@ -82,10 +85,10 @@ class ThemeCategories extends Component
         if ($this->editingId) {
             $category = ThemeCategory::findOrFail($this->editingId);
             $category->update($data);
-            $this->dispatch('notify', message: 'อัปเดตหมวดหมู่สำเร็จ', type: 'success');
+            $this->dispatch('notify', message: __('messages.admin.theme_updated'), type: 'success');
         } else {
             ThemeCategory::create($data);
-            $this->dispatch('notify', message: 'สร้างหมวดหมู่สำเร็จ', type: 'success');
+            $this->dispatch('notify', message: __('messages.admin.theme_created'), type: 'success');
         }
 
         $this->showModal = false;
@@ -95,7 +98,7 @@ class ThemeCategories extends Component
     public function delete(ThemeCategory $category): void
     {
         $category->delete();
-        $this->dispatch('notify', message: 'ลบหมวดหมู่สำเร็จ', type: 'success');
+        $this->dispatch('notify', message: __('messages.admin.theme_deleted'), type: 'success');
     }
 
     public function render()

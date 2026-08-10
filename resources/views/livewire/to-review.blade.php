@@ -12,16 +12,35 @@
         <div class="relative w-full sm:w-64">
             <x-icon name="magnifying-glass" class="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input wire:model.live.debounce.300ms="search" type="text" placeholder="ค้นหาชื่อนักเรียน..."
-                class="w-full border border-gray-200 rounded-xl pl-9 pr-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 transition-all">
+                class="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 transition-all">
         </div>
 
-        <select wire:model.live="classroomId"
-            class="w-full sm:w-auto border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 transition-all bg-white">
-            <option value="">ทุกห้องเรียน</option>
-            @foreach($classrooms as $c)
-                <option value="{{ $c->id }}">{{ $c->name }}</option>
-            @endforeach
-        </select>
+        <div class="relative w-full sm:w-auto" x-data="{ open: false }" @click.away="open = false">
+            <button type="button" @click="open = !open"
+                class="inline-flex w-full sm:w-auto cursor-pointer items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 text-sm transition hover:border-gray-300">
+                <span>{{ $classroomId ? $classrooms->find($classroomId)?->name : 'ทุกห้องเรียน' }}</span>
+                <x-icon name="chevron-down" class="h-3.5 w-3.5 text-gray-400 transition-transform" ::class="open ? 'rotate-180' : ''" />
+            </button>
+            <ul x-show="open" x-cloak
+                class="absolute menu left-0 top-full z-50 mt-1 w-56 rounded-xl border border-[#dedee5] bg-white p-1.5 shadow-lg">
+                <li>
+                    <a wire:click="$set('classroomId', '')" @click="open = false"
+                        class="flex items-center rounded-lg px-3 py-2 text-sm {{ $classroomId === '' ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700 hover:bg-gray-50' }}">
+                        <x-icon name="academic-cap" class="h-4 w-4 shrink-0 mr-2.5" />
+                        ทุกห้องเรียน
+                    </a>
+                </li>
+                @foreach($classrooms as $c)
+                    <li>
+                        <a wire:click="$set('classroomId', {{ $c->id }})" @click="open = false"
+                            class="flex items-center rounded-lg px-3 py-2 text-sm {{ $classroomId == $c->id ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700 hover:bg-gray-50' }}">
+                            <div class="h-4 w-4 shrink-0 mr-2.5 rounded-full" style="background-color: {{ $c->themeCategory?->color ?? '#8B5CF6' }}"></div>
+                            {{ $c->name }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
 
         <div class="flex items-center gap-2 text-sm text-gray-500 ml-auto">
             <span class="hidden sm:inline">เรียงโดย</span>
@@ -80,7 +99,7 @@
                         </div>
 
                         <div class="text-right shrink-0 mr-4">
-                            <span class="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full">รอตรวจ</span>
+                            <span class="text-xs text-red-600 font-medium bg-red-50 px-2 py-0.5 rounded-full">รอตรวจ</span>
                             <p class="text-xs text-gray-400 mt-1">{{ $sub->turned_in_at?->diffForHumans() }}</p>
                         </div>
 

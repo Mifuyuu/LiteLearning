@@ -57,6 +57,10 @@ class Create extends Component
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'topic' => 'nullable|string|max:255',
+        ], [
+            'title.required' => __('messages.validation.title_material'),
+            'description.required' => __('messages.validation.description'),
+            'topic.required' => __('messages.validation.topic'),
         ]);
 
         // Handle topic
@@ -96,7 +100,7 @@ class Create extends Component
                 ]);
             }
 
-            session()->flash('message', 'สร้างเอกสารเรียบร้อยแล้ว');
+            session()->flash('message', __('messages.material.created'));
 
             $this->redirect(
                 route('material.show', ['classroom' => $this->classroom, 'material' => $material]),

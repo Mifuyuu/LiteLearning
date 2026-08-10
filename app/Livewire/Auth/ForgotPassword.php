@@ -40,12 +40,18 @@ class ForgotPassword extends Component
         };
     }
 
-    protected $messages = [
-        'email.exists' => 'ไม่พบอีเมลนี้ในระบบ',
-        'otp.digits' => 'รหัส OTP ต้องเป็น 6 หลัก',
-        'password.min' => 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร',
-        'password.confirmed' => 'รหัสผ่านไม่ตรงกัน',
-    ];
+    protected function messages(): array
+    {
+        return match ($this->step) {
+            1 => ['email.exists' => __('messages.auth.forgot_email_not_found')],
+            2 => ['otp.digits' => __('messages.auth.otp_digits')],
+            3 => [
+                'password.min' => __('messages.auth.password_min'),
+                'password.confirmed' => __('messages.auth.password_mismatch'),
+            ],
+            default => [],
+        };
+    }
 
     public function submitEmail(): void
     {
@@ -55,7 +61,7 @@ class ForgotPassword extends Component
 
         if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('email', 'ส่งรหัสบ่อยเกินไป กรุณารอ ' . $seconds . ' วินาที');
+            $this->addError('email', __('messages.auth.forgot_otp_fast', ['seconds' => $seconds]));
             return;
         }
 
@@ -65,7 +71,7 @@ class ForgotPassword extends Component
         $user = User::where('email', $this->email)->first();
 
         if (! $user->is_active) {
-            $this->addError('email', 'บัญชีนี้ถูกปิดใช้งานแล้ว');
+            $this->addError('email', __('messages.auth.forgot_account_disabled'));
             return;
         }
 
@@ -96,14 +102,14 @@ class ForgotPassword extends Component
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('otp', 'ลองผิดบ่อยเกินไป กรุณารอ ' . $seconds . ' วินาที');
+            $this->addError('otp', __('messages.auth.forgot_otp_too_many', ['seconds' => $seconds]));
             return;
         }
 
         $record = EmailOtpVerification::where('email', $this->email)->latest()->first();
 
         if (! $record || $record->isExpired()) {
-            $this->addError('otp', 'รหัสหมดอายุแล้ว กรุณาขอรหัสใหม่');
+            $this->addError('otp', __('messages.auth.forgot_otp_expired'));
             $this->step = 1;
             $this->otp = '';
             return;
@@ -111,7 +117,7 @@ class ForgotPassword extends Component
 
         if (! Hash::check($this->otp, $record->otp)) {
             RateLimiter::hit($throttleKey, 300);
-            $this->addError('otp', 'รหัสไม่ถูกต้อง');
+            $this->addError('otp', __('messages.auth.forgot_otp_wrong'));
             return;
         }
 
@@ -130,7 +136,7 @@ class ForgotPassword extends Component
         $user = User::where('email', $this->email)->first();
 
         if (! $user) {
-            $this->addError('email', 'ไม่พบอีเมลนี้ในระบบ');
+            $this->addError('email', __('messages.auth.forgot_email_not_found'));
             $this->step = 1;
             return;
         }
@@ -141,7 +147,7 @@ class ForgotPassword extends Component
 
         Auth::login($user);
 
-        session()->flash('message', 'รีเซ็ตรหัสผ่านเรียบร้อยแล้ว');
+        session()->flash('message', __('messages.auth.forgot_password_reset'));
 
         $this->redirect(
             $user->isAdmin() ? route('admin.dashboard') : route('dashboard'),

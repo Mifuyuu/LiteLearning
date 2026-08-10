@@ -61,7 +61,7 @@
     };
 @endphp
 
-<div class="space-y-6 ">
+<div class="space-y-6 max-w-4xl mx-auto">
     <section class="flex flex-wrap items-center gap-2 rounded-2xl border border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         @foreach($scopeLinks as $key => $label)
             <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => $key]) }}" wire:navigate
@@ -71,35 +71,37 @@
         @endforeach
         @if($classroom->canManageClassroom(auth()->user()))
             <div class="ml-auto flex flex-wrap gap-2">
-                <div class="dropdown dropdown-end">
-                    <button tabindex="0" class="inline-flex items-center gap-2 rounded-[10px] bg-[var(--ll-blue)] px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-[var(--ll-blue-dark)]">
+                <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                    <button type="button" @click="open = !open"
+                        class="inline-flex cursor-pointer items-center gap-2 rounded-[10px] bg-[var(--ll-blue)] px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-[var(--ll-blue-dark)]">
                         <x-icon name="plus" class="h-4 w-4" />
                         {{ 'สร้าง' }}
-                        <x-icon name="chevron-down" class="h-3.5 w-3.5" />
+                        <x-icon name="chevron-down" class="h-3.5 w-3.5 transition-transform" ::class="open ? 'rotate-180' : ''" />
                     </button>
-                    <ul tabindex="0" class="dropdown-content menu z-50 mt-2 w-44 rounded-[12px] border border-[#dedee5] bg-white p-1.5 shadow-lg">
+                    <ul x-show="open" x-cloak
+                        class="absolute menu right-0 top-full z-50 mt-2 w-44 rounded-[12px] border border-[#dedee5] bg-white p-1.5 shadow-lg">
                         <li>
-                            <a href="{{ route('assignment.create', $classroom) }}?type=question" wire:navigate class="rounded-[8px] text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                <x-icon name="pencil" class="h-4 w-4" />
+                            <a href="{{ route('assignment.create', $classroom) }}?type=question" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                                <x-icon name="pencil" class="h-4 w-4 shrink-0" />
                                 {{ 'งาน' }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('assignment.create', $classroom) }}?type=announcement" wire:navigate class="rounded-[8px] text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                <x-icon name="chat-bubble-left-ellipsis" class="h-4 w-4" />
+                            <a href="{{ route('assignment.create', $classroom) }}?type=announcement" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                                <x-icon name="megaphone" class="h-4 w-4 shrink-0" />
                                 {{ 'ประกาศ' }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('assignment.create', $classroom) }}?type=attendance" wire:navigate class="rounded-[8px] text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                <x-icon name="check-circle" class="h-4 w-4" />
-                                {{ 'เช็คชื่อ' }}
+                            <a href="{{ route('assignment.create', $classroom) }}?type=material" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                                <x-icon name="document" class="h-4 w-4 shrink-0" />
+                                {{ 'เอกสาร' }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('assignment.create', $classroom) }}?type=file" wire:navigate class="rounded-[8px] text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                <x-icon name="document" class="h-4 w-4" />
-                                {{ 'ไฟล์' }}
+                            <a href="{{ route('assignment.create', $classroom) }}?type=attendance" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                                <x-icon name="check-circle" class="h-4 w-4 shrink-0" />
+                                {{ 'เช็คชื่อ' }}
                             </a>
                         </li>
                     </ul>

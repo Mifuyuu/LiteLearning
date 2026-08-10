@@ -44,7 +44,7 @@ class Store extends Component
         try {
             $gamificationService->purchaseItem($user, $item);
             $this->refreshStore();
-            $this->dispatch('notify', message: 'ซื้อไอเทมเรียบร้อยแล้ว! ไปที่คลังเก็บของเพื่อสวมใส่', type: 'success');
+            $this->dispatch('notify', message: __('messages.store.purchased'), type: 'success');
         } catch (GamificationException $e) {
             $this->dispatch('notify', message: $e->getMessage(), type: 'error');
         }

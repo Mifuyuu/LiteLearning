@@ -28,6 +28,13 @@ class StreamComment extends Component
         'commentText' => 'required|string|min:1|max:5000',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'commentText.required' => __('messages.validation.comment'),
+        ];
+    }
+
     public function mount(int $announcementId = 0, int $contentId = 0, string $contentType = Announcement::class): void
     {
         $this->contentId = $announcementId !== 0 ? $announcementId : $contentId;

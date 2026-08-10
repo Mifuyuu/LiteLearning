@@ -61,12 +61,12 @@ class Inventory extends Component
         try {
             $gamificationService->equipItem($user, $item);
             $this->loadInventory();
-            $this->dispatch('notify', message: 'สวมใส่ไอเทมเรียบร้อยแล้ว!', type: 'success');
+            $this->dispatch('notify', message: __('messages.store.equipped'), type: 'success');
         } catch (GamificationException $e) {
             $this->dispatch('notify', message: $e->getMessage(), type: 'error');
         } catch (\Throwable $e) {
             report($e);
-            $this->dispatch('notify', message: 'ไม่สามารถสวมใส่ไอเทมได้ กรุณาลองอีกครั้ง', type: 'error');
+            $this->dispatch('notify', message: __('messages.store.equip_error'), type: 'error');
         }
     }
 
@@ -76,13 +76,13 @@ class Inventory extends Component
         $item = StoreItem::findOrFail($itemId);
 
         if (! $user->storeItems()->where('store_item_id', $item->id)->exists()) {
-            $this->dispatch('notify', message: 'คุณไม่มีไอเทมนี้', type: 'error');
+            $this->dispatch('notify', message: __('messages.store.not_owned'), type: 'error');
             return;
         }
 
         $user->storeItems()->updateExistingPivot($item->id, ['is_active' => false]);
         $this->loadInventory();
-        $this->dispatch('notify', message: 'ถอดไอเทมเรียบร้อยแล้ว', type: 'success');
+        $this->dispatch('notify', message: __('messages.store.unequipped'), type: 'success');
     }
 
     public function render()

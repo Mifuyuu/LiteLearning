@@ -36,7 +36,7 @@ class ToReview extends Component
 
     public function placeholder(array $params = [])
     {
-        return view('livewire.placeholders.generic', ['pageTitle' => 'รอตรวจ']);
+        return view('livewire.placeholders.to-review');
     }
 
     public function mount(): void

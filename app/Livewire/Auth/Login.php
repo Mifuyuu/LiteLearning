@@ -22,6 +22,14 @@ class Login extends Component
         'password' => 'required|min:6',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'email.required' => __('messages.validation.email'),
+            'password.required' => __('messages.validation.password'),
+        ];
+    }
+
     public function login()
     {
         $this->validate();
@@ -31,7 +39,7 @@ class Login extends Component
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('email', "คุณพยายามเข้าสู่ระบบหลายครั้งเกินไป กรุณาลองอีกครั้งใน {$seconds} วินาที");
+            $this->addError('email', __('messages.auth.login_throttle', ['seconds' => $seconds]));
 
             return;
         }
@@ -53,7 +61,7 @@ class Login extends Component
         }
 
         // Generic error message to prevent enumeration attacks
-        $this->addError('password', 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+        $this->addError('password', __('messages.auth.login_failed'));
     }
 
     public function render()

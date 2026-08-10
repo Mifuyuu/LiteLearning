@@ -36,36 +36,37 @@
                                                 'other' => ['label' => 'อื่นๆ', 'icon' => 'question-mark-circle', 'color' => 'gray']
                                             ] as $val => $opt)
                                                 <button type="button" wire:click="$set('type', '{{ $val }}')"
-                                                    class="flex-1 flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer
+                                                    class="flex-1 flex flex-col items-center gap-1 py-2.5 rounded-xl border-2 text-xs font-semibold transition-all cursor-pointer
+                                                        @error('type') border-red-300 @else
                                                         {{ $type === $val
                                 ? 'border-blue-400 bg-blue-50 text-blue-700'
-                                : 'border-gray-200 text-gray-500 hover:border-gray-300' }}">
+                                : 'border-gray-200 text-gray-500 hover:border-gray-300' }} @enderror">
                                                 <x-icon :name="$opt['icon']" class="h-4 w-4" />
                                                     {{ $opt['label'] }}
                                                 </button>
                             @endforeach
                         </div>
-                        @error('type') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        <div class="min-h-5 mt-1">@error('type') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror</div>
                     </div>
 
-                    {{-- Title
-                            --}}
+                    {{-- Title --}}
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">{{ 'หัวข้อ' }}</label>
                         <input type="text" wire:model="title"
-                            class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+                            class="w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:border-transparent transition
+                            @error('title') border-red-300 focus:ring-red-400 @else border-gray-200 focus:ring-blue-400 @enderror"
                             placeholder="{{ 'เกิดปัญหาอะไรขึ้น?' }}" maxlength="100">
-                        @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        <div class="min-h-5 mt-1">@error('title') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror</div>
                     </div>
 
-                    {{-- Messa
-          g                 e --}}
+                    {{-- Message --}}
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">{{ 'รายละเอียด' }}</label>
                         <textarea wire:model="message" rows="4"
-                            class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition resize-none"
+                            class="w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:border-transparent transition resize-none
+                            @error('message') border-red-300 focus:ring-red-400 @else border-gray-200 focus:ring-blue-400 @enderror"
                             placeholder="{{ 'อธิบายรายละเอียดของปัญหา...' }}" maxlength="2000"></textarea>
-                        @error('message') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        <div class="min-h-5 mt-1.5">@error('message') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror</div>
                     </div>
 
                     {{-- Actions --}}

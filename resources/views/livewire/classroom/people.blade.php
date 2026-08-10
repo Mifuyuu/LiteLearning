@@ -13,7 +13,7 @@
     </nav>
 @endsection
 
-<div class="space-y-6 "
+<div class="space-y-6 max-w-4xl mx-auto"
     x-data="{ openPopover: null, showKickModal: false, kickName: '', kickId: null, kickType: '' }"
     @click.away="openPopover = null">
     <section class="flex flex-wrap items-center gap-2 rounded-2xl border border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
@@ -31,8 +31,10 @@
         </a>
     </section>
 
-    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <section class="rounded-2xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <section class="rounded-2xl border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+
+        {{-- Teachers --}}
+        <div class="p-6 pb-4">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#9497a9]">{{ 'ทีมครูผู้สอน' }}</p>
@@ -96,9 +98,13 @@
                     </label>
                 </form>
             @endif
-        </section>
+        </div>
 
-        <section class="rounded-2xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+        {{-- Divider --}}
+        <div class="border-t border-[#dedee5]"></div>
+
+        {{-- Students --}}
+        <div class="p-6 pt-4">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#9497a9]">{{ 'นักเรียน' }}</p>
@@ -142,8 +148,8 @@
                     <x-empty-state-inline :title="'นักเรียน'" :body="'ยังไม่มีนักเรียนลงทะเบียน'" />
                 @endforelse
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 
     <div x-show="showKickModal" x-cloak class="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4" @click.self="showKickModal = false">
         <div class="w-full max-w-md rounded-2xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">

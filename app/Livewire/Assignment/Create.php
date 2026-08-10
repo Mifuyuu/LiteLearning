@@ -103,6 +103,13 @@ class Create extends Component
             'status' => 'required|in:draft,published,scheduled',
             'topic' => 'nullable|string|max:255',
             'allow_late_submission' => 'boolean',
+        ], [
+            'title.required' => __('messages.validation.title_assignment'),
+            'description.required' => __('messages.validation.description'),
+            'max_score.required' => __('messages.validation.max_score'),
+            'type.required' => __('messages.validation.type_assignment'),
+            'status.required' => __('messages.validation.status'),
+            'topic.required' => __('messages.validation.topic'),
         ]);
 
         /** @var \App\Models\User $user */

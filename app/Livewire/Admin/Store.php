@@ -39,6 +39,17 @@ class Store extends Component
         'form.is_active' => 'boolean',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.code.required' => __('messages.validation.code_store'),
+            'form.name.required' => __('messages.validation.name_store_item'),
+            'form.type.required' => __('messages.validation.type_store'),
+            'form.value.required' => __('messages.validation.value_store'),
+            'form.price.required' => __('messages.validation.price'),
+        ];
+    }
+
     public function updatingSearch()
     {
         $this->validateOnly('search', ['search' => 'string|max:100']);
@@ -83,10 +94,10 @@ class Store extends Component
         if ($this->editingId) {
             $item = StoreItem::findOrFail($this->editingId);
             $item->update($this->form);
-            $this->dispatch('notify', message: 'อัปเดตสินค้าแล้ว');
+            $this->dispatch('notify', message: __('messages.admin.store_updated'));
         } else {
             StoreItem::create($this->form);
-            $this->dispatch('notify', message: 'เพิ่มสินค้าแล้ว');
+            $this->dispatch('notify', message: __('messages.admin.store_created'));
         }
 
         $this->showModal = false;
@@ -98,13 +109,13 @@ class Store extends Component
         $item->is_active = ! $item->is_active;
         $item->save();
 
-        $this->dispatch('notify', message: 'อัปเดตสถานะสินค้าแล้ว');
+        $this->dispatch('notify', message: __('messages.admin.store_status_updated'));
     }
 
     public function delete(StoreItem $item)
     {
         $item->delete();
-        $this->dispatch('notify', message: 'ลบสินค้าแล้ว');
+        $this->dispatch('notify', message: __('messages.admin.store_deleted'));
     }
 
     public function render()

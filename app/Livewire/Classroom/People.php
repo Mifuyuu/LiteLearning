@@ -80,30 +80,32 @@ class People extends Component
             abort(403);
         }
 
-        $this->validate(['inviteCoTeacherEmail' => 'required|email']);
+        $this->validate(['inviteCoTeacherEmail' => 'required|email'], [
+            'inviteCoTeacherEmail.required' => __('messages.validation.email'),
+        ]);
 
         $target = User::where('email', $this->inviteCoTeacherEmail)->first();
 
         if (! $target) {
-            $this->addError('inviteCoTeacherEmail', 'ไม่พบผู้ใช้งานนี้ในระบบ');
+            $this->addError('inviteCoTeacherEmail', __('messages.classroom.user_not_found'));
 
             return;
         }
 
         if ($this->classroom->isOwnedBy($target)) {
-            $this->addError('inviteCoTeacherEmail', 'ผู้ใช้นี้เป็นเจ้าของห้องอยู่แล้ว');
+            $this->addError('inviteCoTeacherEmail', __('messages.classroom.already_owner'));
 
             return;
         }
 
         if (! $target->isTeacher() && ! $target->isAdmin()) {
-            $this->addError('inviteCoTeacherEmail', 'สามารถเพิ่มผู้สอนร่วมได้เฉพาะบัญชีอาจารย์เท่านั้น');
+            $this->addError('inviteCoTeacherEmail', __('messages.classroom.teacher_only'));
 
             return;
         }
 
         if ($this->classroom->isCoTeacher($target)) {
-            $this->addError('inviteCoTeacherEmail', 'ผู้ใช้นี้เป็นผู้สอนร่วมอยู่แล้ว');
+            $this->addError('inviteCoTeacherEmail', __('messages.classroom.already_co_teacher'));
 
             return;
         }
@@ -115,7 +117,7 @@ class People extends Component
         ]);
 
         $this->reset('inviteCoTeacherEmail');
-        $this->dispatch('notify', message: 'เพิ่มผู้สอนร่วมเรียบร้อยแล้ว');
+        $this->dispatch('notify', message: __('messages.classroom.co_teacher_added'));
     }
 
     public function removeCoTeacher(int $userId)
@@ -127,7 +129,7 @@ class People extends Component
         }
 
         $this->classroom->members()->detach($userId);
-        $this->dispatch('notify', message: 'ลบผู้สอนร่วมเรียบร้อยแล้ว');
+        $this->dispatch('notify', message: __('messages.classroom.co_teacher_removed'));
     }
 
     public function removeMember(int $userId)
@@ -143,7 +145,7 @@ class People extends Component
         }
 
         $this->classroom->members()->detach($userId);
-        $this->dispatch('notify', message: 'นำสมาชิกออกเรียบร้อยแล้ว');
+        $this->dispatch('notify', message: __('messages.classroom.member_removed'));
     }
 
     public function removeAllMembers()
@@ -155,7 +157,7 @@ class People extends Component
         }
 
         $this->classroom->students()->detach();
-        $this->dispatch('notify', message: 'นำนักเรียนทั้งหมดออกเรียบร้อยแล้ว');
+        $this->dispatch('notify', message: __('messages.classroom.all_students_removed'));
     }
 
     public function render()

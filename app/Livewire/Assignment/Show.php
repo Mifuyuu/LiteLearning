@@ -73,7 +73,7 @@ class Show extends Component
             return true;
         }
 
-        session()->flash('error', 'ปิดรับงานแล้ว');
+        session()->flash('error', __('messages.assignment.closed'));
 
         return false;
     }
@@ -153,7 +153,7 @@ class Show extends Component
         $this->uploadedFile = null;
         $this->userSubmission->refresh();
 
-        session()->flash('message', 'อัปโหลดไฟล์เรียบร้อย');
+        session()->flash('message', __('messages.assignment.file_uploaded'));
     }
 
     public function removeFile(int $attachmentId): void
@@ -225,7 +225,7 @@ class Show extends Component
             'content' => $this->submissionContent,
         ]);
 
-        session()->flash('message', 'บันทึกฉบับร่างแล้ว');
+        session()->flash('message', __('messages.assignment.draft_saved'));
     }
 
     public function unsubmit(): void
@@ -284,6 +284,13 @@ class Show extends Component
             'editType' => 'required|in:attendance,file,question,project,announcement,material,topic',
             'editTopic' => 'nullable|string|max:255',
             'editAllowLateSubmission' => 'boolean',
+        ], [
+            'editTitle.required' => __('messages.validation.title_assignment'),
+            'editDescription.required' => __('messages.validation.description'),
+            'editMaxScore.required' => __('messages.validation.max_score'),
+            'editStatus.required' => __('messages.validation.status'),
+            'editType.required' => __('messages.validation.type_assignment'),
+            'editTopic.required' => __('messages.validation.topic'),
         ]);
 
         $topicName = trim($this->editTopic);
@@ -311,7 +318,7 @@ class Show extends Component
         $this->isEditTab = false;
         $this->assignment->refresh();
 
-        session()->flash('message', 'อัปเดตงานแล้ว');
+        session()->flash('message', __('messages.assignment.updated'));
     }
 
     public function deleteAssignment(): void

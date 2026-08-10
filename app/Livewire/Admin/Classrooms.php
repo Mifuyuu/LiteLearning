@@ -25,7 +25,7 @@ class Classrooms extends Component
     {
         abort_unless(auth()->user()->isAdmin(), 403);
         $classroom->delete();
-        $this->dispatch('notify', message: 'ลบห้องเรียนแล้ว');
+        $this->dispatch('notify', message: __('messages.admin.classroom_deleted'));
     }
 
     public function render()

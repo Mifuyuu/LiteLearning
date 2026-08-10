@@ -37,6 +37,8 @@ class Settings extends Component
     {
         $this->validate([
             'name' => ['required', 'string', 'max:'.self::NAME_MAX_LENGTH],
+        ], [
+            'name.required' => __('messages.validation.name'),
         ]);
 
         /** @var User $user */
@@ -44,7 +46,7 @@ class Settings extends Component
         $user->update(['name' => trim($this->name)]);
         $this->name = $user->name;
 
-        $this->dispatch('notify', message: 'บันทึกการเปลี่ยนแปลงเรียบร้อยแล้ว');
+        $this->dispatch('notify', message: __('messages.profile.saved'));
     }
 
     public function updatedAvatar($value): void
@@ -80,7 +82,7 @@ class Settings extends Component
             Storage::disk($disk)->delete($user->avatar);
         }
         $user->update(['avatar' => null]);
-        $this->dispatch('notify', message: 'รีเซ็ตรูปโปรไฟล์เรียบร้อยแล้ว');
+        $this->dispatch('notify', message: __('messages.profile.avatar_reset'));
     }
 
     public function resetCoverImage(): void
@@ -92,7 +94,7 @@ class Settings extends Component
             Storage::disk($disk)->delete($user->cover_image);
         }
         $user->update(['cover_image' => null]);
-        $this->dispatch('notify', message: 'รีเซ็ตรูปปกเรียบร้อยแล้ว');
+        $this->dispatch('notify', message: __('messages.profile.cover_reset'));
     }
 
     protected function storeBase64Image(string $base64Data, string $folder, string $field): void
@@ -137,12 +139,12 @@ class Settings extends Component
 
                 $this->$field = null;
 
-                $message = $field === 'avatar' ? 'อัปเดตรูปโปรไฟล์เรียบร้อยแล้ว' : 'อัปเดตรูปปกเรียบร้อยแล้ว';
+                $message = $field === 'avatar' ? __('messages.profile.avatar_updated') : __('messages.profile.cover_updated');
                 $this->dispatch('notify', message: $message);
             }
         } catch (\Throwable $e) {
             report($e);
-            $this->dispatch('notify', message: 'อัปโหลดล้มเหลว กรุณาลองอีกครั้ง', type: 'error');
+            $this->dispatch('notify', message: __('messages.profile.upload_failed'), type: 'error');
         }
     }
 

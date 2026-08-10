@@ -113,14 +113,14 @@ class Attendance extends Component
 
         // Session must be active
         if (! $this->session?->is_active) {
-            session()->flash('attendance_error', 'เซสชันเช็คชื่อยังไม่เปิด');
+            session()->flash('attendance_error', __('messages.attendance.not_open'));
 
             return;
         }
 
         // Already checked in
         if ($this->alreadyCheckedIn) {
-            session()->flash('attendance_error', 'เช็คชื่อแล้ว');
+            session()->flash('attendance_error', __('messages.attendance.already'));
 
             return;
         }
@@ -128,14 +128,14 @@ class Attendance extends Component
         // Validate code
         $this->session->refresh();
         if ($this->session->isCodeExpired()) {
-            session()->flash('attendance_error', 'รหัสเช็คชื่อหมดอายุ');
+            session()->flash('attendance_error', __('messages.attendance.code_expired'));
             $this->enteredCode = '';
 
             return;
         }
 
         if ($this->enteredCode !== $this->session->current_code) {
-            session()->flash('attendance_error', 'รหัสไม่ถูกต้อง');
+            session()->flash('attendance_error', __('messages.attendance.wrong_code'));
             $this->enteredCode = '';
 
             return;
@@ -165,7 +165,7 @@ class Attendance extends Component
             app(GamificationService::class)->awardForAssignmentTurnedIn($user, $this->assignment->id);
         }
 
-        session()->flash('attendance_success', 'เช็คชื่อเรียบร้อยแล้ว');
+        session()->flash('attendance_success', __('messages.attendance.success'));
     }
 
     public function getCheckedInStudentsProperty()

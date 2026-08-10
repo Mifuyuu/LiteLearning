@@ -58,6 +58,10 @@ class Show extends Component
             'editTitle' => 'required|string|max:255',
             'editDescription' => 'nullable|string',
             'editTopic' => 'nullable|string|max:255',
+        ], [
+            'editTitle.required' => __('messages.validation.title_material'),
+            'editDescription.required' => __('messages.validation.description'),
+            'editTopic.required' => __('messages.validation.topic'),
         ]);
 
         $topicName = trim($this->editTopic);
@@ -75,7 +79,7 @@ class Show extends Component
         $this->isEditTab = false;
         $this->material->refresh();
 
-        session()->flash('message', 'อัปเดตเอกสารแล้ว');
+        session()->flash('message', __('messages.material.updated'));
     }
 
     public function deleteMaterial(): void

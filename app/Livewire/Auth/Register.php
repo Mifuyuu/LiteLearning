@@ -54,6 +54,17 @@ class Register extends Component
         ];
     }
 
+    protected function messages(): array
+    {
+        return [
+            'name.required' => __('messages.validation.name'),
+            'email.required' => __('messages.validation.email'),
+            'password.required' => __('messages.validation.password'),
+            'password_confirmation.required' => __('messages.validation.password_confirm'),
+            'role.required' => __('messages.validation.role'),
+        ];
+    }
+
     public function register(): void
     {
         $this->validate($this->registrationRules());
@@ -69,7 +80,7 @@ class Register extends Component
 
         if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('otp', 'ส่งรหัสบ่อยเกินไป กรุณารอ ' . $seconds . ' วินาที');
+            $this->addError('otp', __('messages.auth.register_otp_fast', ['seconds' => $seconds]));
 
             return;
         }
@@ -110,7 +121,7 @@ class Register extends Component
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('otp', 'ลองผิดบ่อยเกินไป กรุณารอ ' . $seconds . ' วินาที');
+            $this->addError('otp', __('messages.auth.register_otp_too_many', ['seconds' => $seconds]));
 
             return;
         }
@@ -118,7 +129,7 @@ class Register extends Component
         $record = EmailOtpVerification::where('email', $this->email)->latest()->first();
 
         if (! $record || $record->isExpired()) {
-            $this->addError('otp', 'รหัสหมดอายุแล้ว กรุณาขอรหัสใหม่');
+            $this->addError('otp', __('messages.auth.register_otp_expired'));
             $this->otpSent = false;
 
             return;
@@ -126,7 +137,7 @@ class Register extends Component
 
         if (! Hash::check($this->otp, $record->otp)) {
             RateLimiter::hit($throttleKey, 300);
-            $this->addError('otp', 'รหัสไม่ถูกต้อง');
+            $this->addError('otp', __('messages.auth.register_otp_wrong'));
 
             return;
         }
@@ -136,7 +147,7 @@ class Register extends Component
         $userData = $record->user_data;
         if (! in_array($userData['role'] ?? null, ['student', 'teacher'], true)) {
             $record->delete();
-            $this->addError('role', 'บทบาทไม่ถูกต้อง');
+            $this->addError('role', __('messages.auth.register_role_invalid'));
 
             return;
         }

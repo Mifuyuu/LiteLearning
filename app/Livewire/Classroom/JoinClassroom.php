@@ -18,6 +18,13 @@ class JoinClassroom extends Component
         'code' => 'required|string|size:6',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'code.required' => __('messages.validation.code_classroom'),
+        ];
+    }
+
     public function openModal()
     {
         $this->resetValidation();
@@ -30,7 +37,7 @@ class JoinClassroom extends Component
         // S7: rate limit classroom join attempts
         $key = 'join-classroom:'.auth()->id();
         if (cache()->has($key) && cache()->get($key) >= 5) {
-            $this->addError('code', 'พยายามมากเกินไป กรุณารอสักครู่');
+            $this->addError('code', __('messages.classroom.join_throttle'));
 
             return;
         }
@@ -42,7 +49,7 @@ class JoinClassroom extends Component
         $classroom = Classroom::where('code', strtoupper($this->code))->first();
 
         if (! $classroom) {
-            $this->addError('code', 'ไม่พบห้องเรียนด้วยรหัสนี้');
+            $this->addError('code', __('messages.classroom.code_not_found'));
 
             return;
         }
@@ -51,13 +58,13 @@ class JoinClassroom extends Component
         $user = Auth::user();
 
         if ($classroom->isOwnedBy($user)) {
-            $this->addError('code', 'คุณเป็นครูเจ้าของห้องเรียนนี้');
+            $this->addError('code', __('messages.classroom.already_owner_join'));
 
             return;
         }
 
         if ($classroom->hasMember($user)) {
-            $this->addError('code', 'คุณเป็นสมาชิกของห้องเรียนนี้อยู่แล้ว');
+            $this->addError('code', __('messages.classroom.already_member'));
 
             return;
         }

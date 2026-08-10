@@ -55,6 +55,10 @@ class Settings extends Component
             'section' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:2000',
             'theme_category_id' => 'nullable|integer|exists:theme_categories,id',
+        ], [
+            'name.required' => __('messages.validation.name_classroom'),
+            'section.required' => __('messages.validation.section'),
+            'description.required' => __('messages.validation.description'),
         ]);
 
         $this->classroom->update([
@@ -71,7 +75,7 @@ class Settings extends Component
             'name' => $this->name,
             'color' => $this->classroom->themeCategory?->color ?? '#8B5CF6',
         ]);
-        $this->dispatch('notify', message: 'บันทึกการตั้งค่าห้องเรียนเรียบร้อยแล้ว');
+        $this->dispatch('notify', message: __('messages.classroom.settings_saved'));
     }
 
     public function toggleArchive(): void
@@ -83,7 +87,7 @@ class Settings extends Component
         $this->classroom->is_archived = ! $this->classroom->is_archived;
         $this->classroom->save();
 
-        $this->dispatch('notify', message: $this->classroom->is_archived ? 'เก็บถาวรห้องเรียนแล้ว' : 'กู้คืนห้องเรียนแล้ว');
+        $this->dispatch('notify', message: $this->classroom->is_archived ? __('messages.classroom.archived') : __('messages.classroom.restored'));
     }
 
     public function deleteClassroom()
@@ -93,7 +97,7 @@ class Settings extends Component
         abort_unless($this->classroom->isOwnedBy($user), 403);
 
         if (trim($this->deleteConfirm) !== $this->classroom->name) {
-            $this->addError('deleteConfirm', 'กรุณาพิมพ์ชื่อห้องเรียนให้ตรงเพื่อยืนยันการลบ');
+            $this->addError('deleteConfirm', __('messages.classroom.delete_confirm'));
 
             return;
         }
@@ -101,7 +105,7 @@ class Settings extends Component
         $classroomName = $this->classroom->name;
         $this->classroom->delete();
 
-        session()->flash('message', 'ลบห้องเรียน "' . $classroomName . '" เรียบร้อยแล้ว');
+        session()->flash('message', __('messages.classroom.deleted', ['name' => $classroomName]));
 
         return redirect()->route('classrooms');
     }

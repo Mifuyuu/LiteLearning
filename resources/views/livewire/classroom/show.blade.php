@@ -14,9 +14,11 @@
     $themeColor = $classroom->themeCategory?->color ?? '#2563eb';
 @endphp
 
-<div class="space-y-5 ">
-    <section class="overflow-hidden rounded-[12px] border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-        <div class="h-2 w-full" style="background-color: {{ $themeColor }};"></div>
+<div class="space-y-5 max-w-4xl mx-auto">
+    <section class="rounded-[12px] border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+        <div class="overflow-hidden rounded-t-[12px]">
+            <div class="h-2 w-full" style="background-color: {{ $themeColor }};"></div>
+        </div>
         <div class="p-5 sm:p-6">
             <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                 <div class="min-w-0">
@@ -40,40 +42,46 @@
                             <x-icon name="users" class="h-3.5 w-3.5" />
                             {{ $students->count() }} {{ 'นักเรียน' }}
                         </span>
+                        <span class="inline-flex items-center gap-1.5 rounded-[8px] bg-[rgba(34,197,94,0.12)] px-3 py-1.5 text-green-700 font-mono">
+                            <x-icon name="qr-code" class="h-3.5 w-3.5" />
+                            {{ $classroom->code }}
+                        </span>
                     </div>
                 </div>
 
                 <div class="flex shrink-0 flex-wrap gap-2">
                     @if($manager)
-                        <div class="dropdown dropdown-end">
-                            <button tabindex="0" class="inline-flex items-center gap-2 rounded-[10px] bg-[var(--ll-blue)] px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-[var(--ll-blue-dark)]">
+                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                            <button type="button" @click="open = !open"
+                                class="inline-flex cursor-pointer items-center gap-2 rounded-[10px] bg-[var(--ll-blue)] px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-[var(--ll-blue-dark)]">
                                 <x-icon name="plus" class="h-4 w-4" />
                                 {{ 'สร้าง' }}
-                                <x-icon name="chevron-down" class="h-3.5 w-3.5" />
+                                <x-icon name="chevron-down" class="h-3.5 w-3.5 transition-transform" ::class="open ? 'rotate-180' : ''" />
                             </button>
-                            <ul tabindex="0" class="dropdown-content menu z-50 mt-2 w-44 rounded-[12px] border border-[#dedee5] bg-white p-1.5 shadow-lg">
+                            <ul x-show="open" x-cloak
+                                class="absolute menu right-0 top-full z-50 mt-2 w-44 rounded-[12px] border border-[#dedee5] bg-white p-1.5 shadow-lg">
                                 <li>
-                                    <a href="{{ route('assignment.create', $classroom) }}?type=question" wire:navigate class="rounded-[8px] text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                        <x-icon name="pencil" class="h-4 w-4" />
+                                    <a href="{{ route('assignment.create', $classroom) }}?type=question" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                                        <x-icon name="pencil" class="h-4 w-4 shrink-0" />
                                         {{ 'งาน' }}
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('assignment.create', $classroom) }}?type=announcement" wire:navigate class="rounded-[8px] text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                        <x-icon name="chat-bubble-left-ellipsis" class="h-4 w-4" />
+                                    <a href="{{ route('assignment.create', $classroom) }}?type=announcement" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                                        <x-icon name="megaphone" class="h-4 w-4 shrink-0" />
                                         {{ 'ประกาศ' }}
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('assignment.create', $classroom) }}?type=attendance" wire:navigate class="rounded-[8px] text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                        <x-icon name="check-circle" class="h-4 w-4" />
-                                        {{ 'เช็คชื่อ' }}
+                                    <a href="{{ route('assignment.create', $classroom) }}?type=material" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                                        <x-icon name="document" class="h-4 w-4 shrink-0" />
+                                        {{ 'เอกสาร' }}
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('assignment.create', $classroom) }}?type=file" wire:navigate class="rounded-[8px] text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                        <x-icon name="document" class="h-4 w-4" />
-                                        {{ 'ไฟล์' }}
+                                    <a href="{{ route('assignment.create', $classroom) }}?type=attendance" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                                        <x-icon name="check-circle" class="h-4 w-4 shrink-0" />
+                                        {{ 'เช็คชื่อ' }}
                                     </a>
                                 </li>
                             </ul>
@@ -147,19 +155,5 @@
             </div>
         </section>
 
-        @if($manager)
-            <aside class="rounded-[12px] border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">{{ 'การเข้าถึงชั้นเรียน' }}</p>
-                <h2 class="mt-1 text-lg font-black text-[#101114]">{{ 'รหัสเข้าร่วม' }}</h2>
-                <div class="mt-4 flex items-center justify-between gap-3 rounded-[10px] border border-[#dedee5] bg-[var(--ll-blue-faint)] px-4 py-3">
-                    <p class="text-2xl font-black tracking-[0.22em] text-[#101114]">{{ $classroom->code }}</p>
-                    <button type="button" onclick="navigator.clipboard.writeText('{{ $classroom->code }}')"
-                        class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)] transition hover:bg-[rgba(37,99,235,0.24)]"
-                        title="คัดลอก">
-                        <x-icon name="clipboard-document-list" class="h-4 w-4" />
-                    </button>
-                </div>
-            </aside>
-        @endif
     </div>
 </div>

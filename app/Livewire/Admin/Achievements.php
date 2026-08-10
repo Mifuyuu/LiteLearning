@@ -76,10 +76,10 @@ class Achievements extends Component
         if ($this->editingId) {
             $achievement = Achievement::findOrFail($this->editingId);
             $achievement->update($data);
-            $this->dispatch('notify', message: 'อัปเดตความสำเร็จแล้ว');
+            $this->dispatch('notify', message: __('messages.admin.achievement_updated'));
         } else {
             Achievement::create($data);
-            $this->dispatch('notify', message: 'เพิ่มความสำเร็จแล้ว');
+            $this->dispatch('notify', message: __('messages.admin.achievement_created'));
         }
 
         $this->showModal = false;
@@ -90,13 +90,13 @@ class Achievements extends Component
         $achievement->is_active = ! $achievement->is_active;
         $achievement->save();
 
-        $this->dispatch('notify', message: 'อัปเดตสถานะความสำเร็จแล้ว');
+        $this->dispatch('notify', message: __('messages.admin.achievement_status_updated'));
     }
 
     public function delete(Achievement $achievement): void
     {
         $achievement->delete();
-        $this->dispatch('notify', message: 'ลบความสำเร็จแล้ว');
+        $this->dispatch('notify', message: __('messages.admin.achievement_deleted'));
     }
 
     public function render()
@@ -111,6 +111,16 @@ class Achievements extends Component
         return view('livewire.admin.achievements', [
             'achievements' => $query->latest()->paginate(10),
         ]);
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'form.code.required' => __('messages.validation.code_achievement'),
+            'form.name.required' => __('messages.validation.name_achievement'),
+            'form.coin_reward.required' => __('messages.validation.coin_reward'),
+            'form.xp_reward.required' => __('messages.validation.xp_reward'),
+        ];
     }
 
     protected function rules(): array

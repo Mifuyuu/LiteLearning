@@ -13,7 +13,7 @@
     </nav>
 @endsection
 
-<div class="space-y-5 ">
+<div class="space-y-5 max-w-4xl mx-auto">
     <section class="rounded-[12px] border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="border-b border-[#dedee5] p-5">
             <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">{{ 'ตั้งค่า' }}</p>

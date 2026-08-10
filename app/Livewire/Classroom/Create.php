@@ -27,6 +27,15 @@ class Create extends Component
         'theme_category_id' => 'nullable|integer|exists:theme_categories,id',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'name.required' => __('messages.validation.name_classroom'),
+            'section.required' => __('messages.validation.section'),
+            'description.required' => __('messages.validation.description'),
+        ];
+    }
+
     #[On('open-create-classroom')]
     public function openModal(): void
     {

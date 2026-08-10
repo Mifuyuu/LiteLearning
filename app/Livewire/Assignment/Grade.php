@@ -61,17 +61,17 @@ class Grade extends Component
             'score' => "required|integer|min:0|max:{$this->assignment->max_score}",
             'feedback' => 'nullable|string',
         ], [
-            'score.required' => 'กรุณากรอกคะแนน',
-            'score.integer' => 'คะแนนต้องเป็นตัวเลข',
-            'score.min' => 'คะแนนต้องไม่น้อยกว่า :min',
-            'score.max' => 'คะแนนต้องไม่เกิน :max',
+            'score.required' => __('messages.grade.score_required'),
+            'score.integer' => __('messages.grade.score_number'),
+            'score.min' => __('messages.grade.score_min'),
+            'score.max' => __('messages.grade.score_max'),
         ]);
 
         $this->submission->grade($this->score, $this->feedback);
         $this->submission->refresh();
         app(GamificationService::class)->awardForSubmissionGraded($this->submission);
 
-        session()->flash('message', 'ให้คะแนนงานเรียบร้อยแล้ว!');
+        session()->flash('message', __('messages.assignment.graded'));
     }
 
     public function returnSubmission(): void
@@ -79,7 +79,7 @@ class Grade extends Component
         $this->submission->returnSubmission();
         $this->submission->refresh();
 
-        session()->flash('message', 'ส่งงานคืนให้นักเรียนเรียบร้อยแล้ว');
+        session()->flash('message', __('messages.assignment.returned'));
     }
 
     public function render()
