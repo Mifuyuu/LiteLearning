@@ -12,11 +12,11 @@
     </nav>
 @endsection
 
-<div class="" x-data="{ copiedToast: false, showDeleteModal: false }">
-    <!-- Back -->
-    <a href="{{ route('classroom.show', $classroom) }}"
-        class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
-        <x-icon name="arrow-left" class="h-4 w-4 mr-2" /> กลับไปที่ {{ $classroom->name }}
+<div class="max-w-4xl mx-auto" x-data="{ copiedToast: false, showDeleteModal: false }">
+    <!-- Back (previous page, falls back to classroom home on direct load) -->
+    <a href="{{ route('classroom.show', $classroom) }}" onclick="if (history.length > 1) { history.back(); return false; }"
+        class="inline-flex items-center text-base font-medium text-gray-600 hover:text-gray-800 mb-6">
+        <x-icon name="arrow-left" class="h-5 w-5 mr-2" /> กลับ
     </a>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -281,9 +281,9 @@
                             $typeInfo = [
                                     'announcement' => ['icon' => 'megaphone', 'label' => 'ประกาศ'],
                                     'question' => ['icon' => 'pencil-square', 'label' => 'คำถาม'],
-                                    'file' => ['icon' => 'arrow-up-tray', 'label' => 'อัปโหลดไฟล์'],
-                                    'attendance' => ['icon' => 'clipboard-document-check', 'label' => 'เช็คชื่อ'],
-                                    'material' => ['icon' => 'book-open', 'label' => 'เอกสาร'],
+                                    'file' => ['icon' => 'arrow-up-tray', 'label' => 'งานส่งไฟล์'],
+                                    'attendance' => ['icon' => 'clipboard-document-check', 'label' => 'งานเช็คชื่อ'],
+                                    'material' => ['icon' => 'book-open', 'label' => 'สื่อการสอน'],
                                     'project' => ['icon' => 'squares-2x2', 'label' => 'โปรเจกต์'],
                             ];
                             $current = $typeInfo[$editType] ?? ['icon' => 'pencil-square', 'label' => ucfirst($editType)];
@@ -330,7 +330,7 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         {{ $editType === 'attendance' ? 'คะแนนเช็คชื่อ' : 'คะแนน' }}
                                     </label>
-                                    <input wire:model="editMaxScore" type="number" min="0" max="1000"
+                                    <input wire:model="editMaxScore" type="number" min="0" max="100"
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     @error('editMaxScore') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                                 </div>

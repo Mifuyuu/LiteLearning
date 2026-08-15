@@ -21,10 +21,6 @@
             class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-[var(--ll-blue)] text-white' : 'text-[#686b82] hover:bg-[var(--ll-blue-hover)] hover:text-[var(--ll-blue)]' }}">
             {{ 'ชื่อต้น' }}
         </a>
-        <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-last-name']) }}" wire:navigate
-            class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-last-name' ? 'bg-[var(--ll-blue)] text-white' : 'text-[#686b82] hover:bg-[var(--ll-blue-hover)] hover:text-[var(--ll-blue)]' }}">
-            {{ 'นามสกุล' }}
-        </a>
         <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-newest']) }}" wire:navigate
             class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-newest' ? 'bg-[var(--ll-blue)] text-white' : 'text-[#686b82] hover:bg-[var(--ll-blue-hover)] hover:text-[var(--ll-blue)]' }}">
             {{ 'ใหม่ล่าสุด' }}

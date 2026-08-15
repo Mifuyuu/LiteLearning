@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('สมัครสมาชิก')]
 #[Layout('layouts.guest')]
 class Register extends Component
 {

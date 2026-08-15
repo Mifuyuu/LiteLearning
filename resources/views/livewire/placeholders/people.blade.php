@@ -1,5 +1,26 @@
 @section('page-title', (isset($classroom) ? ('สมาชิก' . ' - ' . $classroom->name) : 'สมาชิก'))
-<div class="space-y-6">
+@if(isset($classroom))
+@section('breadcrumb')
+    <nav class="flex items-center space-x-1 text-sm">
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+            {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
+        </a>
+        <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
+        <a href="{{ route('classroom.show', $classroom) }}" class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+            {{ $classroom->name }}
+        </a>
+        <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
+        <span class="font-semibold text-[#101114]">{{ 'สมาชิก' }}</span>
+    </nav>
+@endsection
+@endif
+@php
+    $isManager = isset($classroom) ? $classroom->canManageClassroom(auth()->user()) : auth()->user()->isTeacher();
+    $isOwnerOrAdmin = isset($classroom)
+        ? ($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
+        : auth()->user()->isTeacher();
+@endphp
+<div class="space-y-6 max-w-4xl mx-auto">
 
     {{-- Sort filter bar mockup --}}
     <section class="flex flex-wrap items-center gap-2 rounded-2xl border border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
@@ -8,63 +29,94 @@
         <div class="skeleton h-9 w-20 rounded-[10px]"></div>
     </section>
 
-    {{-- Grid columns --}}
-    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        {{-- Teachers card --}}
-        <section class="rounded-2xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] space-y-6">
+    {{-- Single card: teachers block + divider + students block --}}
+    <section class="rounded-2xl border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+
+        {{-- Teachers --}}
+        <div class="p-6 pb-4">
             <div class="flex items-center justify-between gap-3">
-                <div class="space-y-1">
+                <div>
                     <div class="skeleton h-3.5 w-24"></div>
-                    <div class="skeleton h-5 w-48"></div>
+                    <div class="skeleton mt-2 h-6 w-48"></div>
                 </div>
                 <div class="skeleton h-6 w-8 rounded-[8px]"></div>
             </div>
 
-            <div class="space-y-3">
-                @for($i = 0; $i < 2; $i++)
-                    <div class="rounded-[12px] border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
-                        <div class="flex items-center gap-3">
-                            <div class="skeleton h-11 w-11 rounded-2xl shrink-0"></div>
-                            <div class="space-y-2 min-w-0 flex-1">
-                                <div class="skeleton h-4 w-1/3"></div>
-                                <div class="skeleton h-3 w-1/2"></div>
-                            </div>
-                            <div class="skeleton h-5 w-12 rounded-[6px] shrink-0"></div>
+            <div class="mt-6 space-y-3">
+                {{-- Owner row --}}
+                <div class="rounded-[12px] border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="skeleton h-11 w-11 shrink-0 rounded-2xl"></div>
+                        <div class="min-w-0 flex-1 space-y-2">
+                            <div class="skeleton h-4 w-1/3"></div>
+                            <div class="skeleton h-3 w-1/2"></div>
                         </div>
+                        <div class="skeleton h-5 w-16 shrink-0 rounded-[6px]"></div>
                     </div>
-                @endfor
-            </div>
-        </section>
+                </div>
 
-        {{-- Students card --}}
-        <section class="rounded-2xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] space-y-6">
+                {{-- Co-teacher row --}}
+                <div class="rounded-[12px] border border-[#dedee5] bg-white p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="skeleton h-11 w-11 shrink-0 rounded-2xl"></div>
+                        <div class="min-w-0 flex-1 space-y-2">
+                            <div class="skeleton h-4 w-1/3"></div>
+                            <div class="skeleton h-3 w-1/2"></div>
+                        </div>
+                        <div class="skeleton h-5 w-20 shrink-0 rounded-[8px]"></div>
+                        @if($isOwnerOrAdmin)
+                            <div class="skeleton ml-auto h-9 w-9 shrink-0 rounded-[10px]"></div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            @if($isOwnerOrAdmin)
+                {{-- Add co-teacher form --}}
+                <div class="mt-6 rounded-[12px] border border-dashed border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
+                    <div class="skeleton h-4 w-28"></div>
+                    <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+                        <div class="skeleton h-11 flex-1 rounded-[12px]"></div>
+                        <div class="skeleton h-11 w-24 rounded-[12px]"></div>
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        {{-- Divider --}}
+        <div class="border-t border-[#dedee5]"></div>
+
+        {{-- Students --}}
+        <div class="p-6 pt-4">
             <div class="flex items-center justify-between gap-3">
-                <div class="space-y-1">
+                <div>
                     <div class="skeleton h-3.5 w-24"></div>
-                    <div class="skeleton h-5 w-32"></div>
+                    <div class="skeleton mt-2 h-6 w-32"></div>
                 </div>
                 <div class="flex items-center gap-2">
                     <div class="skeleton h-6 w-8 rounded-[8px]"></div>
-                    @if(auth()->user()->isTeacher())
-                        <div class="skeleton h-8 w-24 rounded-[10px]"></div>
+                    @if($isOwnerOrAdmin)
+                        <div class="skeleton h-10 w-10 rounded-[10px]"></div>
                     @endif
                 </div>
             </div>
 
-            <div class="space-y-3">
+            <div class="mt-6 space-y-3">
                 @for($i = 0; $i < 4; $i++)
-                    <div class="flex items-center justify-between py-3 border-b border-[#f2eff5] last:border-0">
-                        <div class="flex items-center gap-3 flex-1 min-w-0">
-                            <div class="skeleton h-10 w-10 rounded-2xl shrink-0"></div>
-                            <div class="space-y-1.5 min-w-0 flex-1">
+                    <div class="rounded-[12px] border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="skeleton h-11 w-11 shrink-0 rounded-2xl"></div>
+                            <div class="min-w-0 flex-1 space-y-2">
                                 <div class="skeleton h-4 w-1/3"></div>
                                 <div class="skeleton h-3 w-1/2"></div>
                             </div>
+                            @if($isManager)
+                                <div class="skeleton ml-auto h-9 w-9 shrink-0 rounded-[10px]"></div>
+                            @endif
                         </div>
-                        <div class="skeleton h-6 w-16 rounded-[7px] shrink-0"></div>
                     </div>
                 @endfor
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 </div>

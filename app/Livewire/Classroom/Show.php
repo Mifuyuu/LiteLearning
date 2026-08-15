@@ -112,7 +112,7 @@ class Show extends Component
     {
         $this->redirect(route('classroom.roster', [
             'classroom' => $this->classroom,
-            'sort' => 'sort-last-name',
+            'sort' => 'sort-first-name',
         ]), navigate: true);
     }
 
@@ -120,11 +120,7 @@ class Show extends Component
     {
         abort_unless($this->classroom->canManageClassroom(Auth::user()), 403);
 
-        $this->redirect(route('classroom.gradebook', [
-            'classroom' => $this->classroom,
-            'sort' => 'sort-last-name',
-            'display' => 'default',
-        ]), navigate: true);
+        $this->redirect(route('classroom.gradebook', $this->classroom), navigate: true);
     }
 
     protected function canManageClassroom(): bool

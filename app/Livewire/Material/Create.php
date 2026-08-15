@@ -102,10 +102,7 @@ class Create extends Component
 
             session()->flash('message', __('messages.material.created'));
 
-            $this->redirect(
-                route('material.show', ['classroom' => $this->classroom, 'material' => $material]),
-                navigate: true
-            );
+            $this->js('window.location.replace('.json_encode(route('material.show', ['classroom' => $this->classroom, 'material' => $material])).')');
         });
 
     }

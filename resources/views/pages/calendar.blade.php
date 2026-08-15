@@ -1,11 +1,9 @@
 @extends('layouts.app')
 @section('page-title', 'ปฏิทิน')
 @section('content')
-    <div class="">
-        <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center">
-                <x-icon name="calendar-days" class="h-6 w-6 text-blue-600" />
-            </div>
+    <div class="max-w-4xl mx-auto">
+        <div class="flex items-center gap-2 mb-6">
+            <x-icon name="calendar-days" class="h-6 w-6 text-[var(--ll-blue)]" />
             <h2 class="text-2xl font-bold text-gray-900">{{ 'ปฏิทิน' }}</h2>
         </div>
 
@@ -51,28 +49,26 @@
                                 @php
                                     $isUrgent = $a->due_date->lt(now()->addDay());
                                     $themeColor = $a->classworkItem->classroom->themeCategory?->color ?? '#8B5CF6';
-                                    $themeBg = $themeColor.'12';
-                                    $themeBorder = $themeColor.'33';
                                 @endphp
                                 <a href="{{ route('assignment.show', ['classroom' => $a->classworkItem->classroom, 'assignment' => $a]) }}"
-                                   class="border rounded-xl flex items-center gap-4 p-4 transition-colors duration-150 group {{ $isUrgent ? 'border-red-200 bg-red-50/80 hover:bg-red-100/70' : 'hover:bg-gray-50' }}"
-                                   style="border-color: {{ $isUrgent ? '#fecaca' : $themeBorder }}; background-color: {{ $isUrgent ? '#fef2f2' : $themeBg }};">
+                                   class="rounded-lg border border-[#dedee5] bg-white hover:shadow-[0_0_0_2px_var(--room-color)] flex items-center gap-4 p-4 transition-shadow duration-150 group"
+                                   style="--room-color: {{ $themeColor }}">
                                     <div class="w-3 h-3 rounded-full shrink-0 ring-2 ring-white"
                                          style="background-color: {{ $themeColor }}"></div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-gray-900 truncate">
+                                        <p class="text-base font-medium text-gray-900 truncate">
                                             {{ $a->title }}
                                         </p>
-                                        <p class="text-xs text-gray-500 truncate mt-0.5">
+                                        <p class="text-sm text-gray-500 truncate mt-0.5">
                                             {{ $a->classworkItem->classroom->name }}
                                         </p>
                                     </div>
                                     <div class="text-right shrink-0">
-                                        <span class="text-xs font-medium {{ $isUrgent ? 'text-red-600' : 'text-gray-500' }}">
+                                        <span class="text-sm font-medium {{ $isUrgent ? 'text-red-600' : 'text-gray-500' }}">
                                             {{ $a->due_date->translatedFormat('H:i') }}
                                         </span>
                                         @if($isUrgent)
-                                            <p class="text-xs text-red-500 mt-0.5">{{ 'ใกล้กำหนดส่ง' }}</p>
+                                            <p class="text-sm text-red-500 mt-0.5">{{ 'ใกล้กำหนดส่ง' }}</p>
                                         @endif
                                     </div>
                                     <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />

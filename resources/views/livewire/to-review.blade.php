@@ -68,9 +68,7 @@
 
     @if($submissions->isEmpty())
         <div class="bg-white rounded-xl border border-[#dedee5] p-12 text-center">
-            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <x-icon name="check-circle" class="h-7 w-7 text-green-600" />
-            </div>
+            <img src="{{ asset('images/empty.svg') }}" alt="" class="h-28 w-28 mx-auto mb-4">
             <h3 class="text-xl font-semibold text-gray-900 mb-2">ตรวจงานครบแล้ว!</h3>
             <p class="text-gray-500">
                 @if($classroomId || $search)

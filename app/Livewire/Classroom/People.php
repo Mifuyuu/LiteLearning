@@ -24,9 +24,9 @@ class People extends Component
 
     public string $inviteCoTeacherEmail = '';
 
-    public string $sort = 'sort-last-name';
+    public string $sort = 'sort-first-name';
 
-    public function mount(Classroom $classroom, string $sort = 'sort-last-name'): void
+    public function mount(Classroom $classroom, string $sort = 'sort-first-name'): void
     {
         /** @var User $user */
         $user = Auth::user();
@@ -49,24 +49,16 @@ class People extends Component
 
     private function normalizeSort(string $sort): string
     {
-        return in_array($sort, ['sort-first-name', 'sort-last-name', 'sort-newest'], true)
+        return in_array($sort, ['sort-first-name', 'sort-newest'], true)
             ? $sort
-            : 'sort-last-name';
-    }
-
-    private function lastNameKey(string $name): string
-    {
-        $parts = preg_split('/\s+/u', trim($name)) ?: [$name];
-
-        return mb_strtolower((string) end($parts));
+            : 'sort-first-name';
     }
 
     private function sortUsers(Collection $users): Collection
     {
         $sorted = match ($this->sort) {
             'sort-newest' => $users->sortByDesc(fn (User $user) => $user->pivot?->joined_at ?? $user->created_at),
-            'sort-first-name' => $users->sortBy(fn (User $user) => mb_strtolower($user->name)),
-            default => $users->sortBy(fn (User $user) => $this->lastNameKey($user->name).'|'.mb_strtolower($user->name)),
+            default => $users->sortBy(fn (User $user) => mb_strtolower($user->name)),
         };
 
         return $sorted->values();

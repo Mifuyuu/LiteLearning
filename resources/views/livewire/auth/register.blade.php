@@ -1,25 +1,37 @@
-<div class="">
-    <div class="rounded-2xl border border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+<div>
+    {{-- Folder tabs: role selector --}}
+    <div class="relative z-10 -mb-px flex items-end gap-1.5 pl-5">
+        <button type="button" wire:click="$set('role', 'student')"
+            @class([
+                'flex items-center gap-2 rounded-t-xl border px-5 pt-2.5 pb-3 text-sm transition-colors',
+                $this->role !== 'teacher'
+                    ? 'border-[#dedee5] border-b-0 bg-white font-semibold text-[#101114]'
+                    : 'border-transparent bg-[#e8eaf0] font-medium text-[#686b82] hover:bg-[#dfe2ea]',
+            ])>
+            <x-icon name="user" class="h-4 w-4" />นักสำรวจ
+        </button>
+        <button type="button" wire:click="$set('role', 'teacher')"
+            @class([
+                'flex items-center gap-2 rounded-t-xl border px-5 pt-2.5 pb-3 text-sm transition-colors',
+                $this->role === 'teacher'
+                    ? 'border-[#dedee5] border-b-0 bg-white font-semibold text-[#101114]'
+                    : 'border-transparent bg-[#e8eaf0] font-medium text-[#686b82] hover:bg-[#dfe2ea]',
+            ])>
+            <x-icon name="academic-cap" class="h-4 w-4" />ผู้สร้างโลก
+        </button>
+    </div>
+
+    <div class="rounded-lg border border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
 
         {{-- Header --}}
-        <div class="flex justify-between items-center mb-2">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-[var(--ll-blue)] rounded-xl flex items-center justify-center shrink-0 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                    <x-icon name="user-plus" class="h-5 w-5 text-white" />
-                </div>
-                <h2 class="text-2xl font-bold text-[#101114]" style="letter-spacing: -0.5px;">สมัครสมาชิก</h2>
-            </div>
-            <label class="flex items-center gap-2 cursor-pointer">
-                <span class="text-sm font-medium text-[#686b82]">นักเรียน</span>
-                <input type="checkbox" class="toggle border-blue-600 bg-blue-500 checked:border-orange-500 checked:bg-orange-400 checked:text-orange-800" wire:model.live="isTeacher">
-                <span class="text-sm font-medium text-[#686b82]">ครูผู้สอน</span>
-            </label>
+        <div class="mb-2">
+            <h2 class="text-2xl font-bold text-[#101114] text-center" style="letter-spacing: -0.5px;">สมัครสมาชิก</h2>
         </div>
         <p class="text-[#9497a9] mb-6">
             @if ($this->isTeacher)
-                สร้างบัญชีผู้สอนเพื่อเริ่มต้นสร้างห้องเรียนและสื่อการสอนของคุณ
+                สร้างบัญชี<span class="font-semibold text-[#101114] underline">ผู้สอน</span>เพื่อเริ่มต้นสร้างห้องเรียนและสื่อการสอน
             @else
-                สร้างบัญชีผู้เรียนเพื่อเข้าร่วมห้องเรียนและสะสมเหรียญรางวัล
+                สร้างบัญชี<span class="font-semibold text-[#101114] underline">ผู้เรียน</span>เพื่อเข้าร่วมห้องเรียนและสะสมเหรียญรางวัล
             @endif
         </p>
 
@@ -99,9 +111,9 @@
 
                 {{-- Submit --}}
                 <button type="submit"
-                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-[12px] px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ll-blue)]">
+                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ll-blue)]">
                     <span wire:loading.remove wire:target="register">
-                        <x-icon name="paper-airplane" class="h-4 w-4 mr-2" />ส่งรหัส OTP
+                        <x-icon name="paper-airplane" class="h-4 w-4 mr-2" />สมัครสมาชิก
                     </span>
                     <span wire:loading wire:target="register">
                         <x-icon name="spinner" class="h-4 w-4 mr-2 animate-spin" />กำลังส่ง...
@@ -171,14 +183,18 @@
 
         {{-- Footer --}}
         @if (!$otpSent)
-            <div class="mt-6 text-center">
+            <div class="mt-6 flex items-center justify-between">
                 <p class="text-sm text-[#686b82]">
                     มีบัญชีอยู่แล้ว?
                     <a href="{{ route('login') }}" wire:navigate
-                        class="font-semibold text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)] transition-colors">
+                        class="font-semibold text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)] hover:underline transition-colors">
                         เข้าสู่ระบบ
                     </a>
                 </p>
+                <a href="{{ url('/') }}"
+                    class="inline-flex items-center gap-1 text-sm text-[#9497a9] hover:text-[var(--ll-blue)] hover:underline transition-colors">
+                    <x-icon name="arrow-left" class="h-4 w-4" />กลับหน้าหลัก
+                </a>
             </div>
         @endif
 

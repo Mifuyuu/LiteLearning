@@ -12,7 +12,7 @@
     </nav>
 @endsection
 
-<div class="">
+<div class="max-w-4xl mx-auto">
     <!-- Back -->
     <a href="{{ route('classroom.show', $classroom) }}"
         class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
@@ -24,12 +24,9 @@
         @php
             $typeInfo = [
                 'announcement' => ['icon' => 'megaphone', 'label' => 'ประกาศ', 'bg' => 'bg-blue-100', 'text' => 'text-blue-700'],
-                'question' => ['icon' => 'pencil-square', 'label' => 'คำถาม', 'bg' => 'bg-blue-100', 'text' => 'text-blue-700'],
-                'file' => ['icon' => 'arrow-up-tray', 'label' => 'อัปโหลดไฟล์', 'bg' => 'bg-teal-100', 'text' => 'text-teal-700'],
-                'attendance' => ['icon' => 'clipboard-document-check', 'label' => 'เช็คชื่อ', 'bg' => 'bg-green-100', 'text' => 'text-green-700'],
-                'material' => ['icon' => 'book-open', 'label' => 'เอกสาร', 'bg' => 'bg-orange-100', 'text' => 'text-orange-700'],
-                'topic' => ['icon' => 'cube', 'label' => 'หัวข้อ', 'bg' => 'bg-gray-100', 'text' => 'text-gray-700'],
-                'project' => ['icon' => 'squares-2x2', 'label' => 'โปรเจกต์', 'bg' => 'bg-blue-100', 'text' => 'text-blue-700'],
+                'file' => ['icon' => 'arrow-up-tray', 'label' => 'งานส่งไฟล์', 'bg' => 'bg-teal-100', 'text' => 'text-teal-700'],
+                'attendance' => ['icon' => 'clipboard-document-check', 'label' => 'งานเช็คชื่อ', 'bg' => 'bg-green-100', 'text' => 'text-green-700'],
+                'material' => ['icon' => 'book-open', 'label' => 'สื่อการสอน', 'bg' => 'bg-orange-100', 'text' => 'text-orange-700'],
             ];
             $current = $typeInfo[$type] ?? ['icon' => 'pencil-square', 'label' => ucfirst($type), 'bg' => 'bg-gray-100', 'text' => 'text-gray-700'];
         @endphp
@@ -89,7 +86,7 @@
         @endif
 
         <!-- File Upload Section -->
-        @if(!in_array($type, ['question', 'attendance']))
+        @if($type !== 'attendance')
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                     <h3 class="text-sm font-semibold text-gray-700">ไฟล์แนบ</h3>
@@ -211,9 +208,21 @@
                         @enderror
                     </div>
 
-                    <!-- Due Date + EXP + Coin row -->
+                    <!-- Due Date + Points + EXP + Coin row -->
                     @if(!in_array($type, ['material', 'topic']))
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            @if($type === 'file')
+                                <div>
+                                    <label class="flex items-center text-sm font-medium text-gray-700 mb-1.5">
+                                        <x-icon name="academic-cap" class="text-gray-400 mr-1.5 h-4 w-4 shrink-0" />คะแนนเต็ม
+                                    </label>
+                                    <input wire:model="max_score" type="number" min="0" max="100"
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    @error('max_score')
+                                        <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
                                     <x-icon name="clock" class="h-4 w-4 mr-1.5 text-gray-400" />วันกำหนดส่ง

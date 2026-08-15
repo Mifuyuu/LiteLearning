@@ -26,29 +26,11 @@ class GradeReport extends Component
     #[Url(except: '')]
     public string $search = '';
 
-    public string $sort = 'sort-last-name';
-
-    public string $display = 'default';
-
-    public function mount(Classroom $classroom, string $sort = 'sort-last-name', string $display = 'default'): void
+    public function mount(Classroom $classroom): void
     {
         abort_unless($classroom->canManageClassroom(Auth::user()), 403);
 
         $this->classroom = $classroom;
-        $this->sort = $this->normalizeSort($sort);
-        $this->display = $this->normalizeDisplay($display);
-    }
-
-    private function normalizeSort(string $sort): string
-    {
-        return in_array($sort, ['sort-first-name', 'sort-last-name', 'sort-newest'], true)
-            ? $sort
-            : 'sort-last-name';
-    }
-
-    private function normalizeDisplay(string $display): string
-    {
-        return in_array($display, ['default', 'compact'], true) ? $display : 'default';
     }
 
     private function lastNameKey(string $name): string
@@ -60,13 +42,9 @@ class GradeReport extends Component
 
     private function sortUsers(Collection $users): Collection
     {
-        $sorted = match ($this->sort) {
-            'sort-newest' => $users->sortByDesc(fn (User $user) => $user->pivot?->joined_at ?? $user->created_at),
-            'sort-first-name' => $users->sortBy(fn (User $user) => mb_strtolower($user->name)),
-            default => $users->sortBy(fn (User $user) => $this->lastNameKey($user->name).'|'.mb_strtolower($user->name)),
-        };
-
-        return $sorted->values();
+        return $users
+            ->sortBy(fn (User $user) => $this->lastNameKey($user->name).'|'.mb_strtolower($user->name))
+            ->values();
     }
 
     private function getAssignments(): Collection
@@ -126,18 +104,20 @@ class GradeReport extends Component
     private function studentSummary(int $userId, Collection $assignments, array $scoreMap): array
     {
         $totalScore = 0;
-        $maxPossible = 0;
+        $maxPossible = 0; // sum of every assignment's max score, even unsubmitted
         $gradedCount = 0;
 
         foreach ($assignments as $assignment) {
+            $maxPossible += $assignment->max_score ?? 0;
+
             $submission = $scoreMap[$userId][$assignment->id] ?? null;
             if ($submission && $submission->isGraded()) {
                 $totalScore += $submission->score;
-                $maxPossible += $assignment->max_score ?? 0;
                 $gradedCount++;
             }
         }
 
+        // % of full total (all assignments), not just graded work
         $avgPercent = $maxPossible > 0
             ? round($totalScore / $maxPossible * 100)
             : null;

@@ -43,7 +43,7 @@ class Create extends Component
 
     public bool $allow_late_submission = true;
 
-    public string $type = 'question';
+    public string $type = 'file';
 
     public function mount(Classroom $classroom): void
     {
@@ -55,7 +55,7 @@ class Create extends Component
 
         // Allow pre-selecting a type via query string (e.g. ?type=announcement)
         $requestType = request()->query('type');
-        $allowed = ['announcement', 'attendance', 'file', 'question', 'material', 'topic', 'project'];
+        $allowed = ['announcement', 'attendance', 'file', 'material'];
         if ($requestType && in_array($requestType, $allowed, true)) {
             $this->type = $requestType;
         }
@@ -94,10 +94,10 @@ class Create extends Component
         $this->validate([
             'title' => 'required|string|max:50',
             'description' => 'nullable|string',
-            'max_score' => 'required_unless:type,material,topic,announcement|integer|min:0|max:1000',
+            'max_score' => 'required_unless:type,material,topic,announcement|integer|min:0|max:100',
             'exp_reward' => 'integer|min:0|max:9999',
             'coin_reward' => 'integer|min:0|max:9999',
-            'type' => 'required|in:announcement,attendance,file,question,material,topic,project',
+            'type' => 'required|in:announcement,attendance,file,material',
             'due_date' => 'nullable|date',
             'published_at' => ['nullable', 'date', 'after:now', 'before:'.now()->addYears(5)->toDateTimeString()],
             'status' => 'required|in:draft,published,scheduled',
@@ -158,7 +158,7 @@ class Create extends Component
                 $this->persistAttachments($announcement, $user->id);
             });
 
-            $this->redirect(route('classroom.show', $this->classroom), navigate: true);
+            $this->js('window.location.replace('.json_encode(route('classroom.show', $this->classroom)).')');
 
             return;
         }
@@ -198,10 +198,10 @@ class Create extends Component
                 }
             }
 
-            $this->redirect(route('assignment.show', [
+            $this->js('window.location.replace('.json_encode(route('assignment.show', [
                 'classroom' => $this->classroom,
                 'assignment' => $assignment,
-            ]), navigate: true);
+            ])).')');
         });
 
     }

@@ -6,8 +6,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('เข้าสู่ระบบ')]
 #[Layout('layouts.guest')]
 class Login extends Component
 {

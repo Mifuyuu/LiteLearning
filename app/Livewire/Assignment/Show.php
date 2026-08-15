@@ -13,13 +13,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mews\Purifier\Facades\Purifier;
 
+#[Lazy]
 class Show extends Component
 {
     use HasEditableContent, HasTopicSelector, VerifiesContentAccess, WithFileUploads;
+
+    public function placeholder(array $params = [])
+    {
+        return view('livewire.placeholders.assignment-show', $params);
+    }
 
     #[Locked]
     public Classroom $classroom;
@@ -276,7 +283,7 @@ class Show extends Component
         $this->validate([
             'editTitle' => 'required|string|max:50',
             'editDescription' => 'nullable|string',
-            'editMaxScore' => 'required_unless:editType,material|integer|min:0|max:1000',
+            'editMaxScore' => 'required_unless:editType,material|integer|min:0|max:100',
             'editExpReward' => 'integer|min:0|max:9999',
             'editCoinReward' => 'integer|min:0|max:9999',
             'editDueDate' => 'nullable|date',

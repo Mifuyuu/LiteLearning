@@ -37,12 +37,14 @@ class RegressionFixesTest extends TestCase
         $teacher = User::factory()->create(['role' => 'teacher']);
         $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
 
-        Livewire::actingAs($teacher)
+        $test = Livewire::actingAs($teacher)
             ->test(MaterialCreate::class, ['classroom' => $classroom])
             ->set('title', 'Course Guide')
             ->set('description', 'Material body')
-            ->call('save')
-            ->assertRedirect();
+            ->call('save');
+
+        $material = \App\Models\Material::query()->firstOrFail();
+        $test->assertJs('window.location.replace('.json_encode(route('material.show', ['classroom' => $classroom, 'material' => $material])).')');
 
         $this->assertDatabaseHas('classwork_items', [
             'classroom_id' => $classroom->id,
@@ -61,17 +63,17 @@ class RegressionFixesTest extends TestCase
         $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
         $file = UploadedFile::fake()->create('outline.pdf', 20, 'application/pdf');
 
-        Livewire::actingAs($teacher)
+        $test = Livewire::actingAs($teacher)
             ->test(AssignmentCreate::class, ['classroom' => $classroom])
             ->set('title', 'Essay 1')
             ->set('description', 'Write an essay')
-            ->set('type', 'question')
+            ->set('type', 'file')
             ->set('file', $file)
-            ->call('save')
-            ->assertRedirect();
+            ->call('save');
 
         /** @var Assignment $assignment */
         $assignment = Assignment::query()->firstOrFail();
+        $test->assertJs('window.location.replace('.json_encode(route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment])).')');
 
         $this->assertDatabaseHas('attachments', [
             'attachable_type' => Assignment::class,

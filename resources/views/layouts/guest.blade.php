@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'เข้าสู่ระบบ' }}</title>
+    <link rel="icon" href="{{ asset('images/favicon.png') }}">
+    <title>{{ ($title ?? 'เข้าสู่ระบบ') . ' | LiteLearning' }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +25,7 @@
     @livewireStyles
 </head>
 
-<body class="space-bg font-sans antialiased auth-page">
+<body class="backdrop-bg font-sans antialiased auth-page">
     <div class="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 auth-page-shell relative z-10">
         <!-- Content -->
         <div class="w-full max-w-md">

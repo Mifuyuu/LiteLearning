@@ -14,7 +14,7 @@
     </nav>
 @endsection
 
-<div class="">
+<div class="max-w-4xl mx-auto">
     <!-- Back -->
     <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}"
         class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">

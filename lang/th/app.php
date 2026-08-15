@@ -2,11 +2,11 @@
 
 return [
     // Assignment types
-    'type_attendance' => 'เช็คชื่อ',
-    'type_file' => 'อัปโหลดไฟล์',
+    'type_attendance' => 'งานเช็คชื่อ',
+    'type_file' => 'งานส่งไฟล์',
     'type_question' => 'คำถาม',
     'type_topic' => 'หัวข้อ',
-    'type_material' => 'เอกสาร',
+    'type_material' => 'สื่อการสอน',
     'type_announcement' => 'ประกาศ',
     'type_project' => 'โปรเจกต์',
 

@@ -1,12 +1,9 @@
 <div class="">
-    <div class="rounded-2xl border border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-        <div class="flex items-center space-x-3 mb-2">
-            <div class="w-10 h-10 bg-[var(--ll-blue)] rounded-[12px] flex items-center justify-center shrink-0 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                <x-icon name="academic-cap" class="h-5 w-5 text-white" />
-            </div>
-            <h2 class="text-2xl font-bold text-[#101114]" style="letter-spacing: -0.5px;">ยินดีต้อนรับกลับ</h2>
+    <div class="rounded-lg border border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+        <div class="mb-2">
+            <h2 class="text-2xl font-bold text-[#101114] text-center" style="letter-spacing: -0.5px;">เข้าสู่ระบบ</h2>
         </div>
-        <p class="text-[#9497a9] mb-6">เข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+        {{-- <p class="text-[#9497a9] mb-6">กรอกข้อมูลเพื่อเข้าสู่ระบบ</p> --}}
 
         <form wire:submit.prevent="login" class="space-y-5">
             {{-- Email --}}
@@ -41,8 +38,7 @@
             {{-- Remember me + Forgot password --}}
             <div class="flex items-center justify-between">
                 <label class="flex items-center">
-                    <input wire:model="remember" type="checkbox"
-                        class="rounded border-[#dedee5] text-[var(--ll-blue)] focus:ring-[var(--ll-blue)]">
+                <input wire:model="remember" type="checkbox" class="checkbox checkbox-sm">
                     <span class="ml-2 text-sm text-[#686b82]">จดจำฉัน</span>
                 </label>
                 <a href="{{ route('password.request') }}"
@@ -60,12 +56,16 @@
             </button>
         </form>
 
-        <div class="mt-6 text-center">
+        <div class="mt-6 flex items-center justify-between">
             <p class="text-sm text-[#686b82]">
                 ยังไม่มีบัญชี?
                 <a href="{{ route('register') }}"
-                    class="font-semibold text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)] transition-colors">สร้างบัญชี</a>
+                    class="font-semibold text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)] hover:underline transition-colors">สร้างบัญชี</a>
             </p>
+            <a href="{{ url('/') }}"
+                class="inline-flex items-center gap-1 text-sm text-[#9497a9] hover:text-[var(--ll-blue)] hover:underline transition-colors">
+                <x-icon name="arrow-left" class="h-4 w-4" />กลับหน้าหลัก
+            </a>
         </div>
     </div>
 </div>

@@ -1,13 +1,31 @@
 @section('page-title', (isset($classroom) ? ('งานในชั้นเรียน' . ' - ' . $classroom->name) : 'งานในชั้นเรียน'))
-<div class="space-y-6">
+@if(isset($classroom))
+@section('breadcrumb')
+    <nav class="flex items-center space-x-1 text-sm">
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+            {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
+        </a>
+        <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
+        <a href="{{ route('classroom.show', $classroom) }}" class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+            {{ $classroom->name }}
+        </a>
+        <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
+        <span class="font-semibold text-[#101114]">{{ 'งานในชั้นเรียน' }}</span>
+    </nav>
+@endsection
+@endif
+@php
+    $isManager = isset($classroom) ? $classroom->canManageClassroom(auth()->user()) : auth()->user()->isTeacher();
+@endphp
+<div class="space-y-6 max-w-4xl mx-auto">
 
     {{-- Filter bar mockup --}}
     <section class="flex flex-wrap items-center gap-2 rounded-2xl border border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="skeleton h-9 w-16 rounded-[10px]"></div>
-        <div class="skeleton h-9 w-24 rounded-[10px]"></div>
-        <div class="skeleton h-9 w-24 rounded-[10px]"></div>
-        @if(auth()->user()->isTeacher())
-            <div class="skeleton h-9 w-36 rounded-[12px] ml-auto"></div>
+        <div class="skeleton h-9 w-20 rounded-[10px]"></div>
+        <div class="skeleton h-9 w-20 rounded-[10px]"></div>
+        @if($isManager)
+            <div class="skeleton ml-auto h-10 w-28 rounded-[10px]"></div>
         @endif
     </section>
 
@@ -15,23 +33,25 @@
     <div class="space-y-6">
         @for($t = 0; $t < 2; $t++)
             <section class="space-y-5">
-                <div class="skeleton h-4 w-28"></div>
+                <div class="skeleton h-3 w-28"></div>
                 <section class="space-y-3">
                     <div class="flex items-center gap-3">
-                        <div class="skeleton h-5 w-32"></div>
+                        <div class="skeleton h-3.5 w-32"></div>
                         <div class="h-px flex-1 bg-[#dedee5]"></div>
                     </div>
                     <div class="space-y-3">
                         @for($i = 0; $i < 2; $i++)
-                            <div class="rounded-xl border border-[#dedee5] bg-white p-4 flex items-center justify-between gap-4 shadow-sm">
-                                <div class="flex items-center gap-3 flex-1 min-w-0">
-                                    <div class="skeleton h-9 w-9 rounded-[10px] shrink-0"></div>
-                                    <div class="flex-1 space-y-2 min-w-0">
-                                        <div class="skeleton h-4 w-1/3"></div>
-                                        <div class="skeleton h-3 w-1/4"></div>
+                            <div class="rounded-2xl border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+                                <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                                    <div class="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+                                        <div class="skeleton h-10 w-10 shrink-0 rounded-[10px]"></div>
+                                        <div class="min-w-0 space-y-2">
+                                            <div class="skeleton h-5 w-1/3"></div>
+                                            <div class="skeleton h-3 w-1/4"></div>
+                                        </div>
                                     </div>
+                                    <div class="skeleton h-6 w-20 shrink-0 rounded-[6px]"></div>
                                 </div>
-                                <div class="skeleton h-6 w-16 rounded-[7px] shrink-0"></div>
                             </div>
                         @endfor
                     </div>

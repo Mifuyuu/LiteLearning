@@ -81,9 +81,9 @@
                     <ul x-show="open" x-cloak
                         class="absolute menu right-0 top-full z-50 mt-2 w-44 rounded-[12px] border border-[#dedee5] bg-white p-1.5 shadow-lg">
                         <li>
-                            <a href="{{ route('assignment.create', $classroom) }}?type=question" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                <x-icon name="pencil" class="h-4 w-4 shrink-0" />
-                                {{ 'งาน' }}
+                            <a href="{{ route('assignment.create', $classroom) }}?type=file" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                                <x-icon name="arrow-up-tray" class="h-4 w-4 shrink-0" />
+                                {{ 'งานส่งไฟล์' }}
                             </a>
                         </li>
                         <li>
@@ -94,14 +94,14 @@
                         </li>
                         <li>
                             <a href="{{ route('assignment.create', $classroom) }}?type=material" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                <x-icon name="document" class="h-4 w-4 shrink-0" />
-                                {{ 'เอกสาร' }}
+                                <x-icon name="book-open" class="h-4 w-4 shrink-0" />
+                                {{ 'สื่อการสอน' }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('assignment.create', $classroom) }}?type=attendance" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
                                 <x-icon name="check-circle" class="h-4 w-4 shrink-0" />
-                                {{ 'เช็คชื่อ' }}
+                                {{ 'งานเช็คชื่อ' }}
                             </a>
                         </li>
                     </ul>

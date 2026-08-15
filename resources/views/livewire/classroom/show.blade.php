@@ -14,11 +14,13 @@
     $themeColor = $classroom->themeCategory?->color ?? '#2563eb';
 @endphp
 
-<div class="space-y-5 max-w-4xl mx-auto">
-    <section class="rounded-[12px] border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-        <div class="overflow-hidden rounded-t-[12px]">
-            <div class="h-2 w-full" style="background-color: {{ $themeColor }};"></div>
-        </div>
+<div class="max-w-4xl mx-auto">
+    <section class="overflow-hidden rounded-[12px] border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+
+        {{-- Theme color strip --}}
+        <div class="h-2 w-full" style="background-color: {{ $themeColor }};"></div>
+
+        {{-- Header --}}
         <div class="p-5 sm:p-6">
             <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                 <div class="min-w-0">
@@ -61,9 +63,9 @@
                             <ul x-show="open" x-cloak
                                 class="absolute menu right-0 top-full z-50 mt-2 w-44 rounded-[12px] border border-[#dedee5] bg-white p-1.5 shadow-lg">
                                 <li>
-                                    <a href="{{ route('assignment.create', $classroom) }}?type=question" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                        <x-icon name="pencil" class="h-4 w-4 shrink-0" />
-                                        {{ 'งาน' }}
+                                    <a href="{{ route('assignment.create', $classroom) }}?type=file" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                                        <x-icon name="arrow-up-tray" class="h-4 w-4 shrink-0" />
+                                        {{ 'งานส่งไฟล์' }}
                                     </a>
                                 </li>
                                 <li>
@@ -74,14 +76,14 @@
                                 </li>
                                 <li>
                                     <a href="{{ route('assignment.create', $classroom) }}?type=material" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
-                                        <x-icon name="document" class="h-4 w-4 shrink-0" />
-                                        {{ 'เอกสาร' }}
+                                        <x-icon name="book-open" class="h-4 w-4 shrink-0" />
+                                        {{ 'สื่อการสอน' }}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ route('assignment.create', $classroom) }}?type=attendance" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
                                         <x-icon name="check-circle" class="h-4 w-4 shrink-0" />
-                                        {{ 'เช็คชื่อ' }}
+                                        {{ 'งานเช็คชื่อ' }}
                                     </a>
                                 </li>
                             </ul>
@@ -90,48 +92,48 @@
                 </div>
             </div>
         </div>
-    </section>
 
-    <div class="grid gap-5 lg:grid-cols-3">
-        <a href="{{ route('classroom.stream', $classroom) }}" wire:navigate
-            class="rounded-[12px] border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] transition hover:border-[rgba(37,99,235,0.3)] hover:bg-[rgba(37,99,235,0.03)]">
-            <div class="flex items-center justify-between gap-3">
-                <span class="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">
-                    <x-icon name="chat-bubble-left-ellipsis" class="h-5 w-5" />
-                </span>
-                <span class="text-2xl font-black text-[#101114]">{{ $classroom->announcements->count() }}</span>
-            </div>
-            <h2 class="mt-4 text-lg font-black text-[#101114]">{{ 'กระดานสนทนา' }}</h2>
-            <p class="mt-1 text-sm leading-6 text-[#686b82]">{{ 'ประกาศและความคิดเห็นในชั้นเรียน' }}</p>
-        </a>
+        {{-- Quick links: 3 sections divided inside the box --}}
+        <div class="grid divide-y divide-[#f2eff5] border-t border-[#f2eff5] lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+            <a href="{{ route('classroom.stream', $classroom) }}" wire:navigate
+                class="block p-5 transition hover:bg-[rgba(37,99,235,0.03)]">
+                <div class="flex items-center justify-between gap-3">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">
+                        <x-icon name="chat-bubble-left-ellipsis" class="h-5 w-5" />
+                    </span>
+                    <span class="text-2xl font-black text-[#101114]">{{ $classroom->announcements->count() }}</span>
+                </div>
+                <h2 class="mt-4 text-lg font-black text-[#101114]">{{ 'กระดานสนทนา' }}</h2>
+                <p class="mt-1 text-sm leading-6 text-[#686b82]">{{ 'ประกาศและความคิดเห็นในชั้นเรียน' }}</p>
+            </a>
 
-        <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
-            class="rounded-[12px] border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] transition hover:border-[rgba(37,99,235,0.3)] hover:bg-[rgba(37,99,235,0.03)]">
-            <div class="flex items-center justify-between gap-3">
-                <span class="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">
-                    <x-icon name="clipboard-document-list" class="h-5 w-5" />
-                </span>
-                <span class="text-2xl font-black text-[#101114]">{{ $assignmentCount }}</span>
-            </div>
-            <h2 class="mt-4 text-lg font-black text-[#101114]">{{ 'งานในชั้นเรียน' }}</h2>
-            <p class="mt-1 text-sm leading-6 text-[#686b82]">{{ 'งานที่มอบหมาย, งานที่รอทำ, และงานที่ทำเสร็จแล้ว' }}</p>
-        </a>
+            <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
+                class="block p-5 transition hover:bg-[rgba(37,99,235,0.03)]">
+                <div class="flex items-center justify-between gap-3">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">
+                        <x-icon name="clipboard-document-list" class="h-5 w-5" />
+                    </span>
+                    <span class="text-2xl font-black text-[#101114]">{{ $assignmentCount }}</span>
+                </div>
+                <h2 class="mt-4 text-lg font-black text-[#101114]">{{ 'งานในชั้นเรียน' }}</h2>
+                <p class="mt-1 text-sm leading-6 text-[#686b82]">{{ 'งานที่มอบหมาย, งานที่รอทำ, และงานที่ทำเสร็จแล้ว' }}</p>
+            </a>
 
-        <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-last-name']) }}" wire:navigate
-            class="rounded-[12px] border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] transition hover:border-[rgba(37,99,235,0.3)] hover:bg-[rgba(37,99,235,0.03)]">
-            <div class="flex items-center justify-between gap-3">
-                <span class="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">
-                    <x-icon name="users" class="h-5 w-5" />
-                </span>
-                <span class="text-2xl font-black text-[#101114]">{{ $students->count() }}</span>
-            </div>
-            <h2 class="mt-4 text-lg font-black text-[#101114]">{{ 'สมาชิก' }}</h2>
-            <p class="mt-1 text-sm leading-6 text-[#686b82]">{{ 'ครู, ผู้สอนร่วม และนักเรียน' }}</p>
-        </a>
-    </div>
+            <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
+                class="block p-5 transition hover:bg-[rgba(37,99,235,0.03)]">
+                <div class="flex items-center justify-between gap-3">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">
+                        <x-icon name="users" class="h-5 w-5" />
+                    </span>
+                    <span class="text-2xl font-black text-[#101114]">{{ $students->count() }}</span>
+                </div>
+                <h2 class="mt-4 text-lg font-black text-[#101114]">{{ 'สมาชิก' }}</h2>
+                <p class="mt-1 text-sm leading-6 text-[#686b82]">{{ 'ครู, ผู้สอนร่วม และนักเรียน' }}</p>
+            </a>
+        </div>
 
-    <div class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <section class="rounded-[12px] border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+        {{-- ต้องดูแล --}}
+        <div class="border-t border-[#f2eff5] p-5">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">{{ 'งานในชั้นเรียน' }}</p>
@@ -153,7 +155,6 @@
                     <x-empty-state-inline title="ไม่มีงานที่รอดำเนินการ" body="ไม่มีอะไรที่ต้องดูแลตอนนี้" />
                 @endforelse
             </div>
-        </section>
-
-    </div>
+        </div>
+    </section>
 </div>
