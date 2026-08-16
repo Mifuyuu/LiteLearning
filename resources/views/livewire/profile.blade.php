@@ -11,20 +11,20 @@
 
         {{-- Cover + Bio --}}
         <div class="relative h-48 overflow-hidden bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_24%),linear-gradient(135deg,#1e40af,#2563eb_48%,#3b82f6)]">
+            <img src="{{ $user->cover_image ? $user->cover_image_url : asset('images/default_profile_banner.webp').'?v='.filemtime(public_path('images/default_profile_banner.webp')) }}" alt="{{ $user->name }}"
+                class="absolute inset-0 h-full w-full object-cover">
             @if($user->cover_image)
-                <img src="{{ $user->cover_image_url }}" alt="{{ $user->name }}"
-                    class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-slate-950/35"></div>
             @endif
         </div>
 
         <div class="px-5 pb-6 lg:px-7">
-            <div class="flex min-w-0 flex-col gap-20 sm:flex-row sm:items-start">
-                <div class="-mt-10 sm:-mt-12 ml-14 sm:ml-16 relative inline-block shrink-0 group">
+            <div class="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:gap-20">
+                <div class="-mt-10 sm:-mt-12 relative inline-block shrink-0 self-center group sm:ml-16">
                     <x-user-avatar :user="$user" size="w-36 h-36" border="border-4 border-white" shadow="shadow-none" />
                 </div>
-                <div class="min-w-0 pb-1 sm:pt-4">
-                    <div class="flex flex-wrap items-center gap-2">
+                <div class="min-w-0 pb-1 text-center sm:pt-4 sm:text-left">
+                    <div class="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                         <h1 class="truncate text-3xl font-black sm:text-4xl {{ $user->active_name_color ?: 'text-slate-950' }}">
                             {{ $user->name }}
                         </h1>

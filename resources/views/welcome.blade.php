@@ -62,7 +62,7 @@
 
     <div class="min-h-screen flex flex-col relative z-10">
         <!-- Navigation -->
-        <header class="sticky top-0 md:top-4 z-50 w-full transition-all duration-300" id="navbar">
+        <header class="fixed top-0 md:top-4 z-50 w-full transition-all duration-300" id="navbar">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-0">
                 <div id="navbar-card" class="bg-white/80 backdrop-blur-md border border-[#dedee5] rounded-xl shadow-[rgba(0,0,0,0.03)_0px_4px_24px] px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between transition-all duration-300">
                     <a href="{{ route('landing') }}" class="flex items-center gap-3 group">
@@ -116,9 +116,9 @@
 
         <main class="flex-1">
             <!-- Hero Section (Centered with Background Image & Stats) -->
-            <section class="relative min-h-[calc(100vh-5rem)] flex flex-col justify-between z-10 pt-16 pb-6 overflow-hidden">
+            <section class="relative min-h-[calc(100vh-5rem)] flex flex-col justify-between z-10 pt-28 md:pt-24 pb-6 overflow-hidden">
                 <!-- Overflowing background image positioned behind the hero -->
-                <div class="absolute left-0 w-full h-full z-0 pointer-events-none" style="background-image: linear-gradient(to bottom, rgba(23, 37, 84, 0) 60%, #172554 100%), url('/images/background_space.webp'); background-repeat: no-repeat; background-position: top center; background-size: 100% auto;"></div>
+                <div class="absolute left-0 w-full h-full z-0 pointer-events-none" style="background-image: linear-gradient(to bottom, rgba(23, 37, 84, 0) 60%, #172554 100%), url('/images/landing.png'); background-repeat: no-repeat; background-position: top center; background-size: 100% auto;"></div>
 
                 <!-- Content Container -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center observer-target relative z-10 w-full flex-1 flex flex-col justify-between">

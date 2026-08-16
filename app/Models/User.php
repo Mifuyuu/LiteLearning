@@ -147,7 +147,7 @@ class User extends Authenticatable implements MustVerifyEmail
             return \Illuminate\Support\Facades\Storage::url($this->avatar);
         }
 
-        return asset('images/default_profile_pic.png');
+        return asset('images/default_profile_pic.webp').'?v='.filemtime(public_path('images/default_profile_pic.webp'));
     }
 
     public function getCoverImageUrlAttribute(): ?string

@@ -109,14 +109,8 @@
                         <h3 class="text-base font-semibold text-gray-900 mb-4">{{ 'รูปปกโปรไฟล์' }}</h3>
                         <div>
                             <div class="relative mb-3 h-32 w-full overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
-                                @if(auth()->user()->cover_image)
-                                    <img src="{{ auth()->user()->cover_image_url }}" alt="cover"
-                                        class="h-full w-full object-cover">
-                                @else
-                                    <div class="flex h-full items-center justify-center text-sm text-gray-400">
-                                        <x-icon name="photo" class="h-4 w-4 mr-2" /> {{ 'ยังไม่มีรูปปก' }}
-                                    </div>
-                                @endif
+                                <img src="{{ auth()->user()->cover_image ? auth()->user()->cover_image_url : asset('images/default_profile_banner.webp').'?v='.filemtime(public_path('images/default_profile_banner.webp')) }}" alt="cover"
+                                    class="h-full w-full object-cover">
                                 <div wire:loading wire:target="cover_image"
                                     class="absolute inset-0 flex items-center justify-center bg-slate-950/40">
                                     <x-icon name="spinner" class="h-5 w-5 text-white animate-spin" />

@@ -27,7 +27,7 @@
 
         {{-- Grid --}}
         <div class="p-6 lg:p-8">
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 @for($i = 0; $i < 8; $i++)
                     <article class="rounded-xl border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
                         <div class="flex gap-4">

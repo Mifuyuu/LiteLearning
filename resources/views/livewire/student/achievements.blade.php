@@ -35,7 +35,7 @@
 
         {{-- Achievements grid --}}
         <div class="p-6 lg:p-8">
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 @forelse($allAchievements as $achievement)
                     @php
                         $isUnlocked = isset($unlockedLookup[$achievement->id]);

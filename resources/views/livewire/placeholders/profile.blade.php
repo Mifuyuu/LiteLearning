@@ -7,11 +7,11 @@
 
         {{-- Bio area --}}
         <div class="px-5 pb-6 lg:px-7">
-            <div class="flex min-w-0 flex-col gap-20 sm:flex-row sm:items-start">
-                <div class="-mt-10 sm:-mt-12 ml-14 sm:ml-16 relative inline-block shrink-0">
+            <div class="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:gap-20">
+                <div class="-mt-10 sm:-mt-12 relative inline-block shrink-0 self-center sm:ml-16">
                     <div class="skeleton h-36 w-36 rounded-full border-4 border-white"></div>
                 </div>
-                <div class="min-w-0 pb-1 sm:pt-4 space-y-3 flex-1">
+                <div class="min-w-0 pb-1 text-center sm:pt-4 sm:text-left space-y-3 flex-1">
                     <div class="skeleton h-9 w-48"></div>
                     <div class="skeleton h-5 w-24 rounded-full"></div>
                     <div class="skeleton h-4 w-full"></div>

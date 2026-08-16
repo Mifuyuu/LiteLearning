@@ -88,14 +88,7 @@
                         <div class="dashboard-liquid-progress mt-5 outline-2 outline-[rgba(37,99,235,0.28)]" role="progressbar"
                             aria-label="ความคืบหน้าเลเวล" aria-valuemin="0" aria-valuemax="100"
                             aria-valuenow="{{ $primaryMetric['progress_percent'] }}">
-                            <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%">
-                                <span data-liquid-bubbles class="dashboard-liquid-bubbles" aria-hidden="true">
-                                    <span data-liquid-bubble></span>
-                                    <span data-liquid-bubble></span>
-                                    <span data-liquid-bubble></span>
-                                    <span data-liquid-bubble></span>
-                                </span>
-                            </span>
+                            <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%"></span>
                         </div>
                         <p class="mt-2 text-xs text-[#686b82]">
                             อีก {{ number_format($primaryMetric['remaining']) }} XP จะถึงเลเวล {{ $primaryMetric['level'] + 1 }}
@@ -113,14 +106,7 @@
                         <div class="dashboard-liquid-progress mt-5 outline-2 outline-[rgba(37,99,235,0.28)]" role="progressbar"
                             aria-label="ความคืบหน้าการตรวจ" aria-valuemin="0" aria-valuemax="100"
                             aria-valuenow="{{ $primaryMetric['progress_percent'] }}">
-                            <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%">
-                                <span data-liquid-bubbles class="dashboard-liquid-bubbles" aria-hidden="true">
-                                    <span data-liquid-bubble></span>
-                                    <span data-liquid-bubble></span>
-                                    <span data-liquid-bubble></span>
-                                    <span data-liquid-bubble></span>
-                                </span>
-                            </span>
+                            <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%"></span>
                         </div>
                         <p class="mt-2 text-xs text-[#686b82]">การตรวจงานประจำสัปดาห์ · {{ $primaryMetric['progress_percent'] }}%</p>
                     @endif
