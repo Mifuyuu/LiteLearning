@@ -9,7 +9,6 @@ services:
     env_file:
       - .env.docker
     volumes:
-      - ./mysql-init:/docker-entrypoint-initdb.d
       - mariadb_data:/var/lib/mysql
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword" ]

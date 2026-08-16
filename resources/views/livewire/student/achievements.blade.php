@@ -39,12 +39,12 @@
                 @forelse($allAchievements as $achievement)
                     @php
                         $isUnlocked = isset($unlockedLookup[$achievement->id]);
-                        $imgSrc = $achievement->badge_image ?: 'images/achievements/Achievements_Novice.svg';
+                        $imgSrc = $achievement->badge_image ?: 'images/achievements/Achievements_Novice.png';
                     @endphp
                     <article class="rounded-xl border p-5 transition shadow-[rgba(0,0,0,0.03)_0px_4px_24px] {{ $isUnlocked ? 'border-[#dedee5] bg-white' : 'border-[rgba(104,107,130,0.24)] bg-[rgba(104,107,130,0.04)] opacity-75' }}">
                         <div class="flex gap-4">
-                            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border bg-white {{ $isUnlocked ? 'border-[#dedee5]' : 'border-[rgba(104,107,130,0.24)] grayscale' }}">
-                                <img src="{{ asset($imgSrc) }}" alt="{{ $achievement->name }}" class="h-14 w-14 object-contain {{ $isUnlocked ? '' : 'opacity-45' }}">
+                            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border bg-slate-100 {{ $isUnlocked ? 'border-[#dedee5]' : 'border-[rgba(104,107,130,0.24)] grayscale' }}">
+                                <img src="{{ asset($imgSrc).'?v='.@filemtime(public_path($imgSrc)) }}" alt="{{ $achievement->name }}" class="h-14 w-14 object-contain {{ $isUnlocked ? '' : 'opacity-45' }}">
                             </div>
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-start justify-between gap-3">

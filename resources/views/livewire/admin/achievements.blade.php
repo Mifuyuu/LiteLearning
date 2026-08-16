@@ -38,11 +38,12 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-100">
                     @forelse($achievements as $achievement)
+                        @php $badgeSrc = $achievement->badge_image ?: 'images/achievements/Achievements_Novice.png'; @endphp
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
                                     <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0 overflow-hidden relative">
-                                        <img src="{{ asset($achievement->badge_image ?: 'images/achievements/Achievements_Novice.svg') }}"
+                                        <img src="{{ asset($badgeSrc).'?v='.@filemtime(public_path($badgeSrc)) }}"
                                             alt="{{ $achievement->name }}"
                                             class="w-8 h-8 object-contain">
                                     </div>

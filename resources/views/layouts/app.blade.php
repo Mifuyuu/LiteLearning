@@ -6,7 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="{{ asset('images/favicon.png') }}">
-    <title>{{ $title ?? 'แดชบอร์ด' }}</title>
+    @php
+        $routeTitles = [
+            'dashboard' => 'แดชบอร์ด',
+            'store' => 'ร้านค้า',
+            'inventory' => 'คลังเก็บของ',
+            'leaderboard' => 'กระดานผู้นำ',
+            'achievements' => 'ความสำเร็จ',
+            'classrooms' => 'ห้องเรียน',
+            'classroom.show' => 'หน้าหลัก',
+            'classroom.stream' => 'กระดานสนทนา',
+            'classroom.settings' => 'ตั้งค่าห้องเรียน',
+            'classroom.work' => 'งานในชั้นเรียน',
+            'classroom.roster' => 'สมาชิก',
+            'classroom.gradebook' => 'สมุดเกรด',
+            'assignment.create' => 'สร้างงานใหม่',
+            'material.create' => 'สร้างสื่อการสอน',
+            'assignment.show' => 'รายละเอียดงาน',
+            'material.show' => 'สื่อการสอน',
+            'assignment.grade' => 'ตรวจงาน',
+            'calendar' => 'ปฏิทิน',
+            'to-review' => 'รอตรวจ',
+            'profile' => 'โปรไฟล์',
+            'settings' => 'ตั้งค่า',
+            'admin.dashboard' => 'จัดการระบบ',
+            'admin.users' => 'จัดการผู้ใช้',
+            'admin.classrooms' => 'จัดการห้องเรียน',
+            'admin.store' => 'จัดการร้านค้า',
+            'admin.achievements' => 'จัดการความสำเร็จ',
+            'admin.reports' => 'รายงานปัญหา',
+            'admin.theme-categories' => 'หมวดหมู่ธีม',
+        ];
+        $pageTitle = $title ?? ($routeTitles[Route::currentRouteName()] ?? 'แดชบอร์ด');
+    @endphp
+    <title>{{ $pageTitle }} | LiteLearning</title>
 
     <!-- Fonts (preconnect + preload for instant rendering) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -113,16 +146,17 @@
                                 </a>
                             @endif
 
+                            <a href="{{ route('calendar') }}" wire:navigate
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isCalendarActive) }}">
+                                <x-icon name="calendar-days{{ $isCalendarActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
+                                ปฏิทิน
+                            </a>
+
                             @if(auth()->user()->isStudent())
                                 <a href="{{ route('classrooms') }}" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isClassroomsActive) }}">
                                     <x-icon name="academic-cap{{ $isClassroomsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                     ห้องเรียน
-                                </a>
-                                <a href="{{ route('calendar') }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isCalendarActive) }}">
-                                    <x-icon name="calendar-days{{ $isCalendarActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                    ปฏิทิน
                                 </a>
                                 <a href="{{ route('achievements') }}" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isAchievementsActive) }}">
@@ -326,7 +360,7 @@
                             @hasSection('breadcrumb')
                                 @yield('breadcrumb')
                             @else
-                                @yield('page-title', 'แดชบอร์ด')
+                                @yield('page-title', $pageTitle)
                             @endif
                         </h1>
                     </div>

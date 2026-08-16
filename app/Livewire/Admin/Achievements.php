@@ -26,7 +26,7 @@ class Achievements extends Component
         'code' => '',
         'name' => '',
         'description' => '',
-        'badge_image' => 'images/achievements/Achievements_Novice.svg',
+        'badge_image' => 'images/achievements/Achievements_Novice.png',
         'coin_reward' => 50,
         'xp_reward' => 100,
         'is_active' => true,
@@ -41,7 +41,7 @@ class Achievements extends Component
     {
         $this->editingId = null;
         $this->badgeImageUpload = null;
-        $this->form = ['code' => '', 'name' => '', 'description' => '', 'badge_image' => 'images/achievements/Achievements_Novice.svg', 'coin_reward' => 50, 'xp_reward' => 100, 'is_active' => true];
+        $this->form = ['code' => '', 'name' => '', 'description' => '', 'badge_image' => 'images/achievements/Achievements_Novice.png', 'coin_reward' => 50, 'xp_reward' => 100, 'is_active' => true];
         $this->showModal = true;
     }
 
@@ -52,7 +52,7 @@ class Achievements extends Component
             'code' => $achievement->code,
             'name' => $achievement->name,
             'description' => $achievement->description,
-            'badge_image' => $achievement->badge_image ?? 'images/achievements/Achievements_Novice.svg',
+            'badge_image' => $achievement->badge_image ?? 'images/achievements/Achievements_Novice.png',
             'coin_reward' => $achievement->coin_reward,
             'xp_reward' => $achievement->xp_reward,
             'is_active' => $achievement->is_active,
@@ -138,7 +138,7 @@ class Achievements extends Component
             'form.coin_reward' => 'required|integer|min:0',
             'form.xp_reward' => 'required|integer|min:0',
             'form.is_active' => 'boolean',
-            'badgeImageUpload' => 'nullable|file|mimes:png,svg|max:2048',
+            'badgeImageUpload' => 'nullable|file|mimes:png,svg,webp|max:2048',
         ];
     }
 }

@@ -92,7 +92,7 @@ Route::middleware('auth')->group(function () {
 
     // Calendar & To-Review
     Route::view('/calendar', 'pages.calendar')->name('calendar');
-    Route::get('/to-review', \App\Livewire\ToReview::class)->name('to-review');
+    Route::get('/to-review', \App\Livewire\ToReview::class)->middleware('role:teacher')->name('to-review');
 
     // Profile & Settings
     Route::get('/profile/{user?}', \App\Livewire\Profile::class)->name('profile');

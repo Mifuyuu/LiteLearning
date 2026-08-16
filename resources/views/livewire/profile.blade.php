@@ -175,7 +175,7 @@
                         <article class="group rounded-[12px] border p-4 text-center transition {{ $unlocked ? 'border-[rgba(37,99,235,0.4)] bg-[var(--ll-blue-hover)]' : 'border-[#dedee5] bg-[rgba(104,107,130,0.04)] opacity-70 grayscale' }}">
                             <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full {{ $unlocked ? 'bg-white' : 'bg-slate-100' }}">
                                 @if($achievement->badge_image)
-                                    <img src="{{ asset($achievement->badge_image) }}" alt="{{ $achievement->name }}"
+                                    <img src="{{ asset($achievement->badge_image).'?v='.@filemtime(public_path($achievement->badge_image)) }}" alt="{{ $achievement->name }}"
                                         class="h-12 w-12 object-contain">
                                 @else
                                     <x-icon name="medal" class="h-6 w-6 {{ $unlocked ? 'text-[#2563eb]' : 'text-slate-400' }}" />

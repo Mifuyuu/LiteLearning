@@ -94,7 +94,7 @@
                                     <input type="file" @change="initCropper($event, 'avatar')" class="hidden" accept="image/*">
                                 </label>
                                 @if(auth()->user()->avatar)
-                                    <button wire:click="resetAvatar" wire:confirm="แน่ใจหรือว่าต้องการรีเซ็ตรูปโปรไฟล์?"
+                                    <button wire:click="confirmReset('avatar')"
                                         class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50">
                                         <x-icon name="arrow-uturn-left" class="h-4 w-4" />
                                         {{ 'รีเซ็ต' }}
@@ -126,7 +126,7 @@
                                     <input type="file" @change="initCropper($event, 'cover')" class="hidden" accept="image/*">
                                 </label>
                                 @if(auth()->user()->cover_image)
-                                    <button wire:click="resetCoverImage" wire:confirm="แน่ใจหรือว่าต้องการรีเซ็ตรูปปก?"
+                                    <button wire:click="confirmReset('cover')"
                                         class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50">
                                         <x-icon name="arrow-uturn-left" class="h-4 w-4" />
                                         {{ 'รีเซ็ต' }}
@@ -288,4 +288,32 @@
             </div>
         </div>
     </template>
+
+    <div x-data x-show="$wire.pendingReset" x-cloak
+        class="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4"
+        @click.self="$wire.set('pendingReset', null)">
+        <div x-show="$wire.pendingReset" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="w-full max-w-md rounded-[12px] border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.08)_0px_8px_32px]">
+            @if($pendingReset === 'avatar')
+                <h4 class="text-lg font-black text-[#101114]">{{ 'รีเซ็ตรูปโปรไฟล์' }}</h4>
+                <p class="mt-2 text-sm text-[#686b82]">{{ 'คุณแน่ใจหรือว่าต้องการรีเซ็ตรูปโปรไฟล์กลับเป็นค่าเริ่มต้น?' }}</p>
+            @elseif($pendingReset === 'cover')
+                <h4 class="text-lg font-black text-[#101114]">{{ 'รีเซ็ตรูปปก' }}</h4>
+                <p class="mt-2 text-sm text-[#686b82]">{{ 'คุณแน่ใจหรือว่าต้องการรีเซ็ตรูปปกกลับเป็นค่าเริ่มต้น?' }}</p>
+            @endif
+            <div class="mt-5 flex justify-end gap-2">
+                <button type="button" @click="$wire.set('pendingReset', null)"
+                    class="rounded-[10px] border border-[#dedee5] px-4 py-2.5 text-sm font-bold text-[#686b82] transition hover:bg-[var(--ll-blue-faint)]">
+                    {{ 'ยกเลิก' }}
+                </button>
+                <button type="button" wire:click="doReset"
+                    class="rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                    {{ 'รีเซ็ต' }}
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

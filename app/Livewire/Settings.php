@@ -25,6 +25,8 @@ class Settings extends Component
 
     public $cover_image = null;
 
+    public ?string $pendingReset = null;
+
     public function mount(): void
     {
         /** @var User $user */
@@ -95,6 +97,21 @@ class Settings extends Component
         }
         $user->update(['cover_image' => null]);
         $this->dispatch('notify', message: __('messages.profile.cover_reset'));
+    }
+
+    public function confirmReset(string $type): void
+    {
+        $this->pendingReset = $type;
+    }
+
+    public function doReset(): void
+    {
+        if ($this->pendingReset === 'avatar') {
+            $this->resetAvatar();
+        } elseif ($this->pendingReset === 'cover') {
+            $this->resetCoverImage();
+        }
+        $this->pendingReset = null;
     }
 
     protected function storeBase64Image(string $base64Data, string $folder, string $field): void
