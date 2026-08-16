@@ -117,8 +117,6 @@
         <main class="flex-1">
             <!-- Hero Section (Centered with Background Image & Stats) -->
             <section class="relative min-h-[calc(100vh-5rem)] flex flex-col justify-between z-10 pt-28 md:pt-24 pb-6 overflow-hidden">
-                <!-- Overflowing background image positioned behind the hero -->
-                <div class="absolute left-0 w-full h-full z-0 pointer-events-none" style="background-image: linear-gradient(to bottom, rgba(23, 37, 84, 0) 60%, #172554 100%), url('/images/landing.png'); background-repeat: no-repeat; background-position: top center; background-size: 100% auto;"></div>
 
                 <!-- Content Container -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center observer-target relative z-10 w-full flex-1 flex flex-col justify-between">
@@ -149,22 +147,22 @@
                     </div>
 
                     <!-- Stats Grid (Aligned at the bottom) -->
-                    <div class="mt-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-sm py-8 border-t border-white/10">
+                    <div class="mt-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-sm py-8 border-t border-[#dedee5]">
                         <div class="px-4">
-                            <p id="stat-submissions" class="text-3xl font-extrabold text-[#93c5fd]" style="font-family: 'Google Sans', sans-serif;">10k+</p>
-                            <p class="text-[#93c5fd]/80 font-medium mt-1">งานที่ถูกส่ง</p>
+                            <p id="stat-submissions" class="text-3xl font-extrabold text-[#2563eb]" style="font-family: 'Google Sans', sans-serif;">10k+</p>
+                            <p class="text-[#686b82] font-medium mt-1">งานที่ถูกส่ง</p>
                         </div>
-                        <div class="px-4 border-l border-white/10">
-                            <p id="stat-classrooms" class="text-3xl font-extrabold text-[#93c5fd]" style="font-family: 'Google Sans', sans-serif;">500+</p>
-                            <p class="text-[#93c5fd]/80 font-medium mt-1">ห้องเรียนที่แอคทีฟ</p>
+                        <div class="px-4 border-l border-[#dedee5]">
+                            <p id="stat-classrooms" class="text-3xl font-extrabold text-[#2563eb]" style="font-family: 'Google Sans', sans-serif;">500+</p>
+                            <p class="text-[#686b82] font-medium mt-1">ห้องเรียนที่แอคทีฟ</p>
                         </div>
-                        <div class="px-4 hidden md:block border-l border-white/10">
-                            <p id="stat-satisfaction" class="text-3xl font-extrabold text-[#93c5fd]" style="font-family: 'Google Sans', sans-serif;">4.9/5</p>
-                            <p class="text-[#93c5fd]/80 font-medium mt-1">คะแนนความพอใจ</p>
+                        <div class="px-4 hidden md:block border-l border-[#dedee5]">
+                            <p id="stat-satisfaction" class="text-3xl font-extrabold text-[#2563eb]" style="font-family: 'Google Sans', sans-serif;">4.9/5</p>
+                            <p class="text-[#686b82] font-medium mt-1">คะแนนความพอใจ</p>
                         </div>
-                        <div class="px-4 hidden md:block border-l border-white/10">
-                            <p id="stat-uptime" class="text-3xl font-extrabold text-[#93c5fd]" style="font-family: 'Google Sans', sans-serif;">99.9%</p>
-                            <p class="text-[#93c5fd]/80 font-medium mt-1">Uptime สูงสุด</p>
+                        <div class="px-4 hidden md:block border-l border-[#dedee5]">
+                            <p id="stat-uptime" class="text-3xl font-extrabold text-[#2563eb]" style="font-family: 'Google Sans', sans-serif;">99.9%</p>
+                            <p class="text-[#686b82] font-medium mt-1">Uptime สูงสุด</p>
                         </div>
                     </div>
                 </div>

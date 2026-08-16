@@ -18,7 +18,7 @@ class GamificationFeaturesSeeder extends Seeder
             'first_classroom_joined',
             'first_assignment_turned_in', 'consistent_submitter',
             'perfect_score', 'early_bird', 'social_butterfly', 'on_a_roll',
-            'grade_seeker', 'multi_class', 'chatterbox', 'level_up',
+            'multi_class', 'chatterbox', 'level_up',
         ])->delete();
 
         // 1. Initial Store Items
@@ -48,18 +48,17 @@ class GamificationFeaturesSeeder extends Seeder
 
         $achievements = [
             // Synced with GamificationService
-            ['code' => 'first_classroom_joined',    'name' => 'ก้าวแรกในห้องเรียน',   'description' => 'เข้าร่วมห้องเรียนครั้งแรก',                    'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 15,  'xp_reward' => 50,  'is_active' => true],
-            ['code' => 'first_assignment_turned_in', 'name' => 'ส่งงานครั้งแรก',        'description' => 'ส่งงานครั้งแรกเป็นที่เรียบร้อย',               'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 10,  'xp_reward' => 50,  'is_active' => true],
-            ['code' => 'consistent_submitter',      'name' => 'ขยันส่งงาน',             'description' => 'ส่งงานครบทุกชิ้นในห้องเรียน',                  'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 10,  'xp_reward' => 100, 'is_active' => true],
+            ['code' => 'first_classroom_joined',    'name' => 'ก้าวแรกในห้องเรียน',   'description' => 'เข้าร่วมห้องเรียนครั้งแรก',                    'badge_image' => 'images/achievements/Achievements_Novice.svg', 'coin_reward' => 15,  'xp_reward' => 50,  'is_active' => true],
+            ['code' => 'first_assignment_turned_in', 'name' => 'ส่งงานครั้งแรก',        'description' => 'ส่งงานครั้งแรกเป็นที่เรียบร้อย',               'badge_image' => 'images/achievements/Achievements_Correctly.svg', 'coin_reward' => 10,  'xp_reward' => 50,  'is_active' => true],
+            ['code' => 'consistent_submitter',      'name' => 'ขยันส่งงาน',             'description' => 'ส่งงานครบทุกชิ้นในห้องเรียน',                  'badge_image' => 'images/achievements/Achievements_Hardworker.svg', 'coin_reward' => 10,  'xp_reward' => 100, 'is_active' => true],
             // Future achievements
-            ['code' => 'perfect_score',             'name' => 'Perfectionist',          'description' => 'ได้คะแนนเต็มในงานมอบหมาย',                    'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 200, 'xp_reward' => 500, 'is_active' => true],
-            ['code' => 'early_bird',                'name' => 'Early Bird',             'description' => 'ส่งงานก่อนกำหนดอย่างน้อย 1 วัน',               'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 150, 'xp_reward' => 300, 'is_active' => true],
-            ['code' => 'social_butterfly',          'name' => 'Social Butterfly',       'description' => 'แสดงความคิดเห็นในโพสต์หรืองาน',                'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 50,  'xp_reward' => 100, 'is_active' => true],
-            ['code' => 'on_a_roll',                 'name' => 'On a Roll',              'description' => 'ส่งงานสำเร็จ 5 ชิ้นติดต่อกัน',                 'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 150, 'xp_reward' => 350, 'is_active' => true],
-            ['code' => 'grade_seeker',              'name' => 'Grade Seeker',           'description' => 'ได้รับการตรวจงาน 5 ชิ้น',                      'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 100, 'xp_reward' => 250, 'is_active' => true],
-            ['code' => 'multi_class',               'name' => 'Multi-Class',            'description' => 'เข้าร่วมห้องเรียน 3 ห้องขึ้นไป',               'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 100, 'xp_reward' => 200, 'is_active' => true],
-            ['code' => 'chatterbox',                'name' => 'Chatterbox',             'description' => 'แสดงความคิดเห็น 5 ครั้ง',                      'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 75,  'xp_reward' => 150, 'is_active' => true],
-            ['code' => 'level_up',                  'name' => 'Level Up!',              'description' => 'ไปถึง Level 5',                                 'badge_image' => 'images/achievements/achievements-img-01.svg', 'coin_reward' => 200, 'xp_reward' => 400, 'is_active' => true],
+            ['code' => 'perfect_score',             'name' => 'Perfectionist',          'description' => 'ได้คะแนนเต็มในงานมอบหมาย',                    'badge_image' => 'images/achievements/Achievements_Perfectionist.svg', 'coin_reward' => 200, 'xp_reward' => 500, 'is_active' => true],
+            ['code' => 'early_bird',                'name' => 'Early Bird',             'description' => 'ส่งงานก่อนกำหนดอย่างน้อย 1 วัน',               'badge_image' => 'images/achievements/Achievements_QuickSubmiter.svg', 'coin_reward' => 150, 'xp_reward' => 300, 'is_active' => true],
+            ['code' => 'social_butterfly',          'name' => 'Social Butterfly',       'description' => 'แสดงความคิดเห็นในโพสต์หรืองาน',                'badge_image' => 'images/achievements/Achievements_Extrovert.svg', 'coin_reward' => 50,  'xp_reward' => 100, 'is_active' => true],
+            ['code' => 'on_a_roll',                 'name' => 'On a Roll',              'description' => 'ส่งงานสำเร็จ 5 ชิ้นติดต่อกัน',                 'badge_image' => 'images/achievements/Achievements_CreativeMan.svg', 'coin_reward' => 150, 'xp_reward' => 350, 'is_active' => true],
+            ['code' => 'multi_class',               'name' => 'Multi-Class',            'description' => 'เข้าร่วมห้องเรียน 3 ห้องขึ้นไป',               'badge_image' => 'images/achievements/Achievements_Learner.svg', 'coin_reward' => 100, 'xp_reward' => 200, 'is_active' => true],
+            ['code' => 'chatterbox',                'name' => 'Chatterbox',             'description' => 'แสดงความคิดเห็น 5 ครั้ง',                      'badge_image' => 'images/achievements/Achievements_InTheParty.svg', 'coin_reward' => 75,  'xp_reward' => 150, 'is_active' => true],
+            ['code' => 'level_up',                  'name' => 'Level Up!',              'description' => 'ไปถึง Level 5',                                 'badge_image' => 'images/achievements/Achievements_LevelUp.svg', 'coin_reward' => 200, 'xp_reward' => 400, 'is_active' => true],
         ];
 
         foreach ($achievements as $ach) {

@@ -199,14 +199,6 @@ class GamificationService
         if ($assignment instanceof Assignment && $assignment->max_score > 0 && $submission->score === $assignment->max_score) {
             $this->unlockAchievement($submission->user, 'perfect_score');
         }
-
-        $gradedCount = $submission->user->submissions()
-            ->where('status', 'graded')
-            ->count();
-
-        if ($gradedCount >= 5) {
-            $this->unlockAchievement($submission->user, 'grade_seeker');
-        }
     }
 
     private function wasSubmittedAtLeastOneDayEarly(Submission $submission): bool

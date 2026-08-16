@@ -177,7 +177,6 @@ class GamificationTest extends TestCase
             'early_bird',
             'social_butterfly',
             'on_a_roll',
-            'grade_seeker',
             'multi_class',
             'chatterbox',
             'level_up',
@@ -286,7 +285,6 @@ class GamificationTest extends TestCase
     public function test_grading_unlocks_score_achievements(): void
     {
         $this->createAchievement('perfect_score');
-        $this->createAchievement('grade_seeker');
 
         /** @var Classroom $classroom */
         $classroom = Classroom::factory()->create();
@@ -311,7 +309,6 @@ class GamificationTest extends TestCase
 
         $this->assertStudentHasAchievements([
             'perfect_score',
-            'grade_seeker',
         ]);
     }
 

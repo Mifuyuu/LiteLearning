@@ -42,7 +42,7 @@
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
                                     <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0 overflow-hidden relative">
-                                        <img src="{{ asset($achievement->badge_image ?: 'images/achievements/achievements-img-01.svg') }}"
+                                        <img src="{{ asset($achievement->badge_image ?: 'images/achievements/Achievements_Novice.svg') }}"
                                             alt="{{ $achievement->name }}"
                                             class="w-8 h-8 object-contain">
                                     </div>
