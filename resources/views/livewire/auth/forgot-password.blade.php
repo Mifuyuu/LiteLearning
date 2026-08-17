@@ -1,12 +1,11 @@
 <div class="">
-    <div class="rounded-2xl border border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <div class="rounded-2xl border-3 border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
 
         {{-- Header --}}
-        <div class="flex items-center space-x-3 mb-2">
-            <div class="w-10 h-10 bg-[var(--ll-blue)] rounded-xl flex items-center justify-center shrink-0 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                <x-icon name="lock" class="h-5 w-5 text-white" />
-            </div>
-            <h2 class="text-2xl font-bold text-[#101114]" style="letter-spacing: -0.5px;">
+        <div class="mb-2">
+            <img src="{{ asset('images/forgot_password.svg') }}" alt=""
+                class="h-28 w-28 mx-auto mb-4">
+            <h2 class="text-2xl font-bold text-[#101114] text-center" style="letter-spacing: -0.5px;">
                 @if($step === 1) ลืมรหัสผ่าน
                 @elseif($step === 2) ยืนยันรหัส OTP
                 @else ตั้งรหัสผ่านใหม่
@@ -25,10 +24,10 @@
             <form wire:submit.prevent="submitEmail" class="space-y-5">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">อีเมล</label>
-                    <input wire:model="email" type="email" autocomplete="email"
-                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    <input wire:model="email" type="email" autocomplete="email" x-on:focus="$wire.clearFieldError('email')"
+                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-500 @enderror"
                         placeholder="your@email.com">
-                    @error('email') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                    <p class="mt-1 text-sm text-red-500 min-h-5">@error('email') {{ $message }} @enderror</p> 
                 </div>
 
                 <button type="submit"
@@ -38,7 +37,7 @@
                 </button>
 
                 <p class="text-center">
-                    <a href="{{ route('login') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                    <a href="{{ route('login') }}" class="text-sm text-blue-600 hover:text-blue-700 hover:underline font-medium">
                         กลับไปหน้าเข้าสู่ระบบ
                     </a>
                 </p>
@@ -50,8 +49,8 @@
             <form wire:submit.prevent="verifyOtp" class="space-y-5">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">รหัส OTP</label>
-                    <input wire:model="otp" type="text" maxlength="6" inputmode="numeric" autocomplete="one-time-code"
-                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm text-center text-2xl tracking-[0.5em] focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    <input wire:model="otp" type="text" maxlength="6" inputmode="numeric" autocomplete="one-time-code" x-on:focus="$wire.clearFieldError('otp')"
+                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm text-center text-2xl tracking-[0.5em] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('otp') border-red-500 @enderror"
                         placeholder="000000">
                     @error('otp') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                 </div>
@@ -85,16 +84,16 @@
             <form wire:submit.prevent="resetPassword" class="space-y-5">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">รหัสผ่านใหม่</label>
-                    <input wire:model="password" type="password" autocomplete="new-password"
-                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    <input wire:model="password" type="password" autocomplete="new-password" x-on:focus="$wire.clearFieldError('password')"
+                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-500 @enderror"
                         placeholder="อย่างน้อย 8 ตัวอักษร">
                     @error('password') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">ยืนยันรหัสผ่านใหม่</label>
-                    <input wire:model="password_confirmation" type="password" autocomplete="new-password"
-                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    <input wire:model="password_confirmation" type="password" autocomplete="new-password" x-on:focus="$wire.clearFieldError('password_confirmation')"
+                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('password_confirmation') border-red-500 @enderror"
                         placeholder="ยืนยันรหัสผ่าน">
                     @error('password_confirmation') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                 </div>

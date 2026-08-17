@@ -55,6 +55,11 @@ class ForgotPassword extends Component
         };
     }
 
+    public function clearFieldError(string $field): void
+    {
+        $this->resetErrorBag($field);
+    }
+
     public function submitEmail(): void
     {
         $this->validate();
@@ -85,7 +90,7 @@ class ForgotPassword extends Component
             'email' => $this->email,
             'otp' => Hash::make($code),
             'user_data' => ['email' => $this->email],
-            'expires_at' => now()->addMinutes(10),
+            'expires_at' => now()->addMinutes(5),
         ]);
 
         (new AnonymousNotifiable)
@@ -126,12 +131,23 @@ class ForgotPassword extends Component
         RateLimiter::clear($throttleKey);
         $record->delete();
 
+        session()->put('pw_reset_expires_at', now()->addMinutes(5));
+
         $this->otp = '';
         $this->step = 3;
     }
 
     public function resetPassword(): void
     {
+        $expiresAt = session('pw_reset_expires_at');
+
+        if (! $expiresAt || $expiresAt->isPast()) {
+            session()->forget('pw_reset_expires_at');
+            $this->step = 1;
+            $this->addError('email', __('messages.auth.forgot_reset_expired'));
+            return;
+        }
+
         $this->validate();
 
         /** @var User $user */
@@ -146,6 +162,8 @@ class ForgotPassword extends Component
         $user->update([
             'password' => Hash::make($this->password),
         ]);
+
+        session()->forget('pw_reset_expires_at');
 
         Auth::login($user);
 

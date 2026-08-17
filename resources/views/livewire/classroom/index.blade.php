@@ -40,10 +40,9 @@
         <div data-classroom-empty-state data-empty-state-centered="true"
             class="flex min-h-0 flex-1 items-center justify-center">
             <div class="flex flex-col items-center gap-5 text-center">
-                <div data-empty-state-image-crop
-                    class="relative h-44 w-52 overflow-hidden sm:h-52 sm:w-64">
-                    <img src="{{ asset('images/empty.webp') }}" alt=""
-                        class="absolute left-0 top-0 h-auto w-[25rem] max-w-none -translate-x-[5.2rem] -translate-y-[3.5rem] select-none sm:w-[30rem] sm:-translate-x-[6.25rem] sm:-translate-y-[4.25rem]" />
+                <div data-empty-state-image-crop>
+                    <img src="{{ asset('images/empty.svg') }}" alt=""
+                        class="h-44 w-44 select-none object-contain" />
                 </div>
                 <p class="text-base font-medium text-[#686b82]">ยังไม่มีดวงดาวที่ค้นพบ...</p>
             </div>

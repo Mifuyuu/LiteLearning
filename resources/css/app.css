@@ -83,8 +83,35 @@ body {
     display: block;
     height: 100%;
     min-width: 0.35rem;
+    overflow: hidden;
     border-radius: inherit;
     background: linear-gradient(90deg, #2563eb, #3b82f6, #93c5fd);
+}
+
+.dashboard-liquid-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 25%, rgba(255, 255, 255, 0.45) 50%, transparent 75%);
+    transform: translateX(-100%);
+    animation: dashboard-liquid-sweep 2.5s ease-in-out infinite;
+}
+
+@keyframes dashboard-liquid-sweep {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    60%,
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-liquid-fill::after {
+        animation: none;
+    }
 }
 
 

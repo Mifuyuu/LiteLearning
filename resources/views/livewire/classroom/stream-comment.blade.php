@@ -50,27 +50,12 @@
     @endif
 
     <template x-teleport="body">
-        <div x-show="showDeleteCommentModal" x-cloak
-            class="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4"
-            @click.self="showDeleteCommentModal = false">
-            <div x-show="showDeleteCommentModal" x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
-                x-transition:leave-end="opacity-0 scale-95"
-                class="w-full max-w-md rounded-[12px] border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.08)_0px_8px_32px]">
-                <h4 class="text-lg font-black text-[#101114]">{{ 'ลบความคิดเห็น' }}</h4>
-                <p class="mt-2 text-sm text-[#686b82]">{{ 'คุณแน่ใจหรือว่าต้องการลบความคิดเห็นนี้? การดำเนินการนี้ไม่สามารถยกเลิกได้' }}</p>
-                <div class="mt-5 flex justify-end gap-2">
-                    <button type="button" @click="showDeleteCommentModal = false"
-                        class="rounded-[10px] border border-[#dedee5] px-4 py-2.5 text-sm font-bold text-[#686b82] transition hover:bg-[rgba(37,99,235,0.04)]">
-                        {{ 'ยกเลิก' }}
-                    </button>
-                    <button type="button" @click="$wire.deleteComment(deleteCommentId); showDeleteCommentModal = false"
-                        class="rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
-                        {{ 'ลบ' }}
-                    </button>
-                </div>
-            </div>
-        </div>
+        <x-confirm-modal show="showDeleteCommentModal" cancel="showDeleteCommentModal = false"
+            heading="ลบความคิดเห็น" message="คุณแน่ใจหรือว่าต้องการลบความคิดเห็นนี้? การดำเนินการนี้ไม่สามารถยกเลิกได้">
+            <button type="button" @click="$wire.deleteComment(deleteCommentId); showDeleteCommentModal = false"
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                {{ 'ลบ' }}
+            </button>
+        </x-confirm-modal>
     </template>
 </div>

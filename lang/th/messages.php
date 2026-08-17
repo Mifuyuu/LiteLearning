@@ -22,6 +22,7 @@ return [
     'auth.forgot_otp_wrong'         => 'รหัสไม่ถูกต้อง',
     'auth.forgot_account_disabled'  => 'บัญชีนี้ถูกปิดใช้งานแล้ว',
     'auth.forgot_password_reset'    => 'รีเซ็ตรหัสผ่านเรียบร้อยแล้ว',
+    'auth.forgot_reset_expired'     => 'เวลาสำหรับการตั้งรหัสผ่านใหม่หมดอายุแล้ว กรุณาขอรหัสยืนยันใหม่อีกครั้ง',
     'auth.otp_digits'               => 'รหัส OTP ต้องเป็น 6 หลัก',
     'auth.password_min'             => 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร',
     'auth.password_mismatch'        => 'รหัสผ่านไม่ตรงกัน',

@@ -79,7 +79,7 @@
                             <div class="relative shrink-0">
                                 <img src="{{ auth()->user()->avatar_url }}" alt="avatar"
                                     class="h-20 w-20 rounded-full object-cover border-2 border-gray-100">
-                                <div wire:loading wire:target="avatar"
+                                <div wire:loading.flex wire:target="avatar"
                                     class="absolute inset-0 flex items-center justify-center rounded-full bg-slate-950/40">
                                     <x-icon name="spinner" class="h-5 w-5 text-white animate-spin" />
                                 </div>
@@ -111,7 +111,7 @@
                             <div class="relative mb-3 h-32 w-full overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
                                 <img src="{{ auth()->user()->cover_image ? auth()->user()->cover_image_url : asset('images/default_profile_banner.webp').'?v='.filemtime(public_path('images/default_profile_banner.webp')) }}" alt="cover"
                                     class="h-full w-full object-cover">
-                                <div wire:loading wire:target="cover_image"
+                                <div wire:loading.flex wire:target="cover_image"
                                     class="absolute inset-0 flex items-center justify-center bg-slate-950/40">
                                     <x-icon name="spinner" class="h-5 w-5 text-white animate-spin" />
                                 </div>
@@ -289,31 +289,12 @@
         </div>
     </template>
 
-    <div x-data x-show="$wire.pendingReset" x-cloak
-        class="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4"
-        @click.self="$wire.set('pendingReset', null)">
-        <div x-show="$wire.pendingReset" x-transition:enter="transition ease-out duration-200"
-            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
-            x-transition:leave-end="opacity-0 scale-95"
-            class="w-full max-w-md rounded-[12px] border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.08)_0px_8px_32px]">
-            @if($pendingReset === 'avatar')
-                <h4 class="text-lg font-black text-[#101114]">{{ 'รีเซ็ตรูปโปรไฟล์' }}</h4>
-                <p class="mt-2 text-sm text-[#686b82]">{{ 'คุณแน่ใจหรือว่าต้องการรีเซ็ตรูปโปรไฟล์กลับเป็นค่าเริ่มต้น?' }}</p>
-            @elseif($pendingReset === 'cover')
-                <h4 class="text-lg font-black text-[#101114]">{{ 'รีเซ็ตรูปปก' }}</h4>
-                <p class="mt-2 text-sm text-[#686b82]">{{ 'คุณแน่ใจหรือว่าต้องการรีเซ็ตรูปปกกลับเป็นค่าเริ่มต้น?' }}</p>
-            @endif
-            <div class="mt-5 flex justify-end gap-2">
-                <button type="button" @click="$wire.set('pendingReset', null)"
-                    class="rounded-[10px] border border-[#dedee5] px-4 py-2.5 text-sm font-bold text-[#686b82] transition hover:bg-[var(--ll-blue-faint)]">
-                    {{ 'ยกเลิก' }}
-                </button>
-                <button type="button" wire:click="doReset"
-                    class="rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
-                    {{ 'รีเซ็ต' }}
-                </button>
-            </div>
-        </div>
-    </div>
+    <x-confirm-modal show="$wire.pendingReset" cancel="$wire.set('pendingReset', null)"
+        :heading="$pendingReset === 'cover' ? 'รีเซ็ตรูปปก' : 'รีเซ็ตรูปโปรไฟล์'"
+        :message="$pendingReset === 'cover' ? 'คุณแน่ใจหรือว่าต้องการรีเซ็ตรูปปกกลับเป็นค่าเริ่มต้น?' : 'คุณแน่ใจหรือว่าต้องการรีเซ็ตรูปโปรไฟล์กลับเป็นค่าเริ่มต้น?'">
+        <button type="button" wire:click="doReset"
+            class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+            {{ 'รีเซ็ต' }}
+        </button>
+    </x-confirm-modal>
 </div>

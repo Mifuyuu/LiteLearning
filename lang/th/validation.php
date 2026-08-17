@@ -20,8 +20,8 @@ return [
         'string' => ':attribute ต้องมีความยาว :size ตัวอักษร',
     ],
     'nullable' => ':attribute สามารถเว้นว่างได้',
-    'required' => 'กรุณากรอก :attribute',
-    'required_if' => 'กรุณากรอก :attribute',
+    'required' => 'กรุณากรอก:attribute',
+    'required_if' => 'กรุณากรอก:attribute',
     'string' => ':attribute ต้องเป็นข้อความ',
     'unique' => ':attribute นี้ถูกใช้งานแล้ว',
 

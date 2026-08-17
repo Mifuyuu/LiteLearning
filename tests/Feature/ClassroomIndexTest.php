@@ -23,7 +23,7 @@ class ClassroomIndexTest extends TestCase
             ->assertSee('data-empty-state-layout="remaining-content"', false)
             ->assertSee('data-empty-state-centered="true"', false)
             ->assertSee('data-empty-state-image-crop', false)
-            ->assertSee('/images/empty.webp', false)
+            ->assertSee('/images/empty.svg', false)
             ->assertSeeText('ยังไม่มีดวงดาวที่ค้นพบ...');
     }
 
@@ -39,7 +39,7 @@ class ClassroomIndexTest extends TestCase
             ->assertSee('data-empty-state-layout="remaining-content"', false)
             ->assertSee('data-empty-state-centered="true"', false)
             ->assertSee('data-empty-state-image-crop', false)
-            ->assertSee('/images/empty.webp', false)
+            ->assertSee('/images/empty.svg', false)
             ->assertSeeText('ยังไม่มีดวงดาวที่ค้นพบ...');
     }
 

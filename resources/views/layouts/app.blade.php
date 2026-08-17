@@ -313,20 +313,20 @@
                     </button>
 
                     <!-- Profile footer -->
-                    <div class="mt-1.5 flex w-full items-center justify-between rounded-[8px] border border-[#dedee5] bg-white p-1">
+                    <div class="mt-1.5 flex w-full items-center justify-between rounded-lg border border-[#dedee5] bg-white p-1">
                         <!-- Profile Link -->
                         <a href="{{ route('profile') }}" wire:navigate
                             class="flex flex-1 items-center space-x-2.5 bg-transparent p-1.5 transition-colors hover:bg-[rgba(59,130,246,0.08)] cursor-pointer rounded-[6px] min-w-0">
                             <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}"
                                 class="w-8 h-8 rounded-full object-cover shrink-0">
-                            <span class="text-sm font-medium text-[#101114] truncate max-w-[110px]">{{ auth()->user()->name }}</span>
+                            <span class="text-sm font-medium text-[#101114] truncate max-w-27.5">{{ auth()->user()->name }}</span>
                         </a>
 
                         <!-- Sign Out Button -->
                         <form method="POST" action="{{ route('logout') }}" class="shrink-0 flex items-center">
                             @csrf
                             <button type="submit"
-                                class="relative rounded-[6px] p-2 text-[#686b82] transition-colors hover:bg-red-50 hover:text-red-600 cursor-pointer shrink-0"
+                                class="relative rounded-md p-3 text-[#686b82] transition-colors hover:bg-red-50 hover:text-red-600 cursor-pointer shrink-0"
                                 title="ออกจากระบบ">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
                                     <path fill-rule="evenodd" d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6ZM5.78 8.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 0 0 0 1.06l3 3a.75.75 0 0 0 1.06-1.06l-1.72-1.72H15a.75.75 0 0 0 0-1.5H4.06l1.72-1.72a.75.75 0 0 0 0-1.06Z" clip-rule="evenodd" />
@@ -449,6 +449,7 @@
 
     @livewire('classroom.create')
     @livewire('report-bug')
+
 </body>
 
 </html>

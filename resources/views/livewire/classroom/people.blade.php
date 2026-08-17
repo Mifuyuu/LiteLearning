@@ -147,33 +147,23 @@
         </div>
     </section>
 
-    <div x-show="showKickModal" x-cloak class="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4" @click.self="showKickModal = false">
-        <div class="w-full max-w-md rounded-2xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-            <h3 class="text-lg font-bold text-[#101114]">{{ 'ยืนยันการลบ' }}</h3>
-            <p class="mt-2 text-sm leading-6 text-[#686b82]">
-                {{ 'ลบ' }} <span class="font-semibold text-[#101114]" x-text="kickName"></span>?
-            </p>
-
-            <div class="mt-5 flex justify-end gap-2">
-                <button type="button" @click="showKickModal = false"
-                    class="rounded-[12px] border border-[#dedee5] px-4 py-3 text-sm font-semibold text-[#686b82] transition hover:bg-[var(--ll-blue-faint)]">
-                    {{ 'ยกเลิก' }}
-                </button>
-                <button type="button"
-                    @click="
-                        if (kickType === 'co-teacher') {
-                            $wire.removeCoTeacher(kickId);
-                        } else if (kickType === 'all') {
-                            $wire.removeAllMembers();
-                        } else {
-                            $wire.removeMember(kickId);
-                        }
-                        showKickModal = false;
-                    "
-                    class="rounded-[12px] bg-rose-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-rose-700">
-                    {{ 'ลบ' }}
-                </button>
-            </div>
-        </div>
-    </div>
+    <x-confirm-modal show="showKickModal" cancel="showKickModal = false" heading="ยืนยันการลบ">
+        <x-slot:message>
+            {{ 'ลบ' }} <span class="font-semibold text-[#101114]" x-text="kickName"></span>?
+        </x-slot:message>
+        <button type="button"
+            @click="
+                if (kickType === 'co-teacher') {
+                    $wire.removeCoTeacher(kickId);
+                } else if (kickType === 'all') {
+                    $wire.removeAllMembers();
+                } else {
+                    $wire.removeMember(kickId);
+                }
+                showKickModal = false;
+            "
+            class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+            {{ 'ลบ' }}
+        </button>
+    </x-confirm-modal>
 </div>
