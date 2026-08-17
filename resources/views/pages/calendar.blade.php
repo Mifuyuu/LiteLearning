@@ -2,10 +2,18 @@
 @section('page-title', 'ปฏิทิน')
 @section('content')
     <div class="max-w-4xl mx-auto">
-        <div class="flex items-center gap-2 mb-6">
-            <x-icon name="calendar-days" class="h-6 w-6 text-[var(--ll-blue)]" />
-            <h2 class="text-2xl font-bold text-gray-900">{{ 'ปฏิทิน' }}</h2>
-        </div>
+        <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh_-_3rem)]">
+            <div class="relative p-6 lg:p-8">
+                <img src="{{ asset('images/mailbox.svg') }}" alt=""
+                    class="absolute right-4 top-4 hidden h-[calc(100%_-_2rem)] w-auto select-none object-contain sm:block lg:right-8" />
+
+                <div>
+                    <h1 class="text-3xl font-black tracking-tight text-[#101114] sm:text-4xl">{{ 'ปฏิทิน' }}</h1>
+                    <p class="mt-2 max-w-2xl text-md leading-6 text-[#686b82]">
+                        {{ 'ติดตามภารกิจที่ใกล้ถึงกำหนดส่ง' }}
+                    </p>
+                </div>
+            </div>
 
         @php
             $classrooms = auth()->user()->allClassrooms();
@@ -22,13 +30,13 @@
         @endphp
 
         @if($upcoming->isEmpty())
-            <div class="border border-[#dedee5] rounded-xl p-16 text-center bg-white">
+            <div class="border-t border-[#dedee5] p-16 text-center">
                 <img src="{{ asset('images/spacesuit_sleep.webp') }}" alt=""
                     class="w-44 h-auto sm:w-52 mx-auto mb-5 select-none" />
                 <p class="text-base font-medium text-[#686b82]">{{ 'ไม่มีภารกิจที่กำลังจะหมดอายุ!' }}</p>
             </div>
         @else
-            <div class="space-y-6">
+            <div class="border-t border-[#dedee5] space-y-6 p-6 lg:p-8">
                 @foreach($upcoming->groupBy(fn($a) => $a->due_date->format('Y-m-d')) as $date => $assignments)
                     <div>
                         <div class="flex items-center gap-3 mb-3">
@@ -79,5 +87,6 @@
                 @endforeach
             </div>
         @endif
+        </div>
     </div>
 @endsection

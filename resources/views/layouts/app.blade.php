@@ -404,11 +404,6 @@
         }" @notify.window="
             addToast($event.detail.message, $event.detail.type || 'success');
         " x-init="
-            const newAchievements = {{ json_encode(session()->pull('new_achievements', []), JSON_UNESCAPED_UNICODE) }};
-            if (newAchievements.length > 0) {
-                const badgeImage = newAchievements.length === 1 ? (newAchievements[0].badge_image || '') : '';
-                addToast('🎉 ' + newAchievements.map(a => a.name).join(', '), 'success', badgeImage);
-            }
             @if(session()->has('message'))
                 addToast('{{ session('message') }}', '{{ session('type', 'success') }}');
             @endif
@@ -441,6 +436,28 @@
         </template>
         </div>
     </div>
+
+    <script>
+        // achievementsModal() must stay here: achievement-detail-modal.blade.php renders inside a
+        // #[Lazy] Livewire page whose inline <script> tags are NOT executed on hydrate.
+        function achievementsModal() {
+            return {
+                selected: null,
+                visible: false,
+                open(achievement) {
+                    this.selected = achievement;
+                    this.visible = true;
+                },
+                close() {
+                    this.visible = false;
+                    // ponytail: 150ms matches the card leave transition so the badge image stays during the fade-out
+                    setTimeout(() => { this.selected = null; }, 150);
+                },
+            }
+        }
+    </script>
+
+    <x-achievement-celebration />
 
     @livewireScripts
 

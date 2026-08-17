@@ -1,5 +1,5 @@
 <div class="">
-    <div class="rounded-2xl border border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <div class="rounded-2xl border-3 border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="mb-2">
             <h2 class="text-2xl font-bold text-[#101114] text-center" style="letter-spacing: -0.5px;">เข้าสู่ระบบ</h2>
         </div>
@@ -15,7 +15,7 @@
                         <x-icon name="envelope" class="h-4 w-4 text-[#9497a9]" />
                     </div>
                     <input wire:model="email" type="email" id="email"
-                        class="block w-full pl-10 pr-3 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-(--ll-blue) focus:border-(--ll-blue) transition-colors @error('email') border-red-500 @enderror"
+                        class="block w-full pl-10 pr-3 py-2.5 border border-[#dedee5] rounded-lg text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-(--ll-blue) focus:border-(--ll-blue) transition-colors @error('email') border-red-500 @enderror"
                         placeholder="you@example.com">
                 </div>
                 @error('email') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
@@ -29,7 +29,7 @@
                         <x-icon name="lock" class="h-4 w-4 text-[#9497a9]" />
                     </div>
                     <input wire:model="password" type="password" id="password"
-                        class="block w-full pl-10 pr-3 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-(--ll-blue) focus:border-(--ll-blue) transition-colors @error('password') border-red-500 @enderror"
+                        class="block w-full pl-10 pr-3 py-2.5 border border-[#dedee5] rounded-lg text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-(--ll-blue) focus:border-(--ll-blue) transition-colors @error('password') border-red-500 @enderror"
                         placeholder="••••••••">
                 </div>
                 @error('password') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror

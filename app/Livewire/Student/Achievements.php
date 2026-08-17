@@ -21,7 +21,7 @@ class Achievements extends Component
 
     private Collection $allAchievements;
 
-    private array $unlockedIds = [];
+    private Collection $unlockedAchievements;
 
     public function mount(): void
     {
@@ -31,20 +31,19 @@ class Achievements extends Component
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
-        $this->unlockedIds = $user->achievements()
-            ->pluck('achievements.id')
-            ->all();
+        $this->unlockedAchievements = $user->achievements()
+            ->get()
+            ->keyBy('id');
     }
 
     public function render()
     {
-        $unlockedCount = count($this->unlockedIds);
+        $unlockedCount = $this->unlockedAchievements->count();
         $totalCount = $this->allAchievements->count();
 
         return view('livewire.student.achievements', [
             'allAchievements' => $this->allAchievements,
-            'unlockedAchievementIds' => $this->unlockedIds,
-            'unlockedLookup' => array_flip($this->unlockedIds),
+            'unlockedLookup' => $this->unlockedAchievements,
             'unlockedCount' => $unlockedCount,
             'totalCount' => $totalCount,
             'completionPercent' => $totalCount > 0

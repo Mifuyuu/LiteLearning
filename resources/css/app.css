@@ -114,6 +114,88 @@ body {
     }
 }
 
+/* ─── Achievement celebration modal ──────────────────────────────────── */
+
+.achievement-burst {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 520px;
+    height: 520px;
+    translate: -50% -50%;
+    background: repeating-conic-gradient(
+        rgba(250, 204, 21, 0.22) 0deg 6deg,
+        transparent 6deg 18deg
+    );
+    -webkit-mask-image: radial-gradient(circle, black 30%, transparent 70%);
+    mask-image: radial-gradient(circle, black 30%, transparent 70%);
+    animation: achievement-spin 16s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes achievement-spin {
+    to {
+        rotate: 360deg;
+    }
+}
+
+/* .achievement-badge-shine {
+    background: linear-gradient(100deg, transparent 25%, rgba(255, 255, 255, 0.55) 50%, transparent 75%);
+    transform: translateX(-100%);
+    animation: dashboard-liquid-sweep 3.5s ease-in-out infinite;
+    -webkit-mask-image: var(--badge-mask);
+    mask-image: var(--badge-mask);
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    pointer-events: none;
+} */
+.achievement-badge-shine {
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.12) 38%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0.12) 62%,
+    transparent 80%
+  );
+  mix-blend-mode: soft-light;
+  filter: blur(1.5px);
+  transform: translateX(-130%) skewX(-12deg);
+  animation: badge-liquid-sweep 5s ease-in infinite;
+  -webkit-mask-image: var(--badge-mask);
+  mask-image: var(--badge-mask);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  pointer-events: none;
+}
+
+@keyframes badge-liquid-sweep {
+  0% {
+    transform: translateX(-130%) skewX(-12deg);
+  }
+  30% {
+    transform: translateX(130%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(130%) skewX(-12deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .achievement-burst,
+    .achievement-badge-shine {
+        animation: none;
+    }
+}
+
 
 /* ─── Alpine.js cloak ────────────────────────────────────────────────── */
 [x-cloak] {
