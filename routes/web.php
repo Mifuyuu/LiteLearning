@@ -91,7 +91,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/c/{classroom}/m/{material}', MaterialShow::class)->name('material.show');
 
     // Calendar & To-Review
-    Route::get('/calendar', \App\Livewire\Calendar::class)->name('calendar');
+    Route::get('/calendar', \App\Livewire\Calendar::class)->middleware('role:student')->name('calendar');
     Route::get('/to-review', \App\Livewire\ToReview::class)->middleware('role:teacher')->name('to-review');
 
     // Profile & Settings

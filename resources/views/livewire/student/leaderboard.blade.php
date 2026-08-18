@@ -21,93 +21,42 @@
             <div class="border-t border-[#dedee5] p-6 lg:p-8">
 
                 {{-- Podium layout: 2nd | 1st | 3rd --}}
+                @php
+                    $podiumOrder = [1, 0, 2];
+                    $podiumConfig = [
+                        0 => ['wrap' => 'w-1/3 max-w-[180px]', 'avatar' => 'w-16 h-16 sm:w-20 sm:h-20', 'ring' => 'ring-amber-300 shadow-md', 'name' => 'text-sm sm:text-base font-bold text-[#101114]', 'height' => 'h-[145px]', 'bg' => 'bg-[var(--ll-blue)]', 'levelText' => 'text-white/70', 'shadowInner' => true, 'trophy' => 'Trophy_Golden.png', 'trophySize' => 'h-20 w-20', 'delay' => '0.4s'],
+                        1 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.4)] shadow', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[100px]', 'bg' => 'bg-[rgba(37,99,235,0.24)]', 'levelText' => 'text-[var(--ll-blue)]/70', 'shadowInner' => true, 'trophy' => 'Trophy_Silver.png', 'trophySize' => 'h-16 w-16', 'delay' => '0.2s'],
+                        2 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.2)] shadow', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[72px]', 'bg' => 'bg-[rgba(37,99,235,0.12)]', 'levelText' => 'text-[var(--ll-blue)]/70', 'shadowInner' => false, 'trophy' => 'Trophy_Bronze.png', 'trophySize' => 'h-14 w-14', 'delay' => null],
+                    ];
+                @endphp
                 <div class="flex items-end justify-center gap-3">
-
-                    {{-- 2nd Place --}}
-                    @if($topStudents->has(1))
-                        <a href="{{ route('profile', $topStudents[1]->user) }}" wire:navigate class="flex flex-col items-center w-1/3 max-w-[160px]">
+                    @foreach($podiumOrder as $idx)
+                        @continue(!$topStudents->has($idx))
+                        @php $c = $podiumConfig[$idx]; $student = $topStudents[$idx]; @endphp
+                        <a href="{{ route('profile', $student->user) }}" wire:navigate class="flex flex-col items-center {{ $c['wrap'] }}">
                             <div class="relative inline-block mb-2">
-                                <img src="{{ $topStudents[1]->user->avatar_url }}"
-                                    class="w-14 h-14 rounded-full object-cover ring-2 ring-[rgba(37,99,235,0.4)] shadow bg-white">
-                                @if($topStudents[1]->user->active_avatar_frame && !str_starts_with($topStudents[1]->user->active_avatar_frame, 'border'))
-                                    <img src="{{ asset($topStudents[1]->user->active_avatar_frame) }}"
+                                <img src="{{ $student->user->avatar_url }}"
+                                    class="{{ $c['avatar'] }} rounded-full object-cover ring-2 {{ $c['ring'] }} bg-white">
+                                @if($student->user->active_avatar_frame && !str_starts_with($student->user->active_avatar_frame, 'border'))
+                                    <img src="{{ asset($student->user->active_avatar_frame) }}"
                                          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] max-w-none pointer-events-none drop-shadow-sm">
-                                @elseif($topStudents[1]->user->active_avatar_frame)
-                                    <div class="absolute inset-0 rounded-full {{ $topStudents[1]->user->active_avatar_frame }} pointer-events-none"></div>
+                                @elseif($student->user->active_avatar_frame)
+                                    <div class="absolute inset-0 rounded-full {{ $student->user->active_avatar_frame }} pointer-events-none"></div>
                                 @endif
                             </div>
-                            <p
-                                class="text-sm font-semibold text-[#686b82] truncate w-full text-center mb-1 {{ $topStudents[1]->user->active_name_color ?? '' }}">
-                                {{ $topStudents[1]->user->name }}</p>
+                            <p class="{{ $c['name'] }} truncate w-full text-center mb-1 {{ $student->user->active_name_color ?? '' }}">
+                                {{ $student->user->name }}</p>
                             <div class="flex items-center gap-1 text-xs text-[#9497a9] mb-3">
-                                <span class="font-bold text-[#686b82]">{{ number_format($topStudents[1]->xp) }}</span>
+                                <span class="font-bold text-[#686b82]">{{ number_format($student->xp) }}</span>
                                 <x-icon name="bolt" class="text-[var(--ll-blue)] h-4 w-4 shrink-0" />
                             </div>
                             {{-- Podium block --}}
-                            <img src="{{ asset('images/Trophy_Silver.svg') }}" alt="" class="h-16 w-16 -mb-1 animate__animated animate__bounceIn" style="animation-delay: 0.2s;">
-                            <div class="w-full h-[100px] bg-[rgba(37,99,235,0.24)] rounded-t-xl flex items-end justify-center pb-3 shadow-inner">
-                                <span class="text-base text-[var(--ll-blue)]/70">{{ 'เลเวล' }} {{ $topStudents[1]->level }}</span>
+                            <img src="{{ asset('images/'.$c['trophy']) }}" alt="" class="{{ $c['trophySize'] }} animate__animated animate__bounceIn" @if($c['delay']) style="animation-delay: {{ $c['delay'] }};" @endif>
+                            <div class="w-full {{ $c['height'] }} {{ $c['bg'] }} rounded-t-xl flex items-end justify-center pb-3 {{ $c['shadowInner'] ? 'shadow-inner' : '' }}">
+                                <span class="text-base {{ $c['levelText'] }}">{{ 'เลเวล' }} {{ $student->level }}</span>
                             </div>
                         </a>
-                    @endif
-
-                    {{-- 1st Place --}}
-                    @if($topStudents->has(0))
-                        <a href="{{ route('profile', $topStudents[0]->user) }}" wire:navigate class="flex flex-col items-center w-1/3 max-w-[180px]">
-                            <div class="relative inline-block mb-2">
-                                <img src="{{ $topStudents[0]->user->avatar_url }}"
-                                    class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-2 ring-amber-300 shadow-md bg-white">
-                                @if($topStudents[0]->user->active_avatar_frame && !str_starts_with($topStudents[0]->user->active_avatar_frame, 'border'))
-                                    <img src="{{ asset($topStudents[0]->user->active_avatar_frame) }}"
-                                         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] max-w-none pointer-events-none drop-shadow-sm">
-                                @elseif($topStudents[0]->user->active_avatar_frame)
-                                    <div class="absolute inset-0 rounded-full {{ $topStudents[0]->user->active_avatar_frame }} pointer-events-none"></div>
-                                @endif
-                            </div>
-                            <p
-                                class="text-sm sm:text-base font-bold text-[#101114] truncate w-full text-center mb-1 {{ $topStudents[0]->user->active_name_color ?? '' }}">
-                                {{ $topStudents[0]->user->name }}</p>
-                            <div class="flex items-center gap-1 text-xs text-[#9497a9] mb-3">
-                                <span class="font-bold text-[#686b82]">{{ number_format($topStudents[0]->xp) }}</span>
-                                <x-icon name="bolt" class="text-[var(--ll-blue)] h-4 w-4 shrink-0" />
-                            </div>
-                            {{-- Podium block --}}
-                            <img src="{{ asset('images/Trophy_Golden.svg') }}" alt="" class="h-20 w-20 -mb-1 animate__animated animate__bounceIn" style="animation-delay: 0.4s;">
-                            <div
-                                class="w-full h-[145px] bg-[var(--ll-blue)] rounded-t-xl flex items-end justify-center pb-3 shadow-inner">
-                                <span class="text-base text-white/70">{{ 'เลเวล' }} {{ $topStudents[0]->level }}</span>
-                            </div>
-                        </a>
-                    @endif
-
-                    {{-- 3rd Place --}}
-                    @if($topStudents->has(2))
-                        <a href="{{ route('profile', $topStudents[2]->user) }}" wire:navigate class="flex flex-col items-center w-1/3 max-w-[160px]">
-                            <div class="relative inline-block mb-2">
-                                <img src="{{ $topStudents[2]->user->avatar_url }}"
-                                    class="w-14 h-14 rounded-full object-cover ring-2 ring-[rgba(37,99,235,0.2)] shadow bg-white">
-                                @if($topStudents[2]->user->active_avatar_frame && !str_starts_with($topStudents[2]->user->active_avatar_frame, 'border'))
-                                    <img src="{{ asset($topStudents[2]->user->active_avatar_frame) }}"
-                                         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] max-w-none pointer-events-none drop-shadow-sm">
-                                @elseif($topStudents[2]->user->active_avatar_frame)
-                                    <div class="absolute inset-0 rounded-full {{ $topStudents[2]->user->active_avatar_frame }} pointer-events-none"></div>
-                                @endif
-                            </div>
-                            <p
-                                class="text-sm font-semibold text-[#686b82] truncate w-full text-center mb-1 {{ $topStudents[2]->user->active_name_color ?? '' }}">
-                                {{ $topStudents[2]->user->name }}</p>
-                            <div class="flex items-center gap-1 text-xs text-[#9497a9] mb-3">
-                                <span class="font-bold text-[#686b82]">{{ number_format($topStudents[2]->xp) }}</span>
-                                <x-icon name="bolt" class="text-[var(--ll-blue)] h-4 w-4 shrink-0" />
-                            </div>
-                            {{-- Podium block --}}
-                            <img src="{{ asset('images/Trophy_Bronze.svg') }}" alt="" class="h-14 w-14 -mb-1 animate__animated animate__bounceIn">
-                            <div class="w-full h-[72px] bg-[rgba(37,99,235,0.12)] rounded-t-xl flex items-end justify-center pb-3">
-                                <span class="text-base text-[var(--ll-blue)]/70">{{ 'เลเวล' }} {{ $topStudents[2]->level }}</span>
-                            </div>
-                        </a>
-                    @endif
-
+                    @endforeach
                 </div>
 
                 {{-- Rank 4+ --}}

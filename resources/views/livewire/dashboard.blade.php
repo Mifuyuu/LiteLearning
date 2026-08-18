@@ -64,10 +64,10 @@
                 {{ $isStudent ? 'ดูว่าการเรียนรู้ของคุณกำลังเติบโตอย่างไรในวันนี้' : 'เริ่มต้นจากงานที่ต้องตรวจสอบ' }}
             </p>
         </div>
-        <a href="{{ route('calendar') }}" wire:navigate
+        <a href="{{ $isStudent ? route('calendar') : route('to-review') }}" wire:navigate
             class="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-white px-3 py-2 text-sm font-semibold text-[var(--ll-blue)] transition hover:bg-[var(--ll-blue-hover)]">
             <x-icon name="calendar-days" class="h-4 w-4" />
-            <span class="hidden sm:inline">ปฏิทิน</span>
+            <span class="hidden sm:inline">{{ $isStudent ? 'ปฏิทิน' : 'รอตรวจ' }}</span>
         </a>
     </header>
 

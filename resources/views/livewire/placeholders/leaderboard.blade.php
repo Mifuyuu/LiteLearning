@@ -18,7 +18,7 @@
                     <div class="skeleton h-14 w-14 rounded-full mb-2"></div>
                     <div class="skeleton h-5 w-20 mb-1"></div>
                     <div class="skeleton h-4 w-12 mb-3"></div>
-                    <div class="skeleton w-full h-[100px] rounded-t-xl"></div>
+                    <div class="skeleton w-full h-25 rounded-t-xl rounded-b-none"></div>
                 </div>
 
                 {{-- 1st Place --}}
@@ -26,7 +26,7 @@
                     <div class="skeleton h-16 w-16 sm:h-20 sm:w-20 rounded-full mb-2"></div>
                     <div class="skeleton h-5 w-24 mb-1"></div>
                     <div class="skeleton h-4 w-12 mb-3"></div>
-                    <div class="skeleton w-full h-[145px] rounded-t-xl"></div>
+                    <div class="skeleton w-full h-36.25 rounded-t-xl rounded-b-none"></div>
                 </div>
 
                 {{-- 3rd Place --}}
@@ -34,7 +34,7 @@
                     <div class="skeleton h-12 w-12 rounded-full mb-2"></div>
                     <div class="skeleton h-5 w-20 mb-1"></div>
                     <div class="skeleton h-4 w-12 mb-3"></div>
-                    <div class="skeleton w-full h-[72px] rounded-t-xl"></div>
+                    <div class="skeleton w-full h-18 rounded-t-xl rounded-b-none"></div>
                 </div>
             </div>
 

@@ -146,13 +146,12 @@
                                 </a>
                             @endif
 
-                            <a href="{{ route('calendar') }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isCalendarActive) }}">
-                                <x-icon name="calendar-days{{ $isCalendarActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                ปฏิทิน
-                            </a>
-
                             @if(auth()->user()->isStudent())
+                                <a href="{{ route('calendar') }}" wire:navigate
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isCalendarActive) }}">
+                                    <x-icon name="calendar-days{{ $isCalendarActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
+                                    ปฏิทิน
+                                </a>
                                 <a href="{{ route('classrooms') }}" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isClassroomsActive) }}">
                                     <x-icon name="academic-cap{{ $isClassroomsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
