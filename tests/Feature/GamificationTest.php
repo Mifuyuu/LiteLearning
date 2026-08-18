@@ -344,6 +344,11 @@ class GamificationTest extends TestCase
             $this->student->storeItems()->where('store_item_id', $item->id)->exists()
         );
 
+        $this->assertFalse(
+            (bool) $this->student->storeItems()->where('store_item_id', $item->id)->first()->pivot->is_active,
+            'Purchasing an item must not equip it automatically.'
+        );
+
         $gam = $this->student->gamification()->first();
         $this->assertEquals(50, $gam->coins); // 100 - 50
     }

@@ -21,6 +21,9 @@
             </div>
         @else
             <div class="border-t border-[#dedee5] space-y-6 p-6 lg:p-8">
+                @php
+                    $i = 0;
+                @endphp
                 @foreach($upcoming->groupBy(fn($a) => $a->due_date->format('Y-m-d')) as $date => $assignments)
                     <div>
                         <div class="flex items-center gap-3 mb-3">
@@ -43,6 +46,10 @@
                                     $themeColor = $a->classworkItem->classroom->themeCategory?->color ?? '#8B5CF6';
                                 @endphp
                                 <a href="{{ route('assignment.show', ['classroom' => $a->classworkItem->classroom, 'assignment' => $a]) }}"
+                                   x-data="{ show: false }" x-init="setTimeout(() => show = true, {{ $i++ * 60 }})" x-show="show" x-cloak
+                                   x-transition:enter="transition ease-out duration-400"
+                                   x-transition:enter-start="opacity-0 translate-y-6"
+                                   x-transition:enter-end="opacity-100 translate-y-0"
                                    class="rounded-lg border border-[#dedee5] bg-white hover:shadow-[0_0_0_2px_var(--room-color)] flex items-center gap-4 p-4 transition-shadow duration-150 group"
                                    style="--room-color: {{ $themeColor }}">
                                     <div class="w-3 h-3 rounded-full shrink-0 ring-2 ring-white"

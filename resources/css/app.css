@@ -164,8 +164,8 @@ body {
   );
   mix-blend-mode: soft-light;
   filter: blur(1.5px);
-  transform: translateX(-130%) skewX(-12deg);
-  animation: badge-liquid-sweep 5s ease-in infinite;
+  transform: translateX(-130%) skewX(-25deg);
+  animation: badge-liquid-sweep 3s infinite linear;
   -webkit-mask-image: var(--badge-mask);
   mask-image: var(--badge-mask);
   -webkit-mask-size: contain;
@@ -179,13 +179,13 @@ body {
 
 @keyframes badge-liquid-sweep {
   0% {
-    transform: translateX(-130%) skewX(-12deg);
+    transform: translateX(-130%) skewX(-25deg);
   }
-  30% {
-    transform: translateX(130%) skewX(-12deg);
-  }
+  /* 30% {
+    transform: translateX(130%) skewX(-25deg);
+  } */
   100% {
-    transform: translateX(130%) skewX(-12deg);
+    transform: translateX(130%) skewX(-25deg);
   }
 }
 

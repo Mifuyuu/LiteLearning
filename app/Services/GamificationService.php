@@ -317,7 +317,7 @@ class GamificationService
             ]);
 
             try {
-                $user->storeItems()->attach($item->id);
+                $user->storeItems()->attach($item->id, ['is_active' => false]);
             } catch (QueryException $exception) {
                 throw new GamificationException(__('app.store_already_owned'), previous: $exception);
             }
