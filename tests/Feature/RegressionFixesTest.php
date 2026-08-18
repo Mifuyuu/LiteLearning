@@ -289,8 +289,8 @@ class RegressionFixesTest extends TestCase
 
         $student->refresh();
 
-        $this->assertEquals(10, $student->coins);
-        $this->assertEquals(20, $student->xp);
+        $this->assertEquals(50, $student->coins);
+        $this->assertEquals(75, $student->xp);
         $this->assertDatabaseCount('coin_transactions', 1);
     }
 

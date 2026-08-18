@@ -165,6 +165,16 @@ class GamificationService
         }
     }
 
+    public function awardForAttendanceCheckin(User $user, int $assignmentId): void
+    {
+        if (! $this->isEligible($user)) {
+            return;
+        }
+
+        $this->awardCoins($user, 50, 'attendance_checkin', Assignment::class, $assignmentId);
+        $this->awardXp($user, 75);
+    }
+
     public function awardForCommentCreated(User $user, int $commentId): void
     {
         if (! $this->isEligible($user)) {

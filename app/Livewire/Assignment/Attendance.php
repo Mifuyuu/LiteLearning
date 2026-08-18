@@ -162,7 +162,9 @@ class Attendance extends Component
         $this->enteredCode = '';
 
         if (! $wasAlreadyTurnedIn) {
-            app(GamificationService::class)->awardForAssignmentTurnedIn($user, $this->assignment->id);
+            $gamification = app(GamificationService::class);
+            $gamification->awardForAttendanceCheckin($user, $this->assignment->id);
+            $gamification->awardForAssignmentTurnedIn($user, $this->assignment->id);
         }
 
         session()->flash('attendance_success', __('messages.attendance.success'));

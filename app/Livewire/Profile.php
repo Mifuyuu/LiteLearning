@@ -41,7 +41,7 @@ class Profile extends Component
     {
         /** @var User $viewer */
         $viewer = Auth::user();
-        $user = $user ?? $viewer;
+        $user = ($user && $user->exists) ? $user : $viewer;
         $this->user = $user;
 
         $this->allAchievements = Achievement::query()
