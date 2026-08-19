@@ -15,7 +15,7 @@
 @endphp
 
 <div class="max-w-4xl mx-auto">
-    <section class="overflow-hidden rounded-[12px] border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <section class="overflow-hidden rounded-[12px] border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
 
         {{-- Theme color strip --}}
         <div class="h-2 w-full" style="background-color: {{ $themeColor }};"></div>

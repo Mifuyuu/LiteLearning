@@ -18,7 +18,7 @@
 @endphp
 
 <div class="max-w-4xl mx-auto space-y-4">
-    <section class="rounded-lg border border-[#dedee5] bg-white p-5 sm:p-6">
+    <section class="rounded-lg border-3 border-[#dedee5] bg-white p-5 sm:p-6">
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div class="min-w-0">
                 <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">มุมมองครูผู้สอน</p>
@@ -50,7 +50,7 @@
         </div>
     </section>
 
-    <section class="flex flex-wrap items-center gap-3 rounded-lg border border-[#dedee5] bg-white p-3">
+    <section class="flex flex-wrap items-center gap-3 rounded-lg border-3 border-[#dedee5] bg-white p-3">
         <div class="relative min-w-56 flex-1">
             <x-icon name="magnifying-glass" class="h-4 w-4 pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9497a9]" />
             <input wire:model.live.debounce.300ms="search" type="text"
@@ -81,7 +81,7 @@
         </button>
     </section>
 
-    <section class="overflow-hidden rounded-lg border border-[#dedee5] bg-white">
+    <section class="overflow-hidden rounded-lg border-3 border-[#dedee5] bg-white">
         @if($students->isEmpty())
             <div class="p-12">
                 <x-empty-state-inline :title="'สมุดเกรด'" :body="'ไม่มีนักเรียนที่ตรงกับเงื่อนไขที่กรอง'" />

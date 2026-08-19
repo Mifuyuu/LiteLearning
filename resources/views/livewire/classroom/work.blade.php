@@ -62,7 +62,7 @@
 @endphp
 
 <div class="space-y-6 max-w-4xl mx-auto">
-    <section class="flex flex-wrap items-center gap-2 rounded-2xl border border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <section class="flex flex-wrap items-center gap-2 rounded-2xl border-3 border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         @foreach($scopeLinks as $key => $label)
             <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => $key]) }}" wire:navigate
                 class="inline-flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $scope === $key ? 'bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]' : 'text-[#686b82] hover:bg-[var(--ll-blue-faint)] hover:text-[var(--ll-blue)]' }}">

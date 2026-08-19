@@ -1,21 +1,23 @@
 <div>
     {{-- Folder tabs: role selector --}}
     <div class="relative z-10 -mb-px flex items-end gap-1.5 pl-5">
-        <button type="button" wire:click="$set('role', 'student')"
+        <button type="button" wire:click="$set('role', 'student')" @disabled($otpSent)
             @class([
                 'flex items-center gap-2 rounded-t-xl border px-5 pt-2.5 pb-3 text-sm transition-colors',
                 $this->role !== 'teacher'
                     ? 'border-[#dedee5] border-b-0 bg-white font-semibold text-[#101114]'
                     : 'border-transparent bg-[#e8eaf0] font-medium text-[#686b82] hover:bg-[#dfe2ea]',
+                $otpSent ? 'cursor-not-allowed opacity-60' : '',
             ])>
             <x-icon name="user" class="h-4 w-4" />นักสำรวจ
         </button>
-        <button type="button" wire:click="$set('role', 'teacher')"
+        <button type="button" wire:click="$set('role', 'teacher')" @disabled($otpSent)
             @class([
                 'flex items-center gap-2 rounded-t-xl border px-5 pt-2.5 pb-3 text-sm transition-colors',
                 $this->role === 'teacher'
                     ? 'border-[#dedee5] border-b-0 bg-white font-semibold text-[#101114]'
                     : 'border-transparent bg-[#e8eaf0] font-medium text-[#686b82] hover:bg-[#dfe2ea]',
+                $otpSent ? 'cursor-not-allowed opacity-60' : '',
             ])>
             <x-icon name="academic-cap" class="h-4 w-4" />ผู้สร้างโลก
         </button>

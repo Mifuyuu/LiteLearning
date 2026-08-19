@@ -57,16 +57,15 @@
         }
     }
 }">
-    <div class="space-y-4">
+    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden">
 
         {{-- Page Header --}}
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">{{ 'ตั้งค่า' }}</h2>
-            <p class="text-sm text-gray-500 mt-1">{{ 'จัดการการตั้งค่าบัญชีของคุณ' }}</p>
+        <div class="p-6 lg:p-8">
+            <h1 class="text-3xl font-black tracking-tight text-[#101114] sm:text-4xl">{{ 'ตั้งค่า' }}</h1>
+            <p class="mt-2 text-md leading-6 text-[#686b82]">{{ 'จัดการการตั้งค่าบัญชีของคุณ' }}</p>
         </div>
 
-        {{-- Single flat card --}}
-        <div class="rounded-xl border border-gray-200 bg-white p-6">
+        <div class="border-t border-[#dedee5] p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-gray-200">
 
                 {{-- Left: Avatar + Cover Image + Notifications --}}

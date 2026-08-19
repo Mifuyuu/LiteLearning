@@ -18,7 +18,7 @@
 @endphp
 
 <div class="space-y-5 max-w-4xl mx-auto">
-    <section class="rounded-[12px] border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <section class="rounded-[12px] border-3 border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">{{ 'กระดานสนทนา' }}</p>

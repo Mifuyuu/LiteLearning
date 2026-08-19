@@ -3,7 +3,7 @@
     class="max-w-4xl mx-auto">
 
     {{-- ── Search / filter bar ── --}}
-    <div class="bg-white border border-[#dedee5] rounded-xl shadow-[rgba(0,0,0,0.03)_0px_4px_24px] px-4 py-3">
+    <div class="bg-white border-3 border-[#dedee5] rounded-xl shadow-[rgba(0,0,0,0.03)_0px_4px_24px] px-4 py-3">
         <div class="flex flex-wrap items-center gap-3">
 
             {{-- Search --}}
@@ -64,7 +64,7 @@
                     x-transition:enter="transition ease-out duration-400"
                     x-transition:enter-start="opacity-0 translate-y-6"
                     x-transition:enter-end="opacity-100 translate-y-0"
-                    class="classroom-card flex items-center gap-5 rounded-xl border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] p-5 ring-2 ring-transparent transition-all duration-300 hover:ring-[#3293F5]">
+                    class="classroom-card flex items-center gap-5 rounded-xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] p-5 ring-2 ring-transparent transition-all duration-300 hover:border-[#3293F5]">
 
                     {{-- Planet --}}
                     <div class="shrink-0">
