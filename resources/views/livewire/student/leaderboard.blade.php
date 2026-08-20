@@ -24,9 +24,9 @@
                 @php
                     $podiumOrder = [1, 0, 2];
                     $podiumConfig = [
-                        0 => ['wrap' => 'w-1/3 max-w-[180px]', 'avatar' => 'w-16 h-16 sm:w-20 sm:h-20', 'ring' => 'ring-amber-300', 'name' => 'text-sm sm:text-base font-bold text-[#101114]', 'height' => 'h-[145px]', 'bg' => 'bg-[#FFA828]', 'levelText' => 'text-white/70', 'trophy' => 'Trophy_Golden.png', 'trophySize' => 'h-20 w-20', 'delay' => '0.4s'],
-                        1 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.4)]', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[100px]', 'bg' => 'bg-[#CFDBE0]', 'levelText' => 'text-[var(--ll-blue)]/70', 'trophy' => 'Trophy_Silver.png', 'trophySize' => 'h-16 w-16', 'delay' => '0.2s'],
-                        2 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.2)]', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[72px]', 'bg' => 'bg-[#F49D5F]', 'levelText' => 'text-[var(--ll-blue)]/70', 'trophy' => 'Trophy_Bronze.png', 'trophySize' => 'h-14 w-14', 'delay' => null],
+                        0 => ['wrap' => 'w-1/3 max-w-[180px]', 'avatar' => 'w-16 h-16 sm:w-20 sm:h-20', 'ring' => 'ring-amber-300', 'name' => 'text-sm sm:text-base font-bold text-[#101114]', 'height' => 'h-[145px]', 'bg' => 'bg-[#FFBF00]', 'levelText' => 'text-black font-bold', 'trophy' => 'Trophy_Golden.png', 'trophySize' => 'h-20 w-20', 'delay' => '0.4s'],
+                        1 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.4)]', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[100px]', 'bg' => 'bg-[#E7EDEE]', 'levelText' => 'text-black font-bold', 'trophy' => 'Trophy_Silver.png', 'trophySize' => 'h-16 w-16', 'delay' => '0.2s'],
+                        2 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.2)]', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[72px]', 'bg' => 'bg-[#F49D5F]', 'levelText' => 'text-black font-bold', 'trophy' => 'Trophy_Bronze.png', 'trophySize' => 'h-14 w-14', 'delay' => null],
                     ];
                 @endphp
                 <div class="flex items-end justify-center gap-3">

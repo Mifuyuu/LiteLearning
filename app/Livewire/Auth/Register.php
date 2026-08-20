@@ -5,6 +5,7 @@ namespace App\Livewire\Auth;
 use App\Models\EmailOtpVerification;
 use App\Models\User;
 use App\Notifications\SendOtpNotification;
+use App\Services\GamificationService;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -166,7 +167,14 @@ class Register extends Component
 
         Auth::login($user);
 
-        $this->redirectRoute('dashboard', navigate: true);
+        app(GamificationService::class)->awardForFirstLogin($user);
+
+        // No `navigate: true` here on purpose — the achievement-celebration modal
+        // reads the unlocked-achievement session flash via Alpine's x-init on a
+        // fresh page load. A wire:navigate soft transition doesn't reliably
+        // re-trigger x-init, so the flash gets silently drained without ever
+        // showing the modal (see JoinClassroom, which has the same constraint).
+        $this->redirectRoute('dashboard');
     }
 
     public function render(): \Illuminate\View\View

@@ -12,7 +12,9 @@ class AttendanceSession extends Model
 
     public const CODE_ROTATION_SECONDS = 10;
 
-    public const CODE_VALIDITY_SECONDS = 15;
+    // Matches rotation: a code is only ever valid for the window it's on screen for,
+    // like a TOTP — no grace period past rotation.
+    public const CODE_VALIDITY_SECONDS = 10;
 
     protected $fillable = [
         'classwork_item_id',
@@ -57,7 +59,7 @@ class AttendanceSession extends Model
     }
 
     /**
-     * Check if the current code has expired after a short network grace period.
+     * Check if the current code has expired.
      */
     public function isCodeExpired(): bool
     {

@@ -145,6 +145,36 @@ class GamificationService
         if ($achievement->xp_reward > 0) {
             $this->awardXp($user, (int) $achievement->xp_reward);
         }
+
+        if ($code !== 'collector') {
+            $this->maybeUnlockCollector($user);
+        }
+    }
+
+    /**
+     * Unlock the 'collector' meta-achievement once every other active
+     * achievement has been unlocked.
+     */
+    private function maybeUnlockCollector(User $user): void
+    {
+        $requiredIds = Achievement::where('is_active', true)
+            ->where('code', '!=', 'collector')
+            ->pluck('id');
+
+        if ($requiredIds->isEmpty()) {
+            return;
+        }
+
+        $unlockedIds = $user->achievements()->pluck('achievements.id');
+
+        if ($requiredIds->diff($unlockedIds)->isEmpty()) {
+            $this->unlockAchievement($user, 'collector');
+        }
+    }
+
+    public function awardForFirstLogin(User $user): void
+    {
+        $this->unlockAchievement($user, 'explorer');
     }
 
     public function awardForClassroomJoined(User $user, int $classroomId): void

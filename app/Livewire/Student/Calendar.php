@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Student;
 
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
@@ -43,6 +43,6 @@ class Calendar extends Component
 
     public function render()
     {
-        return view('livewire.calendar');
+        return view('livewire.student.calendar');
     }
 }

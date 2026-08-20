@@ -68,7 +68,7 @@
                 </p>
             </div>
             <a href="{{ $isStudent ? route('calendar') : route('to-review') }}" wire:navigate
-                class="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-[var(--ll-blue-subtle)] px-3 py-2 text-sm font-semibold text-[var(--ll-blue)] transition hover:bg-[var(--ll-blue-hover)]">
+                class="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-(--ll-blue-subtle) px-3 py-2 text-sm font-semibold text-(--ll-blue) transition hover:bg-(--ll-blue-hover)">
                 <x-icon name="calendar-days" class="h-4 w-4" />
                 <span class="hidden sm:inline">{{ $isStudent ? 'ปฏิทิน' : 'รอตรวจ' }}</span>
             </a>
@@ -81,10 +81,10 @@
                     @if($isStudent)
                         <div class="flex items-start justify-between gap-3">
                             <div>
-                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[var(--ll-blue)]">เลเวลปัจจุบัน</p>
+                                <p class="text-xs font-bold uppercase text-(--ll-blue)">เลเวลปัจจุบัน</p>
                                 <p class="mt-2 text-5xl font-bold leading-none text-[#101114]">{{ $primaryMetric['level'] }}</p>
                             </div>
-                            <span class="rounded-[9px] bg-[var(--ll-blue-subtle)] px-2.5 py-1 text-xs font-bold text-[var(--ll-blue)]">
+                            <span class="rounded-[9px] bg-(--ll-blue-subtle) px-2.5 py-1 text-xs font-bold text-(--ll-blue)">
                                 {{ number_format($primaryMetric['xp_current']) }} / {{ number_format($primaryMetric['xp_required']) }} XP
                             </span>
                         </div>
@@ -99,10 +99,10 @@
                     @else
                         <div class="flex items-start justify-between gap-3">
                             <div>
-                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[var(--ll-blue)]">รอตรวจ</p>
+                                <p class="text-xs font-bold uppercase    text-(--ll-blue)">รอตรวจ</p>
                                 <p class="mt-2 text-5xl font-bold leading-none text-[#101114]">{{ number_format($primaryMetric['pending']) }}</p>
                             </div>
-                            <span class="rounded-[9px] bg-[var(--ll-blue-subtle)] px-2.5 py-1 text-xs font-bold text-[var(--ll-blue)]">
+                            <span class="rounded-[9px] bg-(--ll-blue-subtle) px-2.5 py-1 text-xs font-bold text-(--ll-blue)">
                                 {{ number_format($primaryMetric['graded_this_week']) }} ตรวจแล้ว
                             </span>
                         </div>
@@ -121,7 +121,7 @@
                         @foreach($quickStats as $stat)
                             <div class="flex items-center justify-between gap-3 rounded-[11px] bg-[#f7f5f9] px-3 py-2.5">
                                 <span class="flex min-w-0 items-center gap-2.5">
-                                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-[rgba(37,99,235,0.14)] text-[var(--ll-blue)]">
+                                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-[rgba(37,99,235,0.14)] text-(--ll-blue)">
                                         <x-icon :name="$stat['icon']" class="h-4 w-4" />
                                     </span>
                                     <span class="truncate text-sm font-semibold text-[#686b82]">{{ $stat['label'] }}</span>
@@ -138,7 +138,7 @@
         <div data-activity-heatmap class="border-t border-[#dedee5] p-5 lg:px-7">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <p class="text-xs font-bold text-[var(--ll-blue)]">กิจกรรมในรอบ 6 เดือน</p>
+                    <p class="text-xs font-bold text-(--ll-blue)">กิจกรรมในรอบ 6 เดือน</p>
                     <h2 class="mt-1 text-lg font-bold text-[#101114]">
                         {{ $isStudent ? 'ความสม่ำเสมอในการเรียนรู้' : 'กิจกรรมการสอน' }}
                     </h2>
@@ -146,7 +146,7 @@
                         {{ $isStudent ? 'การส่งงาน, การเข้าเรียน, ความคิดเห็น และคะแนน' : 'งานในชั้นเรียน, การตรวจงาน และความคิดเห็น' }}
                     </p>
                 </div>
-                <span class="shrink-0 rounded-[9px] bg-[rgba(37,99,235,0.12)] px-2.5 py-1.5 text-xs font-bold text-[var(--ll-blue)]">
+                <span class="shrink-0 rounded-[9px] bg-[rgba(37,99,235,0.12)] px-2.5 py-1.5 text-xs font-bold text-(--ll-blue)">
                     {{ number_format($activity['total']) }} กิจกรรม
                 </span>
             </div>
@@ -165,7 +165,7 @@
                     <div class="activity-grid-cols grid grid-flow-col grid-rows-7 gap-1">
                         @foreach($activityDays as $day)
                             <span data-activity-cell tabindex="0"
-                                class="activity-cell tooltip tooltip-top aspect-square size-3 rounded-[3px] outline-none ring-[var(--ll-blue)] transition hover:ring-2 focus:ring-2 {{ ! $day['is_in_year'] || $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
+                                class="activity-cell tooltip tooltip-top aspect-square size-3 rounded-[3px] outline-none ring-(--ll-blue) transition hover:ring-2 focus:ring-2 {{ ! $day['is_in_year'] || $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
                                 data-tip="{{ $day['label'] }} · {{ $day['count'] }} กิจกรรม"
                                 aria-label="{{ $day['label'] }}: {{ $day['count'] }} กิจกรรม"></span>
                         @endforeach

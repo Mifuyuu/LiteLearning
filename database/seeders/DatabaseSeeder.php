@@ -12,6 +12,7 @@ use App\Models\Submission;
 use App\Models\ThemeCategory;
 use App\Models\User;
 use App\Models\UserGamification;
+use App\Services\GamificationService;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
@@ -20,6 +21,13 @@ use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
+    private GamificationService $gamificationService;
+
+    public function __construct()
+    {
+        $this->gamificationService = new GamificationService;
+    }
+
     private function seedClassroomDemoData(Collection $teachers, Collection $students): void
     {
         $themes = ThemeCategory::query()
@@ -108,12 +116,13 @@ class DatabaseSeeder extends Seeder
                     ],
                 ]);
 
+                $xp = 220 + ($studentIndex * 90);
                 UserGamification::firstOrCreate(
                     ['user_id' => $student->id],
                     [
                         'coins' => 80 + ($studentIndex * 15),
-                        'xp' => 220 + ($studentIndex * 90),
-                        'level' => min(8, 2 + intdiv($studentIndex, 2)),
+                        'xp' => $xp,
+                        'level' => $this->gamificationService->resolveLevelFromXp($xp),
                     ]
                 );
             }
@@ -297,12 +306,13 @@ class DatabaseSeeder extends Seeder
         $allStudents = $students->merge($moreStudents);
 
         $allStudents->each(function (User $student, int $index): void {
+            $xp = 150 + ($index * 55);
             UserGamification::firstOrCreate(
                 ['user_id' => $student->id],
                 [
                     'coins' => 60 + ($index * 8),
-                    'xp' => 150 + ($index * 55),
-                    'level' => min(8, 1 + intdiv($index, 2)),
+                    'xp' => $xp,
+                    'level' => $this->gamificationService->resolveLevelFromXp($xp),
                 ]
             );
         });

@@ -261,6 +261,20 @@ select:focus {
     outline: none;
 }
 
+/* ─── Autofill override ──────────────────────────────────────────────── */
+/* Browsers force a gray/yellow background on autofilled inputs (e.g. saved
+   Gmail suggestions); this repaints it white via the inset box-shadow trick
+   so autofilled fields keep the app's normal input styling. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+    box-shadow: 0 0 0 1000px #ffffff inset;
+    -webkit-text-fill-color: #101114;
+    caret-color: #101114;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 /*
  * ─── 3D Buttons ────────────────────────────────────────────────────────────
  * Default variant = Kraken Purple

@@ -7,6 +7,7 @@ use App\Models\Assignment;
 use App\Models\AttendanceSession as AttendanceSessionModel;
 use App\Models\Classroom;
 use App\Services\GamificationService;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -124,6 +125,19 @@ class Attendance extends Component
 
             return;
         }
+
+        // Rate-limit code guesses: 10 per minute per user+assignment
+        $throttleKey = 'attendance-checkin:'.$user->id.':'.$this->assignment->id;
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 10)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('attendance_error', __('messages.attendance.throttle', ['seconds' => $seconds]));
+            $this->enteredCode = '';
+
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
 
         // Validate code
         $this->session->refresh();

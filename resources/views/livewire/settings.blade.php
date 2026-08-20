@@ -167,13 +167,14 @@
                     <div class="space-y-5">
 
                         {{-- Name --}}
-                        <div>
-                            <label class="flex items-center gap-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                        <div x-data="{ remaining: {{ \App\Models\User::NAME_MAX_LENGTH - mb_strlen($name) }} }">
+                            <label class="flex items-center gap-1.5 text-xs font-medium text-gray-400 mb-2">
                                 {{ 'ชื่อที่แสดง' }}
-                                <span class="normal-case text-gray-300">{{ '(สูงสุด '.\App\Models\User::NAME_MAX_LENGTH.' ตัวอักษร)' }}</span>
+                                <span class="normal-case text-gray-300" x-text="`(เหลือ ${remaining} ตัวอักษร)`"></span>
                             </label>
                             <form wire:submit.prevent="updateName" class="flex flex-wrap items-center gap-2">
                                 <input wire:model="name" type="text" maxlength="{{ \App\Models\User::NAME_MAX_LENGTH }}"
+                                    x-on:input="remaining = {{ \App\Models\User::NAME_MAX_LENGTH }} - $event.target.value.length"
                                     class="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-300
                                            focus:outline-none focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 transition-all"
                                     placeholder="{{ 'ชื่อที่แสดงของคุณ' }}">
@@ -194,14 +195,15 @@
                         </div>
 
                         {{-- Username --}}
-                        <div>
-                            <label class="flex items-center gap-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                        <div x-data="{ remaining: {{ \App\Models\User::USERNAME_MAX_LENGTH - mb_strlen($username) }} }">
+                            <label class="flex items-center gap-1.5 text-xs font-medium text-gray-400 mb-2">
                                 {{ 'ชื่อผู้ใช้' }}
-                                <span class="normal-case text-gray-300">{{ '(สูงสุด '.\App\Models\User::USERNAME_MAX_LENGTH.' ตัวอักษร)' }}</span>
+                                <span class="normal-case text-gray-300" x-text="`(เหลือ ${remaining} ตัวอักษร)`"></span>
                             </label>
                             <form wire:submit.prevent="updateUsername" class="flex flex-wrap items-center gap-2">
                                 <input wire:model="username" type="text"
                                     maxlength="{{ \App\Models\User::USERNAME_MAX_LENGTH }}"
+                                    x-on:input="remaining = {{ \App\Models\User::USERNAME_MAX_LENGTH }} - $event.target.value.length"
                                     class="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-300 lowercase
                                            focus:outline-none focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 transition-all"
                                     placeholder="{{ 'เช่น john_doe' }}">
@@ -288,7 +290,7 @@
             x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
             @keydown.escape.window="closeCropper()">
-            <div class="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-[12px] bg-white">
+            <div class="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl bg-white">
                 <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 py-4">
                     <h3 class="text-lg font-black text-slate-950">
                         <span x-show="cropType === 'avatar'">ครอบตัดรูปโปรไฟล์</span>
@@ -305,11 +307,11 @@
                 </div>
                 <div class="flex shrink-0 items-center justify-end gap-3 border-t border-slate-100 px-6 py-4">
                     <button @click="closeCropper()"
-                        class="rounded-[12px] px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
+                        class="rounded-xl px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
                         ยกเลิก
                     </button>
                     <button @click="saveCrop()"
-                        class="btn-3d btn-3d--blue rounded-[12px] px-6 py-2 text-sm font-bold">
+                        class="btn-3d btn-3d--blue rounded-xl px-6 py-2 text-sm font-bold">
                         บันทึกการเปลี่ยนแปลง
                     </button>
                 </div>

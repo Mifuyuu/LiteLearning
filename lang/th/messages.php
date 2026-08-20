@@ -80,6 +80,7 @@ return [
     'attendance.code_expired'       => 'รหัสเช็คชื่อหมดอายุ',
     'attendance.wrong_code'         => 'รหัสไม่ถูกต้อง',
     'attendance.success'            => 'เช็คชื่อเรียบร้อยแล้ว',
+    'attendance.throttle'           => 'ลองใส่รหัสหลายครั้งเกินไป กรุณาลองอีกครั้งใน :seconds วินาที',
 
     /*
     |--------------------------------------------------------------------------
@@ -161,7 +162,7 @@ return [
 
     'validation.name'               => 'กรุณากรอกชื่อ',
     'validation.username'           => 'กรุณากรอกชื่อผู้ใช้',
-    'validation.username_format'    => 'ชื่อผู้ใช้ต้องขึ้นต้นด้วยตัวอักษรภาษาอังกฤษ และมีได้เฉพาะตัวอักษร ตัวเลข . หรือ _',
+    'validation.username_format'    => 'ชื่อผู้ใช้ต้องขึ้นต้นด้วยตัวอักษรภาษาอังกฤษ และมีได้เฉพาะตัวอักษร ตัวเลข จุด หรือ _',
     'validation.username_taken'     => 'ชื่อผู้ใช้นี้มีคนใช้แล้ว',
     'validation.name_classroom'     => 'กรุณากรอกชื่อห้องเรียน',
     'validation.name_store_item'    => 'กรุณากรอกชื่อสินค้า',

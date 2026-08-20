@@ -8,12 +8,15 @@ use App\Models\Assignment;
 use App\Models\Classroom;
 use App\Models\ClassworkItem;
 use App\Models\CoinTransaction;
+use App\Livewire\Auth\Register;
 use App\Models\Comment;
+use App\Models\EmailOtpVerification;
 use App\Models\StoreItem;
 use App\Models\Submission;
 use App\Models\User;
 use App\Services\GamificationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -165,6 +168,76 @@ class GamificationTest extends TestCase
         $this->assertEquals(0, $teacher->achievements()->count());
     }
 
+    public function test_first_login_unlocks_explorer_achievement(): void
+    {
+        // 'explorer' already exists — the 2026_08_21_000000 migration backfills it.
+
+        $this->svc->awardForFirstLogin($this->student);
+
+        $this->assertEquals(1, $this->student->achievements()->where('code', 'explorer')->count());
+    }
+
+    public function test_registration_completes_without_navigate_so_the_achievement_modal_can_show(): void
+    {
+        // wire:navigate soft-transitions don't reliably re-run the Alpine x-init
+        // that reads the achievement-unlock session flash on the next page — a
+        // hard redirect is required for the celebration modal to actually show
+        // (see the comment in Register::verifyOtp()). Lock in that this redirect
+        // never regains `navigate: true`.
+        EmailOtpVerification::create([
+            'email' => 'newstudent@example.com',
+            'otp' => Hash::make('123456'),
+            'user_data' => [
+                'name' => 'New Student',
+                'email' => 'newstudent@example.com',
+                'password' => Hash::make('password123'),
+                'role' => 'student',
+            ],
+            'expires_at' => now()->addMinutes(10),
+        ]);
+
+        Livewire::test(Register::class)
+            ->set('email', 'newstudent@example.com')
+            ->set('otp', '123456')
+            ->call('verifyOtp')
+            ->assertRedirect(route('dashboard'));
+
+        $newUser = User::where('email', 'newstudent@example.com')->firstOrFail();
+
+        $this->assertEquals(1, $newUser->achievements()->where('code', 'explorer')->count());
+
+        // The redirecting request must NOT have consumed the flash — it has to
+        // survive for the fresh page load's x-init to pick up.
+        $this->assertNotEmpty(session('new_achievements'));
+    }
+
+    public function test_collector_achievement_unlocks_only_after_all_other_achievements(): void
+    {
+        // 'explorer' and 'collector' already exist from the backfill migration —
+        // 'explorer' counts as one of the "other" achievements to collect too.
+        $this->createAchievement('a_one');
+        $this->createAchievement('a_two');
+
+        $this->svc->unlockAchievement($this->student, 'explorer');
+        $this->svc->unlockAchievement($this->student, 'a_one');
+        $this->assertEquals(0, $this->student->achievements()->where('code', 'collector')->count());
+
+        $this->svc->unlockAchievement($this->student, 'a_two');
+        $this->assertEquals(1, $this->student->achievements()->where('code', 'collector')->count());
+    }
+
+    public function test_collector_does_not_self_unlock_with_no_other_achievements(): void
+    {
+        // Deactivate the backfilled 'explorer' achievement so this test can exercise
+        // the true "no other active achievements" edge case.
+        Achievement::where('code', '!=', 'collector')->update(['is_active' => false]);
+
+        $this->svc->unlockAchievement($this->student, 'collector');
+
+        // Unlocking 'collector' itself must not recurse into its own requirement check.
+        $this->assertEquals(1, $this->student->achievements()->count());
+    }
+
     public function test_gamification_seeder_keeps_only_student_achievement_codes(): void
     {
         $this->seed(\Database\Seeders\GamificationFeaturesSeeder::class);
@@ -180,6 +253,8 @@ class GamificationTest extends TestCase
             'multi_class',
             'chatterbox',
             'level_up',
+            'explorer',
+            'collector',
         ], Achievement::query()->pluck('code')->all());
     }
 

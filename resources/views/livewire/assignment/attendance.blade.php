@@ -24,14 +24,22 @@
             <div class="p-5">
                 @if($session?->is_active)
                     {{-- Active session: show rotating code --}}
-                    <div wire:poll.10s="rotateCode">
+                    @php
+                        $codeSecondsLeft = max(0, \App\Models\AttendanceSession::CODE_VALIDITY_SECONDS - ($session->code_rotated_at?->diffInSeconds(now()) ?? 0));
+                    @endphp
+                    <div
+                        wire:poll.1s="rotateCode"
+                        wire:key="attendance-code-{{ $session->current_code }}"
+                        x-data="{ remaining: {{ $codeSecondsLeft }} }"
+                        x-init="setInterval(() => { if (remaining > 0) remaining-- }, 1000)"
+                    >
                         <div class="text-center py-6">
                             <p class="text-sm text-gray-500 mb-2">รหัสปัจจุบัน</p>
                             <div class="text-6xl font-mono font-bold tracking-[0.3em] text-amber-600 mb-3">
                                 {{ $session->current_code }}
                             </div>
                             <p class="text-xs text-gray-400">
-                                <x-icon name="arrow-path" class="h-4 w-4 mr-1" />เปลี่ยนรหัสทุก 10 วินาที
+                                <x-icon name="arrow-path" class="h-4 w-4 mr-1" />เปลี่ยนรหัสใน <span x-text="remaining"></span> วินาที
                             </p>
                         </div>
 

@@ -1,10 +1,7 @@
 @section('page-title', 'ปฏิทิน')
 <div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)]">
-        <div class="relative p-6 lg:p-8">
-            <img src="{{ asset('images/mailbox.svg') }}" alt=""
-                class="absolute right-4 top-4 hidden h-[calc(100%-2rem)] w-auto select-none object-contain sm:block lg:right-8" />
-
+    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh_-_3rem)] flex flex-col">
+        <div class="p-6 lg:p-8">
             <div>
                 <h1 class="text-3xl font-black tracking-tight text-[#101114] sm:text-4xl">{{ 'ปฏิทิน' }}</h1>
                 <p class="mt-2 max-w-2xl text-md leading-6 text-[#686b82]">
@@ -14,9 +11,9 @@
         </div>
 
         @if($upcoming->isEmpty())
-            <div class="border-t border-[#dedee5] p-16 text-center">
-                {{-- <img src="{{ asset('images/spacesuit_sleep.webp') }}" alt=""
-                    class="w-44 h-auto sm:w-52 mx-auto mb-5 select-none" /> --}}
+            <div class="border-t border-[#dedee5] flex-1 flex flex-col items-center justify-center text-center p-16">
+                <img src="{{ asset('images/mailbox.svg') }}" alt=""
+                    class="w-44 h-auto sm:w-52 mb-5 select-none" />
                 <p class="text-base font-medium text-[#686b82]">{{ 'ไม่มีภารกิจที่กำลังจะหมดอายุ!' }}</p>
             </div>
         @else

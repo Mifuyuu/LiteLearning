@@ -330,7 +330,47 @@ class RegressionFixesTest extends TestCase
         $this->assertSame(0, $student->fresh()->coins);
     }
 
-    public function test_attendance_checkin_accepts_code_during_grace_period(): void
+    public function test_attendance_checkin_accepts_code_within_validity_window(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
+
+        $assignment = Assignment::factory()->attendance()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'status' => 'published',
+        ]);
+
+        // Validity now matches rotation (10s, like a TOTP) — no grace period past it.
+        // Freeze time so this doesn't flake under slow test-suite execution.
+        $rotatedAt = now();
+        AttendanceSession::create([
+            'classwork_item_id' => $assignment->classwork_item_id,
+            'is_active' => true,
+            'current_code' => '123456',
+            'started_at' => $rotatedAt->copy()->subMinute(),
+            'code_rotated_at' => $rotatedAt,
+        ]);
+
+        $this->travelTo($rotatedAt->copy()->addSeconds(9));
+
+        Livewire::actingAs($student)
+            ->test(AssignmentAttendance::class, ['classroom' => $classroom, 'assignment' => $assignment])
+            ->set('enteredCode', '123456')
+            ->call('checkin');
+
+        $this->assertDatabaseHas('submissions', [
+            'assignment_id' => $assignment->id,
+            'user_id' => $student->id,
+            'status' => 'turned_in',
+        ]);
+    }
+
+    public function test_attendance_checkin_is_rate_limited_after_ten_attempts(): void
     {
         /** @var User $teacher */
         $teacher = User::factory()->create(['role' => 'teacher']);
@@ -349,16 +389,20 @@ class RegressionFixesTest extends TestCase
             'classwork_item_id' => $assignment->classwork_item_id,
             'is_active' => true,
             'current_code' => '123456',
-            'started_at' => now()->subMinute(),
-            'code_rotated_at' => now()->subSeconds(11),
+            'started_at' => now(),
+            'code_rotated_at' => now(),
         ]);
 
-        Livewire::actingAs($student)
-            ->test(AssignmentAttendance::class, ['classroom' => $classroom, 'assignment' => $assignment])
-            ->set('enteredCode', '123456')
-            ->call('checkin');
+        $component = Livewire::actingAs($student)
+            ->test(AssignmentAttendance::class, ['classroom' => $classroom, 'assignment' => $assignment]);
 
-        $this->assertDatabaseHas('submissions', [
+        for ($i = 0; $i < 10; $i++) {
+            $component->set('enteredCode', '000000')->call('checkin');
+        }
+
+        $component->set('enteredCode', '123456')->call('checkin');
+
+        $this->assertDatabaseMissing('submissions', [
             'assignment_id' => $assignment->id,
             'user_id' => $student->id,
             'status' => 'turned_in',

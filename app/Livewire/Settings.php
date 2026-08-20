@@ -16,7 +16,7 @@ class Settings extends Component
 {
     public function placeholder()
     {
-        return view('livewire.placeholders.generic', ['pageTitle' => 'ตั้งค่า']);
+        return view('livewire.placeholders.settings');
     }
     public string $name = '';
 
