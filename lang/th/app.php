@@ -29,4 +29,8 @@ return [
     'store_purchase_success' => 'ซื้อไอเทมเรียบร้อยแล้ว!',
     'store_equip_success' => 'สวมใส่ไอเทมเรียบร้อยแล้ว!',
     'store_equip_error' => 'ไม่สามารถสวมใส่ไอเทมได้ กรุณาลองอีกครั้ง',
+
+    // Achievement badges (displayed after the user's name)
+    'badge_not_unlocked' => 'คุณยังไม่ได้ปลดล็อกความสำเร็จนี้',
+    'badge_display_limit' => 'แสดงป้ายความสำเร็จได้สูงสุด :max อันเท่านั้น',
 ];

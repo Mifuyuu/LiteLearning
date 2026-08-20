@@ -3,7 +3,9 @@
 namespace App\Livewire\Student;
 
 use App\Exceptions\GamificationException;
+use App\Models\Achievement;
 use App\Models\StoreItem;
+use App\Models\User;
 use App\Services\GamificationService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -20,6 +22,8 @@ class Inventory extends Component
     }
 
     public array $ownedItems = [];
+
+    public array $badgeItems = [];
 
     public ?string $activeNameColor = null;
 
@@ -46,6 +50,16 @@ class Inventory extends Component
             'type' => $item->type,
             'value' => $item->value,
             'is_active' => (bool) $item->pivot->is_active,
+        ])->toArray();
+
+        $achievements = $user->achievements()->get();
+
+        $this->badgeItems = $achievements->map(fn (Achievement $achievement) => [
+            'id' => $achievement->id,
+            'name' => $achievement->name,
+            'description' => $achievement->description,
+            'badge_image' => $achievement->badge_image,
+            'is_active' => (bool) $achievement->pivot->is_displayed,
         ])->toArray();
 
         $this->activeNameColor = $user->active_name_color;
@@ -85,11 +99,28 @@ class Inventory extends Component
         $this->dispatch('notify', message: __('messages.store.unequipped'), type: 'success');
     }
 
+    public function toggleBadge(int $achievementId, GamificationService $gamificationService): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $achievement = Achievement::findOrFail($achievementId);
+
+        try {
+            $gamificationService->toggleAchievementDisplay($user, $achievement);
+            $this->loadInventory();
+            $this->dispatch('notify', message: __('messages.store.equipped'), type: 'success');
+        } catch (GamificationException $e) {
+            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+        }
+    }
+
     public function render()
     {
         return view('livewire.student.inventory', [
             'nameColorItems' => array_filter($this->ownedItems, fn ($item) => $item['type'] === 'name_color'),
             'avatarFrameItems' => array_filter($this->ownedItems, fn ($item) => $item['type'] === 'avatar_frame'),
+            'displayedBadgeCount' => count(array_filter($this->badgeItems, fn ($item) => $item['is_active'])),
+            'maxDisplayedBadges' => User::MAX_DISPLAYED_BADGES,
         ]);
     }
 }

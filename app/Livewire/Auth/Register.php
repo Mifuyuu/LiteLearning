@@ -48,7 +48,7 @@ class Register extends Component
     private function registrationRules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:'.User::NAME_MAX_LENGTH,
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
             'password_confirmation' => 'required',

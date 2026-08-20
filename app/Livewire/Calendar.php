@@ -20,13 +20,19 @@ class Calendar extends Component
 
     public function mount(): void
     {
+        $user = auth()->user();
         $upcoming = collect();
 
-        foreach (auth()->user()->allClassrooms() as $classroom) {
+        foreach ($user->allClassrooms() as $classroom) {
             $upcoming = $upcoming->merge(
                 $classroom->assignments()->published()
+                    ->whereNotIn('assignments.type', ['material', 'announcement', 'topic'])
+                    ->whereNotNull('due_date')
+                    ->whereDoesntHave('submissions', function ($query) use ($user): void {
+                        $query->where('user_id', $user->id)
+                            ->whereIn('status', ['turned_in', 'graded', 'returned']);
+                    })
                     ->with('classworkItem.classroom.themeCategory')
-                    ->where('due_date', '>=', now())
                     ->orderBy('due_date')
                     ->get()
             );

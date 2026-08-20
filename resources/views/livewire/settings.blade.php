@@ -167,25 +167,54 @@
                     <div class="space-y-5">
 
                         {{-- Name --}}
-                        <div x-data="{ nameLen: {{ strlen(auth()->user()->name) }} }">
-                            <label
-                                class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">{{ 'ชื่อที่แสดง' }}</label>
+                        <div>
+                            <label class="flex items-center gap-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                                {{ 'ชื่อที่แสดง' }}
+                                <span class="normal-case text-gray-300">{{ '(สูงสุด '.\App\Models\User::NAME_MAX_LENGTH.' ตัวอักษร)' }}</span>
+                            </label>
                             <form wire:submit.prevent="updateName" class="flex flex-wrap items-center gap-2">
-                                <input wire:model="name" @input="nameLen = $event.target.value.length" type="text"
-                                    maxlength="50"
+                                <input wire:model="name" type="text" maxlength="{{ \App\Models\User::NAME_MAX_LENGTH }}"
                                     class="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-300
                                            focus:outline-none focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 transition-all"
                                     placeholder="{{ 'ชื่อที่แสดงของคุณ' }}">
-                                <span class="text-xs transition-colors shrink-0"
-                                    :class="nameLen >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
-                                    <span x-text="nameLen"></span>/50
-                                </span>
-                                <button type="submit"
-                                    class="btn-3d btn-3d--blue px-4 py-2.5 text-sm font-medium rounded-xl whitespace-nowrap">
+                                <button type="submit" disabled wire:target="name"
+                                    wire:dirty.attr.remove="disabled"
+                                    wire:dirty.class="btn-3d btn-3d--blue cursor-pointer"
+                                    wire:dirty.class.remove="bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
+                                    class="bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed px-4 py-2.5 text-sm font-medium rounded-xl whitespace-nowrap transition-all">
                                     {{ 'บันทึก' }}
                                 </button>
                             </form>
                             @error('name')
+                                <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1.5">
+                                    <x-icon name="exclamation-circle" class="h-4 w-4" />
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        {{-- Username --}}
+                        <div>
+                            <label class="flex items-center gap-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                                {{ 'ชื่อผู้ใช้' }}
+                                <span class="normal-case text-gray-300">{{ '(สูงสุด '.\App\Models\User::USERNAME_MAX_LENGTH.' ตัวอักษร)' }}</span>
+                            </label>
+                            <form wire:submit.prevent="updateUsername" class="flex flex-wrap items-center gap-2">
+                                <input wire:model="username" type="text"
+                                    maxlength="{{ \App\Models\User::USERNAME_MAX_LENGTH }}"
+                                    class="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-300 lowercase
+                                           focus:outline-none focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 transition-all"
+                                    placeholder="{{ 'เช่น john_doe' }}">
+                                <button type="submit" disabled wire:target="username"
+                                    wire:dirty.attr.remove="disabled"
+                                    wire:dirty.class="btn-3d btn-3d--blue cursor-pointer"
+                                    wire:dirty.class.remove="bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
+                                    class="bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed px-4 py-2.5 text-sm font-medium rounded-xl whitespace-nowrap transition-all">
+                                    {{ 'บันทึก' }}
+                                </button>
+                            </form>
+                            <p class="mt-1.5 text-xs text-gray-400">{{ 'ใช้แสดงในลิงก์โปรไฟล์ของคุณ ขึ้นต้นด้วยตัวอักษร eng เท่านั้น (a-z, 0-9, . _)' }}</p>
+                            @error('username')
                                 <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1.5">
                                     <x-icon name="exclamation-circle" class="h-4 w-4" />
                                     {{ $message }}

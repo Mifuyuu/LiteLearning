@@ -21,34 +21,53 @@ class GamificationService
         return $user->isStudent();
     }
 
-    public function awardCoins(User $user, int $amount, string $source, ?string $referenceType = null, ?int $referenceId = null, array $metadata = []): void
+    /**
+     * @return bool true if coins were newly awarded, false if this exact event
+     *              (same source+user+reference) was already rewarded before —
+     *              guards against double-submit/race duplicate calls.
+     */
+    public function awardCoins(User $user, int $amount, string $source, ?string $referenceType = null, ?int $referenceId = null, array $metadata = []): bool
     {
         if (! $this->isEligible($user)) {
-            return;
+            return false;
         }
 
         if ($amount === 0) {
-            return;
+            return false;
         }
 
-        DB::transaction(function () use ($user, $amount, $source, $referenceType, $referenceId, $metadata) {
-            CoinTransaction::create([
-                'user_id' => $user->id,
-                'amount' => $amount,
-                'type' => $amount > 0 ? 'earn' : 'spend',
-                'source' => $source,
-                'reference_type' => $referenceType,
-                'reference_id' => $referenceId,
-                'metadata' => $metadata,
-                'happened_at' => now(),
-            ]);
+        $idempotencyKey = $referenceId !== null ? "{$source}:{$user->id}:{$referenceId}" : null;
 
-            $gamification = $user->gamification()->firstOrCreate(
-                ['user_id' => $user->id],
-                ['coins' => 0, 'xp' => 0, 'level' => 1]
-            );
-            $gamification->increment('coins', $amount);
-        });
+        try {
+            DB::transaction(function () use ($user, $amount, $source, $referenceType, $referenceId, $metadata, $idempotencyKey) {
+                CoinTransaction::create([
+                    'user_id' => $user->id,
+                    'amount' => $amount,
+                    'type' => $amount > 0 ? 'earn' : 'spend',
+                    'source' => $source,
+                    'reference_type' => $referenceType,
+                    'reference_id' => $referenceId,
+                    'metadata' => $metadata,
+                    'happened_at' => now(),
+                    'idempotency_key' => $idempotencyKey,
+                ]);
+
+                $gamification = $user->gamification()->firstOrCreate(
+                    ['user_id' => $user->id],
+                    ['coins' => 0, 'xp' => 0, 'level' => 1]
+                );
+                $gamification->increment('coins', $amount);
+            });
+        } catch (QueryException $e) {
+            if ($idempotencyKey === null) {
+                throw $e;
+            }
+
+            // Unique constraint on idempotency_key — this exact event was already rewarded.
+            return false;
+        }
+
+        return true;
     }
 
     public function awardXp(User $user, int $amount): void
@@ -97,9 +116,16 @@ class GamificationService
             return;
         }
 
-        $user->achievements()->attach($achievement->id, [
-            'unlocked_at' => now(),
-        ]);
+        try {
+            $user->achievements()->attach($achievement->id, [
+                'unlocked_at' => now(),
+            ]);
+        } catch (QueryException $e) {
+            // Composite primary key violation — a concurrent request already
+            // unlocked this achievement for the user between the exists()
+            // check above and this attach(). Already handled by that request.
+            return;
+        }
 
         // ponytail: session flash, existing toast shows it on next render
         session()->push('new_achievements', [
@@ -171,8 +197,12 @@ class GamificationService
             return;
         }
 
-        $this->awardCoins($user, 50, 'attendance_checkin', Assignment::class, $assignmentId);
-        $this->awardXp($user, 75);
+        // Gate XP on the coin award actually happening — awardCoins() returns
+        // false when this exact check-in was already rewarded (duplicate/race
+        // call), which must also stop the XP from being doubled.
+        if ($this->awardCoins($user, 50, 'attendance_checkin', Assignment::class, $assignmentId)) {
+            $this->awardXp($user, 75);
+        }
     }
 
     public function awardForCommentCreated(User $user, int $commentId): void
@@ -340,12 +370,52 @@ class GamificationService
         }
 
         DB::transaction(function () use ($user, $item) {
+            // Lock the user row as a mutex so concurrent equip() calls for this
+            // user serialize — otherwise two simultaneous equips of the same
+            // type could both read the old active item as still-active and
+            // leave two items active at once.
+            User::whereKey($user->id)->lockForUpdate()->first();
+
             $user->storeItems()
                 ->wherePivot('is_active', true)
                 ->where('type', $item->type)
                 ->each(fn ($owned) => $user->storeItems()->updateExistingPivot($owned->id, ['is_active' => false]));
 
             $user->storeItems()->updateExistingPivot($item->id, ['is_active' => true]);
+        });
+    }
+
+    /**
+     * Toggle whether an unlocked achievement is shown as a badge after the user's name.
+     * Capped at User::MAX_DISPLAYED_BADGES simultaneously displayed badges.
+     *
+     * @throws GamificationException
+     */
+    public function toggleAchievementDisplay(User $user, Achievement $achievement): void
+    {
+        DB::transaction(function () use ($user, $achievement): void {
+            // Lock the user row as a mutex so concurrent toggle calls for this
+            // user serialize — otherwise two simultaneous "turn on" calls could
+            // both pass the cap check before either commits.
+            User::whereKey($user->id)->lockForUpdate()->first();
+
+            $unlocked = $user->achievements()->where('achievement_id', $achievement->id)->first();
+
+            if (! $unlocked) {
+                throw new GamificationException(__('app.badge_not_unlocked'));
+            }
+
+            if ($unlocked->pivot->is_displayed) {
+                $user->achievements()->updateExistingPivot($achievement->id, ['is_displayed' => false]);
+
+                return;
+            }
+
+            if ($user->achievements()->wherePivot('is_displayed', true)->count() >= User::MAX_DISPLAYED_BADGES) {
+                throw new GamificationException(__('app.badge_display_limit', ['max' => User::MAX_DISPLAYED_BADGES]));
+            }
+
+            $user->achievements()->updateExistingPivot($achievement->id, ['is_displayed' => true]);
         });
     }
 }

@@ -8,7 +8,7 @@
             <div>
                 <h1 class="text-3xl font-black tracking-tight text-[#101114] sm:text-4xl">{{ 'ปฏิทิน' }}</h1>
                 <p class="mt-2 max-w-2xl text-md leading-6 text-[#686b82]">
-                    {{ 'ติดตามภารกิจที่ใกล้ถึงกำหนดส่ง' }}
+                    {{ 'ติดตามภารกิจที่ยังไม่ได้ทำทั้งหมด' }}
                 </p>
             </div>
         </div>
@@ -42,7 +42,8 @@
                         <div class="space-y-2">
                             @foreach($assignments as $a)
                                 @php
-                                    $isUrgent = $a->due_date->lt(now()->addDay());
+                                    $isOverdue = $a->due_date->isPast();
+                                    $isUrgent = $isOverdue || $a->due_date->lt(now()->addDay());
                                     $themeColor = $a->classworkItem->classroom->themeCategory?->color ?? '#8B5CF6';
                                 @endphp
                                 <a href="{{ route('assignment.show', ['classroom' => $a->classworkItem->classroom, 'assignment' => $a]) }}"
@@ -62,7 +63,9 @@
                                         <span class="text-sm font-medium {{ $isUrgent ? 'text-red-600' : 'text-gray-500' }}">
                                             {{ $a->due_date->translatedFormat('H:i') }}
                                         </span>
-                                        @if($isUrgent)
+                                        @if($isOverdue)
+                                            <p class="text-sm text-red-500 mt-0.5">{{ 'เลยกำหนดแล้ว' }}</p>
+                                        @elseif($isUrgent)
                                             <p class="text-sm text-red-500 mt-0.5">{{ 'ใกล้กำหนดส่ง' }}</p>
                                         @endif
                                     </div>

@@ -28,6 +28,10 @@
                         <h1 class="truncate text-3xl font-black sm:text-4xl {{ $user->active_name_color ?: 'text-slate-950' }}">
                             {{ $user->name }}
                         </h1>
+                        @foreach($user->displayed_badges as $badge)
+                            <img src="{{ asset($badge->badge_image ?: 'images/achievements/Achievements_Novice.png') }}"
+                                alt="{{ $badge->name }}" title="{{ $badge->name }}" class="h-7 w-7 shrink-0 object-contain">
+                        @endforeach
                         <span class="inline-flex items-center gap-1 rounded-full bg-[rgba(59,130,246,0.16)] px-2.5 py-1 text-xs font-black uppercase tracking-wide text-[#2563eb]">
                             <x-icon name="user-solid" class="h-3.5 w-3.5 shrink-0" />
                             {{ match($user->role) { 'student' => 'นักเรียน', 'teacher' => 'ครู', 'admin' => 'แอดมิน', default => ucfirst($user->role) } }}

@@ -17,8 +17,16 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
+    // Public-facing handle used only for profile URLs — has no bearing on login/register.
+    public const USERNAME_MAX_LENGTH = 15;
+
+    public const NAME_MAX_LENGTH = 30;
+
+    public const MAX_DISPLAYED_BADGES = 3;
+
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'role',
@@ -27,6 +35,43 @@ class User extends Authenticatable implements MustVerifyEmail
         'bio',
         'is_active',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            if (empty($user->username)) {
+                $user->username = self::generateUniqueUsername($user->name);
+            }
+        });
+    }
+
+    public static function generateUniqueUsername(string $name): string
+    {
+        $firstWord = explode(' ', trim($name), 2)[0] ?? '';
+        $base = preg_replace('/[^A-Za-z0-9._]/', '', $firstWord);
+        $base = preg_replace('/^[^A-Za-z]+/', '', $base);
+        $base = strtolower(substr($base, 0, self::USERNAME_MAX_LENGTH));
+
+        if ($base === '') {
+            $base = 'user';
+        }
+
+        $username = $base;
+        $suffix = 1;
+
+        while (self::where('username', $username)->exists()) {
+            $suffixText = (string) $suffix;
+            $username = substr($base, 0, self::USERNAME_MAX_LENGTH - strlen($suffixText)).$suffixText;
+            $suffix++;
+        }
+
+        return $username;
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'username';
+    }
 
     public function fill(array $attributes)
     {
@@ -95,7 +140,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Achievement::class, 'user_achievements')
             ->using(UserAchievementPivot::class)
-            ->withPivot('unlocked_at')
+            ->withPivot('unlocked_at', 'is_displayed')
             ->withTimestamps();
     }
 
@@ -200,5 +245,21 @@ class User extends Authenticatable implements MustVerifyEmail
             ->wherePivot('is_active', true)
             ->where('type', 'avatar_frame')
             ->value('value');
+    }
+
+    public function getDisplayedBadgesAttribute(): \Illuminate\Support\Collection
+    {
+        // Ordered by when each badge was equipped (pivot updated_at), oldest first.
+        if ($this->relationLoaded('achievements')) {
+            return $this->achievements
+                ->filter(fn (Achievement $a) => $a->pivot->is_displayed)
+                ->sortBy(fn (Achievement $a) => $a->pivot->updated_at)
+                ->values();
+        }
+
+        return $this->achievements()
+            ->wherePivot('is_displayed', true)
+            ->orderBy('user_achievements.updated_at')
+            ->get();
     }
 }

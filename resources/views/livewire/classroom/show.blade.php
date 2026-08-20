@@ -98,7 +98,8 @@
             <a href="{{ route('classroom.stream', $classroom) }}" wire:navigate
                 class="block p-5 transition hover:bg-[rgba(37,99,235,0.03)]">
                 <div class="flex items-center justify-between gap-3">
-                    <span class="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-[10px]"
+                        style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
                         <x-icon name="chat-bubble-left-ellipsis" class="h-5 w-5" />
                     </span>
                     <span class="text-2xl font-black text-[#101114]">{{ $classroom->announcements->count() }}</span>
@@ -110,7 +111,8 @@
             <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
                 class="block p-5 transition hover:bg-[rgba(37,99,235,0.03)]">
                 <div class="flex items-center justify-between gap-3">
-                    <span class="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-[10px]"
+                        style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
                         <x-icon name="clipboard-document-list" class="h-5 w-5" />
                     </span>
                     <span class="text-2xl font-black text-[#101114]">{{ $assignmentCount }}</span>
@@ -122,7 +124,8 @@
             <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
                 class="block p-5 transition hover:bg-[rgba(37,99,235,0.03)]">
                 <div class="flex items-center justify-between gap-3">
-                    <span class="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-[10px]"
+                        style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
                         <x-icon name="users" class="h-5 w-5" />
                     </span>
                     <span class="text-2xl font-black text-[#101114]">{{ $students->count() }}</span>

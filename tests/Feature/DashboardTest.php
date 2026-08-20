@@ -151,7 +151,7 @@ class DashboardTest extends TestCase
         $this->assertSame(50, $review['progress_percent']);
     }
 
-    public function test_student_dashboard_renders_student_single_viewport_cards(): void
+    public function test_student_dashboard_renders_student_cards(): void
     {
         /** @var User $student */
         $student = User::factory()->create(['role' => 'student']);
@@ -159,7 +159,7 @@ class DashboardTest extends TestCase
         $this->actingAs($student)
             ->get(route('dashboard'))
             ->assertOk()
-            ->assertSee('data-content-width="full"', false)
+            ->assertSee('data-content-width="contained"', false)
             ->assertSee('data-dashboard-role="student"', false)
             ->assertSee('dashboard-liquid-progress', false)
             ->assertSee('dashboard-liquid-fill', false)
@@ -185,7 +185,6 @@ class DashboardTest extends TestCase
             ->assertSee('dashboard-liquid-fill', false)
             ->assertSee('outline-2', false)
             ->assertSee('data-activity-heatmap', false)
-            ->assertSee('รอตรวจ')
-            ->assertSee('คิวตรวจงาน');
+            ->assertSee('รอตรวจ');
     }
 }

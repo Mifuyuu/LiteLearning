@@ -28,7 +28,7 @@ class Leaderboard extends Component
         $topStudents = UserGamification::select('user_gamifications.*')
             ->join('users', 'users.id', '=', 'user_gamifications.user_id')
             ->where('users.role', 'student')
-            ->with('user')
+            ->with(['user.achievements' => fn ($q) => $q->wherePivot('is_displayed', true)])
             ->orderBy('user_gamifications.level', 'desc')
             ->orderBy('user_gamifications.xp', 'desc')
             ->take(50)

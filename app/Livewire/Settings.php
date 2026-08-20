@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Lazy;
 use Livewire\Component;
@@ -17,9 +18,9 @@ class Settings extends Component
     {
         return view('livewire.placeholders.generic', ['pageTitle' => 'ตั้งค่า']);
     }
-    const NAME_MAX_LENGTH = 50;
-
     public string $name = '';
+
+    public string $username = '';
 
     public $avatar = null;
 
@@ -33,12 +34,13 @@ class Settings extends Component
         $user = Auth::user();
 
         $this->name = $user->name;
+        $this->username = $user->username;
     }
 
     public function updateName(): void
     {
         $this->validate([
-            'name' => ['required', 'string', 'max:'.self::NAME_MAX_LENGTH],
+            'name' => ['required', 'string', 'max:'.User::NAME_MAX_LENGTH],
         ], [
             'name.required' => __('messages.validation.name'),
         ]);
@@ -47,6 +49,33 @@ class Settings extends Component
         $user = Auth::user();
         $user->update(['name' => trim($this->name)]);
         $this->name = $user->name;
+
+        $this->dispatch('notify', message: __('messages.profile.saved'));
+    }
+
+    public function updateUsername(): void
+    {
+        // Username is case-insensitive by convention — always stored lowercase, regardless of what was typed.
+        $this->username = strtolower(trim($this->username));
+
+        $this->validate([
+            'username' => [
+                'required',
+                'string',
+                'max:'.User::USERNAME_MAX_LENGTH,
+                'regex:/^[a-z][a-z0-9._]*$/',
+                Rule::unique('users', 'username')->ignore(Auth::id()),
+            ],
+        ], [
+            'username.required' => __('messages.validation.username'),
+            'username.regex' => __('messages.validation.username_format'),
+            'username.unique' => __('messages.validation.username_taken'),
+        ]);
+
+        /** @var User $user */
+        $user = Auth::user();
+        $user->update(['username' => $this->username]);
+        $this->username = $user->username;
 
         $this->dispatch('notify', message: __('messages.profile.saved'));
     }

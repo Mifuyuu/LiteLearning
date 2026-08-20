@@ -77,6 +77,37 @@ class ProfileUploadTest extends TestCase
             );
     }
 
+    public function test_username_is_stored_lowercase_even_when_typed_uppercase(): void
+    {
+        $user = User::factory()->create();
+
+        Livewire::actingAs($user)
+            ->test(\App\Livewire\Settings::class)
+            ->set('username', 'JohnDOE_99')
+            ->call('updateUsername')
+            ->assertHasNoErrors();
+
+        $this->assertSame('johndoe_99', $user->refresh()->username);
+    }
+
+    public function test_username_rejects_duplicate_and_invalid_format(): void
+    {
+        User::factory()->create(['username' => 'taken']);
+        $user = User::factory()->create();
+
+        Livewire::actingAs($user)
+            ->test(\App\Livewire\Settings::class)
+            ->set('username', 'taken')
+            ->call('updateUsername')
+            ->assertHasErrors(['username' => 'unique']);
+
+        Livewire::actingAs($user)
+            ->test(\App\Livewire\Settings::class)
+            ->set('username', '9startswithdigit')
+            ->call('updateUsername')
+            ->assertHasErrors(['username' => 'regex']);
+    }
+
     public function test_student_profile_renders_rank_graph_data()
     {
         /** @var User $student */

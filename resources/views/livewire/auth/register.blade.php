@@ -49,7 +49,7 @@
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <x-icon name="user" class="h-4 w-4 text-[#9497a9]" />
                         </div>
-                        <input id="name" type="text" wire:model="name" autocomplete="name"
+                        <input id="name" type="text" wire:model="name" autocomplete="name" maxlength="{{ \App\Models\User::NAME_MAX_LENGTH }}"
                             placeholder="พิมพ์ชื่อ-นามสกุลของคุณ"
                             class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('name') border-red-500 @enderror">
                     </div>

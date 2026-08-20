@@ -46,3 +46,4 @@ Inspiration.jpg
 ./docs
 /.omo
 *.bat
+/.claude/settings.local.json

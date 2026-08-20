@@ -32,7 +32,7 @@ class Achievement extends Model
     {
         return $this->belongsToMany(User::class, 'user_achievements')
             ->using(UserAchievementPivot::class)
-            ->withPivot('unlocked_at')
+            ->withPivot('unlocked_at', 'is_displayed')
             ->withTimestamps();
     }
 }

@@ -75,7 +75,7 @@
     <div class="app-shell relative z-10 flex overflow-clip">
         <!-- Sidebar -->
         <aside
-            class="fixed inset-y-0 left-0 z-30 flex w-72 -translate-x-full flex-col overflow-hidden bg-white transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:translate-x-0 lg:shrink-0"
+            class="fixed inset-y-0 left-0 z-30 flex w-72 -translate-x-full flex-col overflow-hidden bg-white border-r-3 border-[#dedee5] transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:translate-x-0 lg:shrink-0"
             :class="{ '-translate-x-full': !mobileSidebar, 'translate-x-0': mobileSidebar }">
             <div class="flex h-[88px] shrink-0 items-center px-6">
                 <img src="{{ asset('images/LiteLearn.svg') }}" alt="LiteLearning"
@@ -368,8 +368,8 @@
 
             <!-- Page Content -->
             <main class="flex-1 min-h-0 overflow-x-hidden overflow-y-auto px-4 pt-6 pb-28 sm:px-6 sm:pb-6" style="scrollbar-gutter: stable">
-                <div data-content-width="{{ (request()->routeIs('dashboard')) ? 'full' : 'contained' }}"
-                    class="w-full {{ (request()->routeIs('dashboard') || request()->routeIs('store')) ? 'max-w-none' : 'mx-auto max-w-7xl' }}">
+                <div data-content-width="{{ request()->routeIs('store') ? 'full' : 'contained' }}"
+                    class="w-full {{ request()->routeIs('store') ? 'max-w-none' : 'mx-auto max-w-7xl' }}">
                     @hasSection('content')
                         @yield('content')
                     @else

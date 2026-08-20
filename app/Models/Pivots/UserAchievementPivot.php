@@ -16,12 +16,14 @@ class UserAchievementPivot extends Pivot
         'user_id',
         'achievement_id',
         'unlocked_at',
+        'is_displayed',
     ];
 
     protected function casts(): array
     {
         return [
             'unlocked_at' => 'datetime',
+            'is_displayed' => 'boolean',
         ];
     }
 }

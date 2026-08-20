@@ -24,9 +24,9 @@
                 @php
                     $podiumOrder = [1, 0, 2];
                     $podiumConfig = [
-                        0 => ['wrap' => 'w-1/3 max-w-[180px]', 'avatar' => 'w-16 h-16 sm:w-20 sm:h-20', 'ring' => 'ring-amber-300 shadow-md', 'name' => 'text-sm sm:text-base font-bold text-[#101114]', 'height' => 'h-[145px]', 'bg' => 'bg-[var(--ll-blue)]', 'levelText' => 'text-white/70', 'shadowInner' => true, 'trophy' => 'Trophy_Golden.png', 'trophySize' => 'h-20 w-20', 'delay' => '0.4s'],
-                        1 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.4)] shadow', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[100px]', 'bg' => 'bg-[rgba(37,99,235,0.24)]', 'levelText' => 'text-[var(--ll-blue)]/70', 'shadowInner' => true, 'trophy' => 'Trophy_Silver.png', 'trophySize' => 'h-16 w-16', 'delay' => '0.2s'],
-                        2 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.2)] shadow', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[72px]', 'bg' => 'bg-[rgba(37,99,235,0.12)]', 'levelText' => 'text-[var(--ll-blue)]/70', 'shadowInner' => false, 'trophy' => 'Trophy_Bronze.png', 'trophySize' => 'h-14 w-14', 'delay' => null],
+                        0 => ['wrap' => 'w-1/3 max-w-[180px]', 'avatar' => 'w-16 h-16 sm:w-20 sm:h-20', 'ring' => 'ring-amber-300', 'name' => 'text-sm sm:text-base font-bold text-[#101114]', 'height' => 'h-[145px]', 'bg' => 'bg-[#FFA828]', 'levelText' => 'text-white/70', 'trophy' => 'Trophy_Golden.png', 'trophySize' => 'h-20 w-20', 'delay' => '0.4s'],
+                        1 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.4)]', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[100px]', 'bg' => 'bg-[#CFDBE0]', 'levelText' => 'text-[var(--ll-blue)]/70', 'trophy' => 'Trophy_Silver.png', 'trophySize' => 'h-16 w-16', 'delay' => '0.2s'],
+                        2 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.2)]', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[72px]', 'bg' => 'bg-[#F49D5F]', 'levelText' => 'text-[var(--ll-blue)]/70', 'trophy' => 'Trophy_Bronze.png', 'trophySize' => 'h-14 w-14', 'delay' => null],
                     ];
                 @endphp
                 <div class="flex items-end justify-center gap-3">
@@ -44,15 +44,21 @@
                                     <div class="absolute inset-0 rounded-full {{ $student->user->active_avatar_frame }} pointer-events-none"></div>
                                 @endif
                             </div>
-                            <p class="{{ $c['name'] }} truncate w-full text-center mb-1 {{ $student->user->active_name_color ?? '' }}">
-                                {{ $student->user->name }}</p>
+                            <div class="flex items-center justify-center gap-1 w-full mb-1">
+                                <p class="{{ $c['name'] }} truncate {{ $student->user->active_name_color ?? '' }}">
+                                    {{ $student->user->name }}</p>
+                                @foreach($student->user->displayed_badges as $badge)
+                                    <img src="{{ asset($badge->badge_image ?: 'images/achievements/Achievements_Novice.png') }}"
+                                        alt="{{ $badge->name }}" title="{{ $badge->name }}" class="h-4 w-4 shrink-0 object-contain">
+                                @endforeach
+                            </div>
                             <div class="flex items-center gap-1 text-xs text-[#9497a9] mb-3">
                                 <span class="font-bold text-[#686b82]">{{ number_format($student->xp) }}</span>
                                 <x-icon name="bolt" class="text-[var(--ll-blue)] h-4 w-4 shrink-0" />
                             </div>
                             {{-- Podium block --}}
                             <img src="{{ asset('images/'.$c['trophy']) }}" alt="" class="{{ $c['trophySize'] }} animate__animated animate__bounceIn" @if($c['delay']) style="animation-delay: {{ $c['delay'] }};" @endif>
-                            <div class="w-full {{ $c['height'] }} {{ $c['bg'] }} rounded-t-xl flex items-end justify-center pb-3 {{ $c['shadowInner'] ? 'shadow-inner' : '' }}">
+                            <div class="w-full {{ $c['height'] }} {{ $c['bg'] }} rounded-t-xl flex items-end justify-center pb-3">
                                 <span class="text-base {{ $c['levelText'] }}">{{ 'เลเวล' }} {{ $student->level }}</span>
                             </div>
                         </a>
@@ -81,6 +87,10 @@
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-semibold text-[#101114] truncate {{ $record->user->active_name_color ?? '' }}">
                                         {{ $record->user->name }}
+                                        @foreach($record->user->displayed_badges as $badge)
+                                            <img src="{{ asset($badge->badge_image ?: 'images/achievements/Achievements_Novice.png') }}"
+                                                alt="{{ $badge->name }}" title="{{ $badge->name }}" class="inline h-4 w-4 shrink-0 object-contain align-text-bottom">
+                                        @endforeach
                                         @if($isMe)
                                             <span
                                                 class="ml-1 text-[10px] font-bold text-[var(--ll-blue)] bg-[var(--ll-blue-subtle)] px-1.5 py-0.5 rounded-[4px]">YOU</span>

@@ -2,6 +2,7 @@
     $isManager = $classroom->canManageClassroom(auth()->user());
     $submittedCount = $assignment->submittedCount();
     $studentCount = $classroom->students->count();
+    $themeColor = $classroom->themeCategory?->color ?? '#2563eb';
 @endphp
 
 <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}" wire:navigate
@@ -9,7 +10,8 @@
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-2">
-                <span class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--ll-blue-subtle)] text-[var(--ll-blue)]">
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-[10px]"
+                    style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
                     <x-icon name="document-text" class="h-5 w-5" />
                 </span>
                 <div class="min-w-0">
@@ -23,7 +25,8 @@
                             </span>
                         @endif
                         @if($assignment->topic)
-                            <span class="inline-flex items-center gap-1 rounded-[6px] bg-[var(--ll-blue-subtle)] px-2.5 py-1 text-[var(--ll-blue)]">
+                            <span class="inline-flex items-center gap-1 rounded-[6px] px-2.5 py-1"
+                                style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
                                 <x-icon name="tag" class="h-3 w-3" />
                                 {{ $assignment->topic }}
                             </span>
