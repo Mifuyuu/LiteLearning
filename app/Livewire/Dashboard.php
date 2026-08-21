@@ -137,7 +137,7 @@ class Dashboard extends Component
         return [
             'role' => 'teacher',
             'activity' => $activity,
-            'primaryMetric' => $reviewProgress,
+            'primaryMetric' => $analytics->teacherSubmissionStatus($user),
             'quickStats' => [
                 ['label' => 'ห้องเรียน', 'value' => number_format($ownedClassrooms->count()), 'icon' => 'academic-cap'],
                 ['label' => 'นักเรียน', 'value' => number_format($ownedClassrooms->sum('students_count')), 'icon' => 'users'],

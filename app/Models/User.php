@@ -157,6 +157,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(BugReport::class);
     }
 
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(Attachment::class, 'uploaded_by');
+    }
+
     // Helpers
     public function isTeacher(): bool
     {

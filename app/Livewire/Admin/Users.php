@@ -96,7 +96,7 @@ class Users extends Component
         }
 
         return view('livewire.admin.users', [
-            'users' => $query->latest()->paginate(15),
+            'users' => $query->withSum('attachments', 'file_size')->latest()->paginate(15),
         ]);
     }
 }

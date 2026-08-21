@@ -87,7 +87,13 @@
 
         <!-- File Upload Section -->
         @if($type !== 'attendance')
-            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden"
+                x-data="{ uploading: false, progress: 0, uploadError: '' }"
+                x-on:livewire-upload-start="uploading = true; progress = 0; uploadError = ''"
+                x-on:livewire-upload-finish="uploading = false"
+                x-on:livewire-upload-cancel="uploading = false"
+                x-on:livewire-upload-error="uploading = false; uploadError = 'อัปโหลดไฟล์ไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป (สูงสุด 25MB) กรุณาลองใหม่อีกครั้ง'"
+                x-on:livewire-upload-progress="progress = $event.detail.progress">
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                     <h3 class="text-sm font-semibold text-gray-700">ไฟล์แนบ</h3>
                 </div>
@@ -115,17 +121,24 @@
                     </div>
 
                     <!-- Loading State -->
-                    <div wire:loading wire:target="file" class="mt-4 w-full">
-                        <div
-                            class="flex items-center justify-center space-x-2 text-sm text-blue-600 bg-blue-50 rounded-lg p-3">
-                            <x-icon name="spinner" class="h-4 w-4 animate-spin" />
-                            <span>กำลังอัปโหลดไฟล์...</span>
+                    <div x-show="uploading" x-cloak class="mt-4 w-full bg-blue-50 rounded-lg p-3">
+                        <div class="flex items-center justify-between text-sm text-blue-600 mb-1.5">
+                            <span class="flex items-center gap-2">
+                                <x-icon name="spinner" class="h-4 w-4 animate-spin" />
+                                กำลังอัปโหลดไฟล์...
+                            </span>
+                            <span class="font-semibold" x-text="progress + '%'"></span>
+                        </div>
+                        <div class="h-2 bg-blue-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500 rounded-full transition-all duration-150" :style="`width: ${progress}%`"></div>
                         </div>
                     </div>
 
                     @error('file')
                         <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
                     @enderror
+
+                    <p x-show="uploadError" x-cloak x-text="uploadError" class="mt-2 text-sm text-red-500"></p>
 
                     <!-- Uploaded Files List -->
                     @if(count($uploadedFiles) > 0)

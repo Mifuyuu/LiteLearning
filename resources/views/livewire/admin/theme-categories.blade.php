@@ -65,11 +65,11 @@
                         <td class="px-4 py-2 hidden sm:table-cell">
                             @if ($category->is_active)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <x-icon name="circle" class="h-2 w-2 mr-1.5" />ใช้งาน
+                                    <x-icon name="circle-solid" class="h-2 w-2 mr-1.5" />ใช้งาน
                                 </span>
                             @else
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
-                                    <x-icon name="circle" class="h-2 w-2 mr-1.5" />ปิดใช้งาน
+                                    <x-icon name="circle-solid" class="h-2 w-2 mr-1.5" />ปิดใช้งาน
                                 </span>
                             @endif
                         </td>

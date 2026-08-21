@@ -20,10 +20,7 @@ class Dashboard extends Component
         return view('livewire.admin.dashboard', [
             'stats' => $analytics->overview(),
             'growthData' => $analytics->userGrowth($months),
-            'completionData' => $analytics->completionRate(),
-            'classroomActivity' => $analytics->classroomActivity(),
-            'storeEconomy' => $analytics->storeEconomy(),
-            'topUsers' => $analytics->topActiveUsers(),
+            'storageUsage' => $analytics->storageUsage(),
             'dailyActive' => $analytics->dailyActiveStudents(),
         ]);
     }

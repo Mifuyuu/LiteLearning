@@ -92,6 +92,33 @@ class DashboardAnalyticsService
         ];
     }
 
+    public function teacherSubmissionStatus(User $user): array
+    {
+        $classroomIds = $user->ownedClassrooms()->pluck('id');
+        $submissions = Submission::query()
+            ->whereHas('assignment.classworkItem', fn ($query) => $query->whereIn('classroom_id', $classroomIds));
+
+        $total = (clone $submissions)->count();
+        if ($total === 0) {
+            return ['rate' => 0, 'turned_in' => 0, 'graded' => 0, 'returned' => 0, 'assigned' => 0];
+        }
+
+        $counts = (clone $submissions)->selectRaw("
+            SUM(CASE WHEN status = 'turned_in' THEN 1 ELSE 0 END) as turned_in,
+            SUM(CASE WHEN status = 'graded' THEN 1 ELSE 0 END) as graded,
+            SUM(CASE WHEN status = 'returned' THEN 1 ELSE 0 END) as returned,
+            SUM(CASE WHEN status = 'assigned' THEN 1 ELSE 0 END) as assigned
+        ")->first();
+
+        return [
+            'rate' => round((($counts->graded + $counts->returned) / $total) * 100, 1),
+            'turned_in' => (int) $counts->turned_in,
+            'graded' => (int) $counts->graded,
+            'returned' => (int) $counts->returned,
+            'assigned' => (int) $counts->assigned,
+        ];
+    }
+
     private function activityRange(int $months = 6): array
     {
         $gridEnd = now()->endOfWeek(Carbon::SUNDAY)->endOfDay();

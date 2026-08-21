@@ -62,7 +62,7 @@
             <div class="relative" x-data="{ open: false }">
                     <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
                         class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <x-icon name="circle" class="h-1.5 w-1.5 {{ $statusFilter === 'active' ? 'text-green-500' : ($statusFilter === 'inactive' ? 'text-red-400' : 'text-gray-400') }}" />
+                        <x-icon name="circle-solid" class="h-1.5 w-1.5 {{ $statusFilter === 'active' ? 'text-green-500' : ($statusFilter === 'inactive' ? 'text-red-400' : 'text-gray-400') }}" />
                         <span>
                             @if($statusFilter === '') ทุกสถานะ
                             @elseif($statusFilter === 'active') ใช้งาน
@@ -110,8 +110,9 @@
                     <tr>
                         <th class="px-6 py-3 text-left">ผู้ใช้</th>
                         <th class="px-6 py-3 text-left">บทบาท</th>
-                        <th class="px-6 py-3 text-left">สถานะ</th>
                         <th class="px-6 py-3 text-left">วันที่สมัคร</th>
+                        <th class="px-6 py-3 text-left">พื้นที่จัดเก็บ</th>
+                        <th class="px-6 py-3 text-left">สถานะ</th>
                         <th class="px-6 py-3 text-right">การดำเนินการ</th>
                     </tr>
                 </thead>
@@ -156,17 +157,17 @@
                                         x-transition:leave-end="opacity-0 scale-95"
                                         class="absolute left-0 mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
                                         <div role="menu">
-                                            <button type="button" role="menuitem" wire:click="updateRole({{ $user->id }}, 'admin')" @click="open = false"
+                                            <button type="button" role="menuitem" wire:click="updateRole('{{ $user->username }}', 'admin')" @click="open = false"
                                                 class="flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-gray-50 transition-colors cursor-pointer {{ $user->role === 'admin' ? 'text-blue-700 bg-blue-50 font-bold' : 'text-gray-700' }}">
                                                 แอดมิน
                                                 @if($user->role === 'admin') <x-icon name="check" class="h-3 w-3" /> @endif
                                             </button>
-                                            <button type="button" role="menuitem" wire:click="updateRole({{ $user->id }}, 'teacher')" @click="open = false"
+                                            <button type="button" role="menuitem" wire:click="updateRole('{{ $user->username }}', 'teacher')" @click="open = false"
                                                 class="flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-gray-50 transition-colors cursor-pointer {{ $user->role === 'teacher' ? 'text-blue-700 bg-blue-50 font-bold' : 'text-gray-700' }}">
                                                 ครู
                                                 @if($user->role === 'teacher') <x-icon name="check" class="h-3 w-3" /> @endif
                                             </button>
-                                            <button type="button" role="menuitem" wire:click="updateRole({{ $user->id }}, 'student')" @click="open = false"
+                                            <button type="button" role="menuitem" wire:click="updateRole('{{ $user->username }}', 'student')" @click="open = false"
                                                 class="flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-gray-50 transition-colors cursor-pointer {{ $user->role === 'student' ? 'text-blue-700 bg-blue-50 font-bold' : 'text-gray-700' }}">
                                                 นักเรียน
                                                 @if($user->role === 'student') <x-icon name="check" class="h-3 w-3" /> @endif
@@ -175,17 +176,30 @@
                                     </div>
                                 </div>
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                                {{ $user->created_at->translatedFormat('j M Y') }}
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <button wire:click="toggleStatus({{ $user->id }})"
+                                @php
+                                    $usedBytes = $user->attachments_sum_file_size ?? 0;
+                                    $usedPercent = min(100, ($usedBytes / \App\Services\AdminAnalyticsService::STORAGE_LIMIT_BYTES) * 100);
+                                @endphp
+                                <div class="w-32">
+                                    <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full rounded-full {{ $usedPercent >= 90 ? 'bg-red-500' : ($usedPercent >= 70 ? 'bg-amber-500' : 'bg-blue-500') }}"
+                                            style="width: {{ max(2, $usedPercent) }}%"></div>
+                                    </div>
+                                    <p class="mt-1 text-[10px] text-gray-500">{{ number_format($usedBytes / 1048576, 1) }} / 1024 MB</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <button wire:click="toggleStatus('{{ $user->username }}')"
                                     class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold transition-colors
                                                 {{ $user->is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' }}"
                                     @if($user->id === auth()->id()) disabled @endif>
-                                    <x-icon name="circle" class="h-1.5 w-1.5 mr-1.5" />
+                                    <x-icon name="circle-solid" class="h-1.5 w-1.5 mr-1.5" />
                                     {{ $user->is_active ? 'ใช้งาน' : 'ปิดใช้งาน' }}
                                 </button>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-                                {{ $user->created_at->format('d M Y') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">
                                 <div class="flex justify-end gap-3 text-gray-400">
@@ -195,7 +209,7 @@
                                     </a>
                                     @if($user->id !== auth()->id())
                         <button type="button"
-                            @click="$dispatch('open-delete-user', { id: {{ $user->id }}, name: '{{ addslashes($user->name) }}' })"
+                            @click="$dispatch('open-delete-user', { id: '{{ $user->username }}', name: '{{ addslashes($user->name) }}' })"
                             class="hover:text-red-600 transition-colors p-1"
                             title="ลบผู้ใช้">
                             <x-icon name="trash" class="h-4 w-4" />
@@ -206,7 +220,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">
                                 <div class="flex flex-col items-center">
                                     <x-icon name="users" class="h-9 w-9 mb-3 opacity-20" />
                                     <p>ไม่พบผู้ใช้ที่ตรงกับเงื่อนไข</p>

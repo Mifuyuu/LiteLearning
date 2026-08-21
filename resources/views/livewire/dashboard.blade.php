@@ -97,21 +97,32 @@
                             อีก {{ number_format($primaryMetric['remaining']) }} XP จะถึงเลเวล {{ $primaryMetric['level'] + 1 }}
                         </p>
                     @else
-                        <div class="flex items-start justify-between gap-3">
-                            <div>
-                                <p class="text-xs font-bold uppercase    text-(--ll-blue)">รอตรวจ</p>
-                                <p class="mt-2 text-5xl font-bold leading-none text-[#101114]">{{ number_format($primaryMetric['pending']) }}</p>
-                            </div>
-                            <span class="rounded-[9px] bg-(--ll-blue-subtle) px-2.5 py-1 text-xs font-bold text-(--ll-blue)">
-                                {{ number_format($primaryMetric['graded_this_week']) }} ตรวจแล้ว
-                            </span>
+                        <p class="text-xs font-bold uppercase text-(--ll-blue)">สถานะการส่งงาน</p>
+                        <p class="mt-2 text-5xl font-bold leading-none text-[#101114]">{{ $primaryMetric['rate'] }}%</p>
+                        <p class="mt-1 text-sm text-[#686b82]">ตรวจเรียบร้อยแล้ว</p>
+                        <div class="mt-5 space-y-2.5">
+                            @php
+                                $teacherSubTotal = max(1, $primaryMetric['turned_in'] + $primaryMetric['graded'] + $primaryMetric['returned'] + $primaryMetric['assigned']);
+                                $teacherStatusBars = [
+                                    ['label' => 'ส่งแล้ว', 'count' => $primaryMetric['turned_in'], 'color' => 'bg-blue-500'],
+                                    ['label' => 'ตรวจแล้ว', 'count' => $primaryMetric['graded'], 'color' => 'bg-green-500'],
+                                    ['label' => 'ส่งคืน', 'count' => $primaryMetric['returned'], 'color' => 'bg-red-500'],
+                                    ['label' => 'ยังไม่ส่ง', 'count' => $primaryMetric['assigned'], 'color' => 'bg-gray-300'],
+                                ];
+                            @endphp
+                            @foreach($teacherStatusBars as $bar)
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-[#686b82]">{{ $bar['label'] }}</span>
+                                        <span class="font-medium text-[#101114]">{{ $bar['count'] }}</span>
+                                    </div>
+                                    <div class="h-2 bg-[#f7f5f9] rounded-full overflow-hidden">
+                                        <div class="h-full {{ $bar['color'] }} rounded-full transition-all"
+                                            style="width: {{ ($bar['count'] / $teacherSubTotal) * 100 }}%"></div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                        <div class="dashboard-liquid-progress mt-5 outline-2 outline-[rgba(37,99,235,0.28)]" role="progressbar"
-                            aria-label="ความคืบหน้าการตรวจ" aria-valuemin="0" aria-valuemax="100"
-                            aria-valuenow="{{ $primaryMetric['progress_percent'] }}">
-                            <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%"></span>
-                        </div>
-                        <p class="mt-2 text-sm text-[#686b82]">การตรวจงานประจำสัปดาห์ · {{ $primaryMetric['progress_percent'] }}%</p>
                     @endif
                 </div>
 

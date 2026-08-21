@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Models\Assignment;
+use App\Models\Attachment;
 use App\Models\BugReport;
 use App\Models\Classroom;
 use App\Models\CoinTransaction;
 use App\Models\Submission;
-use App\Models\StoreItem;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\DB;
 
 class AdminAnalyticsService
 {
+    public const STORAGE_LIMIT_BYTES = 1073741824; // 1 GB per user
+
+    public const TOTAL_STORAGE_LIMIT_BYTES = 1099511627776; // 1 TB system-wide
+
     private function cacheKey(string $key): string
     {
         return "admin_analytics:{$key}";
@@ -85,113 +89,19 @@ class AdminAnalyticsService
     }
 
     /**
-     * Submission stats per classroom (top 10).
+     * Aggregate file storage usage across all users.
      */
-    public function classroomActivity(int $limit = 10): Collection
+    public function storageUsage(): array
     {
-        return Cache::remember($this->cacheKey("classroom_activity:{$limit}"), 300, function () use ($limit) {
-            return Classroom::where('is_archived', false)
-                ->withCount(['classworkItems as assignments_count' => function ($q) {
-                    $q->whereHas('assignment');
-                }])
-                ->withCount(['students'])
-                ->get()
-                ->map(function ($c) {
-                    $submissions = Submission::whereHas('assignment.classworkItem', function ($q) use ($c) {
-                        $q->where('classroom_id', $c->id);
-                    });
-                    $turnedIn = (clone $submissions)->where('status', '!=', 'assigned')->count();
-                    $graded = (clone $submissions)->where('status', 'graded')->count();
-                    $avgScore = (clone $submissions)->where('status', 'graded')->avg('score');
-
-                    return [
-                        'classroom' => $c,
-                        'student_count' => $c->students_count,
-                        'submissions' => $turnedIn,
-                        'graded' => $graded,
-                        'avg_score' => $avgScore ? round($avgScore, 1) : null,
-                    ];
-                })
-                ->sortByDesc('submissions')
-                ->take($limit)
-                ->values();
-        });
-    }
-
-    /**
-     * Completion rate stats.
-     */
-    public function completionRate(): array
-    {
-        return Cache::remember($this->cacheKey('completion_rate'), 600, function () {
-            $total = Submission::count();
-            if ($total === 0) {
-                return ['rate' => 0, 'turned_in' => 0, 'graded' => 0, 'returned' => 0, 'assigned' => 0];
-            }
-
-            $counts = Submission::selectRaw("
-                COUNT(*) as total,
-                SUM(CASE WHEN status = 'turned_in' THEN 1 ELSE 0 END) as turned_in,
-                SUM(CASE WHEN status = 'graded' THEN 1 ELSE 0 END) as graded,
-                SUM(CASE WHEN status = 'returned' THEN 1 ELSE 0 END) as returned,
-                SUM(CASE WHEN status = 'assigned' THEN 1 ELSE 0 END) as assigned
-            ")->first();
+        return Cache::remember($this->cacheKey('storage_usage'), 300, function () {
+            $usedBytes = (int) Attachment::sum('file_size');
+            $totalBytes = self::TOTAL_STORAGE_LIMIT_BYTES;
 
             return [
-                'rate' => round((($counts->graded + $counts->returned) / $total) * 100, 1),
-                'turned_in' => $counts->turned_in,
-                'graded' => $counts->graded,
-                'returned' => $counts->returned,
-                'assigned' => $counts->assigned,
+                'used_bytes' => $usedBytes,
+                'total_bytes' => $totalBytes,
+                'percent' => $totalBytes > 0 ? min(100, round(($usedBytes / $totalBytes) * 100, 1)) : 0,
             ];
-        });
-    }
-
-    /**
-     * Store economy stats.
-     */
-    public function storeEconomy(): array
-    {
-        return Cache::remember($this->cacheKey('store_economy'), 600, function () {
-            $totalEarned = CoinTransaction::where('amount', '>', 0)->sum('amount');
-            $totalSpent = CoinTransaction::where('amount', '<', 0)->sum(DB::raw('ABS(amount)'));
-            $totalTransactions = CoinTransaction::count();
-
-            $popularItems = StoreItem::withCount(['users as purchase_count'])
-                ->orderByDesc('purchase_count')
-                ->take(5)
-                ->get()
-                ->map(fn ($item) => [
-                    'name' => $item->name,
-                    'count' => $item->purchase_count,
-                ]);
-
-            return [
-                'total_earned' => $totalEarned,
-                'total_spent' => $totalSpent,
-                'total_transactions' => $totalTransactions,
-                'popular_items' => $popularItems,
-            ];
-        });
-    }
-
-    /**
-     * Top active users by submission count.
-     */
-    public function topActiveUsers(int $limit = 10): Collection
-    {
-        return Cache::remember($this->cacheKey("top_users:{$limit}"), 600, function () use ($limit) {
-            return User::where('role', 'student')
-                ->withCount('submissions')
-                ->withSum('gamification as total_xp', 'xp')
-                ->orderByDesc('submissions_count')
-                ->take($limit)
-                ->get()
-                ->map(fn ($u) => [
-                    'user' => $u,
-                    'submissions' => $u->submissions_count,
-                    'xp' => $u->total_xp ?? 0,
-                ]);
         });
     }
 
