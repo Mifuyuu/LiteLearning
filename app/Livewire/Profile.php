@@ -37,12 +37,15 @@ class Profile extends Component
 
     public array $profileStats = [];
 
+    public bool $isOwnProfile = true;
+
     public function mount(?User $user = null): void
     {
         /** @var User $viewer */
         $viewer = Auth::user();
         $user = ($user && $user->exists) ? $user : $viewer;
         $this->user = $user;
+        $this->isOwnProfile = $user->id === $viewer->id;
 
         $this->allAchievements = Achievement::query()
             ->where('is_active', true)
@@ -55,28 +58,9 @@ class Profile extends Component
 
         $classrooms = $user->allClassrooms();
         $classrooms->load(['teacher', 'themeCategory']);
-        $classrooms->loadCount([
-            'students',
-            'assignments as assignments_count' => fn ($query) => $query->published(),
-        ]);
+        $classrooms->loadCount(['assignments as assignments_count' => fn ($query) => $query->published()]);
 
-        $this->profileClassrooms = $classrooms
-            ->map(function ($classroom) use ($user): array {
-                $role = 'นักเรียน';
-                if ($classroom->isOwnedBy($user)) {
-                    $role = 'เจ้าของ';
-                } elseif ($classroom->pivot && $classroom->pivot->role === 'co-teacher') {
-                    $role = 'ผู้สอนร่วม';
-                }
-
-                return [
-                    'model' => $classroom,
-                    'role' => $role,
-                    'students_count' => $classroom->students_count,
-                    'assignments_count' => $classroom->assignments_count,
-                ];
-            })
-            ->values();
+        $this->profileClassrooms = $classrooms->values();
 
         $this->recentSubmissions = $user->submissions()
             ->with(['assignment.classworkItem.classroom.themeCategory'])
@@ -200,18 +184,7 @@ class Profile extends Component
             ];
         }
 
-        $ranks = array_column($points, 'rank');
-        $minR = min($ranks);
-        $maxR = max($ranks);
-        $range = $maxR - $minR;
-
-        foreach ($points as $index => $pt) {
-            $x = ($index / (count($points) - 1)) * 400;
-            $y = $range > 0 ? 20 + (($pt['rank'] - $minR) / $range) * 45 : 42.5;
-            $this->chartPoints[] = [
-                'x' => $x, 'y' => $y, 'day' => $pt['day'], 'rank' => $pt['rank'],
-            ];
-        }
+        $this->chartPoints = $points;
     }
 
     public function render(): View

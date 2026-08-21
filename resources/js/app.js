@@ -4,10 +4,51 @@ import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import { TextAlign } from '@tiptap/extension-text-align';
 import Placeholder from '@tiptap/extension-placeholder';
+import ApexCharts from 'apexcharts';
 
 window.Cropper = Cropper;
 
 document.addEventListener('alpine:init', () => {
+    Alpine.data('rankChart', (points) => ({
+        activePoint: points.length - 1,
+
+        get activeRank() { return Number(points[this.activePoint].rank).toLocaleString(); },
+
+        init() {
+            // ponytail: Livewire evaluates x-data on the morphed fragment before it's
+            // attached to the document, so $refs.chart is briefly undefined here.
+            // requestAnimationFrame runs after that attach completes; look it up
+            // again inside the callback rather than closing over the stale value.
+            requestAnimationFrame(() => {
+                const el = this.$refs.chart;
+                // Livewire's lazy-load hydration calls init() more than once for the
+                // same element; guard against mounting a second chart onto it.
+                if (!el || el.dataset.chartMounted) return;
+                el.dataset.chartMounted = '1';
+                new ApexCharts(el, {
+                    chart: {
+                        type: 'area',
+                        height: el.clientHeight,
+                        sparkline: { enabled: true },
+                        animations: { enabled: false },
+                        events: {
+                            dataPointMouseEnter: (_e, _ctx, { dataPointIndex }) => { this.activePoint = dataPointIndex; },
+                        },
+                    },
+                    series: [{ name: 'อันดับ', data: points.map((p) => p.rank) }],
+                    yaxis: { reversed: true },
+                    colors: ['#2563eb'],
+                    stroke: { curve: 'smooth', width: 2.5 },
+                    fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.15, opacityTo: 0 } },
+                    tooltip: {
+                        x: { formatter: (_val, { dataPointIndex }) => points[dataPointIndex].day },
+                        y: { formatter: (val) => '#' + Number(val).toLocaleString() },
+                    },
+                }).render();
+            });
+        },
+    }));
+
     Alpine.data('tiptapEditor', ({ wireModel, placeholder = '' }) => {
         let editor = null;
 
