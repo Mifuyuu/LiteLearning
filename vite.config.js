@@ -13,6 +13,20 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    build: {
+        chunkSizeWarningLimit: 1000,
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        if (id.includes('apexcharts')) return 'vendor-apexcharts';
+                        if (id.includes('@tiptap')) return 'vendor-tiptap';
+                        if (id.includes('cropperjs')) return 'vendor-cropper';
+                    }
+                },
+            },
+        },
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],
