@@ -12,6 +12,10 @@
     </nav>
 @endsection
 
+@php
+    $themeColor = $classroom->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['color'];
+@endphp
+
 <div class="max-w-4xl mx-auto" x-data="{ copiedToast: false, showDeleteModal: false }">
     <!-- Back (previous page, falls back to classroom home on direct load) -->
     <a href="{{ route('classroom.show', $classroom) }}" onclick="if (history.length > 1) { history.back(); return false; }"
@@ -29,7 +33,7 @@
                         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                             <div class="flex items-start min-w-0">
                                 <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0"
-                                    style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20; color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
+                                    style="background-color: {{ $themeColor }}20; color: {{ $themeColor }}">
                                     <x-icon :name="$assignment->typeIcon()" class="h-5 w-5" />
                                 </div>
                                 <div class="ml-3 sm:ml-4 min-w-0">
@@ -37,7 +41,7 @@
                                         <h1 class="text-lg sm:text-xl font-bold text-gray-900 wrap-break-word">
                                             {{ $assignment->title }}</h1>
                                         <span class="px-2.5 py-0.5 rounded-full text-xs font-medium shrink-0"
-                                            style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20; color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
+                                            style="background-color: {{ $themeColor }}20; color: {{ $themeColor }}">
                                             {{ $assignment->typeLabel() }}
                                         </span>
                                     </div>
@@ -290,12 +294,12 @@
                         @endphp
                         <div class="flex items-center gap-3 bg-white px-5 py-3.5 rounded-xl border border-gray-200">
                             <div class="w-9 h-9 rounded-full flex items-center justify-center"
-                                style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}20; color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
+                                style="background-color: {{ $themeColor }}20; color: {{ $themeColor }}">
                                 <x-icon :name="$current['icon']" class="h-4 w-4" />
                             </div>
                             <div>
                                 <p class="text-xs text-gray-400 leading-none mb-0.5">ประเภท</p>
-                                <p class="text-sm font-semibold" style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}">
+                                <p class="text-sm font-semibold" style="color: {{ $themeColor }}">
                                     {{ $current['label'] }}</p>
                             </div>
                         </div>

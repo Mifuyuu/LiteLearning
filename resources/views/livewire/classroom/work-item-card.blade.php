@@ -2,7 +2,7 @@
     $isManager = $classroom->canManageClassroom(auth()->user());
     $submittedCount = $assignment->submittedCount();
     $studentCount = $classroom->students->count();
-    $themeColor = $classroom->themeCategory?->color ?? '#2563eb';
+    $themeColor = $classroom->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['color'];
 @endphp
 
 <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}" wire:navigate

@@ -13,7 +13,18 @@ class BugReport extends Model
         'title',
         'message',
         'status',
+        'admin_reply',
+        'replied_at',
+        'read_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'replied_at' => 'datetime',
+            'read_at' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {

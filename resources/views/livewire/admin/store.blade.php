@@ -34,6 +34,7 @@
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
                     <tr>
                         <th class="px-6 py-3 text-left">สินค้า</th>
+                        <th class="px-6 py-3 text-left">รหัสสินค้า</th>
                         <th class="px-6 py-3 text-left">ประเภท</th>
                         <th class="px-6 py-3 text-left">ราคา</th>
                         <th class="px-6 py-3 text-left">สถานะ</th>
@@ -46,8 +47,16 @@
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
                                     <div
-                                        class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold shrink-0">
-                                        <x-icon name="cube" class="h-4 w-4" />
+                                        class="w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
+                                        @if($item->type === 'avatar_frame')
+                                            @if(!str_starts_with($item->value, 'border'))
+                                                <img src="{{ asset($item->value) }}" class="w-full h-full object-contain" alt="">
+                                            @else
+                                                <div class="w-6 h-6 rounded-full {{ $item->value }}"></div>
+                                            @endif
+                                        @else
+                                            <span class="font-bold text-sm {{ $item->value }}">Aa</span>
+                                        @endif
                                     </div>
                                     <div class="ml-4">
                                         <div class="text-sm font-bold text-gray-900 truncate max-w-48">{{ $item->name }}
@@ -57,14 +66,17 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-xs font-mono text-gray-500">{{ $item->code }}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide bg-blue-50 text-blue-700">
                                     {{ $item->type }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-sm font-bold text-gray-900 truncate max-w-48">
-                                    {{ $item->price }} <x-icon name="banknotes" class="h-4 w-4 text-amber-500 ml-1" />
+                                <span class="inline-flex items-center gap-1 text-sm font-bold text-gray-900 truncate max-w-48">
+                                    {{ $item->price }} <img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 shrink-0" alt="">
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -90,7 +102,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-500 italic">
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500 italic">
                                 ไม่พบสินค้าในร้านค้า
                             </td>
                         </tr>
@@ -110,45 +122,15 @@
     @open-delete-item.window="deleteId = $event.detail.id; deleteName = $event.detail.name; showDeleteModal = true"
     @keydown.escape.window="showDeleteModal = false">
     <template x-teleport="body">
-        <div x-show="showDeleteModal" x-cloak
-            class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
-            @click.self="showDeleteModal = false">
-            <div x-show="showDeleteModal"
-                x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0 scale-95"
-                x-transition:enter-end="opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-100"
-                x-transition:leave-start="opacity-100 scale-100"
-                x-transition:leave-end="opacity-0 scale-95"
-                class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
-                <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                    <div>
-                        <h4 class="text-base font-semibold text-gray-900">ยืนยันการลบ</h4>
-                        <p class="text-sm font-medium text-gray-700 mt-1" x-text="deleteName"></p>
-                    </div>
-                    <button type="button" @click="showDeleteModal = false"
-                        class="text-gray-400 hover:text-gray-600 transition-colors">
-                        <x-icon name="x-mark" class="h-5 w-5" />
-                    </button>
-                </div>
-                <div class="px-6 py-5">
-                    <p class="text-sm text-gray-500 mb-4">
-                        คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? การกระทำนี้ไม่สามารถย้อนกลับได้
-                    </p>
-                    <div class="flex justify-end gap-2">
-                        <button type="button" @click="showDeleteModal = false"
-                            class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                            <x-icon name="x-mark" class="h-4 w-4 mr-1.5" />ยกเลิก
-                        </button>
-                        <button type="button"
-                            @click="$wire.delete(deleteId); showDeleteModal = false"
-                            class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
-                            <x-icon name="trash" class="h-4 w-4 mr-1.5" />ลบ
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <x-confirm-modal show="showDeleteModal" cancel="showDeleteModal = false" heading="ยืนยันการลบ">
+            <x-slot:message>
+                คุณแน่ใจหรือไม่ว่าต้องการลบ <span class="font-semibold text-[#101114]" x-text="deleteName"></span>? การกระทำนี้ไม่สามารถย้อนกลับได้
+            </x-slot:message>
+            <button type="button" @click="$wire.delete(deleteId); showDeleteModal = false"
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                ลบ
+            </button>
+        </x-confirm-modal>
     </template>
 </div>
 
@@ -232,9 +214,35 @@
                         <textarea wire:model="form.description" rows="2"
                             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
+                    @if($form['type'] === 'avatar_frame')
+                        <div class="space-y-1">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">รูปกรอบอวตาร</label>
+                            <label for="frame-upload"
+                                class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors">
+                                @if($frameImageUpload)
+                                    <img src="{{ $frameImageUpload->temporaryUrl() }}" class="h-16 w-16 object-contain rounded-lg">
+                                @elseif(!empty($form['value']) && !str_starts_with($form['value'], 'border'))
+                                    <img src="{{ asset($form['value']) }}" class="h-16 w-16 object-contain rounded-lg">
+                                @else
+                                    <div class="flex flex-col items-center gap-1 text-gray-400">
+                                        <x-icon name="arrow-up-tray" class="h-5 w-5" />
+                                        <span class="text-xs text-center leading-tight">PNG / SVG / WEBP<br>สูงสุด 2MB</span>
+                                    </div>
+                                @endif
+                                <input id="frame-upload" type="file" accept=".png,.svg,.webp,image/png,image/svg+xml,image/webp"
+                                    class="hidden" wire:model="frameImageUpload">
+                            </label>
+                            <div wire:loading wire:target="frameImageUpload" class="text-xs text-gray-400">กำลังอัปโหลด...</div>
+                            @error('frameImageUpload') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    @endif
                     <div>
-                        <label
-                            class="block text-sm font-semibold text-gray-700 mb-1">ค่า</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            ค่า
+                            @if($form['type'] === 'avatar_frame')
+                                <span class="font-normal text-gray-400">(พาธรูปที่อัปโหลด หรือคลาส CSS เช่น border-4 border-yellow-400)</span>
+                            @endif
+                        </label>
                         <input type="text" wire:model="form.value"
                             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono">
                         @error('form.value') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror

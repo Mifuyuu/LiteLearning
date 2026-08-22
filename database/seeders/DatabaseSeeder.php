@@ -25,14 +25,14 @@ class DatabaseSeeder extends Seeder
 
     public function __construct()
     {
-        $this->gamificationService = new GamificationService;
+        $this->gamificationService = app(GamificationService::class);
     }
 
     private function seedClassroomDemoData(Collection $teachers, Collection $students): void
     {
         $themes = ThemeCategory::query()
             ->where('is_active', true)
-            ->orderBy('planet_number')
+            ->orderBy('planet_key')
             ->get();
 
         $blueprints = [

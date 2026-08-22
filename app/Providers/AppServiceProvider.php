@@ -57,16 +57,26 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            $unlocks = session()->pull('new_achievements', []);
-            if ($unlocks === []) {
-                return;
-            }
-
-            $payload = json_encode($unlocks, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
-            $context->addEffect('xjs', [[
-                'expression' => 'window.dispatchEvent(new CustomEvent("achievement-unlocked", { detail: '.$payload.' }))',
-                'params' => [],
-            ]]);
+            $this->flashBrowserEvent($context, 'new_achievements', 'achievement-unlocked');
+            $this->flashBrowserEvent($context, 'new_level_ups', 'level-up');
         });
+    }
+
+    /**
+     * Pull a queued session flash and, if non-empty, inject a JS effect that
+     * dispatches it as a window CustomEvent for the matching celebration modal.
+     */
+    private function flashBrowserEvent($context, string $sessionKey, string $eventName): void
+    {
+        $items = session()->pull($sessionKey, []);
+        if ($items === []) {
+            return;
+        }
+
+        $payload = json_encode($items, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+        $context->addEffect('xjs', [[
+            'expression' => 'window.dispatchEvent(new CustomEvent("'.$eventName.'", { detail: '.$payload.' }))',
+            'params' => [],
+        ]]);
     }
 }

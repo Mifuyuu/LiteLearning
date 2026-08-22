@@ -127,7 +127,7 @@
             {{-- Step 2: OTP Verification --}}
             <form wire:submit.prevent="verifyOtp" class="space-y-5">
 
-                <div class="bg-[rgba(37,99,235,0.08)] border border-[rgba(37,99,235,0.2)] rounded-[12px] px-4 py-3 text-sm text-[var(--ll-blue)]">
+                <div class="bg-[rgba(37,99,235,0.08)] border border-[rgba(37,99,235,0.2)] rounded-xl px-4 py-3 text-sm text-[var(--ll-blue)]">
                     <x-icon name="envelope" class="h-4 w-4 mr-1.5" />
                     ส่งรหัส OTP ไปที่ <span class="font-semibold">{{ $email }}</span>
                 </div>
@@ -147,7 +147,7 @@
 
                 {{-- Submit --}}
                 <button type="submit"
-                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-[12px] px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ll-blue)]">
+                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ll-blue)]">
                     <span wire:loading.remove wire:target="verifyOtp">
                         <x-icon name="check" class="h-4 w-4 mr-2" />ยืนยันและสมัครสมาชิก
                     </span>

@@ -44,7 +44,7 @@
 
             <div class="mt-6 space-y-3">
                 {{-- Owner row --}}
-                <div class="rounded-[12px] border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
+                <div class="rounded-xl border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
                     <div class="flex items-center gap-3">
                         <div class="skeleton h-11 w-11 shrink-0 rounded-2xl"></div>
                         <div class="min-w-0 flex-1 space-y-2">
@@ -56,7 +56,7 @@
                 </div>
 
                 {{-- Co-teacher row --}}
-                <div class="rounded-[12px] border border-[#dedee5] bg-white p-4">
+                <div class="rounded-xl border border-[#dedee5] bg-white p-4">
                     <div class="flex items-center gap-3">
                         <div class="skeleton h-11 w-11 shrink-0 rounded-2xl"></div>
                         <div class="min-w-0 flex-1 space-y-2">
@@ -73,11 +73,11 @@
 
             @if($isOwnerOrAdmin)
                 {{-- Add co-teacher form --}}
-                <div class="mt-6 rounded-[12px] border border-dashed border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
+                <div class="mt-6 rounded-xl border border-dashed border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
                     <div class="skeleton h-4 w-28"></div>
                     <div class="mt-2 flex flex-col gap-3 sm:flex-row">
-                        <div class="skeleton h-11 flex-1 rounded-[12px]"></div>
-                        <div class="skeleton h-11 w-24 rounded-[12px]"></div>
+                        <div class="skeleton h-11 flex-1 rounded-xl"></div>
+                        <div class="skeleton h-11 w-24 rounded-xl"></div>
                     </div>
                 </div>
             @endif
@@ -103,7 +103,7 @@
 
             <div class="mt-6 space-y-3">
                 @for($i = 0; $i < 4; $i++)
-                    <div class="rounded-[12px] border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
+                    <div class="rounded-xl border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
                         <div class="flex items-center gap-3">
                             <div class="skeleton h-11 w-11 shrink-0 rounded-2xl"></div>
                             <div class="min-w-0 flex-1 space-y-2">

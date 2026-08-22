@@ -6,6 +6,7 @@ use App\Models\EmailOtpVerification;
 use App\Models\User;
 use App\Notifications\SendOtpNotification;
 use App\Services\GamificationService;
+use App\Services\SettingsService;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -70,6 +71,12 @@ class Register extends Component
 
     public function register(): void
     {
+        if (! app(SettingsService::class)->bool('registration_enabled', true)) {
+            $this->addError('email', __('messages.auth.registration_closed'));
+
+            return;
+        }
+
         $this->validate($this->registrationRules());
 
         $this->sendOtp();

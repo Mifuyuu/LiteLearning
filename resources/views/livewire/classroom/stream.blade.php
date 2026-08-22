@@ -18,7 +18,7 @@
 @endphp
 
 <div class="space-y-5 max-w-4xl mx-auto">
-    <section class="rounded-[12px] border-3 border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <section class="rounded-xl border-3 border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">{{ 'กระดานสนทนา' }}</p>
@@ -33,7 +33,7 @@
                         <x-icon name="chevron-down" class="h-3.5 w-3.5 transition-transform" ::class="open ? 'rotate-180' : ''" />
                     </button>
                     <ul x-show="open" x-cloak
-                        class="absolute menu right-0 top-full z-50 mt-2 w-44 rounded-[12px] border border-[#dedee5] bg-white p-1.5 shadow-lg">
+                        class="absolute menu right-0 top-full z-50 mt-2 w-44 rounded-xl border border-[#dedee5] bg-white p-1.5 shadow-lg">
                         <li>
                             <a href="{{ route('assignment.create', $classroom) }}?type=file" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
                                 <x-icon name="arrow-up-tray" class="h-4 w-4 shrink-0" />
@@ -65,7 +65,7 @@
 
         <div class="mt-5 space-y-3">
             @forelse($classroom->announcements as $announcement)
-                <article class="rounded-[12px] border border-[#dedee5] bg-[rgba(37,99,235,0.02)] p-4">
+                <article class="rounded-xl border border-[#dedee5] bg-[rgba(37,99,235,0.02)] p-4">
                     <div class="flex items-start gap-3">
                         <img src="{{ $announcement->user->avatar_url }}" alt="{{ $announcement->user->name }}"
                             class="h-10 w-10 shrink-0 rounded-[10px] object-cover">

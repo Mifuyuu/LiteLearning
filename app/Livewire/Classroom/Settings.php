@@ -113,7 +113,7 @@ class Settings extends Component
     public function render()
     {
         return view('livewire.classroom.settings', [
-            'themes' => ThemeCategory::active()->orderBy('planet_number')->get(),
+            'themes' => ThemeCategory::active()->orderBy('planet_key')->get(),
         ])->title($this->classroom->name.' - '.'ตั้งค่า');
     }
 }

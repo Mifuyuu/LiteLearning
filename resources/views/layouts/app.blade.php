@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="{{ asset('images/favicon.png') }}">
+    <link rel="icon" href="{{ asset('images/favicon_ico.png') }}">
     @php
         $routeTitles = [
             'dashboard' => 'แดชบอร์ด',
@@ -78,8 +78,8 @@
             class="fixed inset-y-0 left-0 z-30 flex w-72 -translate-x-full flex-col overflow-hidden bg-white border-r-3 border-[#dedee5] transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:translate-x-0 lg:shrink-0"
             :class="{ '-translate-x-full': !mobileSidebar, 'translate-x-0': mobileSidebar }">
             <div class="flex h-[88px] shrink-0 items-center px-6">
-                <img src="{{ asset('images/LiteLearn.svg') }}" alt="LiteLearning"
-                    class="h-11 w-auto">
+                <img src="{{ asset('images/favicon_full.png') }}" alt="LiteLearning"
+                    class="h-[50px] w-auto shrink-0 object-contain">
             </div>
 
             <!-- Navigation -->
@@ -117,6 +117,8 @@
                 $isAdminAchievementsActive   = request()->routeIs('admin.achievements');
                 $isAdminReportsActive        = request()->routeIs('admin.reports');
                 $isAdminThemeCategoriesActive = request()->routeIs('admin.theme-categories');
+                $isAdminSystemActive         = request()->routeIs('admin.system');
+                $isAdminSecurityActive       = request()->routeIs('admin.security');
             @endphp
             <nav class="sidebar-scroll flex-1 min-h-0 overflow-y-auto px-4 pb-5 space-y-4">
 
@@ -128,19 +130,19 @@
                         <p class="px-3 mb-1.5 text-xs font-semibold text-[#9497a9]">ทั่วไป</p>
                         <div class="space-y-1">
                             <a href="{{ route('dashboard') }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isDashboardActive) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isDashboardActive) }}">
                                 <x-icon name="home{{ $isDashboardActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                 แดชบอร์ด
                             </a>
 
                             @if(auth()->user()->isTeacher())
                                 <a href="{{ route('classrooms') }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isClassroomsActive) }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isClassroomsActive) }}">
                                     <x-icon name="academic-cap{{ $isClassroomsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                     ชั้นเรียนของฉัน
                                 </a>
                                 <a href="{{ route('to-review') }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isToReviewActive) }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isToReviewActive) }}">
                                     <x-icon name="clipboard-document-list{{ $isToReviewActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                     รอตรวจ
                                 </a>
@@ -148,32 +150,32 @@
 
                             @if(auth()->user()->isStudent())
                                 <a href="{{ route('calendar') }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isCalendarActive) }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isCalendarActive) }}">
                                     <x-icon name="calendar-days{{ $isCalendarActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                     ปฏิทิน
                                 </a>
                                 <a href="{{ route('classrooms') }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isClassroomsActive) }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isClassroomsActive) }}">
                                     <x-icon name="academic-cap{{ $isClassroomsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                     ห้องเรียน
                                 </a>
                                 <a href="{{ route('achievements') }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isAchievementsActive) }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isAchievementsActive) }}">
                                     <x-icon name="star{{ $isAchievementsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                     ความสำเร็จ
                                 </a>
                                 <a href="{{ route('leaderboard') }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isLeaderboardActive) }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isLeaderboardActive) }}">
                                     <x-icon name="trophy{{ $isLeaderboardActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                     กระดานผู้นำ
                                 </a>
                                 <a href="{{ route('store') }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isStoreActive) }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isStoreActive) }}">
                                     <x-icon name="shopping-bag{{ $isStoreActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                     ร้านค้า
                                 </a>
                                 <a href="{{ route('inventory') }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isInventoryActive) }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isInventoryActive) }}">
                                     <x-icon name="backpack{{ $isInventoryActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                     คลังเก็บของ
                                 </a>
@@ -186,39 +188,49 @@
                         <p class="px-3 mb-1.5 text-xs font-semibold text-[#9497a9]">การจัดการระบบ</p>
                         <div class="space-y-1">
                             <a href="{{ route('admin.dashboard') }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isAdminDashboardActive) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isAdminDashboardActive) }}">
                                 <x-icon name="chart-bar{{ $isAdminDashboardActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                 แดชบอร์ดผู้ดูแล
                             </a>
                             <a href="{{ route('admin.users') }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isAdminUsersActive) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isAdminUsersActive) }}">
                                 <x-icon name="users{{ $isAdminUsersActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                 จัดการผู้ใช้
                             </a>
                             <a href="{{ route('admin.classrooms') }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isAdminClassroomsActive) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isAdminClassroomsActive) }}">
                                 <x-icon name="academic-cap{{ $isAdminClassroomsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                 จัดการห้องเรียน
                             </a>
                             <a href="{{ route('admin.store') }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isAdminStoreActive) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isAdminStoreActive) }}">
                                 <x-icon name="shopping-bag{{ $isAdminStoreActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                 จัดการร้านค้า
                             </a>
                             <a href="{{ route('admin.achievements') }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isAdminAchievementsActive) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isAdminAchievementsActive) }}">
                                 <x-icon name="trophy{{ $isAdminAchievementsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                 ความสำเร็จ
                             </a>
                             <a href="{{ route('admin.theme-categories') }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isAdminThemeCategoriesActive) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isAdminThemeCategoriesActive) }}">
                                 <x-icon name="sparkles{{ $isAdminThemeCategoriesActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                 หมวดหมู่ธีม
                             </a>
                             <a href="{{ route('admin.reports') }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($isAdminReportsActive) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isAdminReportsActive) }}">
                                 <x-icon name="flag{{ $isAdminReportsActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                 รายงานปัญหา
+                            </a>
+                            <a href="{{ route('admin.system') }}" wire:navigate
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isAdminSystemActive) }}">
+                                <x-icon name="wrench-screwdriver{{ $isAdminSystemActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
+                                จัดการระบบ
+                            </a>
+                            <a href="{{ route('admin.security') }}" wire:navigate
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($isAdminSecurityActive) }}">
+                                <x-icon name="shield-check{{ $isAdminSecurityActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
+                                ความปลอดภัย
                             </a>
                         </div>
                     </div>
@@ -233,28 +245,28 @@
                         <div class="space-y-1">
                             @php $active = request()->routeIs('classroom.show'); @endphp
                             <a href="{{ route('classroom.show', $classroom) }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($active) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($active) }}">
                                 <x-icon :name="'home'.($active ? '-solid' : '')" class="mr-3 h-5 w-5" />
                                 หน้าหลัก
                             </a>
 
                             @php $active = request()->routeIs('classroom.stream'); @endphp
                             <a href="{{ route('classroom.stream', $classroom) }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($active) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($active) }}">
                                 <x-icon :name="'chat-bubble-left-ellipsis'.($active ? '-solid' : '')" class="mr-3 h-5 w-5" />
                                 กระดานสนทนา
                             </a>
 
                             @php $active = request()->routeIs('classroom.work') || request()->routeIs('assignment.*') || request()->routeIs('material.*'); @endphp
                             <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($active) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($active) }}">
                                 <x-icon :name="'clipboard-document-list'.($active ? '-solid' : '')" class="mr-3 h-5 w-5" />
                                 งานในชั้นเรียน
                             </a>
 
                             @php $active = request()->routeIs('classroom.roster'); @endphp
                             <a href="{{ route('classroom.roster', $classroom) }}" wire:navigate
-                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($active) }}">
+                                class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($active) }}">
                                 <x-icon :name="'users'.($active ? '-solid' : '')" class="mr-3 h-5 w-5" />
                                 สมาชิก
                             </a>
@@ -262,16 +274,16 @@
                             @if($classroom->canManageClassroom(auth()->user()))
                                 @php $active = request()->routeIs('classroom.gradebook'); @endphp
                                 <a href="{{ route('classroom.gradebook', $classroom) }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($active) }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($active) }}">
                                     <x-icon :name="'chart-bar'.($active ? '-solid' : '')" class="mr-3 h-5 w-5" />
                                     สมุดเกรด
                                 </a>
                             @endif
 
-                            @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
+                            @if($classroom->isOwnedBy(auth()->user()))
                                 @php $active = request()->routeIs('classroom.settings'); @endphp
                                 <a href="{{ route('classroom.settings', $classroom) }}" wire:navigate
-                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[12px] transition-colors {{ $navItemClass($active) }}">
+                                    class="flex items-center px-3 py-2.5 text-sm font-bold rounded-[8px] transition-colors {{ $navItemClass($active) }}">
                                     <x-icon name="cog-6-tooth{{ $active ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
                                     ตั้งค่าห้องเรียน
                                 </a>
@@ -313,11 +325,13 @@
                     </a>
 
                     <!-- Report Issue Button -->
-                    <button x-data @click="$dispatch('openReportModal')"
-                        class="flex w-full items-center px-3 py-2.5 text-sm font-bold text-[#686b82] hover:bg-[rgba(59,130,246,0.08)] hover:text-[#2563eb] rounded-[8px] transition-colors cursor-pointer">
-                        <x-icon name="flag" class="mr-3 h-5 w-5" />
-                        {{ 'รายงานปัญหา / เสนอแนะ' }}
-                    </button>
+                    @if(app(\App\Services\SettingsService::class)->bool('bug_report_enabled', true))
+                        <button x-data @click="$dispatch('openReportModal')"
+                            class="flex w-full items-center px-3 py-2.5 text-sm font-bold text-[#686b82] hover:bg-[rgba(59,130,246,0.08)] hover:text-[#2563eb] rounded-[8px] transition-colors cursor-pointer">
+                            <x-icon name="flag" class="mr-3 h-5 w-5" />
+                            {{ 'รายงานปัญหา / เสนอแนะ' }}
+                        </button>
+                    @endif
 
                     <!-- Profile footer -->
                     <div class="mt-1.5 flex w-full items-center justify-between rounded-lg border border-[#dedee5] bg-white p-1">
@@ -378,6 +392,15 @@
             <main class="flex-1 min-h-0 overflow-x-hidden overflow-y-auto px-4 pt-6 pb-28 sm:px-6 sm:pb-6" style="scrollbar-gutter: stable">
                 <div data-content-width="{{ request()->routeIs('store') ? 'full' : 'contained' }}"
                     class="w-full {{ request()->routeIs('store') ? 'max-w-none' : 'mx-auto max-w-7xl' }}">
+                    @if(auth()->user()->isAdmin() && (request()->route('classroom') instanceof \App\Models\Classroom))
+                        <div class="mb-4 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
+                            <x-icon name="shield-check" class="h-4 w-4 shrink-0" />
+                            <span>กำลังดูในฐานะผู้ดูแลระบบ: {{ request()->route('classroom')->name }}</span>
+                            <a href="{{ route('admin.classrooms') }}" wire:navigate class="ml-auto shrink-0 font-bold underline">
+                                กลับไปที่รายการห้องเรียน
+                            </a>
+                        </div>
+                    @endif
                     @hasSection('content')
                         @yield('content')
                     @else
@@ -415,7 +438,7 @@
                 addToast('{{ session('message') }}', '{{ session('type', 'success') }}');
             @endif
         ">
-        <div class="fixed bottom-4 right-4 z-100 flex flex-col items-end space-y-3">
+        <div class="fixed bottom-4 right-8 z-100 flex flex-col items-end space-y-3">
             <template x-for="toast in toasts" :key="toast.id">
             <div x-show="toast.visible && !toast.leaving" x-cloak
                 x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 translate-y-2"
@@ -464,7 +487,7 @@
         }
     </script>
 
-    <x-achievement-celebration />
+    <x-celebration-modal />
 
     @livewireScripts
 

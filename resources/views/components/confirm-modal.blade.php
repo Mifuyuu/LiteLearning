@@ -8,7 +8,7 @@
         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
-        class="w-full max-w-md rounded-[12px] border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.08)_0px_8px_32px]">
+        class="w-full max-w-md rounded-xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.08)_0px_8px_32px]">
         <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose-50">
             <x-icon :name="$icon" class="h-7 w-7 text-rose-500" />
         </div>

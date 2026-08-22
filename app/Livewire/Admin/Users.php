@@ -2,7 +2,11 @@
 
 namespace App\Livewire\Admin;
 
+use App\Exceptions\GamificationException;
+use App\Models\AuditLog;
 use App\Models\User;
+use App\Services\GamificationService;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -41,6 +45,11 @@ class Users extends Component
         $user->is_active = ! $user->is_active;
         $user->save();
 
+        AuditLog::record(
+            $user->is_active ? 'user_enabled' : 'user_disabled',
+            ($user->is_active ? 'เปิดใช้งาน' : 'ปิดใช้งาน')." ผู้ใช้ {$user->name} ({$user->email})"
+        );
+
         $this->dispatch('notify', message: __('messages.admin.user_status_updated'));
     }
 
@@ -58,10 +67,31 @@ class Users extends Component
             return;
         }
 
+        $oldRole = $user->role;
         $user->role = $newRole;
         $user->save();
 
+        AuditLog::record('user_role_changed', "เปลี่ยนบทบาทของ {$user->name} ({$user->email}) จาก {$oldRole} เป็น {$newRole}");
+
         $this->dispatch('notify', message: __('messages.admin.user_role_updated', ['role' => ucfirst($newRole)]));
+    }
+
+    public function updateGamification(User $user, GamificationService $gamification, $coins, $xp)
+    {
+        Validator::make(compact('coins', 'xp'), [
+            'coins' => 'integer|min:0',
+            'xp' => 'integer|min:0',
+        ])->validate();
+
+        try {
+            $gamification->adminSetCoinsAndXp($user, (int) $coins, (int) $xp);
+        } catch (GamificationException $e) {
+            $this->dispatch('notify', message: $e->getMessage());
+
+            return;
+        }
+
+        $this->dispatch('notify', message: __('messages.admin.gamification_updated'));
     }
 
     public function deleteUser(User $user)
@@ -71,6 +101,8 @@ class Users extends Component
 
             return;
         }
+
+        AuditLog::record('user_deleted', "ลบผู้ใช้ {$user->name} ({$user->email})");
 
         $user->delete();
         $this->dispatch('notify', message: __('messages.admin.user_deleted'));

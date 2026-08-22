@@ -47,11 +47,11 @@
                 <div class="skeleton h-8 w-48"></div>
                 <div class="skeleton h-4 w-64"></div>
             </div>
-            <div class="skeleton h-9 w-24 rounded-[10px] shrink-0"></div>
+            <div class="skeleton h-9 w-24 rounded-lg shrink-0"></div>
         </div>
 
         {{-- Primary metric + Quick stats --}}
-        <div class="border-t border-[#dedee5] p-5 lg:px-7">
+        <div class="mx-5 border-t border-[#dedee5] py-5 lg:mx-7">
             <div class="grid gap-6 sm:grid-cols-2 sm:divide-x sm:divide-[#dedee5]">
                 <div class="sm:pr-6">
                     <div class="flex justify-between items-start">
@@ -69,9 +69,9 @@
                     <div class="skeleton h-5 w-24"></div>
                     <div class="mt-3 space-y-2">
                         @for($i = 0; $i < 4; $i++)
-                            <div class="flex items-center justify-between gap-3 rounded-[11px] bg-[#f7f5f9] px-3 py-2.5">
+                            <div class="flex items-center justify-between gap-3 rounded-lg bg-[#f7f5f9] px-3 py-2.5">
                                 <span class="flex items-center gap-2.5">
-                                    <div class="skeleton h-8 w-8 rounded-[9px] shrink-0"></div>
+                                    <div class="skeleton h-8 w-8 rounded-lg shrink-0"></div>
                                     <div class="skeleton h-3 w-16"></div>
                                 </span>
                                 <div class="skeleton h-4 w-8 shrink-0"></div>
@@ -83,7 +83,7 @@
         </div>
 
         {{-- Activity heatmap --}}
-        <div class="border-t border-[#dedee5] p-5 lg:px-7">
+        <div class="mx-5 border-t border-[#dedee5] py-5 lg:mx-7">
             <div class="flex justify-between items-start">
                 <div class="space-y-2">
                     <div class="skeleton h-3 w-28"></div>

@@ -55,8 +55,8 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center gap-3">
-                                    <span class="inline-flex items-center text-xs font-bold text-amber-600">
-                                        <x-icon name="banknotes" class="h-4 w-4 mr-1 text-amber-500" /> {{ $achievement->coin_reward }}
+                                    <span class="inline-flex items-center gap-1 text-xs font-bold text-amber-600">
+                                        <img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 shrink-0" alt=""> {{ $achievement->coin_reward }}
                                     </span>
                                     <span class="inline-flex items-center text-xs font-bold text-blue-600">
                                         <x-icon name="bolt" class="mr-1 h-4 w-4 shrink-0" /> {{ $achievement->xp_reward }}
@@ -105,45 +105,15 @@
     @open-delete-achievement.window="deleteId = $event.detail.id; deleteName = $event.detail.name; showDeleteModal = true"
     @keydown.escape.window="showDeleteModal = false">
     <template x-teleport="body">
-        <div x-show="showDeleteModal" x-cloak
-            class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
-            @click.self="showDeleteModal = false">
-            <div x-show="showDeleteModal"
-                x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0 scale-95"
-                x-transition:enter-end="opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-100"
-                x-transition:leave-start="opacity-100 scale-100"
-                x-transition:leave-end="opacity-0 scale-95"
-                class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
-                <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                    <div>
-                        <h4 class="text-base font-semibold text-gray-900">ยืนยันการลบ</h4>
-                        <p class="text-sm font-medium text-gray-700 mt-1" x-text="deleteName"></p>
-                    </div>
-                    <button type="button" @click="showDeleteModal = false"
-                        class="text-gray-400 hover:text-gray-600 transition-colors">
-                        <x-icon name="x-mark" class="h-5 w-5" />
-                    </button>
-                </div>
-                <div class="px-6 py-5">
-                    <p class="text-sm text-gray-500 mb-4">
-                        คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? การกระทำนี้ไม่สามารถย้อนกลับได้
-                    </p>
-                    <div class="flex justify-end gap-2">
-                        <button type="button" @click="showDeleteModal = false"
-                            class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                            <x-icon name="x-mark" class="h-4 w-4 mr-1.5" />ยกเลิก
-                        </button>
-                        <button type="button"
-                            @click="$wire.delete(deleteId); showDeleteModal = false"
-                            class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
-                            <x-icon name="trash" class="h-4 w-4 mr-1.5" />ลบ
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <x-confirm-modal show="showDeleteModal" cancel="showDeleteModal = false" heading="ยืนยันการลบ">
+            <x-slot:message>
+                คุณแน่ใจหรือไม่ว่าต้องการลบ <span class="font-semibold text-[#101114]" x-text="deleteName"></span>? การกระทำนี้ไม่สามารถย้อนกลับได้
+            </x-slot:message>
+            <button type="button" @click="$wire.delete(deleteId); showDeleteModal = false"
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                ลบ
+            </button>
+        </x-confirm-modal>
     </template>
 </div>
 

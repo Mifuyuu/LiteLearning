@@ -69,6 +69,24 @@
                             <span>·</span>
                             {{ $report->created_at->diffForHumans() }}
                         </p>
+
+                        <div x-show="expanded" x-cloak class="mt-3 space-y-2">
+                            @if($report->admin_reply)
+                                <div class="rounded-lg bg-blue-50 border border-blue-100 px-3 py-2">
+                                    <p class="text-[10px] font-bold text-blue-700 uppercase tracking-wide">การตอบกลับของแอดมิน · {{ $report->replied_at->diffForHumans() }}</p>
+                                    <p class="text-sm text-blue-900 mt-0.5 break-all">{{ $report->admin_reply }}</p>
+                                </div>
+                            @endif
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <textarea wire:model="replyDrafts.{{ $report->id }}" rows="2" placeholder="พิมพ์ข้อความตอบกลับ..."
+                                    class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                                <button type="button" wire:click="submitReply({{ $report->id }})"
+                                    class="shrink-0 self-start px-4 py-2 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                                    ส่งการตอบกลับ
+                                </button>
+                            </div>
+                            @error('replyDrafts.' . $report->id) <p class="text-red-500 text-xs">{{ $message }}</p> @enderror
+                        </div>
                     </div>
 
                     {{-- Toggle button --}}

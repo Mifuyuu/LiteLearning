@@ -41,7 +41,8 @@
                                 @php
                                     $isOverdue = $a->due_date->isPast();
                                     $isUrgent = $isOverdue || $a->due_date->lt(now()->addDay());
-                                    $themeColor = $a->classworkItem->classroom->themeCategory?->color ?? '#8B5CF6';
+                                    $room = $a->classworkItem->classroom;
+                                    $themeColor = $room->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($room->id)['color'];
                                 @endphp
                                 <a href="{{ route('assignment.show', ['classroom' => $a->classworkItem->classroom, 'assignment' => $a]) }}"
                                    class="rounded-lg border border-[#dedee5] bg-white hover:shadow-[0_0_0_2px_var(--room-color)] flex items-center gap-4 p-4 transition-shadow duration-150 group animate__animated animate__fadeInUp"

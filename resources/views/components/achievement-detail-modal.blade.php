@@ -10,7 +10,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
-            class="relative w-full max-w-sm rounded-[12px] border border-[#dedee5] bg-white p-6 text-center shadow-[rgba(0,0,0,0.08)_0px_8px_32px]">
+            class="relative w-full max-w-sm rounded-xl border border-[#dedee5] bg-white p-6 text-center shadow-[rgba(0,0,0,0.08)_0px_8px_32px]">
             <div class="relative mx-auto h-24 w-24">
                 <img :src="selected ? '/' + selected.badge_image : ''" :alt="selected?.name"
                     class="h-24 w-24 object-contain" />

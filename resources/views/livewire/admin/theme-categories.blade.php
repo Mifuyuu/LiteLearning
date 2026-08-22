@@ -47,8 +47,7 @@
                 @forelse ($categories as $category)
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-4 py-4">
-                            @php $pn = str_pad($category->planet_number, 2, '0', STR_PAD_LEFT); @endphp
-                            <img src="/images/planets/planet_{{ $pn }}.svg" alt="planet {{ $pn }}"
+                            <img src="/images/planets/planet_{{ $category->planet_key }}.svg" alt="planet {{ $category->planet_key }}"
                                 class="w-10 h-10 object-contain" />
                         </td>
                         <td class="px-4 py-2">
@@ -60,7 +59,7 @@
                         </td>
                         <td class="px-4 py-2">
                             <div class="text-sm font-semibold text-gray-800">{{ $category->name }}</div>
-                            <div class="text-xs text-gray-400 mt-0.5">ดาวเคราะห์ #{{ $category->planet_number }}</div>
+                            <div class="text-xs text-gray-400 mt-0.5">ดาวเคราะห์: {{ $category->planet_key }}</div>
                         </td>
                         <td class="px-4 py-2 hidden sm:table-cell">
                             @if ($category->is_active)
@@ -130,10 +129,9 @@
                 @click.stop
                 x-data="{
                     localColor: $wire.entangle('form.color').defer,
-                    localPlanet: $wire.entangle('form.planet_number').defer,
                     syncColor(val) { this.localColor = val; },
                 }"
-                x-init="$watch('$wire.showModal', v => { if (v) { localColor = $wire.form.color; localPlanet = $wire.form.planet_number; } })"
+                x-init="$watch('$wire.showModal', v => { if (v) { localColor = $wire.form.color; } })"
             >
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
                     <h3 class="text-base font-bold text-gray-800">
@@ -148,7 +146,7 @@
                     {{-- Name --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ <span class="text-red-500">*</span></label>
-                        <input wire:model="form.name" type="text" placeholder="เช่น วิทยาศาสตร์, คณิตศาสตร์"
+                        <input wire:model="form.name" type="text" placeholder="เช่น ดวงจันทร์, ดาวเคราะห์แดง"
                             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         @error('form.name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
@@ -160,7 +158,7 @@
                             <input type="color"
                                 x-model="localColor"
                                 @change="$wire.set('form.color', localColor)"
-                                class="w-10 h-10 rounded-lg border border-gray-300 cursor-pointer p-0.5" />
+                                class="w-10 h-10 cursor-pointer" />
                             <input type="text" maxlength="7" placeholder="#6B3FBF"
                                 x-model="localColor"
                                 @blur="$wire.set('form.color', localColor)"
@@ -169,21 +167,29 @@
                         @error('form.color') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                    {{-- Planet Picker --}}
+                    {{-- Planet code --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">ดาวเคราะห์ <span class="text-red-500">*</span></label>
-                        <div class="grid grid-cols-8 gap-2 max-h-48 overflow-y-auto">
-                            @for ($p = 1; $p <= 23; $p++)
-                                @php $pn = str_pad($p, 2, '0', STR_PAD_LEFT); @endphp
-                                <button type="button"
-                                    @click="localPlanet = {{ $p }}; $wire.set('form.planet_number', {{ $p }})"
-                                    :class="localPlanet == {{ $p }} ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'"
-                                    class="aspect-square rounded-xl border-2 p-1 transition-all">
-                                    <img src="/images/planets/planet_{{ $pn }}.svg" alt="planet {{ $pn }}" class="w-full h-full object-contain" />
-                                </button>
-                            @endfor
+                        <label class="block text-sm font-medium text-gray-700 mb-1">รหัสดาวเคราะห์ <span class="text-red-500">*</span></label>
+                        <input wire:model="form.planet_key" type="text" placeholder="เช่น earth, ruby, comet"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono" />
+                        <p class="text-xs text-gray-400 mt-1">ตัวอักษรอังกฤษพิมพ์เล็ก ตัวเลข - และ _ เท่านั้น ใช้เป็นชื่อไฟล์ภาพ</p>
+                        @error('form.planet_key') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    {{-- Planet image --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ภาพดาวเคราะห์ (SVG) <span class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-3">
+                            @if ($planetImageUpload)
+                                <img src="{{ $planetImageUpload->temporaryUrl() }}" alt="ตัวอย่างภาพ" class="w-14 h-14 object-contain shrink-0" />
+                            @elseif ($editingId && $form['planet_key'])
+                                <img src="/images/planets/planet_{{ $form['planet_key'] }}.svg" alt="ภาพปัจจุบัน" class="w-14 h-14 object-contain shrink-0" onerror="this.style.visibility='hidden'">
+                            @endif
+                            <input type="file" wire:model="planetImageUpload" accept=".svg,image/svg+xml"
+                                class="flex-1 text-sm text-gray-600 file:mr-3 file:px-3 file:py-2 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:text-sm file:font-medium hover:file:bg-blue-100" />
                         </div>
-                        @error('form.planet_number') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        <div wire:loading wire:target="planetImageUpload" class="text-xs text-gray-400 mt-1">กำลังอัปโหลด...</div>
+                        @error('planetImageUpload') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     {{-- Active toggle --}}
@@ -209,37 +215,14 @@
 
     {{-- Delete Modal --}}
     <template x-teleport="body">
-        <div
-            x-show="deleteModal"
-            x-transition:enter="transition ease-out duration-200"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-in duration-150"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center p-4"
-            x-cloak
-        >
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6" @click.stop>
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                        <x-icon name="trash" class="h-4 w-4 text-red-500" />
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-gray-800">ลบหมวดหมู่</h3>
-                        <p class="text-sm text-gray-500">ยืนยันการลบ "<span x-text="deleteName"></span>"?</p>
-                    </div>
-                </div>
-                <div class="flex justify-end gap-3">
-                    <button @click="deleteModal = false" class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">
-                        ยกเลิก
-                    </button>
-                    <button @click="$wire.delete(deleteId); deleteModal = false"
-                        class="btn-3d btn-3d--red px-4 py-2 rounded-xl text-sm">
-                        ลบ
-                    </button>
-                </div>
-            </div>
-        </div>
+        <x-confirm-modal show="deleteModal" cancel="deleteModal = false" heading="ลบหมวดหมู่">
+            <x-slot:message>
+                ยืนยันการลบ "<span x-text="deleteName"></span>"?
+            </x-slot:message>
+            <button type="button" @click="$wire.delete(deleteId); deleteModal = false"
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                ลบ
+            </button>
+        </x-confirm-modal>
     </template>
 </div>

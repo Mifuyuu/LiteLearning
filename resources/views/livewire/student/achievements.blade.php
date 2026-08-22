@@ -44,7 +44,7 @@
                     <article class="rounded-xl border p-5 transition shadow-[rgba(0,0,0,0.03)_0px_4px_24px] {{ $isUnlocked ? 'border-[#dedee5] bg-white' : 'border-[rgba(104,107,130,0.24)] bg-[rgba(104,107,130,0.04)] opacity-75' }}">
                         <div class="flex gap-4">
                             <div @if($isUnlocked) @click="$dispatch('achievement-show', {{ \Illuminate\Support\Js::from(['name' => $achievement->name, 'description' => $achievement->description, 'badge_image' => $imgSrc, 'unlocked_at' => $unlockedAt]) }})" @endif
-                                class="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border-2 bg-slate-100 {{ $isUnlocked ? 'cursor-pointer border-[#dedee5] transition hover:ring-2 hover:ring-[#3293F5]' : 'border-[rgba(104,107,130,0.24)] grayscale' }}">
+                                class="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border bg-slate-100 {{ $isUnlocked ? 'cursor-pointer border-[#dedee5] transition hover:border-[#3293F5]' : 'border-[rgba(104,107,130,0.24)] grayscale' }}">
                                 <img src="{{ asset($imgSrc).'?v='.@filemtime(public_path($imgSrc)) }}" alt="{{ $achievement->name }}" class="h-14 w-14 object-contain {{ $isUnlocked ? '' : 'opacity-45' }}">
                             </div>
                             <div class="min-w-0 flex-1">

@@ -68,14 +68,14 @@
                 </p>
             </div>
             <a href="{{ $isStudent ? route('calendar') : route('to-review') }}" wire:navigate
-                class="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-(--ll-blue-subtle) px-3 py-2 text-sm font-semibold text-(--ll-blue) transition hover:bg-(--ll-blue-hover)">
+                class="inline-flex shrink-0 items-center gap-2 rounded-lg bg-(--ll-blue-subtle) px-3 py-2 text-sm font-semibold text-(--ll-blue) transition hover:bg-(--ll-blue-hover)">
                 <x-icon name="calendar-days" class="h-4 w-4" />
                 <span class="hidden sm:inline">{{ $isStudent ? 'ปฏิทิน' : 'รอตรวจ' }}</span>
             </a>
         </div>
 
         {{-- Primary metric + Quick stats --}}
-        <div class="border-t border-[#dedee5] p-5 lg:px-7">
+        <div class="mx-5 border-t border-[#dedee5] py-5 lg:mx-7">
             <div class="grid gap-6 sm:grid-cols-2 sm:divide-x sm:divide-[#dedee5]">
                 <div class="sm:pr-6">
                     @if($isStudent)
@@ -130,9 +130,9 @@
                     <h2 class="text-base font-bold text-[#101114]">สถิติด่วน</h2>
                     <div class="mt-3 space-y-2">
                         @foreach($quickStats as $stat)
-                            <div class="flex items-center justify-between gap-3 rounded-[11px] bg-[#f7f5f9] px-3 py-2.5">
+                            <div class="flex items-center justify-between gap-3 rounded-lg bg-[#f7f5f9] px-3 py-2.5">
                                 <span class="flex min-w-0 items-center gap-2.5">
-                                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-[rgba(37,99,235,0.14)] text-(--ll-blue)">
+                                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[rgba(37,99,235,0.14)] text-(--ll-blue)">
                                         <x-icon :name="$stat['icon']" class="h-4 w-4" />
                                     </span>
                                     <span class="truncate text-sm font-semibold text-[#686b82]">{{ $stat['label'] }}</span>
@@ -146,7 +146,7 @@
         </div>
 
         {{-- Activity heatmap --}}
-        <div data-activity-heatmap class="border-t border-[#dedee5] p-5 lg:px-7">
+        <div data-activity-heatmap class="mx-5 border-t border-[#dedee5] py-5 lg:mx-7">
             <div class="flex items-start justify-between gap-4">
                 <div>
                     <p class="text-xs font-bold text-(--ll-blue)">กิจกรรมในรอบ 6 เดือน</p>
@@ -157,7 +157,7 @@
                         {{ $isStudent ? 'การส่งงาน, การเข้าเรียน, ความคิดเห็น และคะแนน' : 'งานในชั้นเรียน, การตรวจงาน และความคิดเห็น' }}
                     </p>
                 </div>
-                <span class="shrink-0 rounded-[9px] bg-[rgba(37,99,235,0.12)] px-2.5 py-1.5 text-xs font-bold text-(--ll-blue)">
+                <span class="shrink-0 rounded-lg bg-[rgba(37,99,235,0.12)] px-2.5 py-1.5 text-xs font-bold text-(--ll-blue)">
                     {{ number_format($activity['total']) }} กิจกรรม
                 </span>
             </div>

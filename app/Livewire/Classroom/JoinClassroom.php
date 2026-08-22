@@ -5,6 +5,7 @@ namespace App\Livewire\Classroom;
 use App\Models\Classroom;
 use App\Models\User;
 use App\Services\GamificationService;
+use App\Services\SettingsService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -34,9 +35,18 @@ class JoinClassroom extends Component
 
     public function join()
     {
-        // S7: rate limit classroom join attempts
+        $settings = app(SettingsService::class);
+
+        if (! $settings->bool('classroom_join_enabled', true)) {
+            $this->addError('code', __('messages.classroom.join_closed'));
+
+            return;
+        }
+
+        // S7: rate limit classroom join attempts (configurable, default 5 per minute)
+        $limit = $settings->int('classroom_join_rate_limit', 5);
         $key = 'join-classroom:'.auth()->id();
-        if (cache()->has($key) && cache()->get($key) >= 5) {
+        if (cache()->has($key) && cache()->get($key) >= $limit) {
             $this->addError('code', __('messages.classroom.join_throttle'));
 
             return;

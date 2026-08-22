@@ -37,7 +37,7 @@ class LeaderboardSeeder extends Seeder
             ['name' => 'ใหม่ สิริยา',       'email' => 'mai@student.com',     'xp' => 50,    'coins' => 15],
         ];
 
-        $gamificationService = new GamificationService;
+        $gamificationService = app(GamificationService::class);
 
         foreach ($students as $data) {
             $user = User::firstOrCreate(

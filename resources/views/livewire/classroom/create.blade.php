@@ -58,7 +58,7 @@
                                             @php $selected = $themes->find($theme_category_id); @endphp
                                             @if($selected)
                                                 <span class="flex items-center gap-2">
-                                                    <img src="/images/planets/planet_{{ str_pad($selected->planet_number, 2, '0', STR_PAD_LEFT) }}.svg"
+                                                    <img src="/images/planets/planet_{{ $selected->planet_key }}.svg"
                                                         alt="{{ $selected->name }}" class="h-6 w-6 object-contain" />
                                                     <span class="font-medium text-gray-900 truncate">{{ $selected->name }}</span>
                                                 </span>
@@ -83,7 +83,6 @@
                                         :style="`position:fixed; top:${top}px; left:${left}px; width:${width}px; z-index:9999;`"
                                         class="max-h-40 overflow-y-auto rounded-lg border border-gray-200 bg-white p-1.5 shadow-lg [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                                     @foreach($themes as $theme)
-                                        @php $pn = str_pad($theme->planet_number, 2, '0', STR_PAD_LEFT); @endphp
                                         <li>
                                             <button type="button"
                                                 wire:click="$set('theme_category_id', {{ $theme->id }})"
@@ -94,7 +93,7 @@
                                                     'text-gray-700 hover:bg-gray-50' => $theme_category_id != $theme->id,
                                                 ])>
                                                 <span>{{ $theme->name }}</span>
-                                                <img src="/images/planets/planet_{{ $pn }}.svg"
+                                                <img src="/images/planets/planet_{{ $theme->planet_key }}.svg"
                                                     alt="{{ $theme->name }}" class="h-10 w-10 shrink-0 rounded-lg object-contain" />
                                             </button>
                                         </li>

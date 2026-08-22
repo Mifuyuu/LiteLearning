@@ -21,7 +21,7 @@
                             </div>
                             <p class="text-sm text-gray-700">{{ $comment->content }}</p>
                         </div>
-                        @if($comment->user_id === auth()->id())
+                        @if($comment->user_id === auth()->id() || $canModerate)
                             <button type="button"
                                 @click="deleteCommentId = {{ $comment->id }}; showDeleteCommentModal = true"
                                 class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] text-gray-400 transition hover:bg-red-50 hover:text-red-600"

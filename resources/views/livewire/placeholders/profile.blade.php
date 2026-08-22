@@ -32,17 +32,17 @@
             </div>
 
             <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div class="skeleton h-20 rounded-[12px]"></div>
-                <div class="skeleton h-20 rounded-[12px]"></div>
-                <div class="skeleton h-20 rounded-[12px]"></div>
-                <div class="skeleton h-20 rounded-[12px]"></div>
+                <div class="skeleton h-20 rounded-xl"></div>
+                <div class="skeleton h-20 rounded-xl"></div>
+                <div class="skeleton h-20 rounded-xl"></div>
+                <div class="skeleton h-20 rounded-xl"></div>
             </div>
 
             {{-- Chart placeholder --}}
             <div>
                 <div class="skeleton h-5 w-56 mb-2"></div>
-                <div class="skeleton h-24 w-full rounded-[12px]"></div>
-                <div class="skeleton h-8 w-full rounded-[12px] mt-4"></div>
+                <div class="skeleton h-24 w-full rounded-xl"></div>
+                <div class="skeleton h-8 w-full rounded-xl mt-4"></div>
             </div>
 
             <div class="border-t border-[#dedee5]"></div>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
                     @for($i = 0; $i < 5; $i++)
-                        <div class="skeleton h-36 rounded-[12px]"></div>
+                        <div class="skeleton h-36 rounded-xl"></div>
                     @endfor
                 </div>
             </div>
@@ -70,7 +70,7 @@
                 </div>
                 <div class="grid gap-3 md:grid-cols-2">
                     @for($i = 0; $i < 2; $i++)
-                        <div class="skeleton h-48 rounded-[12px]"></div>
+                        <div class="skeleton h-48 rounded-xl"></div>
                     @endfor
                 </div>
             </div>

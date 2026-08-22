@@ -19,7 +19,7 @@
 @endphp
 <div class="space-y-5 max-w-4xl mx-auto">
 
-    <section class="rounded-[12px] border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <section class="rounded-xl border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <div class="skeleton h-3 w-20"></div>
@@ -32,7 +32,7 @@
 
         <div class="mt-5 space-y-3">
             @for($i = 0; $i < 3; $i++)
-                <div class="rounded-[12px] border border-[#dedee5] bg-[rgba(37,99,235,0.02)] p-4">
+                <div class="rounded-xl border border-[#dedee5] bg-[rgba(37,99,235,0.02)] p-4">
                     <div class="flex items-start gap-3">
                         <div class="skeleton h-10 w-10 shrink-0 rounded-[10px]"></div>
                         <div class="min-w-0 flex-1 space-y-2">

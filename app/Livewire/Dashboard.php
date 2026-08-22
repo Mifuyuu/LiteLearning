@@ -125,7 +125,7 @@ class Dashboard extends Component
             ],
             'activitySummaries' => [
                 ['label' => 'กิจกรรมในรอบ 6 เดือน', 'value' => $activity['total']],
-                ['label' => 'สัปดาห์นี้', 'value' => $activity['current_week']],
+                ['label' => 'กิจกรรมในสัปดาห์นี้', 'value' => $activity['current_week']],
                 [
                     'label' => 'ส่งงานตรงเวลา',
                     'value' => $submissions->isNotEmpty()
@@ -157,7 +157,7 @@ class Dashboard extends Component
             ],
             'activitySummaries' => [
                 ['label' => 'กิจกรรมในรอบ 6 เดือน', 'value' => $activity['total']],
-                ['label' => 'สัปดาห์นี้', 'value' => $activity['current_week']],
+                ['label' => 'ความเคลื่อนไหวในสัปดาห์นี้', 'value' => $activity['current_week']],
                 ['label' => 'ตรวจงานสัปดาห์นี้', 'value' => $reviewProgress['graded_this_week']],
             ],
         ];

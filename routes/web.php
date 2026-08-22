@@ -64,21 +64,23 @@ Route::middleware('auth')->group(function () {
         Route::get('/achievements', \App\Livewire\Student\Achievements::class)->name('achievements');
     });
 
-    // Classrooms (not for admin)
+    // "My classrooms" index & settings (not for admin — admin browses via Admin\Classrooms instead)
     Route::middleware('role:not_admin')->group(function () {
         Route::get('/classrooms', ClassroomIndex::class)->name('classrooms');
-        Route::get('/c/{classroom}', ClassroomShow::class)->name('classroom.show');
-        Route::get('/c/{classroom}/stream', ClassroomStream::class)->name('classroom.stream');
         Route::get('/c/{classroom}/settings', ClassroomSettings::class)->name('classroom.settings');
-        Route::get('/w/{classroom}/t/{scope?}', ClassroomWork::class)->name('classroom.work');
-        Route::get('/r/{classroom}/{sort?}', People::class)->name('classroom.roster');
-        Route::get('/c/{classroom}/people', function (Classroom $classroom) {
-            return redirect()->route('classroom.roster', [
-                'classroom' => $classroom,
-                'sort' => 'sort-first-name',
-            ]);
-        })->name('classroom.people');
     });
+
+    // Classroom content — readable by admin too (Classroom::hasAccess()/canManageClassroom() already bypass for admin)
+    Route::get('/c/{classroom}', ClassroomShow::class)->name('classroom.show');
+    Route::get('/c/{classroom}/stream', ClassroomStream::class)->name('classroom.stream');
+    Route::get('/w/{classroom}/t/{scope?}', ClassroomWork::class)->name('classroom.work');
+    Route::get('/r/{classroom}/{sort?}', People::class)->name('classroom.roster');
+    Route::get('/c/{classroom}/people', function (Classroom $classroom) {
+        return redirect()->route('classroom.roster', [
+            'classroom' => $classroom,
+            'sort' => 'sort-first-name',
+        ]);
+    })->name('classroom.people');
 
     // Assignments — create route MUST come before {assignment} wildcard
     Route::middleware('role:teacher')->group(function () {
@@ -107,6 +109,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/achievements', \App\Livewire\Admin\Achievements::class)->name('achievements');
         Route::get('/reports', \App\Livewire\Admin\BugReports::class)->name('reports');
         Route::get('/theme-categories', \App\Livewire\Admin\ThemeCategories::class)->name('theme-categories');
+        Route::get('/system', \App\Livewire\Admin\SystemSettings::class)->name('system');
+        Route::get('/security', \App\Livewire\Admin\Security::class)->name('security');
     });
 
 }); // auth

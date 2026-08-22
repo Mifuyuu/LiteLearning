@@ -33,7 +33,7 @@
                             <li>
                                 <a wire:click="$set('classroomId', {{ $c->id }})" @click="open = false"
                                     class="flex items-center rounded-lg px-3 py-2 text-sm {{ $classroomId == $c->id ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700 hover:bg-gray-50' }}">
-                                    <div class="h-4 w-4 shrink-0 mr-2.5 rounded-full" style="background-color: {{ $c->themeCategory?->color ?? '#8B5CF6' }}"></div>
+                                    <div class="h-4 w-4 shrink-0 mr-2.5 rounded-full" style="background-color: {{ $c->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($c->id)['color'] }}"></div>
                                     {{ $c->name }}
                                 </a>
                             </li>

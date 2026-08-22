@@ -14,10 +14,10 @@
     $isManager = isset($classroom) ? $classroom->canManageClassroom(auth()->user()) : auth()->user()->isTeacher();
 @endphp
 <div class="max-w-4xl mx-auto">
-    <section class="overflow-hidden rounded-[12px] border-3 border-[#dedee5] bg-white min-h-[calc(100vh_-_3rem)]">
+    <section class="overflow-hidden rounded-xl border-3 border-[#dedee5] bg-white min-h-[calc(100vh_-_3rem)]">
 
-        {{-- Theme color strip --}}
-        <div class="h-2 w-full" style="background-color: {{ isset($classroom) ? ($classroom->themeCategory?->color ?? '#2563eb') : '#2563eb' }};"></div>
+        {{-- Theme banner --}}
+        <div class="skeleton h-32 w-full rounded-none sm:h-40"></div>
 
         {{-- Header --}}
         <div class="p-5 sm:p-6">

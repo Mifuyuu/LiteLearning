@@ -78,7 +78,10 @@ class StreamComment extends Component
             ->where('commentable_id', $commentable->getKey())
             ->findOrFail($commentId);
 
-        abort_unless($comment->user_id === Auth::id(), 403);
+        abort_unless(
+            $comment->user_id === Auth::id() || $commentable->classroom?->canManageClassroom(Auth::user()),
+            403
+        );
 
         $comment->delete();
         $this->dispatch('comment-deleted');
@@ -124,6 +127,7 @@ class StreamComment extends Component
 
         return view('livewire.classroom.stream-comment', [
             'comments' => $comments,
+            'canModerate' => $commentable->classroom?->canManageClassroom(Auth::user()) ?? false,
         ]);
     }
 }

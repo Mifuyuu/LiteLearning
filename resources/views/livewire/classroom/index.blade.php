@@ -54,9 +54,7 @@
             @foreach($classrooms as $index => $classroom)
                 @php
                     $tc = $classroom->themeCategory;
-                    $planetNum = $tc
-                        ? str_pad($tc->planet_number, 2, '0', STR_PAD_LEFT)
-                        : str_pad(($index % 21) + 1, 2, '0', STR_PAD_LEFT);
+                    $planetKey = $tc?->planet_key ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['planet_key'];
                 @endphp
 
                 <a wire:navigate href="{{ route('classroom.show', $classroom) }}"
@@ -68,7 +66,7 @@
 
                     {{-- Planet --}}
                     <div class="shrink-0">
-                        <img src="/images/planets/planet_{{ $planetNum }}.svg" alt="{{ $classroom->name }}"
+                        <img src="/images/planets/planet_{{ $planetKey }}.svg" alt="{{ $classroom->name }}"
                             class="w-24 h-24 select-none" />
                     </div>
 

@@ -1,7 +1,7 @@
 <div>
     @if($showModal)
         <div class="fixed inset-0 z-[70] flex items-center justify-center px-4" x-data
-            x-init="$el.querySelector('textarea').focus()">
+            x-init="$el.querySelector('textarea')?.focus()">
 
             {{-- Backdrop --}}
             <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" wire:click="closeModal"></div>
@@ -11,7 +11,7 @@
                 class="relative bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 z-10 Up animate__faster">
 
                 {{-- Header --}}
-                <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
                         <x-icon name="flag" class="h-5 w-5 text-blue-500" />
                         {{ 'รายงานปัญหา / เสนอแนะ' }}
@@ -22,7 +22,59 @@
                     </button>
                 </div>
 
+                {{-- Tabs --}}
+                <div class="flex gap-2 mb-5">
+                    <button type="button" wire:click="$set('view', 'form')"
+                        class="flex-1 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer
+                            {{ $view === 'form' ? 'bg-blue-50 text-blue-700' : 'text-gray-400 hover:bg-gray-50' }}">
+                        {{ 'แจ้งปัญหาใหม่' }}
+                    </button>
+                    <button type="button" wire:click="$set('view', 'history')"
+                        class="flex-1 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer
+                            {{ $view === 'history' ? 'bg-blue-50 text-blue-700' : 'text-gray-400 hover:bg-gray-50' }}">
+                        {{ 'ประวัติของฉัน' }}
+                    </button>
+                </div>
+
+                @if($view === 'history')
+                    <div class="space-y-3 max-h-96 overflow-y-auto">
+                        @forelse($reports as $report)
+                            @php
+                                $typeColors = [
+                                    'bug' => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'icon' => 'bug'],
+                                    'suggestion' => ['bg' => 'bg-amber-100', 'text' => 'text-amber-700', 'icon' => 'lightbulb'],
+                                    'other' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-600', 'icon' => 'question-mark-circle'],
+                                ];
+                                $tc = $typeColors[$report->type] ?? $typeColors['other'];
+                            @endphp
+                            <div class="border border-gray-200 rounded-xl p-3">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded {{ $tc['bg'] }} {{ $tc['text'] }}">
+                                        <x-icon :name="$tc['icon']" class="h-3 w-3" />
+                                        @if($report->type === 'bug') บั๊ก @elseif($report->type === 'suggestion') ข้อเสนอแนะ @else อื่นๆ @endif
+                                    </span>
+                                    @if($report->status === 'resolved')
+                                        <span class="text-[10px] font-bold text-green-600 bg-green-100 px-1.5 py-0.5 rounded uppercase">แก้ไขแล้ว</span>
+                                    @endif
+                                    <span class="text-[10px] text-gray-400 ml-auto">{{ $report->created_at->diffForHumans() }}</span>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-800 mt-1.5 break-all">{{ $report->title }}</p>
+                                <p class="text-xs text-gray-500 mt-0.5 break-all">{{ $report->message }}</p>
+                                @if($report->admin_reply)
+                                    <div class="mt-2 rounded-lg bg-blue-50 border border-blue-100 px-3 py-2">
+                                        <p class="text-[10px] font-bold text-blue-700 uppercase tracking-wide">การตอบกลับของแอดมิน · {{ $report->replied_at->diffForHumans() }}</p>
+                                        <p class="text-sm text-blue-900 mt-0.5 break-all">{{ $report->admin_reply }}</p>
+                                    </div>
+                                @endif
+                            </div>
+                        @empty
+                            <p class="text-sm text-gray-400 text-center py-8">{{ 'คุณยังไม่เคยแจ้งปัญหา' }}</p>
+                        @endforelse
+                    </div>
+                @endif
+
                 {{-- Form --}}
+                @if($view === 'form')
                 <form wire:submit.prevent="submit" class="space-y-4">
 
                     {{-- Type --}}
@@ -82,6 +134,7 @@
                         </button>
                     </div>
                 </form>
+                @endif
             </div>
         </div>
     @endif

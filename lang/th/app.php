@@ -20,6 +20,7 @@ return [
     'auth_failed' => 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
 
     // Store / Gamification
+    'store_disabled' => 'ร้านค้าปิดปรับปรุงชั่วคราว กรุณาลองใหม่ภายหลัง',
     'store_student_only' => 'เฉพาะนักเรียนเท่านั้นที่สามารถซื้อไอเทมได้',
     'store_item_unavailable' => 'ไอเทมนี้ไม่มีจำหน่ายแล้ว',
     'store_already_owned' => 'คุณเป็นเจ้าของไอเทมนี้แล้ว',

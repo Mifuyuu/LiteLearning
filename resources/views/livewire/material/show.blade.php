@@ -1,3 +1,7 @@
+@php
+    $themeColor = $classroom->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['color'];
+@endphp
+
 <div>
     <div>
 
@@ -30,8 +34,8 @@
                             <div class="flex items-start justify-between gap-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-lg flex items-center justify-center"
-                                        style="background-color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}15;">
-                                        <x-icon name="book-open" class="h-5 w-5" style="color: {{ $classroom->themeCategory?->color ?? '#8B5CF6' }}" />
+                                        style="background-color: {{ $themeColor }}15;">
+                                        <x-icon name="book-open" class="h-5 w-5" style="color: {{ $themeColor }}" />
                                     </div>
                                     <div>
                                         <h1 class="text-xl font-semibold text-gray-900">{{ $material->title }}</h1>

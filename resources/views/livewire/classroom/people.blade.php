@@ -42,7 +42,7 @@
             </div>
 
             <div class="mt-6 space-y-3">
-                <a href="{{ route('profile', $classroom->teacher) }}" wire:navigate class="rounded-[12px] border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4 block transition hover:border-[var(--ll-blue)]/30 hover:bg-[var(--ll-blue)]/[0.08]">
+                <a href="{{ route('profile', $classroom->teacher) }}" wire:navigate class="rounded-xl border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4 block transition hover:border-[var(--ll-blue)]/30 hover:bg-[var(--ll-blue)]/[0.08]">
                     <div class="flex items-center gap-3">
                         <img src="{{ $classroom->teacher->avatar_url }}" alt="{{ $classroom->teacher->name }}" class="h-11 w-11 rounded-2xl object-cover">
                         <div class="min-w-0">
@@ -54,7 +54,7 @@
                 </a>
 
                 @foreach($coTeachers as $coTeacher)
-                    <div class="rounded-[12px] border border-[#dedee5] bg-white p-4" wire:key="coteacher-{{ $coTeacher->id }}">
+                    <div class="rounded-xl border border-[#dedee5] bg-white p-4" wire:key="coteacher-{{ $coTeacher->id }}">
                         <div class="flex items-center gap-3">
                             <a href="{{ route('profile', $coTeacher) }}" wire:navigate class="flex items-center gap-3 min-w-0 flex-1">
                                 <img src="{{ $coTeacher->avatar_url }}" alt="{{ $coTeacher->name }}" class="h-11 w-11 rounded-2xl object-cover">
@@ -77,15 +77,15 @@
             </div>
 
             @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
-                <form wire:submit.prevent="addCoTeacher" class="mt-6 rounded-[12px] border border-dashed border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
+                <form wire:submit.prevent="addCoTeacher" class="mt-6 rounded-xl border border-dashed border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
                     <label class="block">
                         <span class="mb-2 block text-sm font-medium text-[#686b82]">{{ 'เพิ่มผู้สอนร่วม' }}</span>
                         <div class="flex flex-col gap-3 sm:flex-row">
                             <input wire:model="inviteCoTeacherEmail" type="email"
-                                class="w-full rounded-[12px] border border-[#dedee5] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--ll-blue)] focus:ring-2 focus:ring-[var(--ll-blue-subtle)]"
+                                class="w-full rounded-xl border border-[#dedee5] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--ll-blue)] focus:ring-2 focus:ring-[var(--ll-blue-subtle)]"
                                 placeholder="teacher@example.com">
                             <button type="submit"
-                                class="inline-flex items-center justify-center gap-2 rounded-[12px] bg-[var(--ll-blue)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--ll-blue-dark)]">
+                                class="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--ll-blue)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--ll-blue-dark)]">
                                 <x-icon name="user-plus" class="h-4 w-4" />
                                 {{ 'เพิ่ม' }}
                             </button>
@@ -122,7 +122,7 @@
 
             <div class="mt-6 space-y-3">
                 @forelse($students as $member)
-                    <div class="rounded-[12px] border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
+                    <div class="rounded-xl border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
                         <div class="flex items-center gap-3">
                             <a href="{{ route('profile', $member) }}" wire:navigate class="flex items-center gap-3 min-w-0 flex-1">
                                 <img src="{{ $member->avatar_url }}" alt="{{ $member->name }}" class="h-11 w-11 rounded-2xl object-cover">

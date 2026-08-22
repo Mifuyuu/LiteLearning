@@ -3,12 +3,15 @@
 namespace App\Livewire;
 
 use App\Models\BugReport;
+use App\Services\SettingsService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class ReportBug extends Component
 {
     public bool $showModal = false;
+
+    public string $view = 'form';
 
     public string $type = 'bug';
 
@@ -18,10 +21,25 @@ class ReportBug extends Component
 
     protected $listeners = ['openReportModal' => 'openModal'];
 
+    public function mount(): void
+    {
+        $unread = Auth::user()->bugReports()
+            ->whereNotNull('admin_reply')
+            ->whereNull('read_at')
+            ->get();
+
+        if ($unread->isNotEmpty()) {
+            // ponytail: two tabs navigating simultaneously could both read read_at IS NULL before either write lands, causing a duplicate toast — not worth locking for
+            BugReport::whereIn('id', $unread->pluck('id'))->update(['read_at' => now()]);
+            $this->dispatch('notify', message: __('messages.report.reply_received'));
+        }
+    }
+
     public function openModal(): void
     {
         $this->reset(['type', 'title', 'message']);
         $this->type = 'bug';
+        $this->view = 'form';
         $this->showModal = true;
     }
 
@@ -32,9 +50,18 @@ class ReportBug extends Component
 
     public function submit(): void
     {
-        // I5: rate limit bug reports (3 per 10 minutes)
+        $settings = app(SettingsService::class);
+
+        if (! $settings->bool('bug_report_enabled', true)) {
+            $this->dispatch('notify', message: __('messages.report.closed'), type: 'error');
+
+            return;
+        }
+
+        // I5: rate limit bug reports (configurable, default 3 per 10 minutes)
+        $limit = $settings->int('bug_report_rate_limit', 3);
         $key = 'report-bug:'.Auth::id();
-        if (cache()->has($key) && cache()->get($key) >= 3) {
+        if (cache()->has($key) && cache()->get($key) >= $limit) {
             $this->dispatch('notify', message: __('messages.report.throttle'));
 
             return;
@@ -66,6 +93,10 @@ class ReportBug extends Component
 
     public function render()
     {
-        return view('livewire.report-bug');
+        $reports = $this->view === 'history'
+            ? Auth::user()->bugReports()->latest()->get()
+            : collect();
+
+        return view('livewire.report-bug', ['reports' => $reports]);
     }
 }

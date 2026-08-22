@@ -146,7 +146,7 @@
                             <x-icon name="x-mark" class="h-4 w-4 mr-1" /> {{ 'ยกเลิก' }}
                         </button>
                         <button type="button" @click="$wire.purchase(selectedItemId); showModal = false"
-                            class="w-full py-2.5 bg-(--ll-blue) text-white hover:bg-[(--ll-blue-dark) font-bold rounded-lg text-sm transition-all">
+                            class="w-full py-2.5 bg-(--ll-blue) text-white hover:bg-(--ll-blue-dark) font-bold rounded-lg text-sm transition-all">
                             <x-icon name="shopping-bag" class="h-4 w-4 mr-1" /> {{ 'ยืนยันการซื้อ' }}
                         </button>
                     </div>

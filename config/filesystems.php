@@ -54,6 +54,20 @@ return [
             'throw' => false,
         ],
 
+        'planets' => [
+            'driver' => 'local',
+            'root' => public_path('images/planets'),
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'frames' => [
+            'driver' => 'local',
+            'root' => public_path('images/frames'),
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

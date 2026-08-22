@@ -5,18 +5,21 @@ namespace App\Livewire\Admin;
 use App\Models\StoreItem;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 #[Layout('layouts.app')]
 class Store extends Component
 {
-    use WithPagination;
+    use WithFileUploads, WithPagination;
 
     public $search = '';
 
     public $showModal = false;
 
     public $editingId = null;
+
+    public mixed $frameImageUpload = null;
 
     // Form fields
     public $form = [
@@ -37,6 +40,7 @@ class Store extends Component
         'form.value' => 'required|string|max:255',
         'form.price' => 'required|integer|min:0',
         'form.is_active' => 'boolean',
+        'frameImageUpload' => 'nullable|file|mimes:png,svg,webp|max:2048',
     ];
 
     protected function messages(): array
@@ -59,6 +63,7 @@ class Store extends Component
     public function openCreate()
     {
         $this->editingId = null;
+        $this->frameImageUpload = null;
         $this->form = ['code' => '', 'name' => '', 'description' => '', 'type' => 'name_color', 'value' => '', 'price' => 100, 'is_active' => true];
         $this->resetValidation();
         $this->showModal = true;
@@ -67,6 +72,7 @@ class Store extends Component
     public function openEdit(StoreItem $item)
     {
         $this->editingId = $item->id;
+        $this->frameImageUpload = null;
         $this->form = [
             'code' => $item->code,
             'name' => $item->name,
@@ -89,7 +95,18 @@ class Store extends Component
         }
         $this->rules['form.code'] = 'required|string|max:100|'.$uniqueRule;
 
+        // Value is filled from the uploaded frame image after validation, so it's not required up front for that case.
+        $this->rules['form.value'] = ($this->form['type'] === 'avatar_frame' && $this->frameImageUpload)
+            ? 'nullable|string|max:255'
+            : 'required|string|max:255';
+
         $this->validate();
+
+        if ($this->frameImageUpload) {
+            $filename = $this->frameImageUpload->hashName();
+            $this->frameImageUpload->storeAs('', $filename, ['disk' => 'frames']);
+            $this->form['value'] = 'images/frames/'.$filename;
+        }
 
         if ($this->editingId) {
             $item = StoreItem::findOrFail($this->editingId);
@@ -101,6 +118,7 @@ class Store extends Component
         }
 
         $this->showModal = false;
+        $this->frameImageUpload = null;
         $this->resetValidation();
     }
 

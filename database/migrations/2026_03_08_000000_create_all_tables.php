@@ -89,7 +89,7 @@ return new class extends Migration
             $table->string('color', 7)->default('#6B3FBF');
             $table->boolean('is_active')->default(true);
 
-            $table->unsignedTinyInteger('planet_number')->default(1);
+            $table->string('planet_key', 30)->default('earth');
             $table->timestamps();
         });
 

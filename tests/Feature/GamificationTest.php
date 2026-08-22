@@ -3,12 +3,12 @@
 namespace Tests\Feature;
 
 use App\Exceptions\GamificationException;
+use App\Livewire\Auth\Register;
 use App\Models\Achievement;
 use App\Models\Assignment;
 use App\Models\Classroom;
 use App\Models\ClassworkItem;
 use App\Models\CoinTransaction;
-use App\Livewire\Auth\Register;
 use App\Models\Comment;
 use App\Models\EmailOtpVerification;
 use App\Models\StoreItem;
@@ -50,6 +50,35 @@ class GamificationTest extends TestCase
         $gam = $this->student->gamification()->first();
         $this->assertEquals(100, $gam->xp);
         $this->assertEquals(2, $gam->level);
+    }
+
+    public function test_xp_award_that_levels_up_queues_a_celebration_flash(): void
+    {
+        $this->svc->awardXp($this->student, 100);
+
+        $queued = session('new_level_ups');
+        $this->assertCount(1, $queued);
+        $this->assertSame(1, $queued[0]['level_before']);
+        $this->assertSame(2, $queued[0]['level_after']);
+    }
+
+    public function test_big_xp_award_queues_one_celebration_per_level_gained(): void
+    {
+        // totalXpForLevel: 2=100, 3=300, 4=600 — 600 XP in one shot crosses 3 levels
+        $this->svc->awardXp($this->student, 600);
+
+        $queued = session('new_level_ups');
+        $this->assertCount(3, $queued);
+        $this->assertSame([1, 2], [$queued[0]['level_before'], $queued[0]['level_after']]);
+        $this->assertSame([2, 3], [$queued[1]['level_before'], $queued[1]['level_after']]);
+        $this->assertSame([3, 4], [$queued[2]['level_before'], $queued[2]['level_after']]);
+    }
+
+    public function test_xp_award_that_does_not_level_up_does_not_queue_a_celebration(): void
+    {
+        $this->svc->awardXp($this->student, 50); // level 2 needs 100 XP
+
+        $this->assertNull(session('new_level_ups'));
     }
 
     public function test_level_is_capped_at_100(): void
@@ -515,6 +544,30 @@ class GamificationTest extends TestCase
                 message: 'ไม่สามารถสวมใส่ไอเทมได้ กรุณาลองอีกครั้ง',
                 type: 'error'
             );
+    }
+
+    public function test_admin_can_set_coins_and_xp_for_student(): void
+    {
+        $this->svc->awardCoins($this->student, 100, 'seed');
+
+        $this->svc->adminSetCoinsAndXp($this->student, 500, 100);
+
+        $gam = $this->student->gamification()->first();
+        $this->assertSame(500, $gam->coins);
+        $this->assertSame(100, $gam->xp);
+        $this->assertSame(2, $gam->level);
+
+        $this->assertSame(400, CoinTransaction::where('user_id', $this->student->id)
+            ->where('source', 'admin_adjustment')
+            ->value('amount'));
+    }
+
+    public function test_admin_cannot_set_coins_and_xp_for_non_student(): void
+    {
+        $teacher = User::factory()->create(['role' => 'teacher']);
+
+        $this->expectException(GamificationException::class);
+        $this->svc->adminSetCoinsAndXp($teacher, 100, 100);
     }
 
     private function createAchievement(string $code): Achievement

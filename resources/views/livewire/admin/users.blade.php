@@ -207,6 +207,14 @@
                                         title="ดูโปรไฟล์">
                                         <x-icon name="arrow-top-right-on-square" class="h-4 w-4" />
                                     </a>
+                                    @if($user->role === 'student')
+                                        <button type="button"
+                                            @click="$dispatch('open-gamification-user', { id: '{{ $user->username }}', name: '{{ addslashes($user->name) }}', coins: {{ $user->coins }}, xp: {{ $user->xp }} })"
+                                            class="hover:text-amber-600 transition-colors p-1"
+                                            title="จัดการเหรียญและ XP">
+                                            <x-icon name="pencil" class="h-4 w-4" />
+                                        </button>
+                                    @endif
                                     @if($user->id !== auth()->id())
                         <button type="button"
                             @click="$dispatch('open-delete-user', { id: '{{ $user->username }}', name: '{{ addslashes($user->name) }}' })"
@@ -241,42 +249,55 @@
         @open-delete-user.window="deleteId = $event.detail.id; deleteName = $event.detail.name; showDeleteModal = true"
         @keydown.escape.window="showDeleteModal = false">
         <template x-teleport="body">
-            <div x-show="showDeleteModal" x-cloak
-                class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
-                @click.self="showDeleteModal = false">
-                <div x-show="showDeleteModal"
+            <x-confirm-modal show="showDeleteModal" cancel="showDeleteModal = false" heading="ยืนยันการลบ">
+                <x-slot:message>
+                    คุณแน่ใจหรือไม่ว่าต้องการลบ <span class="font-semibold text-[#101114]" x-text="deleteName"></span>? การกระทำนี้ไม่สามารถย้อนกลับได้
+                </x-slot:message>
+                <button type="button" @click="$wire.deleteUser(deleteId); showDeleteModal = false"
+                    class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                    ลบ
+                </button>
+            </x-confirm-modal>
+        </template>
+    </div>
+    <div x-data="{ show: false, id: null, name: '', coins: 0, xp: 0 }"
+        @open-gamification-user.window="id = $event.detail.id; name = $event.detail.name; coins = $event.detail.coins; xp = $event.detail.xp; show = true"
+        @keydown.escape.window="show = false">
+        <template x-teleport="body">
+            <div x-show="show" x-cloak class="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4"
+                @click.self="show = false">
+                <div x-show="show"
                     x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 scale-95"
-                    x-transition:enter-end="opacity-100 scale-100"
-                    x-transition:leave="transition ease-in duration-100"
-                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
                     x-transition:leave-end="opacity-0 scale-95"
-                    class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
-                    <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                        <div>
-                            <h4 class="text-base font-semibold text-gray-900">ยืนยันการลบ</h4>
-                            <p class="text-sm font-medium text-gray-700 mt-1" x-text="deleteName"></p>
-                        </div>
-                        <button type="button" @click="showDeleteModal = false"
-                            class="text-gray-400 hover:text-gray-600 transition-colors">
-                            <x-icon name="x-mark" class="h-5 w-5" />
-                        </button>
+                    class="w-full max-w-md rounded-xl border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.08)_0px_8px_32px]">
+                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-50">
+                        <x-icon name="banknotes" class="h-7 w-7 text-amber-500" />
                     </div>
-                    <div class="px-6 py-5">
-                        <p class="text-sm text-gray-500 mb-4">
-                            คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? การกระทำนี้ไม่สามารถย้อนกลับได้
-                        </p>
-                        <div class="flex justify-end gap-2">
-                            <button type="button" @click="showDeleteModal = false"
-                                class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                                <x-icon name="x-mark" class="h-4 w-4 mr-1.5" />ยกเลิก
-                            </button>
-                            <button type="button"
-                                @click="$wire.deleteUser(deleteId); showDeleteModal = false"
-                                class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
-                                <x-icon name="trash" class="h-4 w-4 mr-1.5" />ลบ
-                            </button>
-                        </div>
+                    <h4 class="mt-4 text-center text-lg font-black text-[#101114]">จัดการเหรียญและ XP</h4>
+                    <p class="mt-2 text-center text-sm text-[#686b82]" x-text="name"></p>
+                    <div class="mt-4 space-y-3">
+                        <label class="block">
+                            <span class="text-xs font-bold text-[#686b82]">เหรียญ</span>
+                            <input type="number" min="0" x-model.number="coins"
+                                class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                        </label>
+                        <label class="block">
+                            <span class="text-xs font-bold text-[#686b82]">XP</span>
+                            <input type="number" min="0" x-model.number="xp"
+                                class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                        </label>
+                    </div>
+                    <div class="mt-5 flex justify-center gap-2">
+                        <button type="button" @click="show = false"
+                            class="flex-1 rounded-[10px] border border-[#dedee5] px-4 py-2.5 text-sm font-bold text-[#686b82] transition hover:bg-[rgba(37,99,235,0.04)]">
+                            ยกเลิก
+                        </button>
+                        <button type="button" @click="$wire.updateGamification(id, coins, xp); show = false"
+                            class="flex-1 rounded-[10px] bg-amber-500 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-amber-600">
+                            บันทึก
+                        </button>
                     </div>
                 </div>
             </div>

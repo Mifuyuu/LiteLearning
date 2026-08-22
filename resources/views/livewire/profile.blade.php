@@ -159,9 +159,7 @@
                     @forelse($profileClassrooms as $index => $classroom)
                         @php
                             $tc = $classroom->themeCategory;
-                            $planetNum = $tc
-                                ? str_pad($tc->planet_number, 2, '0', STR_PAD_LEFT)
-                                : str_pad(($index % 21) + 1, 2, '0', STR_PAD_LEFT);
+                            $planetKey = $tc?->planet_key ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['planet_key'];
                         @endphp
                         @if($isOwnProfile)
                             <a href="{{ route('classroom.show', $classroom) }}" wire:navigate
@@ -169,7 +167,7 @@
                         @else
                             <div class="flex min-w-0 items-center gap-4 rounded-xl border border-[#dedee5] bg-white p-4">
                         @endif
-                                <img src="/images/planets/planet_{{ $planetNum }}.svg" alt="{{ $classroom->name }}"
+                                <img src="/images/planets/planet_{{ $planetKey }}.svg" alt="{{ $classroom->name }}"
                                     class="h-16 w-16 shrink-0 select-none" />
                                 <div class="min-w-0 flex-1">
                                     <h3 class="truncate font-black text-[#101114] group-hover:text-[#2563eb]">
@@ -219,7 +217,7 @@
                             @endif
                                 <div class="flex items-start gap-3">
                                     <span class="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white"
-                                        style="background-color: {{ $classroom?->themeCategory?->color ?? '#2563eb' }};">
+                                        style="background-color: {{ $classroom?->themeCategory?->color ?? ($classroom ? \App\Models\ThemeCategory::fallbackFor($classroom->id)['color'] : '#2563eb') }};">
                                         <x-icon name="document" class="h-4 w-4" />
                                     </span>
                                     <span class="min-w-0">

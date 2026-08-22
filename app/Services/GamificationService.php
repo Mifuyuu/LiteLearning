@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 
 class GamificationService
 {
+    public function __construct(private readonly SettingsService $settings) {}
+
     private function isEligible(User $user): bool
     {
         return $user->isStudent();
@@ -86,6 +88,7 @@ class GamificationService
             ['coins' => 0, 'xp' => 0, 'level' => 1]
         );
 
+        $oldLevel = $gamification->level;
         $newXp = $gamification->xp + $amount;
         $newLevel = $this->resolveLevelFromXp($newXp);
         $gamification->update([
@@ -93,8 +96,27 @@ class GamificationService
             'level' => $newLevel,
         ]);
 
+        if ($newLevel > $oldLevel) {
+            $this->queueLevelUpCelebration($oldLevel, $newLevel);
+        }
+
         if ($newLevel >= 5) {
             $this->unlockAchievement($user, 'level_up');
+        }
+    }
+
+    /**
+     * Queue one flash entry per level gained so the celebration modal can
+     * animate the progress bar filling and the level number ticking up for
+     * each one in sequence (a single big XP award can cross several levels).
+     */
+    private function queueLevelUpCelebration(int $oldLevel, int $newLevel): void
+    {
+        for ($level = $oldLevel + 1; $level <= $newLevel; $level++) {
+            session()->push('new_level_ups', [
+                'level_before' => $level - 1,
+                'level_after' => $level,
+            ]);
         }
     }
 
@@ -230,8 +252,9 @@ class GamificationService
         // Gate XP on the coin award actually happening — awardCoins() returns
         // false when this exact check-in was already rewarded (duplicate/race
         // call), which must also stop the XP from being doubled.
-        if ($this->awardCoins($user, 50, 'attendance_checkin', Assignment::class, $assignmentId)) {
-            $this->awardXp($user, 75);
+        $coinReward = $this->settings->int('attendance_coin_reward', 50);
+        if ($this->awardCoins($user, $coinReward, 'attendance_checkin', Assignment::class, $assignmentId)) {
+            $this->awardXp($user, $this->settings->int('attendance_xp_reward', 75));
         }
     }
 
@@ -328,7 +351,46 @@ class GamificationService
             return 0;
         }
 
-        return (int) (((($level - 1) * $level) / 2) * 100);
+        $multiplier = $this->settings->int('xp_per_level_multiplier', 100);
+
+        return (int) (((($level - 1) * $level) / 2) * $multiplier);
+    }
+
+    /**
+     * Admin override: set a student's coins and XP to exact values.
+     *
+     * @throws GamificationException
+     */
+    public function adminSetCoinsAndXp(User $user, int $coins, int $xp): void
+    {
+        if (! $this->isEligible($user)) {
+            throw new GamificationException(__('app.store_student_only'));
+        }
+
+        DB::transaction(function () use ($user, $coins, $xp) {
+            $gamification = $user->gamification()->firstOrCreate(
+                ['user_id' => $user->id],
+                ['coins' => 0, 'xp' => 0, 'level' => 1]
+            );
+
+            $coinDelta = $coins - $gamification->coins;
+
+            $gamification->update([
+                'coins' => $coins,
+                'xp' => $xp,
+                'level' => $this->resolveLevelFromXp($xp),
+            ]);
+
+            if ($coinDelta !== 0) {
+                CoinTransaction::create([
+                    'user_id' => $user->id,
+                    'amount' => $coinDelta,
+                    'type' => $coinDelta > 0 ? 'earn' : 'spend',
+                    'source' => 'admin_adjustment',
+                    'happened_at' => now(),
+                ]);
+            }
+        });
     }
 
     /**
@@ -338,6 +400,10 @@ class GamificationService
      */
     public function purchaseItem(User $user, StoreItem $item): void
     {
+        if (! $this->settings->bool('store_enabled', true)) {
+            throw new GamificationException(__('app.store_disabled'));
+        }
+
         if (! $this->isEligible($user)) {
             throw new GamificationException(__('app.store_student_only'));
         }
