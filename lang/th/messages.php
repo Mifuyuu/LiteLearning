@@ -106,7 +106,7 @@ return [
     'admin.cannot_self_demote' => 'ไม่สามารถยกเลิกบทบาทผู้ดูแลของตัวเองได้',
     'admin.user_role_updated' => 'อัปเดตบทบาทผู้ใช้เป็น :role แล้ว',
     'admin.user_deleted' => 'ลบผู้ใช้แล้ว',
-    'admin.gamification_updated' => 'อัปเดตเหรียญและ XP แล้ว',
+    'admin.user_updated' => 'บันทึกข้อมูลผู้ใช้แล้ว',
     'admin.classroom_deleted' => 'ลบห้องเรียนแล้ว',
     'admin.store_updated' => 'บันทึกสินค้าแล้ว',
     'admin.store_created' => 'เพิ่มสินค้าแล้ว',

@@ -2,11 +2,17 @@
     @keydown.escape.window="showDeleteCommentModal = false">
     <button wire:click="toggleComments"
         class="flex items-center gap-2 px-5 py-3 text-sm text-gray-500 hover:text-gray-700 w-full text-left">
-        <x-icon name="chat-bubble-left" class="h-4 w-4" />
+        <x-icon name="chat-bubble-left-right" class="h-4 w-4" />
         {{ $comments->count() }} ความคิดเห็น
     </button>
 
-    @if($showComments)
+    <div x-show="$wire.showComments" x-cloak
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-1"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-1">
         <div class="px-5 pb-4">
             <!-- Comments list -->
             <div class="space-y-3 mb-3">
@@ -19,7 +25,7 @@
                                     class="max-w-[100px] truncate text-xs font-semibold text-gray-900">{{ $comment->user->name }}</span>
                                 <span class="shrink-0 text-xs text-gray-400">{{ $comment->created_at->diffForHumans() }}</span>
                             </div>
-                            <p class="text-sm text-gray-700">{{ $comment->content }}</p>
+                            <p class="text-sm text-gray-700 break-words">{{ $comment->content }}</p>
                         </div>
                         @if($comment->user_id === auth()->id() || $canModerate)
                             <button type="button"
@@ -47,7 +53,7 @@
                 </div>
             </div>
         </div>
-    @endif
+    </div>
 
     <template x-teleport="body">
         <x-confirm-modal show="showDeleteCommentModal" cancel="showDeleteCommentModal = false"

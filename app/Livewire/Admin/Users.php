@@ -76,22 +76,32 @@ class Users extends Component
         $this->dispatch('notify', message: __('messages.admin.user_role_updated', ['role' => ucfirst($newRole)]));
     }
 
-    public function updateGamification(User $user, GamificationService $gamification, $coins, $xp)
+    public function updateUser(User $user, GamificationService $gamification, $name, $bio, $coins, $xp)
     {
-        Validator::make(compact('coins', 'xp'), [
+        Validator::make(compact('name', 'bio', 'coins', 'xp'), [
+            'name' => 'required|string|max:'.User::NAME_MAX_LENGTH,
+            'bio' => 'nullable|string|max:500',
             'coins' => 'integer|min:0',
             'xp' => 'integer|min:0',
         ])->validate();
 
-        try {
-            $gamification->adminSetCoinsAndXp($user, (int) $coins, (int) $xp);
-        } catch (GamificationException $e) {
-            $this->dispatch('notify', message: $e->getMessage());
+        $user->name = trim($name);
+        $user->bio = $bio !== '' ? $bio : null;
+        $user->save();
 
-            return;
+        if ($user->isStudent()) {
+            try {
+                $gamification->adminSetCoinsAndXp($user, (int) $coins, (int) $xp);
+            } catch (GamificationException $e) {
+                $this->dispatch('notify', message: $e->getMessage());
+
+                return;
+            }
         }
 
-        $this->dispatch('notify', message: __('messages.admin.gamification_updated'));
+        AuditLog::record('user_updated', "แก้ไขข้อมูลผู้ใช้ {$user->name} ({$user->email})");
+
+        $this->dispatch('notify', message: __('messages.admin.user_updated'));
     }
 
     public function deleteUser(User $user)

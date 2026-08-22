@@ -19,7 +19,7 @@
 @endphp
 <div class="space-y-5 max-w-4xl mx-auto">
 
-    <section class="rounded-xl border border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <section class="rounded-xl border-3 border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] min-h-[calc(100vh-3rem)]">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <div class="skeleton h-3 w-20"></div>

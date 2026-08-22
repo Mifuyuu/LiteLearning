@@ -86,8 +86,8 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     @if($session->id !== session()->getId())
-                                        <button type="button" wire:click="revokeSession('{{ $session->id }}')"
-                                            wire:confirm="เพิกถอนเซสชันนี้? ผู้ใช้จะถูกออกจากระบบทันที"
+                                        <button type="button"
+                                            @click="$dispatch('open-revoke-session', { id: @js($session->id) })"
                                             class="text-gray-400 hover:text-red-600 transition-colors p-1" title="เพิกถอนเซสชัน">
                                             <x-icon name="x-mark" class="h-4 w-4" />
                                         </button>
@@ -115,4 +115,18 @@
             @endif
         </div>
     @endif
+
+    <div x-data="{ showRevokeModal: false, revokeId: null }"
+        @open-revoke-session.window="revokeId = $event.detail.id; showRevokeModal = true"
+        @keydown.escape.window="showRevokeModal = false">
+        <template x-teleport="body">
+            <x-confirm-modal show="showRevokeModal" cancel="showRevokeModal = false" icon="arrow-right-on-rectangle"
+                heading="เพิกถอนเซสชัน" message="ผู้ใช้ของเซสชันนี้จะถูกออกจากระบบทันที ต้องการดำเนินการต่อหรือไม่?">
+                <button type="button" @click="$wire.revokeSession(revokeId); showRevokeModal = false"
+                    class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                    เพิกถอน
+                </button>
+            </x-confirm-modal>
+        </template>
+    </div>
 </div>

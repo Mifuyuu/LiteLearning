@@ -10,6 +10,7 @@ use App\Services\GamificationService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class StreamComment extends Component
@@ -46,6 +47,18 @@ class StreamComment extends Component
     public function toggleComments(): void
     {
         $this->showComments = ! $this->showComments;
+
+        if ($this->showComments) {
+            $this->dispatch('comment-panel-opened', contentId: $this->contentId, contentType: $this->contentType);
+        }
+    }
+
+    #[On('comment-panel-opened')]
+    public function closeIfDifferent(int $contentId, string $contentType): void
+    {
+        if ($contentId !== $this->contentId || $contentType !== $this->contentType) {
+            $this->showComments = false;
+        }
     }
 
     public function addComment(): void

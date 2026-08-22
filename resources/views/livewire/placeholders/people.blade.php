@@ -22,15 +22,16 @@
 @endphp
 <div class="space-y-6 max-w-4xl mx-auto">
 
-    {{-- Sort filter bar mockup --}}
-    <section class="flex flex-wrap items-center gap-2 rounded-2xl border border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-        <div class="skeleton h-9 w-24 rounded-[10px]"></div>
-        <div class="skeleton h-9 w-24 rounded-[10px]"></div>
-        <div class="skeleton h-9 w-20 rounded-[10px]"></div>
-    </section>
+    {{-- Single card: sort bar + teachers block + divider + students block --}}
+    <section class="rounded-2xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] min-h-[calc(100vh-3rem)]">
 
-    {{-- Single card: teachers block + divider + students block --}}
-    <section class="rounded-2xl border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+        {{-- Sort --}}
+        <div class="flex flex-wrap items-center gap-2 p-4">
+            <div class="skeleton h-9 w-24 rounded-[10px]"></div>
+            <div class="skeleton h-9 w-24 rounded-[10px]"></div>
+        </div>
+
+        <div class="border-t border-[#dedee5] mx-6"></div>
 
         {{-- Teachers --}}
         <div class="p-6 pb-4">
@@ -84,7 +85,7 @@
         </div>
 
         {{-- Divider --}}
-        <div class="border-t border-[#dedee5]"></div>
+        <div class="border-t border-[#dedee5] mx-6"></div>
 
         {{-- Students --}}
         <div class="p-6 pt-4">

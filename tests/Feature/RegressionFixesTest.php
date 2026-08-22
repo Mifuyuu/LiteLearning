@@ -129,6 +129,49 @@ class RegressionFixesTest extends TestCase
             ->assertStatus(404);
     }
 
+    public function test_stream_comment_toggle_dispatches_open_event_and_closes_other_panels(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+
+        $classworkItemA = ClassworkItem::factory()->forAnnouncement()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'title' => 'Announcement A',
+        ]);
+        $announcementA = Announcement::create([
+            'classwork_item_id' => $classworkItemA->id,
+            'content' => 'First',
+        ]);
+
+        $classworkItemB = ClassworkItem::factory()->forAnnouncement()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'title' => 'Announcement B',
+        ]);
+        $announcementB = Announcement::create([
+            'classwork_item_id' => $classworkItemB->id,
+            'content' => 'Second',
+        ]);
+
+        $panelA = Livewire::actingAs($teacher)
+            ->test(StreamComment::class, ['announcementId' => $announcementA->id])
+            ->call('toggleComments')
+            ->assertSet('showComments', true)
+            ->assertDispatched('comment-panel-opened', contentId: $announcementA->id, contentType: Announcement::class);
+
+        // Simulate the browser-wide event fired when panel B opens: panel A should close.
+        $panelA->call('closeIfDifferent', $announcementB->id, Announcement::class)
+            ->assertSet('showComments', false);
+
+        // Re-open, then confirm the event for its own announcement doesn't close it.
+        $panelA->call('toggleComments')
+            ->assertSet('showComments', true)
+            ->call('closeIfDifferent', $announcementA->id, Announcement::class)
+            ->assertSet('showComments', true);
+    }
+
     public function test_user_can_delete_their_own_stream_comment(): void
     {
         /** @var User $teacher */

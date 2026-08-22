@@ -16,18 +16,21 @@
 <div class="space-y-6 max-w-4xl mx-auto"
     x-data="{ openPopover: null, showKickModal: false, kickName: '', kickId: null, kickType: '' }"
     @click.away="openPopover = null">
-    <section class="flex flex-wrap items-center gap-2 rounded-2xl border-3 border-[#dedee5] bg-white p-2 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-        <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
-            class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-[var(--ll-blue)] text-white' : 'text-[#686b82] hover:bg-[var(--ll-blue-hover)] hover:text-[var(--ll-blue)]' }}">
-            {{ 'ชื่อต้น' }}
-        </a>
-        <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-newest']) }}" wire:navigate
-            class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-newest' ? 'bg-[var(--ll-blue)] text-white' : 'text-[#686b82] hover:bg-[var(--ll-blue-hover)] hover:text-[var(--ll-blue)]' }}">
-            {{ 'ใหม่ล่าสุด' }}
-        </a>
-    </section>
+    <section class="rounded-2xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] min-h-[calc(100vh-3rem)]">
 
-    <section class="rounded-2xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+        {{-- Sort --}}
+        <div class="flex flex-wrap items-center gap-2 p-4">
+            <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
+                class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-[var(--ll-blue)] text-white' : 'text-[#686b82] hover:bg-[var(--ll-blue-hover)] hover:text-[var(--ll-blue)]' }}">
+                {{ 'ชื่อต้น' }}
+            </a>
+            <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-newest']) }}" wire:navigate
+                class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-newest' ? 'bg-[var(--ll-blue)] text-white' : 'text-[#686b82] hover:bg-[var(--ll-blue-hover)] hover:text-[var(--ll-blue)]' }}">
+                {{ 'ใหม่ล่าสุด' }}
+            </a>
+        </div>
+
+        <div class="border-t border-[#dedee5] mx-6"></div>
 
         {{-- Teachers --}}
         <div class="p-6 pb-4">
@@ -97,7 +100,7 @@
         </div>
 
         {{-- Divider --}}
-        <div class="border-t border-[#dedee5]"></div>
+        <div class="border-t border-[#dedee5] mx-6"></div>
 
         {{-- Students --}}
         <div class="p-6 pt-4">
