@@ -14,7 +14,7 @@
     $isManager = isset($classroom) ? $classroom->canManageClassroom(auth()->user()) : auth()->user()->isTeacher();
 @endphp
 <div class="max-w-4xl mx-auto">
-    <section class="overflow-hidden rounded-[12px] border border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <section class="overflow-hidden rounded-[12px] border-3 border-[#dedee5] bg-white min-h-[calc(100vh_-_3rem)]">
 
         {{-- Theme color strip --}}
         <div class="h-2 w-full" style="background-color: {{ isset($classroom) ? ($classroom->themeCategory?->color ?? '#2563eb') : '#2563eb' }};"></div>
@@ -29,7 +29,6 @@
                     <div class="mt-4 flex flex-wrap items-center gap-2">
                         <div class="skeleton h-7 w-28 rounded-[8px]"></div>
                         <div class="skeleton h-7 w-20 rounded-[8px]"></div>
-                        <div class="skeleton h-7 w-24 rounded-[8px]"></div>
                         <div class="skeleton h-7 w-24 rounded-[8px]"></div>
                     </div>
                 </div>
@@ -46,7 +45,7 @@
         <div class="grid divide-y divide-[#f2eff5] border-t border-[#f2eff5] lg:grid-cols-3 lg:divide-x lg:divide-y-0">
             @for($i = 0; $i < 3; $i++)
                 <div class="p-5">
-                    <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
                         <div class="skeleton h-10 w-10 rounded-[10px]"></div>
                         <div class="skeleton h-8 w-8"></div>
                     </div>
@@ -54,6 +53,33 @@
                     <div class="skeleton mt-1 h-4 w-full"></div>
                 </div>
             @endfor
+        </div>
+
+        {{-- กระดานสนทนา --}}
+        <div class="border-t border-[#f2eff5] p-5">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <div class="skeleton h-3 w-20"></div>
+                    <div class="skeleton mt-1 h-6 w-32"></div>
+                </div>
+                <div class="skeleton h-4 w-16"></div>
+            </div>
+            <div class="mt-4 space-y-3">
+                @for($i = 0; $i < 3; $i++)
+                    <div class="rounded-[10px] border border-[#dedee5] px-3 py-3">
+                        <div class="flex items-start gap-3">
+                            <div class="skeleton h-8 w-8 shrink-0 rounded-[8px]"></div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center justify-between gap-2">
+                                    <div class="skeleton h-4 w-1/3"></div>
+                                    <div class="skeleton h-3 w-12 shrink-0"></div>
+                                </div>
+                                <div class="skeleton mt-2 h-3 w-5/6"></div>
+                            </div>
+                        </div>
+                    </div>
+                @endfor
+            </div>
         </div>
 
         {{-- ต้องดูแล --}}

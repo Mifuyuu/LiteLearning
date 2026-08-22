@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Assignment;
 use App\Models\Submission;
 use App\Models\User;
+use App\Models\UserGamification;
 use App\Services\DashboardAnalyticsService;
 use App\Services\GamificationService;
 use Illuminate\Support\Collection;
@@ -69,7 +70,6 @@ class Dashboard extends Component
             ->with('assignment')
             ->whereIn('status', ['turned_in', 'graded', 'returned'])
             ->get();
-        $scored = $submissions->whereNotNull('score');
         $onTimeCount = $submissions->filter(
             fn (Submission $submission): bool => ! $submission->isLate()
         )->count();
@@ -95,6 +95,17 @@ class Dashboard extends Component
         $xpInCurrentLevel = max(0, $user->xp - $currentLevelStartXp);
         $xpNeededInLevel = max(1, $nextLevelXp - $currentLevelStartXp);
         $activity = $analytics->studentActivity($user, $months);
+        $rank = 1 + UserGamification::query()
+            ->join('users', 'users.id', '=', 'user_gamifications.user_id')
+            ->where('users.role', 'student')
+            ->where(function ($query) use ($user): void {
+                $query->where('user_gamifications.level', '>', $user->level)
+                    ->orWhere(function ($query) use ($user): void {
+                        $query->where('user_gamifications.level', $user->level)
+                            ->where('user_gamifications.xp', '>', $user->xp);
+                    });
+            })
+            ->count();
 
         return [
             'role' => 'student',
@@ -110,7 +121,7 @@ class Dashboard extends Component
                 ['label' => 'เหรียญ', 'value' => number_format($user->coins), 'icon' => 'star'],
                 ['label' => 'ความสำเร็จ', 'value' => number_format($user->achievements()->count()), 'icon' => 'trophy'],
                 ['label' => 'ภารกิจที่ยังไม่สำเร็จ', 'value' => number_format($incompleteCount), 'icon' => 'exclamation-circle'],
-                ['label' => 'คะแนนเฉลี่ย', 'value' => number_format((float) ($scored->avg('score') ?? 0), 1), 'icon' => 'chart-bar'],
+                ['label' => 'อันดับปัจจุบัน', 'value' => '#'.number_format($rank), 'icon' => 'chart-bar'],
             ],
             'activitySummaries' => [
                 ['label' => 'กิจกรรมในรอบ 6 เดือน', 'value' => $activity['total']],

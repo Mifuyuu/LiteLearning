@@ -17,31 +17,26 @@
             this.showModal = true;
         }
     }">
-    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh_-_3rem)]">
+    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)]">
         <div class="relative p-6 lg:p-8">
             <img src="{{ asset('images/market.svg') }}" alt=""
-                class="absolute right-4 top-4 hidden h-[calc(100%_-_2rem)] w-auto select-none object-contain sm:block lg:right-8" />
+                class="absolute right-4 top-4 hidden h-[calc(100%-2rem)] w-auto select-none object-contain sm:block lg:right-8" />
 
             <div class="relative max-w-sm">
                 <h1 class="text-3xl font-black tracking-tight text-[#101114] sm:text-4xl">{{ 'ร้านค้าของตกแต่ง' }}</h1>
                 <p class="mt-2 text-md leading-6 text-[#686b82]">{{ 'ใช้เหรียญแลกของตกแต่งสุดพิเศษ' }}</p>
 
                 <div class="mt-4 flex items-center gap-2">
-                    <x-icon name="star-solid" class="text-amber-500 h-5 w-5 shrink-0" />
-                    <span class="text-xl font-black text-[#101114]">{{ number_format($coins) }}</span>
                     <span class="text-sm text-[#686b82]">{{ 'เหรียญของคุณ' }}</span>
+                    <span class="text-xl font-black text-[#101114]">{{ number_format($coins) }}</span>
+                    <img src="{{ asset('images/Coin.svg') }}" class="h-5 w-5 shrink-0" alt="">
                 </div>
             </div>
         </div>
 
         <div class="border-t border-[#dedee5] space-y-8 p-6 lg:p-8">
             <div>
-                <h2 class="text-xl font-bold text-[#101114] mb-6 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-6 w-6 text-[var(--ll-blue)] mr-2 shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
-                    </svg>
-                    {{ 'สีชื่อ' }}
-                </h2>
+                <h2 class="text-xl font-bold text-[#101114] mb-6 flex items-center">{{ 'สีชื่อ' }}</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     @foreach($storeItems->where('type', 'name_color') as $item)
                         @php
@@ -49,7 +44,7 @@
                         @endphp
                         <div class="relative border rounded-xl p-5 flex flex-col items-center text-center border-[#dedee5]">
                             @if($isOwned)
-                                <span class="absolute top-3 right-3 flex items-center justify-center h-5 w-5 rounded-full bg-[var(--ll-blue)] text-white">
+                                <span class="absolute top-3 right-3 flex items-center justify-center h-5 w-5 rounded-full bg-(--ll-blue) text-white">
                                     <x-icon name="check" class="h-3 w-3" />
                                 </span>
                             @endif
@@ -65,12 +60,7 @@
             </div>
 
             <div>
-                <h2 class="text-xl font-bold text-[#101114] mb-6 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-6 w-6 text-[var(--ll-blue)] mr-2 shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-                    </svg>
-                    {{ 'กรอบรูปโปรไฟล์' }}
-                </h2>
+                <h2 class="text-xl font-bold text-[#101114] mb-6 flex items-center">{{ 'กรอบรูปโปรไฟล์' }}</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     @foreach($storeItems->where('type', 'avatar_frame') as $item)
                         @php
@@ -78,7 +68,7 @@
                         @endphp
                         <div class="relative border rounded-xl p-5 flex flex-col items-center text-center border-[#dedee5]">
                             @if($isOwned)
-                                <span class="absolute top-3 right-3 flex items-center justify-center h-5 w-5 rounded-full bg-[var(--ll-blue)] text-white">
+                                <span class="absolute top-3 right-3 flex items-center justify-center h-5 w-5 rounded-full bg-(--ll-blue) text-white">
                                     <x-icon name="check" class="h-3 w-3" />
                                 </span>
                             @endif
@@ -116,7 +106,7 @@
                 x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
 
                 <div class="p-6 text-center">
-                    <div class="mx-auto flex flex-col items-center justify-center p-4 bg-[var(--ll-blue-faint)] rounded-[8px] mb-6 min-h-[120px] border border-[#dedee5]">
+                    <div class="mx-auto flex flex-col items-center justify-center p-4 bg-(--ll-blue-faint) rounded-lg mb-6 min-h-30 border border-[#dedee5]">
 
                         <!-- Name Color Preview -->
                         <template x-if="selectedItemType === 'name_color'">
@@ -145,19 +135,19 @@
                     <p class="text-[#686b82] mb-6">
                         {{ 'คุณแน่ใจหรือไม่ว่าต้องการซื้อ' }}
                         <span class="font-bold text-[#101114] block mt-2 text-lg" x-text="selectedItemName"></span>
-                        <span class="mt-2 flex items-center justify-center gap-1 text-[var(--ll-blue)] font-bold">
-                            {{ 'ในราคา' }} <x-icon name="star-solid" class="text-amber-500 h-4 w-4 shrink-0" /> <span x-text="selectedItemPrice"></span> {{ 'เหรียญ?' }}
+                        <span class="mt-2 flex items-center justify-center gap-1 text-(--ll-blue) font-bold">
+                            {{ 'ในราคา' }} <img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 shrink-0" alt=""> <span x-text="selectedItemPrice"></span> {{ 'เหรียญ?' }}
                         </span>
                     </p>
 
-                    <div class="flex flex-col gap-3">
-                        <button type="button" @click="$wire.purchase(selectedItemId); showModal = false"
-                            class="w-full py-2.5 bg-[var(--ll-blue)] text-white hover:bg-[var(--ll-blue-dark)] font-bold rounded-[8px] text-sm transition-all">
-                            <x-icon name="shopping-bag" class="h-4 w-4 mr-1" /> {{ 'ยืนยันการซื้อ' }}
-                        </button>
+                    <div class="flex gap-3">
                         <button type="button" @click="showModal = false"
-                            class="w-full py-2.5 text-sm font-medium text-[#686b82] border border-[#dedee5] hover:bg-[var(--ll-blue-faint)] rounded-[8px] transition-colors">
+                            class="w-full py-2.5 text-sm font-medium text-[#686b82] border border-[#dedee5] hover:bg-(--ll-blue-faint) rounded-lg transition-colors">
                             <x-icon name="x-mark" class="h-4 w-4 mr-1" /> {{ 'ยกเลิก' }}
+                        </button>
+                        <button type="button" @click="$wire.purchase(selectedItemId); showModal = false"
+                            class="w-full py-2.5 bg-(--ll-blue) text-white hover:bg-[(--ll-blue-dark) font-bold rounded-lg text-sm transition-all">
+                            <x-icon name="shopping-bag" class="h-4 w-4 mr-1" /> {{ 'ยืนยันการซื้อ' }}
                         </button>
                     </div>
                 </div>

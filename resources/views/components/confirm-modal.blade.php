@@ -1,4 +1,4 @@
-@props(['show', 'cancel', 'heading' => '', 'message' => ''])
+@props(['show', 'cancel', 'heading' => '', 'message' => '', 'icon' => 'trash'])
 
 <div x-data x-show="{{ $show }}" x-cloak
     class="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4"
@@ -10,7 +10,7 @@
         x-transition:leave-end="opacity-0 scale-95"
         class="w-full max-w-md rounded-[12px] border border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.08)_0px_8px_32px]">
         <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose-50">
-            <x-icon name="trash" class="h-7 w-7 text-rose-500" />
+            <x-icon :name="$icon" class="h-7 w-7 text-rose-500" />
         </div>
         <h4 class="mt-4 text-center text-lg font-black text-[#101114]">{{ $heading }}</h4>
         <p class="mt-2 text-center text-sm text-[#686b82]">{{ $message }}</p>

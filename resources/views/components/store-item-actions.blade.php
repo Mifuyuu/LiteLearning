@@ -10,9 +10,11 @@
             <x-icon name="check" class="h-4 w-4 mr-1" /> {{ 'เป็นเจ้าของแล้ว' }}
         </a>
     @else
-        <button @click="confirmPurchase({{ $item->id }}, '{{ addslashes($item->name) }}', {{ $item->price }}, '{{ $item->type }}', '{{ $previewValue }}')" class="w-full py-2.5 bg-[var(--ll-blue)] text-white hover:bg-[var(--ll-blue-dark)] font-medium rounded-[8px] text-sm transition-colors cursor-pointer flex justify-center items-center gap-2 {{ $coins < $item->price ? 'opacity-70' : '' }}">
-            <x-icon name="star-solid" class="text-white h-4 w-4 shrink-0" />
-            <span class="font-bold">{{ $item->price }}</span>
+        <span class="absolute top-3 left-3 inline-flex items-center gap-1 bg-white border border-[#dedee5] rounded-full px-2 py-1 text-xs font-bold text-[#101114]">
+            <img src="{{ asset('images/Coin.svg') }}" class="h-3 w-3 shrink-0" alt=""> {{ $item->price }}
+        </span>
+        <button @click="confirmPurchase({{ $item->id }}, '{{ addslashes($item->name) }}', {{ $item->price }}, '{{ $item->type }}', '{{ $previewValue }}')" class="w-full py-2.5 bg-[var(--ll-blue)] text-white hover:bg-[var(--ll-blue-dark)] font-medium rounded-[8px] text-sm transition-colors cursor-pointer flex justify-center items-center gap-1.5 {{ $coins < $item->price ? 'opacity-70' : '' }}">
+            <x-icon name="shopping-bag" class="h-4 w-4 shrink-0" /> {{ 'ซื้อ' }}
         </button>
     @endif
 </div>

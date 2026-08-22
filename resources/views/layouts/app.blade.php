@@ -276,6 +276,14 @@
                                     ตั้งค่าห้องเรียน
                                 </a>
                             @endif
+
+                            @if(auth()->user()->isStudent())
+                                <button type="button" x-data @click="$dispatch('open-leave-classroom', { classroomId: {{ $classroom->id }} })"
+                                    class="flex w-full items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors text-red-500 hover:bg-red-50 cursor-pointer">
+                                    <x-icon name="arrow-right-on-rectangle" class="mr-3 h-5 w-5" />
+                                    ออกจากห้องเรียน
+                                </button>
+                            @endif
                         </div>
                     </div>
                 @endif
@@ -464,6 +472,7 @@
 
 
     @livewire('classroom.create')
+    @livewire('classroom.leave-classroom')
     @livewire('report-bug')
 
 </body>

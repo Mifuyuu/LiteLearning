@@ -15,7 +15,7 @@
 @endphp
 
 <div class="max-w-4xl mx-auto">
-    <section class="overflow-hidden rounded-[12px] border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <section class="overflow-hidden rounded-[12px] border-3 border-[#dedee5] bg-white min-h-[calc(100vh_-_3rem)]">
 
         {{-- Theme color strip --}}
         <div class="h-2 w-full" style="background-color: {{ $themeColor }};"></div>
@@ -43,10 +43,6 @@
                         <span class="inline-flex items-center gap-1.5 rounded-[8px] bg-[rgba(104,107,130,0.12)] px-3 py-1.5 text-[#484b5e]">
                             <x-icon name="users" class="h-3.5 w-3.5" />
                             {{ $students->count() }} {{ 'นักเรียน' }}
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 rounded-[8px] bg-[rgba(34,197,94,0.12)] px-3 py-1.5 text-green-700 font-mono">
-                            <x-icon name="qr-code" class="h-3.5 w-3.5" />
-                            {{ $classroom->code }}
                         </span>
                     </div>
                 </div>
@@ -97,7 +93,7 @@
         <div class="grid divide-y divide-[#f2eff5] border-t border-[#f2eff5] lg:grid-cols-3 lg:divide-x lg:divide-y-0">
             <a href="{{ route('classroom.stream', $classroom) }}" wire:navigate
                 class="block p-5 transition hover:bg-[rgba(37,99,235,0.03)]">
-                <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
                     <span class="flex h-10 w-10 items-center justify-center rounded-[10px]"
                         style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
                         <x-icon name="chat-bubble-left-ellipsis" class="h-5 w-5" />
@@ -110,7 +106,7 @@
 
             <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
                 class="block p-5 transition hover:bg-[rgba(37,99,235,0.03)]">
-                <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
                     <span class="flex h-10 w-10 items-center justify-center rounded-[10px]"
                         style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
                         <x-icon name="clipboard-document-list" class="h-5 w-5" />
@@ -123,7 +119,7 @@
 
             <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
                 class="block p-5 transition hover:bg-[rgba(37,99,235,0.03)]">
-                <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
                     <span class="flex h-10 w-10 items-center justify-center rounded-[10px]"
                         style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
                         <x-icon name="users" class="h-5 w-5" />
@@ -135,12 +131,42 @@
             </a>
         </div>
 
+        {{-- กระดานสนทนา --}}
+        <div class="border-t border-[#f2eff5] p-5">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h2 class="mt-1 text-xl font-black text-[#101114]">{{ 'กระดานสนทนาล่าสุด' }}</h2>
+                </div>
+                <a href="{{ route('classroom.stream', $classroom) }}" wire:navigate
+                    class="text-sm font-bold text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)]">{{ 'ดูทั้งหมด' }}</a>
+            </div>
+            <div class="mt-4 space-y-3">
+                @forelse($classroom->announcements->take(3) as $announcement)
+                    <a href="{{ route('classroom.stream', $classroom) }}" wire:navigate
+                        class="block rounded-[10px] border border-[#dedee5] px-3 py-3 transition hover:border-[rgba(37,99,235,0.3)] hover:bg-[var(--ll-blue-faint)]">
+                        <div class="flex items-start gap-3">
+                            <img src="{{ $announcement->user->avatar_url }}" alt="{{ $announcement->user->name }}"
+                                class="h-8 w-8 shrink-0 rounded-[8px] object-cover">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="truncate text-sm font-extrabold text-[#101114]">{{ $announcement->user->name }}</p>
+                                    <p class="shrink-0 text-xs font-semibold text-[#9497a9]">{{ $announcement->created_at->diffForHumans() }}</p>
+                                </div>
+                                <p class="mt-1 line-clamp-2 text-sm text-[#686b82]">{{ \Illuminate\Support\Str::limit(strip_tags($announcement->content), 120) }}</p>
+                            </div>
+                        </div>
+                    </a>
+                @empty
+                    <x-empty-state-inline title="กระดานสนทนา" body="ยังไม่มีประกาศ" />
+                @endforelse
+            </div>
+        </div>
+
         {{-- ต้องดูแล --}}
         <div class="border-t border-[#f2eff5] p-5">
             <div class="flex items-center justify-between gap-3">
                 <div>
-                    <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">{{ 'งานในชั้นเรียน' }}</p>
-                    <h2 class="mt-1 text-xl font-black text-[#101114]">{{ 'ต้องดูแล' }}</h2>
+                    <h2 class="mt-1 text-xl font-black text-[#101114]">{{ 'งานในชั้นเรียนที่ต้องดูแล' }}</h2>
                 </div>
                 <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'pending']) }}" wire:navigate
                     class="text-sm font-bold text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)]">{{ 'ดูทั้งหมด' }}</a>

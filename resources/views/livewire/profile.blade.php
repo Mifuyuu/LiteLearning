@@ -47,7 +47,7 @@
         <div class="p-5 lg:px-7 space-y-6">
 
             {{-- Bio --}}
-            <div class="rounded-[12px] border border-[#dedee5] bg-white p-4 sm:p-5">
+            <div class="rounded-xl border border-[#dedee5] bg-white p-4 sm:p-5">
                 <p class="text-sm leading-6 text-slate-600">
                     {{ $user->bio ?: 'โปรไฟล์การเรียนรู้, ความคืบหน้าในห้องเรียน และการสะสมความสำเร็จ' }}
                 </p>
@@ -66,19 +66,19 @@
 
             {{-- Stat boxes --}}
             <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div class="rounded-[12px] border border-[#dedee5] bg-white p-4">
+                <div class="rounded-xl border border-[#dedee5] bg-white p-4">
                     <p class="text-2xl font-black text-[#101114]">{{ number_format($profileStats['classrooms']) }}</p>
                     <p class="text-xs font-semibold text-[#9497a9]">ห้องเรียน</p>
                 </div>
-                <div class="rounded-[12px] border border-[#dedee5] bg-white p-4">
+                <div class="rounded-xl border border-[#dedee5] bg-white p-4">
                     <p class="text-2xl font-black text-[#101114]">{{ number_format($profileStats['submissions']) }}</p>
                     <p class="text-xs font-semibold text-[#9497a9]">งานที่ส่ง</p>
                 </div>
-                <div class="rounded-[12px] border border-[#dedee5] bg-white p-4">
+                <div class="rounded-xl border border-[#dedee5] bg-white p-4">
                     <p class="text-2xl font-black text-[#101114]">{{ number_format($profileStats['average_score'], 1) }}</p>
                     <p class="text-xs font-semibold text-[#9497a9]">คะแนนเฉลี่ย</p>
                 </div>
-                <div class="rounded-[12px] border border-[#dedee5] bg-white p-4">
+                <div class="rounded-xl border border-[#dedee5] bg-white p-4">
                     <p class="text-2xl font-black text-[#101114]">{{ $profileStats['achievements'] }}/{{ $profileStats['achievement_total'] }}</p>
                     <p class="text-xs font-semibold text-[#9497a9]">ปลดล็อคแล้ว</p>
                 </div>
@@ -119,7 +119,7 @@
                         @php
                             $unlocked = isset($unlockedAchievementIds[$achievement->id]);
                         @endphp
-                        <article class="group rounded-[12px] border p-4 text-center transition {{ $unlocked ? 'border-[rgba(37,99,235,0.4)] bg-[var(--ll-blue-hover)]' : 'border-[#dedee5] bg-[rgba(104,107,130,0.04)] opacity-70 grayscale' }}">
+                        <article class="group rounded-xl border p-4 text-center transition {{ $unlocked ? 'border-[rgba(37,99,235,0.4)] bg-(--ll-blue-hover)' : 'border-[#dedee5] bg-[rgba(104,107,130,0.04)] opacity-70 grayscale' }}">
                             <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full {{ $unlocked ? 'bg-white' : 'bg-slate-100' }}">
                                 @if($achievement->badge_image)
                                     <img src="{{ asset($achievement->badge_image).'?v='.@filemtime(public_path($achievement->badge_image)) }}" alt="{{ $achievement->name }}"
@@ -132,7 +132,7 @@
                             <p class="mt-1 line-clamp-2 text-xs leading-5 text-[#686b82]">{{ $achievement->description }}</p>
                         </article>
                     @empty
-                        <div class="col-span-full rounded-[12px] border border-dashed border-[#dedee5] bg-[rgba(104,107,130,0.04)] px-5 py-10 text-center text-sm text-[#9497a9]">
+                        <div class="col-span-full rounded-xl border border-dashed border-[#dedee5] bg-[rgba(104,107,130,0.04)] px-5 py-10 text-center text-sm text-[#9497a9]">
                             ยังไม่ได้ตั้งค่าความสำเร็จ
                         </div>
                     @endforelse
@@ -165,9 +165,9 @@
                         @endphp
                         @if($isOwnProfile)
                             <a href="{{ route('classroom.show', $classroom) }}" wire:navigate
-                                class="group flex min-w-0 items-center gap-4 rounded-[12px] border border-[#dedee5] bg-white p-4 transition hover:-translate-y-0.5 hover:border-[rgba(37,99,235,0.3)]">
+                                class="group flex min-w-0 items-center gap-4 rounded-xl border border-[#dedee5] bg-white p-4 transition hover:-translate-y-0.5 hover:border-[rgba(37,99,235,0.3)]">
                         @else
-                            <div class="flex min-w-0 items-center gap-4 rounded-[12px] border border-[#dedee5] bg-white p-4">
+                            <div class="flex min-w-0 items-center gap-4 rounded-xl border border-[#dedee5] bg-white p-4">
                         @endif
                                 <img src="/images/planets/planet_{{ $planetNum }}.svg" alt="{{ $classroom->name }}"
                                     class="h-16 w-16 shrink-0 select-none" />
@@ -193,7 +193,7 @@
                             </div>
                         @endif
                     @empty
-                        <div class="rounded-[12px] border border-dashed border-[#dedee5] bg-[rgba(104,107,130,0.04)] px-5 py-10 text-center text-sm text-[#9497a9] md:col-span-2">
+                        <div class="rounded-xl border border-dashed border-[#dedee5] bg-[rgba(104,107,130,0.04)] px-5 py-10 text-center text-sm text-[#9497a9] md:col-span-2">
                             ยังไม่มีห้องเรียน
                         </div>
                     @endforelse
@@ -213,12 +213,12 @@
                             @endphp
                             @if($isOwnProfile)
                                 <a href="{{ $assignment && $classroom ? route('assignment.show', [$classroom, $assignment]) : '#' }}" wire:navigate
-                                    class="block min-w-0 rounded-[12px] border border-[#dedee5] p-3 transition hover:border-[rgba(37,99,235,0.3)] hover:bg-[rgba(59,130,246,0.04)]">
+                                    class="block min-w-0 rounded-xl border border-[#dedee5] p-3 transition hover:border-[rgba(37,99,235,0.3)] hover:bg-[rgba(59,130,246,0.04)]">
                             @else
-                                <div class="min-w-0 rounded-[12px] border border-[#dedee5] p-3">
+                                <div class="min-w-0 rounded-xl border border-[#dedee5] p-3">
                             @endif
                                 <div class="flex items-start gap-3">
-                                    <span class="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] text-white"
+                                    <span class="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white"
                                         style="background-color: {{ $classroom?->themeCategory?->color ?? '#2563eb' }};">
                                         <x-icon name="document" class="h-4 w-4" />
                                     </span>

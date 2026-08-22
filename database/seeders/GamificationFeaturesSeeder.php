@@ -24,22 +24,22 @@ class GamificationFeaturesSeeder extends Seeder
         // 1. Initial Store Items
         $storeItems = [
             // Name Colors
-            ['code' => 'color_red', 'name' => 'Ruby Red', 'description' => 'A shining red name color.', 'type' => 'name_color', 'value' => 'text-red-500', 'price' => 0],
-            ['code' => 'color_blue', 'name' => 'Ocean Blue', 'description' => 'A deep blue name color.', 'type' => 'name_color', 'value' => 'text-blue-500', 'price' => 0],
-            ['code' => 'color_gold', 'name' => 'Golden Legend', 'description' => 'A prestige gold name color.', 'type' => 'name_color', 'value' => 'text-amber-500 font-bold', 'price' => 0],
-            ['code' => 'color_purple', 'name' => 'Royal Purple', 'description' => 'A rich purple name color.', 'type' => 'name_color', 'value' => 'text-purple-600', 'price' => 0],
+            ['code' => 'color_red', 'name' => 'แดงทับทิม', 'description' => 'สีชื่อโทนแดงสดใส', 'type' => 'name_color', 'value' => 'text-red-500', 'price' => 0],
+            ['code' => 'color_blue', 'name' => 'น้ำเงินมหาสมุทร', 'description' => 'สีชื่อโทนน้ำเงินเข้ม', 'type' => 'name_color', 'value' => 'text-blue-500', 'price' => 0],
+            ['code' => 'color_gold', 'name' => 'ทองระดับตำนาน', 'description' => 'สีชื่อทองสุดหรูหรา', 'type' => 'name_color', 'value' => 'text-amber-500 font-bold', 'price' => 0],
+            ['code' => 'color_purple', 'name' => 'ม่วงราชวงศ์', 'description' => 'สีชื่อโทนม่วงเข้มสง่างาม', 'type' => 'name_color', 'value' => 'text-purple-600', 'price' => 0],
 
             // Avatar Frames (Free for testing)
-            ['code' => 'frame_01', 'name' => 'Cyber Gear', 'description' => 'A futuristic gear frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_01.svg', 'price' => 0],
-            ['code' => 'frame_02', 'name' => 'Mystic Aura', 'description' => 'A glowing mystical border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_02.svg', 'price' => 0],
-            ['code' => 'frame_03', 'name' => 'Royal Guard', 'description' => 'A simple royal border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_03.svg', 'price' => 0],
-            ['code' => 'frame_04', 'name' => 'Golden Lion', 'description' => 'A majestic golden frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_04.svg', 'price' => 0],
-            ['code' => 'frame_05', 'name' => 'Silver Edge', 'description' => 'A sharp silver border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_05.svg', 'price' => 0],
-            ['code' => 'frame_06', 'name' => 'Neon Hex', 'description' => 'Hexagonal neon outline.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_06.svg', 'price' => 0],
-            ['code' => 'frame_07', 'name' => 'Flame Ring', 'description' => 'A burning ring of fire.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_07.svg', 'price' => 0],
-            ['code' => 'frame_08', 'name' => 'Ice Crystal', 'description' => 'Frozen crystalline frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_08.svg', 'price' => 0],
-            ['code' => 'frame_09', 'name' => 'Dark Void', 'description' => 'A sinister dark energy frame.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_09.svg', 'price' => 0],
-            ['code' => 'frame_10', 'name' => 'Prismatic', 'description' => 'A colorful rainbow border.', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_10.svg', 'price' => 0],
+            ['code' => 'frame_01', 'name' => 'เฟืองไซเบอร์', 'description' => 'กรอบสไตล์อนาคตล้ำยุค', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_01.svg', 'price' => 0],
+            ['code' => 'frame_02', 'name' => 'ออร่าลึกลับ', 'description' => 'กรอบเรืองแสงลึกลับ', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_02.svg', 'price' => 0],
+            ['code' => 'frame_03', 'name' => 'ทหารรักษาพระองค์', 'description' => 'กรอบเรียบง่ายสไตล์ราชวงศ์', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_03.svg', 'price' => 0],
+            ['code' => 'frame_04', 'name' => 'สิงโตทองคำ', 'description' => 'กรอบทองคำสง่างาม', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_04.svg', 'price' => 0],
+            ['code' => 'frame_05', 'name' => 'ขอบเงิน', 'description' => 'กรอบสีเงินคมกริบ', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_05.svg', 'price' => 0],
+            ['code' => 'frame_06', 'name' => 'หกเหลี่ยมนีออน', 'description' => 'กรอบเส้นนีออนทรงหกเหลี่ยม', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_06.svg', 'price' => 0],
+            ['code' => 'frame_07', 'name' => 'วงแหวนเปลวไฟ', 'description' => 'กรอบวงแหวนไฟลุกโชน', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_07.svg', 'price' => 0],
+            ['code' => 'frame_08', 'name' => 'คริสตัลน้ำแข็ง', 'description' => 'กรอบผลึกน้ำแข็ง', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_08.svg', 'price' => 0],
+            ['code' => 'frame_09', 'name' => 'ความมืดมิด', 'description' => 'กรอบพลังงานมืดชั่วร้าย', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_09.svg', 'price' => 0],
+            ['code' => 'frame_10', 'name' => 'รุ้งพริซึม', 'description' => 'กรอบสีรุ้งหลากสีสัน', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_10.svg', 'price' => 0],
         ];
 
         foreach ($storeItems as $item) {
@@ -61,7 +61,7 @@ class GamificationFeaturesSeeder extends Seeder
             ['code' => 'perfect_score',             'name' => 'คะแนนเต็ม',              'description' => 'ได้คะแนนเต็มในงานมอบหมาย',                    'badge_image' => 'images/achievements/Achievements_Perfectionist.png', 'coin_reward' => 200, 'xp_reward' => 400, 'is_active' => true],
             ['code' => 'early_bird',                'name' => 'ส่งก่อนใคร',             'description' => 'ส่งงานก่อนกำหนดอย่างน้อย 1 วัน',               'badge_image' => 'images/achievements/Achievements_QuickSubmiter.png', 'coin_reward' => 150, 'xp_reward' => 250, 'is_active' => true],
             ['code' => 'social_butterfly',          'name' => 'กล้าแสดงออก',            'description' => 'แสดงความคิดเห็นในโพสต์หรืองาน',                'badge_image' => 'images/achievements/Achievements_Extrovert.png', 'coin_reward' => 75,  'xp_reward' => 100, 'is_active' => true],
-            ['code' => 'on_a_roll',                 'name' => 'สายส่งไม่หยุด',          'description' => 'ส่งงานสำเร็จ 5 ชิ้นติดต่อกัน',                 'badge_image' => 'images/achievements/Achievements_CreativeMan.png', 'coin_reward' => 150, 'xp_reward' => 250, 'is_active' => true],
+            ['code' => 'on_a_roll',                 'name' => 'สายส่งไม่หยุด',          'description' => 'ส่งงานสำเร็จรวม 5 ชิ้น',                       'badge_image' => 'images/achievements/Achievements_CreativeMan.png', 'coin_reward' => 150, 'xp_reward' => 250, 'is_active' => true],
             ['code' => 'multi_class',               'name' => 'นักเรียนรอบด้าน',        'description' => 'เข้าร่วมห้องเรียน 3 ห้องขึ้นไป',               'badge_image' => 'images/achievements/Achievements_Learner.png', 'coin_reward' => 100, 'xp_reward' => 150, 'is_active' => true],
             ['code' => 'chatterbox',                'name' => 'คอมเมนต์ตัวยง',          'description' => 'แสดงความคิดเห็น 5 ครั้ง',                      'badge_image' => 'images/achievements/Achievements_InTheParty.png', 'coin_reward' => 100, 'xp_reward' => 150, 'is_active' => true],
             ['code' => 'level_up',                  'name' => 'ก้าวสู่เลเวล 5',         'description' => 'ไปถึง Level 5',                                 'badge_image' => 'images/achievements/Achievements_LevelUp.png', 'coin_reward' => 200, 'xp_reward' => 400, 'is_active' => true],

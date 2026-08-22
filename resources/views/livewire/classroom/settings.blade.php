@@ -20,6 +20,23 @@
             <h1 class="mt-1 text-2xl font-black text-[#101114]">{{ 'ตั้งค่าห้องเรียน' }}</h1>
         </div>
 
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#dedee5] p-5"
+            x-data="{ copied: false, copy() { navigator.clipboard.writeText('{{ $classroom->code }}'); this.copied = true; setTimeout(() => this.copied = false, 2000); } }">
+            <div>
+                <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">{{ 'รหัสเข้าห้องเรียน' }}</p>
+                <p class="mt-1 font-mono text-2xl font-black text-green-700">{{ $classroom->code }}</p>
+            </div>
+            <button type="button" @click="copy()"
+                class="inline-flex items-center gap-2 rounded-[10px] border border-[#dedee5] px-4 py-2.5 text-sm font-bold text-[#101114] transition hover:bg-[var(--ll-blue-faint)]">
+                <template x-if="!copied">
+                    <span class="inline-flex items-center gap-2"><x-icon name="clipboard-document-list" class="h-4 w-4" />{{ 'คัดลอก' }}</span>
+                </template>
+                <template x-if="copied">
+                    <span class="inline-flex items-center gap-2 text-green-700"><x-icon name="check" class="h-4 w-4" />{{ 'คัดลอกแล้ว' }}</span>
+                </template>
+            </button>
+        </div>
+
         <form wire:submit.prevent="saveSettings" class="space-y-5 p-5">
             <div class="grid gap-4 md:grid-cols-2">
                 <label class="block">
