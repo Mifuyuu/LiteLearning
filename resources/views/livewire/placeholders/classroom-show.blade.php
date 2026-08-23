@@ -14,7 +14,7 @@
     $isManager = isset($classroom) ? $classroom->canManageClassroom(auth()->user()) : auth()->user()->isTeacher();
 @endphp
 <div class="max-w-4xl mx-auto">
-    <section class="overflow-hidden rounded-xl border-3 border-[#dedee5] bg-white min-h-[calc(100vh_-_3rem)]">
+    <section class="overflow-hidden rounded-xl border-3 border-[#dedee5] bg-white min-h-[calc(100vh-3rem)]">
 
         {{-- Theme banner --}}
         <div class="skeleton h-32 w-full rounded-none sm:h-40"></div>

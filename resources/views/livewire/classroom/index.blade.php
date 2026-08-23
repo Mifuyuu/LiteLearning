@@ -94,7 +94,7 @@
                             <span class="flex items-center gap-1">
                                 <img src="{{ $classroom->teacher->avatar_url }}" alt="{{ $classroom->teacher->name }}"
                                     class="w-5 h-5 rounded-full object-cover shrink-0" />
-                                <span class="hidden sm:inline truncate max-w-[120px]">{{ $classroom->teacher->name }}</span>
+                                <span class="hidden sm:inline truncate max-w-30">{{ $classroom->teacher->name }}</span>
                             </span>
                             <span class="text-[#dedee5]">|</span>
                             <span class="flex items-center gap-1">

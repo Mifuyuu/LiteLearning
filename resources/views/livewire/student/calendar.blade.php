@@ -1,6 +1,6 @@
 @section('page-title', 'ปฏิทิน')
 <div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh_-_3rem)] flex flex-col">
+    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)] flex flex-col">
         <div class="p-6 lg:p-8">
             <div>
                 <h1 class="text-3xl font-black tracking-tight text-[#101114] sm:text-4xl">{{ 'ปฏิทิน' }}</h1>

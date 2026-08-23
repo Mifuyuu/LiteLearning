@@ -77,9 +77,9 @@
         <aside
             class="fixed inset-y-0 left-0 z-30 flex w-72 -translate-x-full flex-col overflow-hidden bg-white border-r-3 border-[#dedee5] transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:translate-x-0 lg:shrink-0"
             :class="{ '-translate-x-full': !mobileSidebar, 'translate-x-0': mobileSidebar }">
-            <div class="flex h-[88px] shrink-0 items-center px-6">
+            <div class="flex h-22 shrink-0 items-center px-6">
                 <img src="{{ asset('images/favicon_full.png') }}" alt="LiteLearn"
-                    class="h-[50px] w-auto shrink-0 object-contain">
+                    class="h-12.5 w-auto shrink-0 object-contain">
             </div>
 
             <!-- Navigation -->
@@ -377,7 +377,7 @@
         <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
             <!-- Mobile Header (Visible only on mobile/tablet screens) -->
             <header class="z-10 shrink-0 border-b border-[#dedee5] bg-white lg:hidden">
-                <div class="mx-auto flex h-[60px] w-full items-center justify-between px-4 sm:px-6">
+                <div class="mx-auto flex h-15 w-full items-center justify-between px-4 sm:px-6">
                     <div class="flex items-center">
                         <button @click="mobileSidebar = !mobileSidebar"
                             class="mr-3 p-2 rounded-md text-gray-500 hover:text-gray-800 hover:bg-gray-100 cursor-pointer">

@@ -1,9 +1,9 @@
 @section('page-title', 'ร้านค้าของตกแต่ง')
 <div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh_-_3rem)]">
+    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)]">
         <div class="relative p-6 lg:p-8">
             <img src="{{ asset('images/market.svg') }}" alt=""
-                class="absolute right-4 top-4 hidden h-[calc(100%_-_2rem)] w-auto select-none object-contain sm:block lg:right-8" />
+                class="absolute right-4 top-4 hidden h-[calc(100%-2rem)] w-auto select-none object-contain sm:block lg:right-8" />
             <div class="relative max-w-sm space-y-2">
                 <div class="skeleton h-9 w-56"></div>
                 <div class="skeleton h-4 w-64"></div>

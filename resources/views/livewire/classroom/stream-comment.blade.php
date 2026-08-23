@@ -22,10 +22,10 @@
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
                                 <span
-                                    class="max-w-[100px] truncate text-xs font-semibold text-gray-900">{{ $comment->user->name }}</span>
+                                    class="max-w-25 truncate text-xs font-semibold text-gray-900">{{ $comment->user->name }}</span>
                                 <span class="shrink-0 text-xs text-gray-400">{{ $comment->created_at->diffForHumans() }}</span>
                             </div>
-                            <p class="text-sm text-gray-700 break-words">{{ $comment->content }}</p>
+                            <p class="text-sm text-gray-700 wrap-break-word">{{ $comment->content }}</p>
                         </div>
                         @if($comment->user_id === auth()->id() || $canModerate)
                             <button type="button"

@@ -1,6 +1,6 @@
 <div>
     @if($showModal)
-        <div class="fixed inset-0 z-[70] flex items-center justify-center px-4" x-data
+        <div class="fixed inset-0 z-70 flex items-center justify-center px-4" x-data
             x-init="$el.querySelector('textarea')?.focus()">
 
             {{-- Backdrop --}}

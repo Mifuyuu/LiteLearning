@@ -1,10 +1,10 @@
 @section('page-title', 'กระดานผู้นำ')
 
 <div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh_-_3rem)]">
+    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)]">
         <div class="relative p-6 lg:p-8">
             <img src="{{ asset('images/trophy.svg') }}" alt=""
-                class="absolute right-4 top-4 hidden h-[calc(100%_-_2rem)] w-auto select-none object-contain sm:block lg:right-8" />
+                class="absolute right-4 top-4 hidden h-[calc(100%-2rem)] w-auto select-none object-contain sm:block lg:right-8" />
 
             <div class="relative max-w-sm">
                 <h1 class="text-3xl font-black tracking-tight text-[#101114] sm:text-4xl">{{ 'กระดานผู้นำ' }}</h1>
@@ -75,7 +75,7 @@
                             @php $rank = $i + 4;
                             $isMe = auth()->id() === $record->user_id; @endphp
                             <a href="{{ route('profile', $record->user) }}" wire:navigate
-                                class="flex items-center gap-3 px-6 lg:px-8 py-3 {{ !$loop->last || $topStudents->count() > 3 + $limit ? 'border-b border-[#dedee5]' : '' }} {{ $isMe ? 'bg-[var(--ll-blue-subtle)]' : 'hover:bg-(--ll-blue-faint)' }} transition-colors">
+                                class="flex items-center gap-3 px-6 lg:px-8 py-3 {{ !$loop->last || $topStudents->count() > 3 + $limit ? 'border-b border-[#dedee5]' : '' }} {{ $isMe ? 'bg-(--ll-blue-subtle)' : 'hover:bg-(--ll-blue-faint)' }} transition-colors">
                                 <span class="text-sm font-bold text-(--ll-blue) w-6 text-center shrink-0">{{ $rank }}</span>
                                 <div class="relative inline-block shrink-0">
                                     <img src="{{ $record->user->avatar_url }}"
@@ -96,7 +96,7 @@
                                         @endforeach
                                         @if($isMe)
                                             <span
-                                                class="ml-1 text-[10px] font-bold text-(--ll-blue) bg-[var(--ll-blue-subtle)] px-1.5 py-0.5 rounded-[4px]">YOU</span>
+                                                class="ml-1 text-[10px] font-bold text-(--ll-blue) bg-(--ll-blue-subtle) px-1.5 py-0.5 rounded-sm">YOU</span>
                                         @endif
                                     </p>
                                     <p class="text-xs text-[#9497a9]">{{ 'เลเวล' }} {{ $record->level }}</p>

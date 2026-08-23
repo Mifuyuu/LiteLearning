@@ -66,7 +66,7 @@
         <div class="flex flex-wrap items-center gap-2 p-4">
         @foreach($scopeLinks as $key => $label)
             <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => $key]) }}" wire:navigate
-                class="inline-flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $scope === $key ? 'bg-[var(--ll-blue-subtle)] text-(--ll-blue)' : 'text-[#686b82] hover:bg-(--ll-blue-faint) hover:text-(--ll-blue)' }}">
+                class="inline-flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $scope === $key ? 'bg-(--ll-blue-subtle) text-(--ll-blue)' : 'text-[#686b82] hover:bg-(--ll-blue-faint) hover:text-(--ll-blue)' }}">
                 {{ $label }}
             </a>
         @endforeach
@@ -74,7 +74,7 @@
             <div class="ml-auto flex flex-wrap gap-2">
                 <div class="relative" x-data="{ open: false }" @click.away="open = false">
                     <button type="button" @click="open = !open"
-                        class="inline-flex cursor-pointer items-center gap-2 rounded-[10px] bg-(--ll-blue) px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-[var(--ll-blue-dark)]">
+                        class="inline-flex cursor-pointer items-center gap-2 rounded-[10px] bg-(--ll-blue) px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-(--ll-blue-dark)">
                         <x-icon name="plus" class="h-4 w-4" />
                         {{ 'สร้าง' }}
                         <x-icon name="chevron-down" class="h-3.5 w-3.5 transition-transform" ::class="open ? 'rotate-180' : ''" />

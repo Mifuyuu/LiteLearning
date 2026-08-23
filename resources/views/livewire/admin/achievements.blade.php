@@ -150,7 +150,7 @@
     preview: '{{ !empty($form["badge_image"]) ? "/" . $form["badge_image"] : "" }}',
     }" class="space-y-1">
                         <label class="block text-sm font-semibold text-gray-700 mb-1">รูปไอคอน</label>
-                        <label for="badge-upload" class="flex flex-col items-center justify-center w-full h-[72px] border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors">
+                        <label for="badge-upload" class="flex flex-col items-center justify-center w-full h-18 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors">
                             <template x-if="!preview">
                                 <div class="flex flex-col items-center gap-0.5 text-gray-400">
                                     <x-icon name="arrow-up-tray" class="h-5 w-5" />

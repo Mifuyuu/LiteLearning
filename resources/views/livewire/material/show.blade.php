@@ -10,9 +10,9 @@
             <a href="{{ route('classrooms') }}" class="hover:text-blue-600 transition-colors">{{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}</a>
             <x-icon name="chevron-right" class="h-3.5 w-3.5 mx-1" />
             <a href="{{ route('classroom.show', $classroom) }}"
-                class="hover:text-blue-600 transition-colors truncate max-w-[200px]">{{ $classroom->name }}</a>
+                class="hover:text-blue-600 transition-colors truncate max-w-50">{{ $classroom->name }}</a>
             <x-icon name="chevron-right" class="h-3.5 w-3.5 mx-1" />
-            <span class="text-gray-800 font-medium truncate max-w-[250px]">{{ $material->title }}</span>
+            <span class="text-gray-800 font-medium truncate max-w-62.5">{{ $material->title }}</span>
         </nav>
 
         {{-- Flash messages --}}
@@ -124,7 +124,7 @@
                                 <div wire:ignore x-data="tiptapEditor({ wireModel: 'editDescription', placeholder: '{{ 'เพิ่มคำอธิบาย...' }}' })">
                                     <x-tiptap-toolbar />
                                     <div x-ref="editorEl"
-                                        class="min-h-[150px] border border-gray-200 rounded-b-lg p-3 focus:outline-none prose prose-sm max-w-none">
+                                        class="min-h-37.5 border border-gray-200 rounded-b-lg p-3 focus:outline-none prose prose-sm max-w-none">
                                     </div>
                                 </div>
                                 @error('editDescription') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
