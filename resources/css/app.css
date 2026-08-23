@@ -364,6 +364,14 @@ input:-webkit-autofill:focus {
     --btn-3d-text:   #ffffff;
 }
 
+.btn-3d--teal {
+    --btn-3d-top:    #1670c7;
+    --btn-3d-bottom: #055eb2;
+    --btn-3d-base:   #04487f;
+    --btn-3d-border: #1670c7;
+    --btn-3d-text:   #ffffff;
+}
+
 .btn-3d--green {
     --btn-3d-top:    #22c55e;
     --btn-3d-bottom: #16a34a;
@@ -575,18 +583,22 @@ input:-webkit-autofill:focus {
     position: relative;
 }
 
-/* ─── Landing Space background image (WEBP) ────────────────────────── */
-.landing-space-bg {
-    background-color: #172554;
-    position: relative;
-}
-
 
 
 /* ─── Float animation (mascot) ───────────────────────────────────────── */
 @keyframes floatOrb {
     0%, 100% { transform: translateY(0); }
     50%       { transform: translateY(-20px); }
+}
+
+.animate-float-gentle {
+    animation: floatOrb 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-float-gentle {
+        animation: none;
+    }
 }
 
 

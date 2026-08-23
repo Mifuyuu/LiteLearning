@@ -23,7 +23,7 @@
         </button>
     </div>
 
-    <div class="rounded-lg border border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <div class="rounded-2xl border-3 border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]" style="border-top-width: 1px;">
 
         {{-- Header --}}
         <div class="mb-2">
@@ -33,7 +33,7 @@
             @if ($this->isTeacher)
                 สร้างบัญชี<span class="font-semibold text-[#101114] underline">ผู้สอน</span>เพื่อเริ่มต้นสร้างห้องเรียนและสื่อการสอน
             @else
-                สร้างบัญชี<span class="font-semibold text-[#101114] underline">ผู้เรียน</span>เพื่อเข้าร่วมห้องเรียนและสะสมเหรียญรางวัล
+                สร้างบัญชี<span class="font-semibold text-[#101114] underline">ผู้เรียน</span>เพื่อเข้าร่วมห้องเรียนและสะสมเหรียญตรา
             @endif
         </p>
 
@@ -80,13 +80,18 @@
                     <label for="password" class="block text-sm font-medium text-[#686b82] mb-1">
                         รหัสผ่าน
                     </label>
-                    <div class="relative">
+                    <div class="relative" x-data="{ show: false }">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <x-icon name="lock" class="h-4 w-4 text-[#9497a9]" />
                         </div>
-                        <input id="password" type="password" wire:model="password" autocomplete="new-password"
+                        <input id="password" :type="show ? 'text' : 'password'" wire:model="password" autocomplete="new-password"
                             placeholder="อย่างน้อย 8 ตัวอักษร"
-                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('password') border-red-500 @enderror">
+                            class="w-full pl-10 pr-10 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('password') border-red-500 @enderror">
+                        <button type="button" @click="show = !show" tabindex="-1"
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#9497a9] hover:text-[#686b82]">
+                            <x-icon x-show="!show" name="eye" class="h-4 w-4" />
+                            <x-icon x-show="show" name="eye-slash" class="h-4 w-4" x-cloak />
+                        </button>
                     </div>
                     @error('password')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -98,13 +103,18 @@
                     <label for="password_confirmation" class="block text-sm font-medium text-[#686b82] mb-1">
                         ยืนยันรหัสผ่าน
                     </label>
-                    <div class="relative">
+                    <div class="relative" x-data="{ show: false }">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <x-icon name="lock" class="h-4 w-4 text-[#9497a9]" />
                         </div>
-                        <input id="password_confirmation" type="password" wire:model="password_confirmation"
+                        <input id="password_confirmation" :type="show ? 'text' : 'password'" wire:model="password_confirmation"
                             autocomplete="new-password" placeholder="ยืนยันรหัสผ่าน"
-                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('password_confirmation') border-red-500 @enderror">
+                            class="w-full pl-10 pr-10 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('password_confirmation') border-red-500 @enderror">
+                        <button type="button" @click="show = !show" tabindex="-1"
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#9497a9] hover:text-[#686b82]">
+                            <x-icon x-show="!show" name="eye" class="h-4 w-4" />
+                            <x-icon x-show="show" name="eye-slash" class="h-4 w-4" x-cloak />
+                        </button>
                     </div>
                     @error('password_confirmation')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>

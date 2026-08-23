@@ -94,7 +94,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('assignment.create', $classroom) }}?type=material" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
+                            <a href="{{ route('material.create', $classroom) }}" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-[8px] px-3 py-2 text-sm font-medium text-[#101114] hover:bg-[rgba(37,99,235,0.06)] hover:text-[var(--ll-blue)]">
                                 <x-icon name="book-open" class="h-4 w-4 shrink-0" />
                                 {{ 'สื่อการสอน' }}
                             </a>

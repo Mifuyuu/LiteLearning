@@ -29,7 +29,9 @@
                         2 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.2)]', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[72px]', 'bg' => 'bg-[#F49D5F]', 'levelText' => 'text-black font-bold', 'trophy' => 'Trophy_Bronze.png', 'trophySize' => 'h-14 w-14', 'delay' => null],
                     ];
                 @endphp
-                <div class="flex items-end justify-center gap-3">
+                <div class="relative overflow-hidden">
+                    <div class="achievement-burst" aria-hidden="true"></div>
+                    <div class="relative z-10 flex items-end justify-center gap-3">
                     @foreach($podiumOrder as $idx)
                         @continue(!$topStudents->has($idx))
                         @php $c = $podiumConfig[$idx]; $student = $topStudents[$idx]; @endphp
@@ -63,6 +65,7 @@
                             </div>
                         </a>
                     @endforeach
+                    </div>
                 </div>
 
                 {{-- Rank 4+ --}}

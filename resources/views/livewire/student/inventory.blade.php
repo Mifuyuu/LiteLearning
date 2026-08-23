@@ -72,17 +72,12 @@
 
                 @if(!empty($avatarFrameItems))
                 <div>
-                    <h2 class="text-xl font-bold text-[#101114] mb-6 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-6 w-6 text-[var(--ll-blue)] mr-2 shrink-0">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-                        </svg>
-                        {{ 'กรอบรูปโปรไฟล์' }}
-                    </h2>
+                    <h2 class="text-xl font-bold text-[#101114] mb-6 flex items-center">{{ 'กรอบรูปโปรไฟล์' }}</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4">
                         @foreach($avatarFrameItems as $item)
                             <div class="relative border rounded-xl p-5 flex flex-col items-center text-center border-[#dedee5]">
                                 @if($item['is_active'])
-                                    <span class="absolute top-3 right-3 flex items-center justify-center h-5 w-5 rounded-full bg-[var(--ll-blue)] text-white">
+                                    <span class="absolute top-3 right-3 flex items-center justify-center h-5 w-5 rounded-full bg-(--ll-blue) text-white">
                                         <x-icon name="check" class="h-3 w-3" />
                                     </span>
                                 @endif

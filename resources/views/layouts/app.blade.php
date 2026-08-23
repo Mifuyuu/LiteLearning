@@ -39,7 +39,7 @@
         ];
         $pageTitle = $title ?? ($routeTitles[Route::currentRouteName()] ?? 'แดชบอร์ด');
     @endphp
-    <title>{{ $pageTitle }} | LiteLearning</title>
+    <title>{{ $pageTitle }} | LiteLearn</title>
 
     <!-- Fonts (preconnect + preload for instant rendering) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,7 +78,7 @@
             class="fixed inset-y-0 left-0 z-30 flex w-72 -translate-x-full flex-col overflow-hidden bg-white border-r-3 border-[#dedee5] transition-transform duration-300 ease-in-out lg:static lg:inset-auto lg:translate-x-0 lg:shrink-0"
             :class="{ '-translate-x-full': !mobileSidebar, 'translate-x-0': mobileSidebar }">
             <div class="flex h-[88px] shrink-0 items-center px-6">
-                <img src="{{ asset('images/favicon_full.png') }}" alt="LiteLearning"
+                <img src="{{ asset('images/favicon_full.png') }}" alt="LiteLearn"
                     class="h-[50px] w-auto shrink-0 object-contain">
             </div>
 
