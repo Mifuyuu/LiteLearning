@@ -81,22 +81,22 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
                 <label class="flex items-center justify-between">
                     <span class="text-sm text-gray-700">เปิดรับสมัครสมาชิกใหม่</span>
-                    <input type="checkbox" wire:click="toggleRegistration" @checked($registrationEnabled)
+                    <input type="checkbox" wire:click="toggleFlag('registrationEnabled')" @checked($registrationEnabled)
                         class="toggle toggle-sm toggle-primary">
                 </label>
                 <label class="flex items-center justify-between">
                     <span class="text-sm text-gray-700">เปิดร้านค้า (ซื้อไอเทม)</span>
-                    <input type="checkbox" wire:click="toggleStore" @checked($storeEnabled)
+                    <input type="checkbox" wire:click="toggleFlag('storeEnabled')" @checked($storeEnabled)
                         class="toggle toggle-sm toggle-primary">
                 </label>
                 <label class="flex items-center justify-between">
                     <span class="text-sm text-gray-700">เปิดให้เข้าร่วมห้องเรียนใหม่</span>
-                    <input type="checkbox" wire:click="toggleClassroomJoin" @checked($classroomJoinEnabled)
+                    <input type="checkbox" wire:click="toggleFlag('classroomJoinEnabled')" @checked($classroomJoinEnabled)
                         class="toggle toggle-sm toggle-primary">
                 </label>
                 <label class="flex items-center justify-between">
                     <span class="text-sm text-gray-700">เปิดระบบรายงานปัญหา</span>
-                    <input type="checkbox" wire:click="toggleBugReport" @checked($bugReportEnabled)
+                    <input type="checkbox" wire:click="toggleFlag('bugReportEnabled')" @checked($bugReportEnabled)
                         class="toggle toggle-sm toggle-primary">
                 </label>
             </div>

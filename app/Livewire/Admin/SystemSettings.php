@@ -48,35 +48,20 @@ class SystemSettings extends Component
         $this->classroomJoinRateLimit = $settings->int('classroom_join_rate_limit', 5);
     }
 
-    public function toggleRegistration(): void
-    {
-        $this->registrationEnabled = ! $this->registrationEnabled;
-        app(SettingsService::class)->set('registration_enabled', $this->registrationEnabled);
-        AuditLog::record('settings_changed', 'สลับสถานะการเปิดรับสมัครสมาชิกใหม่เป็น '.($this->registrationEnabled ? 'เปิด' : 'ปิด'));
-        $this->dispatch('notify', message: __('messages.admin.settings_updated'));
-    }
+    private const FLAGS = [
+        'registrationEnabled' => ['registration_enabled', 'การเปิดรับสมัครสมาชิกใหม่'],
+        'storeEnabled' => ['store_enabled', 'ร้านค้า'],
+        'classroomJoinEnabled' => ['classroom_join_enabled', 'การเข้าร่วมห้องเรียนใหม่'],
+        'bugReportEnabled' => ['bug_report_enabled', 'ระบบรายงานปัญหา'],
+    ];
 
-    public function toggleStore(): void
+    public function toggleFlag(string $prop): void
     {
-        $this->storeEnabled = ! $this->storeEnabled;
-        app(SettingsService::class)->set('store_enabled', $this->storeEnabled);
-        AuditLog::record('settings_changed', 'สลับสถานะร้านค้าเป็น '.($this->storeEnabled ? 'เปิด' : 'ปิด'));
-        $this->dispatch('notify', message: __('messages.admin.settings_updated'));
-    }
+        [$key, $label] = self::FLAGS[$prop];
 
-    public function toggleClassroomJoin(): void
-    {
-        $this->classroomJoinEnabled = ! $this->classroomJoinEnabled;
-        app(SettingsService::class)->set('classroom_join_enabled', $this->classroomJoinEnabled);
-        AuditLog::record('settings_changed', 'สลับสถานะการเข้าร่วมห้องเรียนใหม่เป็น '.($this->classroomJoinEnabled ? 'เปิด' : 'ปิด'));
-        $this->dispatch('notify', message: __('messages.admin.settings_updated'));
-    }
-
-    public function toggleBugReport(): void
-    {
-        $this->bugReportEnabled = ! $this->bugReportEnabled;
-        app(SettingsService::class)->set('bug_report_enabled', $this->bugReportEnabled);
-        AuditLog::record('settings_changed', 'สลับสถานะระบบรายงานปัญหาเป็น '.($this->bugReportEnabled ? 'เปิด' : 'ปิด'));
+        $this->$prop = ! $this->$prop;
+        app(SettingsService::class)->set($key, $this->$prop);
+        AuditLog::record('settings_changed', "สลับสถานะ{$label}เป็น ".($this->$prop ? 'เปิด' : 'ปิด'));
         $this->dispatch('notify', message: __('messages.admin.settings_updated'));
     }
 

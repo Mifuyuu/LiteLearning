@@ -24,22 +24,24 @@ class GamificationFeaturesSeeder extends Seeder
         // 1. Initial Store Items
         $storeItems = [
             // Name Colors
-            ['code' => 'color_red', 'name' => 'แดงทับทิม', 'description' => 'สีชื่อโทนแดงสดใส', 'type' => 'name_color', 'value' => 'text-red-500', 'price' => 0],
-            ['code' => 'color_blue', 'name' => 'น้ำเงินมหาสมุทร', 'description' => 'สีชื่อโทนน้ำเงินเข้ม', 'type' => 'name_color', 'value' => 'text-blue-500', 'price' => 0],
-            ['code' => 'color_gold', 'name' => 'ทองระดับตำนาน', 'description' => 'สีชื่อทองสุดหรูหรา', 'type' => 'name_color', 'value' => 'text-amber-500 font-bold', 'price' => 0],
-            ['code' => 'color_purple', 'name' => 'ม่วงราชวงศ์', 'description' => 'สีชื่อโทนม่วงเข้มสง่างาม', 'type' => 'name_color', 'value' => 'text-purple-600', 'price' => 0],
+            ['code' => 'color_red', 'name' => 'แดงทับทิม', 'description' => 'สีชื่อโทนแดงสดใส มั้ง?', 'type' => 'name_color', 'value' => 'text-red-500', 'price' => 0],
+            ['code' => 'color_blue', 'name' => 'น้ำเงินมหาสมุทร', 'description' => 'สีชื่อโทนน้ำเงินเข้มแบบธรรมดา', 'type' => 'name_color', 'value' => 'text-blue-500', 'price' => 0],
+            ['code' => 'color_gold', 'name' => 'ทองแวววาว', 'description' => 'สีชื่อทองสุดหรูหราใส่ทีก็แสบตากันไปข้าง', 'type' => 'name_color', 'value' => 'text-amber-500 font-bold', 'price' => 0],
+            ['code' => 'color_purple', 'name' => 'ม่วงลึกลับ', 'description' => 'สีชื่อโทนม่วงเข้มที่แสดงถึงความลึกลับ', 'type' => 'name_color', 'value' => 'text-purple-600', 'price' => 0],
 
-            // Avatar Frames (Free for testing)
-            ['code' => 'frame_01', 'name' => 'เฟืองไซเบอร์', 'description' => 'กรอบสไตล์อนาคตล้ำยุค', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_01.svg', 'price' => 0],
-            ['code' => 'frame_02', 'name' => 'ออร่าลึกลับ', 'description' => 'กรอบเรืองแสงลึกลับ', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_02.svg', 'price' => 0],
-            ['code' => 'frame_03', 'name' => 'ทหารรักษาพระองค์', 'description' => 'กรอบเรียบง่ายสไตล์ราชวงศ์', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_03.svg', 'price' => 0],
-            ['code' => 'frame_04', 'name' => 'สิงโตทองคำ', 'description' => 'กรอบทองคำสง่างาม', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_04.svg', 'price' => 0],
-            ['code' => 'frame_05', 'name' => 'ขอบเงิน', 'description' => 'กรอบสีเงินคมกริบ', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_05.svg', 'price' => 0],
-            ['code' => 'frame_06', 'name' => 'หกเหลี่ยมนีออน', 'description' => 'กรอบเส้นนีออนทรงหกเหลี่ยม', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_06.svg', 'price' => 0],
-            ['code' => 'frame_07', 'name' => 'วงแหวนเปลวไฟ', 'description' => 'กรอบวงแหวนไฟลุกโชน', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_07.svg', 'price' => 0],
-            ['code' => 'frame_08', 'name' => 'คริสตัลน้ำแข็ง', 'description' => 'กรอบผลึกน้ำแข็ง', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_08.svg', 'price' => 0],
-            ['code' => 'frame_09', 'name' => 'ความมืดมิด', 'description' => 'กรอบพลังงานมืดชั่วร้าย', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_09.svg', 'price' => 0],
-            ['code' => 'frame_10', 'name' => 'รุ้งพริซึม', 'description' => 'กรอบสีรุ้งหลากสีสัน', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_10.svg', 'price' => 0],
+            // Avatar Frames
+            ['code' => 'shark_frame', 'name' => 'หมวกหัวฉลาม', 'description' => 'หมวกหัวฉลามที่แสนจะธรรมดา', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_01.svg', 'price' => 0],
+            ['code' => 'orangehat_frame', 'name' => 'หมวกไหมพรมส้ม', 'description' => 'กรอบหมวกไหมพรมส้มซึ่งเข้ากับคุณพอดี', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_02.svg', 'price' => 0],
+            ['code' => 'gum_frame', 'name' => 'หมากฝรั่ง', 'description' => 'ใครให้เคี้ยวหมากฝรั่งในห้องเรียน!!!', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_03.svg', 'price' => 0],
+            ['code' => 'flowerpot_frame', 'name' => 'กระถางต้นไม้', 'description' => 'กระถางต้นไม้บนหัวนั่นมันอะไรกัน?', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_04.svg', 'price' => 0],
+            ['code' => 'book_frame', 'name' => 'หนังสือ', 'description' => 'อ่านบ้างนะหนังสือ ไม่ใช่วางไว้สวยๆ', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_05.svg', 'price' => 0],
+            ['code' => 'chicken_frame', 'name' => 'ลูกเจี๊ยบบนหัว', 'description' => 'สัตว์สุดแสนจะน่ารักที่สักวันฝันจะเป็นวิ้งแซบ', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_06.svg', 'price' => 0],
+            ['code' => 'artisthat_frame', 'name' => 'หมวกจิตรกร', 'description' => 'หมวกที่ใสแล้วเหมือนจิตรกร แค่เหมือนนะ', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_07.svg', 'price' => 0],
+            ['code' => 'black_frame', 'name' => 'หมวกดำ', 'description' => 'ก็แค่หมวกสีดำที่ไม่จำเป็นต้องซัก', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_08.svg', 'price' => 0],
+            ['code' => 'jellyfish_frame', 'name' => 'หมวกแมงกะพรุน', 'description' => 'หมวกแมงกระพรุนที่ถักมาจากพลาสติก', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_09.svg', 'price' => 0],
+            ['code' => 'squid_frame', 'name' => 'หมวกปลาหมึก', 'description' => 'ปลาหมึก มีปลาแต่ไม่ใช่ปลา สรุปปลามั้ย?', 'type' => 'avatar_frame', 'value' => '/images/frames/Avatar_Frame_10.svg', 'price' => 0],
+            ['code' => 'blackcat_frame', 'name' => 'น้องแมวดำอวกาศ', 'description' => 'กรอบรูปโปรไฟล์สไตล์น้องแมวดำอวกาศสุดน่ารัก..', 'type' => 'avatar_frame', 'value' => 'images/frames/npj6OXlEfykfwLh6GyMgDpw96KMt2fUtpliZv2wg.png', 'price' => 0],
+            ['code' => 'pinkhat_frame', 'name' => 'หมวกชมพู', 'description' => 'กรอบหมวกสีชมพูสุดหวาน', 'type' => 'avatar_frame', 'value' => 'images/frames/swtYh9W7WswhheUqyVSXPIHaA0QJpD2tFAr1F2Hn.png', 'price' => 100],
         ];
 
         foreach ($storeItems as $item) {

@@ -48,7 +48,7 @@ class SystemSettingsTest extends TestCase
 
         Livewire::actingAs($admin)
             ->test(SystemSettings::class)
-            ->call('toggleStore')
+            ->call('toggleFlag', 'storeEnabled')
             ->assertSet('storeEnabled', false)
             ->assertDispatched('notify', message: __('messages.admin.settings_updated'));
 
