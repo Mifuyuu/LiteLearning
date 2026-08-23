@@ -1,11 +1,11 @@
 @section('page-title', 'สมาชิก' . ' - ' . $classroom->name)
 @section('breadcrumb')
     <nav class="flex items-center space-x-1 text-sm">
-        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
             {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
             {{ $classroom->name }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
@@ -21,11 +21,11 @@
         {{-- Sort --}}
         <div class="flex flex-wrap items-center gap-2 p-4">
             <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
-                class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-[var(--ll-blue)] text-white' : 'text-[#686b82] hover:bg-[var(--ll-blue-hover)] hover:text-[var(--ll-blue)]' }}">
+                class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-(--ll-blue) text-white' : 'text-[#686b82] hover:bg-(--ll-blue-hover) hover:text-(--ll-blue)' }}">
                 {{ 'ชื่อต้น' }}
             </a>
             <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-newest']) }}" wire:navigate
-                class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-newest' ? 'bg-[var(--ll-blue)] text-white' : 'text-[#686b82] hover:bg-[var(--ll-blue-hover)] hover:text-[var(--ll-blue)]' }}">
+                class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-newest' ? 'bg-(--ll-blue) text-white' : 'text-[#686b82] hover:bg-(--ll-blue-hover) hover:text-(--ll-blue)' }}">
                 {{ 'ใหม่ล่าสุด' }}
             </a>
         </div>
@@ -36,23 +36,22 @@
         <div class="p-6 pb-4">
             <div class="flex items-center justify-between gap-3">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#9497a9]">{{ 'ทีมครูผู้สอน' }}</p>
                     <h2 class="mt-2 text-xl font-bold text-[#101114]">{{ 'ครูและผู้สอนร่วม' }}</h2>
                 </div>
-                <span class="rounded-[8px] bg-[rgba(104,107,130,0.12)] px-3 py-1 text-xs font-semibold text-[#484b5e]">
+                <span class="rounded-lg bg-[rgba(104,107,130,0.12)] px-3 py-1 text-xs font-semibold text-[#484b5e]">
                     {{ 1 + $coTeachers->count() }}
                 </span>
             </div>
 
             <div class="mt-6 space-y-3">
-                <a href="{{ route('profile', $classroom->teacher) }}" wire:navigate class="rounded-xl border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4 block transition hover:border-[var(--ll-blue)]/30 hover:bg-[var(--ll-blue)]/[0.08]">
+                <a href="{{ route('profile', $classroom->teacher) }}" wire:navigate class="rounded-xl border border-[#dedee5] bg-(--ll-blue-faint) p-4 block transition hover:border-(--ll-blue)/30 hover:bg-(--ll-blue)/8">
                     <div class="flex items-center gap-3">
                         <img src="{{ $classroom->teacher->avatar_url }}" alt="{{ $classroom->teacher->name }}" class="h-11 w-11 rounded-2xl object-cover">
                         <div class="min-w-0">
                             <p class="truncate text-sm font-semibold text-[#101114]">{{ $classroom->teacher->name }}</p>
                             <p class="truncate text-xs text-[#686b82]">{{ $classroom->teacher->email }}</p>
                         </div>
-                        <span class="ml-auto rounded-[6px] bg-[rgba(20,158,97,0.16)] px-2 py-0.5 text-xs font-semibold text-[#026b3f]">{{ 'เจ้าของ' }}</span>
+                        <span class="ml-auto rounded-md bg-[rgba(20,158,97,0.16)] px-2 py-0.5 text-xs font-semibold text-[#026b3f]">{{ 'เจ้าของ' }}</span>
                     </div>
                 </a>
 
@@ -66,7 +65,7 @@
                                     <p class="truncate text-xs text-[#686b82]">{{ $coTeacher->email }}</p>
                                 </div>
                             </a>
-                            <span class="rounded-[8px] bg-[rgba(104,107,130,0.12)] px-2 py-0.5 text-xs font-medium text-[#484b5e]">{{ 'ผู้สอนร่วม' }}</span>
+                            <span class="rounded-lg bg-[rgba(104,107,130,0.12)] px-2 py-0.5 text-xs font-medium text-[#484b5e]">{{ 'ผู้สอนร่วม' }}</span>
                             @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
                                 <button type="button"
                                     @click="kickId = {{ $coTeacher->id }}; kickName = @js($coTeacher->name); kickType = 'co-teacher'; showKickModal = true"
@@ -80,15 +79,15 @@
             </div>
 
             @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
-                <form wire:submit.prevent="addCoTeacher" class="mt-6 rounded-xl border border-dashed border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
+                <form wire:submit.prevent="addCoTeacher" class="mt-6 rounded-lg border border-dashed border-[#dedee5] bg-(--ll-blue-faint) p-4">
                     <label class="block">
                         <span class="mb-2 block text-sm font-medium text-[#686b82]">{{ 'เพิ่มผู้สอนร่วม' }}</span>
                         <div class="flex flex-col gap-3 sm:flex-row">
                             <input wire:model="inviteCoTeacherEmail" type="email"
-                                class="w-full rounded-xl border border-[#dedee5] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--ll-blue)] focus:ring-2 focus:ring-[var(--ll-blue-subtle)]"
+                                class="w-full rounded-lg border border-[#dedee5] bg-white px-4 py-3 text-sm outline-none transition focus:border-(--ll-blue) focus:ring-2 focus:ring-(--ll-blue-subtle)"
                                 placeholder="teacher@example.com">
                             <button type="submit"
-                                class="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--ll-blue)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--ll-blue-dark)]">
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-(--ll-blue) px-4 py-3 text-sm font-semibold text-white transition hover:bg-(--ll-blue-dark)">
                                 <x-icon name="user-plus" class="h-4 w-4" />
                                 {{ 'เพิ่ม' }}
                             </button>
@@ -106,11 +105,10 @@
         <div class="p-6 pt-4">
             <div class="flex items-center justify-between gap-3">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#9497a9]">{{ 'นักเรียน' }}</p>
                     <h2 class="mt-2 text-xl font-bold text-[#101114]">{{ 'สมาชิกในชั้นเรียน' }}</h2>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="rounded-[8px] bg-[rgba(104,107,130,0.12)] px-3 py-1 text-xs font-semibold text-[#484b5e]">
+                    <span class="rounded-lg bg-[rgba(104,107,130,0.12)] px-3 py-1 text-xs font-semibold text-[#484b5e]">
                         {{ $students->count() }}
                     </span>
                     @if($students->count() > 0 && ($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin()))
@@ -125,7 +123,7 @@
 
             <div class="mt-6 space-y-3">
                 @forelse($students as $member)
-                    <div class="rounded-xl border border-[#dedee5] bg-[var(--ll-blue-faint)] p-4">
+                    <div class="rounded-xl border border-[#dedee5] bg-(--ll-blue-faint) p-4">
                         <div class="flex items-center gap-3">
                             <a href="{{ route('profile', $member) }}" wire:navigate class="flex items-center gap-3 min-w-0 flex-1">
                                 <img src="{{ $member->avatar_url }}" alt="{{ $member->name }}" class="h-11 w-11 rounded-2xl object-cover">

@@ -12,6 +12,7 @@ class UserGamification extends Model
         'coins',
         'xp',
         'level',
+        'pending_celebrations',
     ];
 
     protected function casts(): array
@@ -20,6 +21,7 @@ class UserGamification extends Model
             'coins' => 'integer',
             'xp' => 'integer',
             'level' => 'integer',
+            'pending_celebrations' => 'array',
         ];
     }
 

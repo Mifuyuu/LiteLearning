@@ -24,7 +24,7 @@
                 <span x-text="selected ? 'ได้รับเมื่อ ' + selected.unlocked_at : ''"></span>
             </p>
             <button type="button" @click="close()"
-                class="mt-5 w-full rounded-[10px] bg-[var(--ll-blue)] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[var(--ll-blue-dark)]">
+                class="mt-5 w-full rounded-[10px] bg-(--ll-blue) px-4 py-2.5 text-sm font-bold text-white transition hover:bg-(--ll-blue-dark)">
                 {{ 'ปิด' }}
             </button>
         </div>

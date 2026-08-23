@@ -62,6 +62,9 @@ class Show extends Component
 
     public bool $editAllowLateSubmission = true;
 
+    // Teacher: new attachment while editing (single file — S3 does not support multiple simultaneous uploads)
+    public $editFile = null;
+
     // Teacher: submissions list
     public $submissions = null;
 
@@ -280,6 +283,12 @@ class Show extends Component
     {
         abort_unless($this->classroom->canManageClassroom(auth()->user()), 403);
 
+        if ($this->editFile) {
+            $this->validate([
+                'editFile' => 'file|max:25600|mimes:'.Assignment::allowedSubmissionMimes(),
+            ]);
+        }
+
         $this->validate([
             'editTitle' => 'required|string|max:50',
             'editDescription' => 'nullable|string',
@@ -322,10 +331,31 @@ class Show extends Component
             'allow_late_submission' => $this->editAllowLateSubmission,
         ]);
 
+        if ($this->editFile) {
+            $path = $this->editFile->store('classwork/attachments/'.$this->classroom->id, 's3');
+            $this->assignment->attachments()->create([
+                'file_name' => $this->editFile->getClientOriginalName(),
+                'file_path' => $path,
+                'file_type' => $this->editFile->getMimeType(),
+                'file_size' => $this->editFile->getSize(),
+                'uploaded_by' => auth()->id(),
+            ]);
+            $this->editFile = null;
+        }
+
         $this->isEditTab = false;
         $this->assignment->refresh();
 
         session()->flash('message', __('messages.assignment.updated'));
+    }
+
+    public function removeEditAttachment(int $attachmentId): void
+    {
+        abort_unless($this->classroom->canManageClassroom(auth()->user()), 403);
+
+        $attachment = $this->assignment->attachments()->findOrFail($attachmentId);
+        Storage::disk('s3')->delete($attachment->file_path);
+        $attachment->delete();
     }
 
     public function deleteAssignment(): void

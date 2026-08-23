@@ -36,6 +36,11 @@ class GamificationTest extends TestCase
         $this->student = User::factory()->create([
             'role' => 'student',
         ]);
+
+        // Celebration flashes only queue for the user making the request
+        // (see GamificationService::isCurrentUser) — most of this suite
+        // exercises the student's own self-triggered actions.
+        $this->actingAs($this->student);
     }
 
     // ─────────────────────────────────────────────
@@ -72,6 +77,37 @@ class GamificationTest extends TestCase
         $this->assertSame([1, 2], [$queued[0]['level_before'], $queued[0]['level_after']]);
         $this->assertSame([2, 3], [$queued[1]['level_before'], $queued[1]['level_after']]);
         $this->assertSame([3, 4], [$queued[2]['level_before'], $queued[2]['level_after']]);
+    }
+
+    public function test_xp_award_by_someone_else_queues_a_pending_celebration_instead_of_a_session_flash(): void
+    {
+        // Teacher grading a submission that levels up the student — the level-up
+        // must not flash into the teacher's own session (see isCurrentUser()).
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        $this->actingAs($teacher);
+
+        $this->svc->awardXp($this->student, 100);
+
+        $this->assertNull(session('new_level_ups'));
+
+        $pending = $this->student->gamification()->first()->pending_celebrations;
+        $this->assertCount(1, $pending['new_level_ups']);
+        $this->assertSame(1, $pending['new_level_ups'][0]['level_before']);
+        $this->assertSame(2, $pending['new_level_ups'][0]['level_after']);
+    }
+
+    public function test_pending_celebration_is_shown_and_cleared_on_the_students_own_next_page_load(): void
+    {
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        $this->actingAs($teacher);
+        $this->svc->awardXp($this->student, 100); // levels the student up while the teacher is acting
+
+        $this->actingAs($this->student)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('"level_after":2');
+
+        $this->assertNull($this->student->gamification()->first()->pending_celebrations);
     }
 
     public function test_xp_award_that_does_not_level_up_does_not_queue_a_celebration(): void

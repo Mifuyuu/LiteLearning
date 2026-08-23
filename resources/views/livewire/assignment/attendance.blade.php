@@ -3,12 +3,10 @@
         {{-- ──────────────────────────────────────────────
         Teacher: Attendance Session Controls
         ────────────────────────────────────────────── --}}
-        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div>
             <div class="p-5 border-b border-gray-200">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900">
-                        <x-icon name="clipboard-document-check" class="h-4 w-4 text-amber-500 mr-2" />เซสชันเช็คชื่อ
-                    </h3>
+                    <h3 class="text-lg font-semibold text-gray-900">เซสชันเช็คชื่อ</h3>
                     @if($session?->is_active)
                         <span class="flex items-center text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
                             <span class="w-2 h-2 bg-green-500 rounded-full mr-1.5 animate-pulse"></span>
@@ -25,21 +23,19 @@
                 @if($session?->is_active)
                     {{-- Active session: show rotating code --}}
                     @php
-                        $codeSecondsLeft = max(0, \App\Models\AttendanceSession::CODE_VALIDITY_SECONDS - ($session->code_rotated_at?->diffInSeconds(now()) ?? 0));
+                        $codeSecondsLeft = (int) max(0, \App\Models\AttendanceSession::CODE_VALIDITY_SECONDS - ($session->code_rotated_at?->diffInSeconds(now()) ?? 0));
                     @endphp
                     <div
                         wire:poll.1s="rotateCode"
                         wire:key="attendance-code-{{ $session->current_code }}"
-                        x-data="{ remaining: {{ $codeSecondsLeft }} }"
-                        x-init="setInterval(() => { if (remaining > 0) remaining-- }, 1000)"
                     >
                         <div class="text-center py-6">
-                            <p class="text-sm text-gray-500 mb-2">รหัสปัจจุบัน</p>
-                            <div class="text-6xl font-mono font-bold tracking-[0.3em] text-amber-600 mb-3">
+                            {{-- <p class="text-md text-gray-500 mb-2">รหัสปัจจุบัน</p> --}}
+                            <div class="text-6xl font-mono font-bold tracking-[0.3em] text-[#101114] mb-3">
                                 {{ $session->current_code }}
                             </div>
-                            <p class="text-xs text-gray-400">
-                                <x-icon name="arrow-path" class="h-4 w-4 mr-1" />เปลี่ยนรหัสใน <span x-text="remaining"></span> วินาที
+                            <p class="text-md text-gray-400">
+                                <x-icon name="arrow-path" class="h-4 w-4 mr-1" />เปลี่ยนรหัสใน {{ $codeSecondsLeft }} วินาที
                             </p>
                         </div>
 
@@ -64,9 +60,7 @@
             {{-- Checked-in students list --}}
             @if($this->checkedInStudents->isNotEmpty())
                 <div class="border-t border-gray-200 p-4">
-                    <h4 class="text-sm font-semibold text-gray-700 mb-3">
-                        <x-icon name="check-circle" class="h-4 w-4 text-green-500 mr-1" />
-                        เช็คชื่อแล้ว ({{ $this->checkedInStudents->count() }})
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3">เช็คชื่อแล้ว ({{ $this->checkedInStudents->count() }})
                     </h4>
                     <div class="space-y-2">
                         @foreach($this->checkedInStudents as $sub)
@@ -85,7 +79,7 @@
         {{-- ──────────────────────────────────────────────
         Student: Attendance Check-in
         ────────────────────────────────────────────── --}}
-        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div>
             <div class="p-5 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900">
                     <x-icon name="clipboard-document-check" class="h-4 w-4 text-amber-500 mr-2" />เช็คชื่อ

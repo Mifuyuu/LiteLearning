@@ -47,9 +47,9 @@
 
                     <div class="py-8 max-w-3xl mx-auto text-center">
 
-                        <img src="{{ asset('images/LiteLearn_Text.png') }}" alt="LiteLearn" class="fade-up-enter delay-100 animate-float-gentle mt-6 w-96 sm:w-[32rem] md:w-[38rem] mx-auto">
+                        <img src="{{ asset('images/LiteLearn_Text.png') }}" alt="LiteLearn" class="fade-up-enter delay-100 animate-float-gentle mt-6 w-96 sm:w-lg md:w-152 mx-auto">
 
-                        <p class="fade-up-enter delay-200 mt-6 max-w-xl mx-auto text-xl text-[#101114] leading-relaxed" style="font-family: 'Google Sans', sans-serif;">
+                        <p class="fade-up-enter delay-200 mt-6 max-w-xl mx-auto text-xl text-[#101114] leading-relaxed">
                             ทุกงานที่ส่ง ทุกคอมเมนต์ที่ตอบ แปลงเป็น XP และเหรียญให้ทันที
                             พร้อมกระดานผู้นำที่อัปเดตสด ให้ห้องเรียนสนุกแบบเกมจริง ๆ
                         </p>
@@ -76,13 +76,13 @@
                             <img src="{{ asset('images/features_trophy.png') }}" alt="ระบบจัดอันดับผู้เรียน" class="w-full max-w-sm lg:max-w-md">
                         </div>
                         <div class="fade-up-enter delay-100 text-center lg:text-left">
-                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-xs font-bold text-[var(--ll-blue-dark)] shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-xs font-bold text-(--ll-blue-dark) shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
                                 <x-icon name="trophy" class="h-3.5 w-3.5" /> ระบบจัดอันดับ
                             </span>
-                            <h2 class="mt-4 text-3xl md:text-4xl font-extrabold text-white leading-tight" style="letter-spacing: -0.5px; font-family: 'Noto Sans Thai', sans-serif;">
+                            <h2 class="mt-4 text-3xl md:text-4xl font-extrabold text-white leading-tight" style="letter-spacing: -0.5px;">
                                 แข่งกันขึ้นโพเดียม เห็นอันดับได้ทุกวินาที
                             </h2>
-                            <p class="mt-4 text-lg text-white/80 leading-relaxed" style="font-family: 'Google Sans', sans-serif;">
+                            <p class="mt-4 text-lg text-white/80 leading-relaxed">
                                 ทุกงานที่ส่งและทุกคอมเมนต์ที่ตอบ แปลงเป็น XP และเหรียญทันที
                                 กระดานผู้นำอัปเดตแบบเรียลไทม์ ให้นักเรียนอยากกลับมาเช็กอันดับของตัวเองอยู่เสมอ
                             </p>
@@ -95,13 +95,13 @@
                             <img src="{{ asset('images/features_theme.png') }}" alt="ธีมดาวเคราะห์สำหรับแต่งห้องเรียน" class="w-full max-w-sm lg:max-w-md">
                         </div>
                         <div class="fade-up-enter delay-100 text-center lg:text-left lg:order-1">
-                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-xs font-bold text-[var(--ll-blue-dark)] shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-xs font-bold text-(--ll-blue-dark) shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
                                 <x-icon name="sparkles" class="h-3.5 w-3.5" /> ธีมห้องเรียน
                             </span>
-                            <h2 class="mt-4 text-3xl md:text-4xl font-extrabold text-white leading-tight" style="letter-spacing: -0.5px; font-family: 'Noto Sans Thai', sans-serif;">
+                            <h2 class="mt-4 text-3xl md:text-4xl font-extrabold text-white leading-tight" style="letter-spacing: -0.5px;">
                                 ให้ครูแต่งห้องเรียนด้วยธีมดาวเคราะห์หลากสไตล์
                             </h2>
-                            <p class="mt-4 text-lg text-white/80 leading-relaxed" style="font-family: 'Google Sans', sans-serif;">
+                            <p class="mt-4 text-lg text-white/80 leading-relaxed">
                                 ครูเลือกธีมดาวเคราะห์และสีประจำห้องเรียนได้เอง จากหน้าตั้งค่าห้องเรียน
                                 ให้แต่ละห้องมีสไตล์และบรรยากาศที่ไม่ซ้ำใคร เปลี่ยนได้ทุกเมื่อที่ต้องการ
                             </p>
@@ -114,13 +114,13 @@
                             <img src="{{ asset('images/features_coinie.png') }}" alt="แหล่งที่มาของเหรียญ" class="w-full max-w-sm lg:max-w-md">
                         </div>
                         <div class="fade-up-enter delay-100 text-center lg:text-left">
-                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-xs font-bold text-[var(--ll-blue-dark)] shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-xs font-bold text-(--ll-blue-dark) shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
                                 <x-icon name="sparkles" class="h-3.5 w-3.5" /> แหล่งที่มาของเหรียญ
                             </span>
-                            <h2 class="mt-4 text-3xl md:text-4xl font-extrabold text-white leading-tight" style="letter-spacing: -0.5px; font-family: 'Noto Sans Thai', sans-serif;">
+                            <h2 class="mt-4 text-3xl md:text-4xl font-extrabold text-white leading-tight" style="letter-spacing: -0.5px;">
                                 ได้เหรียญจากทุกความขยัน ไม่ใช่แค่ส่งงาน
                             </h2>
-                            <p class="mt-4 text-lg text-white/80 leading-relaxed" style="font-family: 'Google Sans', sans-serif;">
+                            <p class="mt-4 text-lg text-white/80 leading-relaxed">
                                 ส่งงานตรงเวลา เข้าเรียนครบ ปลดล็อกความสำเร็จ หรือร่วมกิจกรรมในห้องเรียน
                                 ทุกอย่างแปลงเป็นเหรียญให้ทันที สะสมไว้แลกของแต่งโปรไฟล์ได้เลย
                             </p>
@@ -151,13 +151,13 @@
                             ด้วยเครื่องมือที่ตอบโจทย์ทั้งผู้สอนและผู้เรียน
                         </p>
                         <div class="flex gap-4 mt-6">
-                            <a href="#" class="w-10 h-10 rounded-xl bg-[#1a1b23] border border-[#2a2b36] flex items-center justify-center text-[#9497a9] hover:border-[var(--ll-blue)] hover:text-[var(--ll-blue)] transition-all">
+                            <a href="#" class="w-10 h-10 rounded-xl bg-[#1a1b23] border border-[#2a2b36] flex items-center justify-center text-[#9497a9] hover:border-(--ll-blue) hover:text-(--ll-blue) transition-all">
                                 <i class="fa-brands fa-facebook-f"></i>
                             </a>
-                            <a href="#" class="w-10 h-10 rounded-xl bg-[#1a1b23] border border-[#2a2b36] flex items-center justify-center text-[#9497a9] hover:border-[var(--ll-blue)] hover:text-[var(--ll-blue)] transition-all">
+                            <a href="#" class="w-10 h-10 rounded-xl bg-[#1a1b23] border border-[#2a2b36] flex items-center justify-center text-[#9497a9] hover:border-(--ll-blue) hover:text-(--ll-blue) transition-all">
                                 <i class="fa-brands fa-twitter"></i>
                             </a>
-                            <a href="#" class="w-10 h-10 rounded-xl bg-[#1a1b23] border border-[#2a2b36] flex items-center justify-center text-[#9497a9] hover:border-[var(--ll-blue)] hover:text-[var(--ll-blue)] transition-all">
+                            <a href="#" class="w-10 h-10 rounded-xl bg-[#1a1b23] border border-[#2a2b36] flex items-center justify-center text-[#9497a9] hover:border-(--ll-blue) hover:text-(--ll-blue) transition-all">
                                 <i class="fa-brands fa-discord"></i>
                             </a>
                         </div>

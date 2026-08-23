@@ -56,7 +56,7 @@
                             </div>
                             <div class="flex items-center gap-1 text-xs text-[#9497a9] mb-3">
                                 <span class="font-bold text-[#686b82]">{{ number_format($student->xp) }}</span>
-                                <x-icon name="bolt" class="text-[var(--ll-blue)] h-4 w-4 shrink-0" />
+                                <x-icon name="bolt" class="text-(--ll-blue) h-4 w-4 shrink-0" />
                             </div>
                             {{-- Podium block --}}
                             <img src="{{ asset('images/'.$c['trophy']) }}" alt="" class="{{ $c['trophySize'] }} animate__animated animate__bounceIn" @if($c['delay']) style="animation-delay: {{ $c['delay'] }};" @endif>
@@ -75,8 +75,8 @@
                             @php $rank = $i + 4;
                             $isMe = auth()->id() === $record->user_id; @endphp
                             <a href="{{ route('profile', $record->user) }}" wire:navigate
-                                class="flex items-center gap-3 px-6 lg:px-8 py-3 {{ !$loop->last || $topStudents->count() > 3 + $limit ? 'border-b border-[#dedee5]' : '' }} {{ $isMe ? 'bg-[var(--ll-blue-subtle)]' : 'hover:bg-[var(--ll-blue-faint)]' }} transition-colors">
-                                <span class="text-sm font-bold text-[var(--ll-blue)] w-6 text-center shrink-0">{{ $rank }}</span>
+                                class="flex items-center gap-3 px-6 lg:px-8 py-3 {{ !$loop->last || $topStudents->count() > 3 + $limit ? 'border-b border-[#dedee5]' : '' }} {{ $isMe ? 'bg-[var(--ll-blue-subtle)]' : 'hover:bg-(--ll-blue-faint)' }} transition-colors">
+                                <span class="text-sm font-bold text-(--ll-blue) w-6 text-center shrink-0">{{ $rank }}</span>
                                 <div class="relative inline-block shrink-0">
                                     <img src="{{ $record->user->avatar_url }}"
                                         class="w-9 h-9 rounded-full object-cover border border-[#dedee5] bg-white">
@@ -96,14 +96,14 @@
                                         @endforeach
                                         @if($isMe)
                                             <span
-                                                class="ml-1 text-[10px] font-bold text-[var(--ll-blue)] bg-[var(--ll-blue-subtle)] px-1.5 py-0.5 rounded-[4px]">YOU</span>
+                                                class="ml-1 text-[10px] font-bold text-(--ll-blue) bg-[var(--ll-blue-subtle)] px-1.5 py-0.5 rounded-[4px]">YOU</span>
                                         @endif
                                     </p>
                                     <p class="text-xs text-[#9497a9]">{{ 'เลเวล' }} {{ $record->level }}</p>
                                 </div>
                                 <div class="flex items-center gap-1 shrink-0">
                                     <span class="text-sm font-bold text-[#686b82]">{{ number_format($record->xp) }}</span>
-                                    <x-icon name="bolt" class="text-[var(--ll-blue)] h-4 w-4 shrink-0" />
+                                    <x-icon name="bolt" class="text-(--ll-blue) h-4 w-4 shrink-0" />
                                 </div>
                             </a>
                         @endforeach
@@ -111,7 +111,7 @@
                         @if($topStudents->count() > 3 + $limit)
                             <div class="px-4 py-3 text-center">
                                 <button wire:click="loadMore" wire:loading.attr="disabled"
-                                    class="py-2.5 px-8 bg-white border border-[var(--ll-blue-dark)] text-[var(--ll-blue-dark)] hover:bg-[var(--ll-blue-hover)] font-medium rounded-[8px] text-sm transition-colors cursor-pointer">
+                                    class="py-2.5 px-8 bg-white border border-(--ll-blue-dark) text-(--ll-blue-dark) hover:bg-(--ll-blue-hover) font-medium rounded-lg text-sm transition-colors cursor-pointer">
                                     <span wire:loading.remove>{{ 'ดูเพิ่มอีก 10 อันดับ' }}</span>
                                     <span wire:loading class="inline-flex items-center gap-2">
                                         <x-icon name="spinner" class="h-4 w-4 animate-spin" /> {{ 'กำลังโหลด...' }}

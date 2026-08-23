@@ -1,11 +1,11 @@
 @section('page-title', 'สมุดเกรด - ' . $classroom->name)
 @section('breadcrumb')
     <nav class="flex items-center gap-1 text-sm">
-        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
             ชั้นเรียนของฉัน
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
             {{ \Illuminate\Support\Str::limit($classroom->name, 30) }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
@@ -14,7 +14,7 @@
 @endsection
 
 @php
-    $inputClass = 'rounded-lg border border-[#dedee5] bg-white px-4 py-2.5 text-sm text-[#101114] outline-none transition focus:border-[var(--ll-blue)] focus:ring-2 focus:ring-[rgba(37,99,235,0.12)]';
+    $inputClass = 'rounded-lg border border-[#dedee5] bg-white px-4 py-2.5 text-sm text-[#101114] outline-none transition focus:border-(--ll-blue) focus:ring-2 focus:ring-[rgba(37,99,235,0.12)]';
 @endphp
 
 <div class="max-w-4xl mx-auto space-y-4">
@@ -75,7 +75,7 @@
         </select>
 
         <button type="button" wire:click="exportCsv"
-            class="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--ll-blue)] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[var(--ll-blue-dark)]">
+            class="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-(--ll-blue) px-4 py-2.5 text-sm font-bold text-white transition hover:bg-(--ll-blue-dark)">
             <x-icon name="arrow-down-tray" class="h-4 w-4" />
             ส่งออก CSV
         </button>
@@ -130,7 +130,7 @@
                                     <td class="px-3 py-3 border-l border-[#ece9f0] text-center">
                                         @if($submission && $submission->isGraded())
                                             <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $submission]) }}" wire:navigate
-                                                class="inline-flex items-center gap-1 rounded-[7px] bg-[rgba(37,99,235,0.12)] px-2.5 py-1 text-xs font-bold text-[var(--ll-blue)] transition hover:bg-[rgba(37,99,235,0.2)]">
+                                                class="inline-flex items-center gap-1 rounded-[7px] bg-[rgba(37,99,235,0.12)] px-2.5 py-1 text-xs font-bold text-(--ll-blue) transition hover:bg-[rgba(37,99,235,0.2)]">
                                                 {{ $submission->score }}/{{ $maxScore }}
                                             </a>
                                         @elseif($submission && $submission->isTurnedIn())
@@ -154,7 +154,7 @@
                                 </td>
                                 <td class="px-3 py-3 text-center">
                                     @if($summary['avgPercent'] !== null)
-                                        <span class="inline-flex items-center rounded-[7px] bg-[rgba(37,99,235,0.12)] px-2.5 py-1 text-xs font-bold text-[var(--ll-blue)]">
+                                        <span class="inline-flex items-center rounded-[7px] bg-[rgba(37,99,235,0.12)] px-2.5 py-1 text-xs font-bold text-(--ll-blue)">
                                             {{ $summary['avgPercent'] }}%
                                         </span>
                                     @else

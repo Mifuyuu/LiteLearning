@@ -82,7 +82,7 @@
                                 </h3>
                             </div>
                             @if($classroom->is_archived)
-                                <span class="shrink-0 inline-flex items-center text-xs px-2 py-0.5 rounded-[6px] font-medium bg-[rgba(104,107,130,0.12)] text-[#484b5e]">เก็บถาวร</span>
+                                <span class="shrink-0 inline-flex items-center text-xs px-2 py-0.5 rounded-md font-medium bg-[rgba(104,107,130,0.12)] text-[#484b5e]">เก็บถาวร</span>
                             @endif
                         </div>
 
@@ -111,7 +111,7 @@
                     </div>
 
                     {{-- Arrow --}}
-                    <div class="shrink-0 text-[#9497a9] group-hover:text-[var(--ll-blue)] transition-colors">
+                    <div class="shrink-0 text-[#9497a9] group-hover:text-(--ll-blue) transition-colors">
                         <x-icon name="chevron-right" class="h-4 w-4" />
                     </div>
                 </a>

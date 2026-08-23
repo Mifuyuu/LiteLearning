@@ -364,14 +364,6 @@ input:-webkit-autofill:focus {
     --btn-3d-text:   #ffffff;
 }
 
-.btn-3d--teal {
-    --btn-3d-top:    #1670c7;
-    --btn-3d-bottom: #055eb2;
-    --btn-3d-base:   #04487f;
-    --btn-3d-border: #1670c7;
-    --btn-3d-text:   #ffffff;
-}
-
 .btn-3d--green {
     --btn-3d-top:    #22c55e;
     --btn-3d-bottom: #16a34a;

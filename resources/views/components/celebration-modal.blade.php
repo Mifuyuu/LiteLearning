@@ -1,8 +1,23 @@
 {{-- Unified celebration modal — achievement unlocks and level-ups share ONE queue so
      they always render in the order they were flashed (an achievement's XP can trigger
      a level-up in the same request; the achievement card must show before it).
-     Delivery: Livewire dehydrate hook ('achievement-unlocked' / 'level-up' window events)
-     or the matching session flash on a fresh page load. --}}
+     Delivery: Livewire dehydrate hook ('achievement-unlocked' / 'level-up' window events),
+     the matching session flash on a fresh page load, or — when someone else awarded it
+     (e.g. a teacher grading a submission) — a pending_celebrations backlog on the user's
+     own gamification row, read and cleared here on their own next page load. --}}
+@php
+    $pendingAchievements = [];
+    $pendingLevelUps = [];
+    if (auth()->check()) {
+        $gamification = auth()->user()->gamification;
+        $pending = $gamification?->pending_celebrations;
+        if ($pending) {
+            $pendingAchievements = $pending['new_achievements'] ?? [];
+            $pendingLevelUps = $pending['new_level_ups'] ?? [];
+            $gamification->update(['pending_celebrations' => null]);
+        }
+    }
+@endphp
 <script>
     function celebrationModal() {
         return {
@@ -57,8 +72,8 @@
     @achievement-unlocked.window="pushAchievements($event.detail)"
     @level-up.window="pushLevelUps($event.detail)"
     x-init="
-        pushAchievements({{ json_encode(session()->pull('new_achievements', []), JSON_UNESCAPED_UNICODE) }});
-        pushLevelUps({{ json_encode(session()->pull('new_level_ups', []), JSON_UNESCAPED_UNICODE) }});
+        pushAchievements({{ json_encode([...session()->pull('new_achievements', []), ...$pendingAchievements], JSON_UNESCAPED_UNICODE) }});
+        pushLevelUps({{ json_encode([...session()->pull('new_level_ups', []), ...$pendingLevelUps], JSON_UNESCAPED_UNICODE) }});
     ">
 
     <div x-show="visible" x-cloak

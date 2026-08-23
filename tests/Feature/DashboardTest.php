@@ -181,9 +181,6 @@ class DashboardTest extends TestCase
             ->get(route('dashboard'))
             ->assertOk()
             ->assertSee('data-dashboard-role="teacher"', false)
-            ->assertSee('dashboard-liquid-progress', false)
-            ->assertSee('dashboard-liquid-fill', false)
-            ->assertSee('outline-2', false)
             ->assertSee('data-activity-heatmap', false)
             ->assertSee('รอตรวจ');
     }

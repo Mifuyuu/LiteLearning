@@ -24,6 +24,42 @@ class GamificationService
     }
 
     /**
+     * Celebration flashes (level-up modal, achievement toast) live in the
+     * current HTTP session, which belongs to whoever is making the request —
+     * not necessarily the user being awarded. Without this guard, a teacher
+     * grading a submission that levels up the student would see the
+     * student's level-up modal pop up on the teacher's own screen.
+     */
+    private function isCurrentUser(User $user): bool
+    {
+        return auth()->check() && auth()->id() === $user->id;
+    }
+
+    /**
+     * Queue a celebration flash for $user under $key ('new_level_ups' or
+     * 'new_achievements'). Shown immediately via session flash when $user is
+     * making the request themselves; otherwise stashed on their gamification
+     * row so it survives until they load a page under their own session.
+     */
+    private function queueCelebration(User $user, string $key, array $item): void
+    {
+        if ($this->isCurrentUser($user)) {
+            session()->push($key, $item);
+
+            return;
+        }
+
+        $gamification = $user->gamification()->firstOrCreate(
+            ['user_id' => $user->id],
+            ['coins' => 0, 'xp' => 0, 'level' => 1]
+        );
+
+        $pending = $gamification->pending_celebrations ?? [];
+        $pending[$key][] = $item;
+        $gamification->update(['pending_celebrations' => $pending]);
+    }
+
+    /**
      * @return bool true if coins were newly awarded, false if this exact event
      *              (same source+user+reference) was already rewarded before —
      *              guards against double-submit/race duplicate calls.
@@ -97,7 +133,7 @@ class GamificationService
         ]);
 
         if ($newLevel > $oldLevel) {
-            $this->queueLevelUpCelebration($oldLevel, $newLevel);
+            $this->queueLevelUpCelebration($user, $oldLevel, $newLevel);
         }
 
         if ($newLevel >= 5) {
@@ -110,10 +146,10 @@ class GamificationService
      * animate the progress bar filling and the level number ticking up for
      * each one in sequence (a single big XP award can cross several levels).
      */
-    private function queueLevelUpCelebration(int $oldLevel, int $newLevel): void
+    private function queueLevelUpCelebration(User $user, int $oldLevel, int $newLevel): void
     {
         for ($level = $oldLevel + 1; $level <= $newLevel; $level++) {
-            session()->push('new_level_ups', [
+            $this->queueCelebration($user, 'new_level_ups', [
                 'level_before' => $level - 1,
                 'level_after' => $level,
             ]);
@@ -149,8 +185,7 @@ class GamificationService
             return;
         }
 
-        // ponytail: session flash, existing toast shows it on next render
-        session()->push('new_achievements', [
+        $this->queueCelebration($user, 'new_achievements', [
             'name' => $achievement->name,
             'description' => $achievement->description,
             'badge_image' => $achievement->badge_image,

@@ -23,7 +23,7 @@
                             <div class="skeleton h-4 w-20 mt-2"></div>
                             <div class="skeleton h-10 w-full mt-1"></div>
                             <div class="mt-4 w-full">
-                                <div class="skeleton h-10 w-full rounded-[8px]"></div>
+                                <div class="skeleton h-10 w-full rounded-lg"></div>
                             </div>
                         </div>
                     @endfor
@@ -41,7 +41,7 @@
                             <div class="skeleton h-4 w-20 mt-2"></div>
                             <div class="skeleton h-10 w-full mt-1"></div>
                             <div class="mt-4 w-full">
-                                <div class="skeleton h-10 w-full rounded-[8px]"></div>
+                                <div class="skeleton h-10 w-full rounded-lg"></div>
                             </div>
                         </div>
                     @endfor

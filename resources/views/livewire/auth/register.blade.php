@@ -51,7 +51,7 @@
                         </div>
                         <input id="name" type="text" wire:model="name" autocomplete="name" maxlength="{{ \App\Models\User::NAME_MAX_LENGTH }}"
                             placeholder="พิมพ์ชื่อ-นามสกุลของคุณ"
-                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('name') border-red-500 @enderror">
+                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-(--ll-blue) focus:border-(--ll-blue) transition-colors @error('name') border-red-500 @enderror">
                     </div>
                     @error('name')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -68,7 +68,7 @@
                             <x-icon name="envelope" class="h-4 w-4 text-[#9497a9]" />
                         </div>
                         <input id="email" type="email" wire:model="email" autocomplete="email" placeholder="you@example.com"
-                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('email') border-red-500 @enderror">
+                            class="w-full pl-10 pr-4 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-(--ll-blue) focus:border-(--ll-blue) transition-colors @error('email') border-red-500 @enderror">
                     </div>
                     @error('email')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -86,7 +86,7 @@
                         </div>
                         <input id="password" :type="show ? 'text' : 'password'" wire:model="password" autocomplete="new-password"
                             placeholder="อย่างน้อย 8 ตัวอักษร"
-                            class="w-full pl-10 pr-10 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('password') border-red-500 @enderror">
+                            class="w-full pl-10 pr-10 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-(--ll-blue) focus:border-(--ll-blue) transition-colors @error('password') border-red-500 @enderror">
                         <button type="button" @click="show = !show" tabindex="-1"
                             class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#9497a9] hover:text-[#686b82]">
                             <x-icon x-show="!show" name="eye" class="h-4 w-4" />
@@ -109,7 +109,7 @@
                         </div>
                         <input id="password_confirmation" :type="show ? 'text' : 'password'" wire:model="password_confirmation"
                             autocomplete="new-password" placeholder="ยืนยันรหัสผ่าน"
-                            class="w-full pl-10 pr-10 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('password_confirmation') border-red-500 @enderror">
+                            class="w-full pl-10 pr-10 py-2.5 border border-[#dedee5] rounded-[10px] text-sm text-[#101114] placeholder-[#9497a9] focus:ring-1 focus:ring-(--ll-blue) focus:border-(--ll-blue) transition-colors @error('password_confirmation') border-red-500 @enderror">
                         <button type="button" @click="show = !show" tabindex="-1"
                             class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#9497a9] hover:text-[#686b82]">
                             <x-icon x-show="!show" name="eye" class="h-4 w-4" />
@@ -123,7 +123,7 @@
 
                 {{-- Submit --}}
                 <button type="submit"
-                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ll-blue)]">
+                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--ll-blue)">
                     <span wire:loading.remove wire:target="register">
                         <x-icon name="paper-airplane" class="h-4 w-4 mr-2" />สมัครสมาชิก
                     </span>
@@ -137,7 +137,7 @@
             {{-- Step 2: OTP Verification --}}
             <form wire:submit.prevent="verifyOtp" class="space-y-5">
 
-                <div class="bg-[rgba(37,99,235,0.08)] border border-[rgba(37,99,235,0.2)] rounded-xl px-4 py-3 text-sm text-[var(--ll-blue)]">
+                <div class="bg-[rgba(37,99,235,0.08)] border border-[rgba(37,99,235,0.2)] rounded-xl px-4 py-3 text-sm text-(--ll-blue)">
                     <x-icon name="envelope" class="h-4 w-4 mr-1.5" />
                     ส่งรหัส OTP ไปที่ <span class="font-semibold">{{ $email }}</span>
                 </div>
@@ -149,7 +149,7 @@
                     </label>
                     <input id="otp" type="text" wire:model="otp" inputmode="numeric" pattern="\d{6}" maxlength="6" autofocus
                         autocomplete="one-time-code" placeholder="000000"
-                        class="w-full px-4 py-3 border border-[#dedee5] rounded-[10px] text-2xl font-bold text-center text-[#101114] tracking-[0.5em] focus:ring-1 focus:ring-[var(--ll-blue)] focus:border-[var(--ll-blue)] transition-colors @error('otp') border-red-500 @enderror">
+                        class="w-full px-4 py-3 border border-[#dedee5] rounded-[10px] text-2xl font-bold text-center text-[#101114] tracking-[0.5em] focus:ring-1 focus:ring-(--ll-blue) focus:border-(--ll-blue) transition-colors @error('otp') border-red-500 @enderror">
                     @error('otp')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
@@ -157,7 +157,7 @@
 
                 {{-- Submit --}}
                 <button type="submit"
-                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--ll-blue)]">
+                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--ll-blue)">
                     <span wire:loading.remove wire:target="verifyOtp">
                         <x-icon name="check" class="h-4 w-4 mr-2" />ยืนยันและสมัครสมาชิก
                     </span>
@@ -171,13 +171,13 @@
                     <template x-if="cooldown > 0">
                         <p class="text-sm text-[#9497a9]">
                             ส่งรหัสอีกครั้งได้ใน
-                            <span x-text="cooldown" class="font-semibold text-[var(--ll-blue)]"></span>
+                            <span x-text="cooldown" class="font-semibold text-(--ll-blue)"></span>
                             วินาที
                         </p>
                     </template>
                     <template x-if="cooldown <= 0">
                         <button type="button" wire:click="sendOtp"
-                            class="text-sm text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)] font-semibold transition-colors">
+                            class="text-sm text-(--ll-blue) hover:text-(--ll-blue-dark) font-semibold transition-colors">
                             <x-icon name="arrow-path" class="h-4 w-4 mr-1" />ส่งรหัสอีกครั้ง
                         </button>
                     </template>
@@ -199,12 +199,12 @@
                 <p class="text-sm text-[#686b82]">
                     มีบัญชีอยู่แล้ว?
                     <a href="{{ route('login') }}" wire:navigate
-                        class="font-semibold text-[var(--ll-blue)] hover:text-[var(--ll-blue-dark)] hover:underline transition-colors">
+                        class="font-semibold text-(--ll-blue) hover:text-(--ll-blue-dark) hover:underline transition-colors">
                         เข้าสู่ระบบ
                     </a>
                 </p>
                 <a href="{{ url('/') }}"
-                    class="inline-flex items-center gap-1 text-sm text-[#9497a9] hover:text-[var(--ll-blue)] hover:underline transition-colors">
+                    class="inline-flex items-center gap-1 text-sm text-[#9497a9] hover:text-(--ll-blue) hover:underline transition-colors">
                     <x-icon name="arrow-left" class="h-4 w-4" />กลับหน้าหลัก
                 </a>
             </div>

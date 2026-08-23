@@ -2,7 +2,7 @@
 @if(isset($classroom))
 @section('breadcrumb')
     <nav class="flex items-center gap-1 text-sm">
-        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
             {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
@@ -27,9 +27,9 @@
                     <div class="skeleton mt-2 h-8 w-64 sm:h-9"></div>
                     <div class="skeleton mt-2 h-4 w-5/6 max-w-3xl"></div>
                     <div class="mt-4 flex flex-wrap items-center gap-2">
-                        <div class="skeleton h-7 w-28 rounded-[8px]"></div>
-                        <div class="skeleton h-7 w-20 rounded-[8px]"></div>
-                        <div class="skeleton h-7 w-24 rounded-[8px]"></div>
+                        <div class="skeleton h-7 w-28 rounded-lg"></div>
+                        <div class="skeleton h-7 w-20 rounded-lg"></div>
+                        <div class="skeleton h-7 w-24 rounded-lg"></div>
                     </div>
                 </div>
 
@@ -68,7 +68,7 @@
                 @for($i = 0; $i < 3; $i++)
                     <div class="rounded-[10px] border border-[#dedee5] px-3 py-3">
                         <div class="flex items-start gap-3">
-                            <div class="skeleton h-8 w-8 shrink-0 rounded-[8px]"></div>
+                            <div class="skeleton h-8 w-8 shrink-0 rounded-lg"></div>
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-center justify-between gap-2">
                                     <div class="skeleton h-4 w-1/3"></div>

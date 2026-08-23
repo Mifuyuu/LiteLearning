@@ -30,7 +30,7 @@
                         @if($comment->user_id === auth()->id() || $canModerate)
                             <button type="button"
                                 @click="deleteCommentId = {{ $comment->id }}; showDeleteCommentModal = true"
-                                class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                                class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-red-50 hover:text-red-600"
                                 aria-label="ลบความคิดเห็น">
                                 <x-icon name="trash" class="h-4 w-4" />
                             </button>
@@ -44,10 +44,10 @@
                 <img src="{{ auth()->user()->avatar_url }}" class="w-7 h-7 rounded-full">
                 <div class="flex-1 relative">
                     <input wire:model="commentText" wire:keydown.enter="addComment" type="text"
-                        class="w-full rounded-[10px] border border-gray-300 px-4 py-2 pr-11 text-sm outline-none transition focus:border-[var(--ll-blue)] focus:ring-1 focus:ring-[var(--ll-blue)]"
+                        class="w-full rounded-[10px] border border-gray-300 px-4 py-2 pr-11 text-sm outline-none transition focus:border-(--ll-blue) focus:ring-1 focus:ring-(--ll-blue)"
                         placeholder="เพิ่มความคิดเห็น...">
                     <button wire:click="addComment"
-                        class="absolute right-1.5 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[8px] text-[var(--ll-blue)] transition hover:bg-[rgba(37,99,235,0.08)] hover:text-[var(--ll-blue-dark)]">
+                        class="absolute right-1.5 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-(--ll-blue) transition hover:bg-[rgba(37,99,235,0.08)] hover:text-(--ll-blue-dark)">
                         <x-icon name="paper-airplane" class="h-4 w-4" />
                     </button>
                 </div>

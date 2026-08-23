@@ -2,11 +2,11 @@
 @if(isset($classroom))
 @section('breadcrumb')
     <nav class="flex items-center space-x-1 text-sm">
-        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
             {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <a href="{{ route('classroom.show', $classroom) }}" class="text-[#686b82] transition-colors hover:text-[var(--ll-blue)]">
+        <a href="{{ route('classroom.show', $classroom) }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
             {{ $classroom->name }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
@@ -53,7 +53,7 @@
                                                 <div class="skeleton h-3 w-1/4"></div>
                                             </div>
                                         </div>
-                                        <div class="skeleton h-6 w-20 shrink-0 rounded-[6px]"></div>
+                                        <div class="skeleton h-6 w-20 shrink-0 rounded-md"></div>
                                     </div>
                                 </div>
                             @endfor
