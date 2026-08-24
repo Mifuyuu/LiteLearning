@@ -331,7 +331,7 @@
                     </a>
 
                     <!-- Report Issue Button -->
-                    @if(app(\App\Services\SettingsService::class)->bool('bug_report_enabled', true))
+                    @if(!auth()->user()->isAdmin() && app(\App\Services\SettingsService::class)->bool('bug_report_enabled', true))
                         <button x-data @click="$dispatch('openReportModal')"
                             class="flex w-full items-center px-3 py-2.5 text-sm font-bold text-[#686b82] hover:bg-[rgba(59,130,246,0.08)] hover:text-[#2563eb] rounded-lg transition-colors cursor-pointer">
                             <x-icon name="flag" class="mr-3 h-5 w-5" />
