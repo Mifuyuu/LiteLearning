@@ -1,6 +1,6 @@
 @section('page-title', 'จัดการระบบ')
 
-<div class="max-w-4xl mx-auto" x-data="{ showMaintenanceModal: false }">
+<div x-data="{ showMaintenanceModal: false }">
     <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden">
 
         {{-- System info --}}
@@ -108,7 +108,7 @@
             <h2 class="text-xl font-bold text-gray-800 mb-1">ค่าคอนฟิกเกม/คะแนน</h2>
             <p class="text-sm text-gray-500 mb-4">ตัวเลขที่ใช้คำนวณเลเวล เหรียญ และขีดจำกัดการใช้งาน</p>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">XP ต่อเลเวล (ตัวคูณ)</label>
                     <input type="number" wire:model="xpPerLevelMultiplier" min="1"
@@ -141,7 +141,7 @@
                 </div>
             </div>
 
-            <div class="mt-5">
+            <div class="mt-5 flex justify-end">
                 <button wire:click="saveGameConfig" disabled
                     wire:target="xpPerLevelMultiplier,attendanceCoinReward,attendanceXpReward,bugReportRateLimit,classroomJoinRateLimit"
                     wire:dirty.attr.remove="disabled"

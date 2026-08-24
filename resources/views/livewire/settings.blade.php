@@ -1,6 +1,6 @@
 @section('page-title', 'ตั้งค่า')
 
-<div class="" x-data="{
+<div class="flex flex-1 flex-col" x-data="{
     showCropper: false,
     cropType: 'avatar',
     imageUrl: null,
@@ -57,7 +57,7 @@
         }
     }
 }">
-    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden">
+    <div class="flex flex-1 flex-col bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden">
 
         {{-- Page Header --}}
         <div class="p-6 lg:p-8">
@@ -135,28 +135,31 @@
                         </div>
                     </div>
 
-                    {{-- Dummy: Notifications --}}
-                    <div class="pt-8">
-                        <h3 class="text-base font-semibold text-gray-900 mb-4">{{ 'การแจ้งเตือน' }}</h3>
-                        <div class="space-y-3">
-                            <label class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">{{ 'แจ้งเตือนทางอีเมล' }}</span>
-                                <input type="checkbox" checked class="toggle toggle-sm toggle-primary">
-                            </label>
-                            <label class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">{{ 'แจ้งเตือนเมื่อมีงานใหม่' }}</span>
-                                <input type="checkbox" checked class="toggle toggle-sm toggle-primary">
-                            </label>
-                            <label class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">{{ 'แจ้งเตือนเมื่อได้คะแนน' }}</span>
-                                <input type="checkbox" class="toggle toggle-sm toggle-primary">
-                            </label>
-                            <label class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">{{ 'แสดงป๊อปอัพเมื่อทำภารกิจสำเร็จ' }}</span>
-                                <input type="checkbox" checked class="toggle toggle-sm toggle-primary">
-                            </label>
+                    @if(auth()->user()->isStudent())
+                        {{-- Dummy: Notifications --}}
+                        <div class="pt-8">
+                            <h3 class="text-base font-semibold text-gray-900 mb-4">{{ 'การแจ้งเตือน' }}</h3>
+                            <div class="space-y-3">
+                                <label class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">{{ 'แจ้งเตือนทางอีเมล' }}</span>
+                                    <input type="checkbox" checked disabled class="toggle toggle-sm toggle-primary">
+                                </label>
+                                <label class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">{{ 'แจ้งเตือนเมื่อมีงานใหม่' }}</span>
+                                    <input type="checkbox" checked disabled class="toggle toggle-sm toggle-primary">
+                                </label>
+                                <label class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">{{ 'แจ้งเตือนเมื่อได้คะแนน' }}</span>
+                                    <input type="checkbox" disabled class="toggle toggle-sm toggle-primary">
+                                </label>
+                                <label class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">{{ 'แสดงป๊อปอัพเมื่อทำภารกิจสำเร็จ' }}</span>
+                                    <input type="checkbox" checked disabled class="toggle toggle-sm toggle-primary">
+                                </label>
+                            </div>
+                            <p class="mt-3 text-xs text-gray-400"><x-icon name="code-branch" class="h-4 w-4 mr-1 inline" /> {{ 'กำลังพัฒนา' }}</p>
                         </div>
-                    </div>
+                    @endif
 
                 </div>
 
@@ -260,21 +263,23 @@
                         </div>
                     </div>
 
-                    {{-- Dummy: Privacy --}}
-                    <div>
-                        <h3 class="text-base font-semibold text-gray-900 mb-4">{{ 'ความเป็นส่วนตัว' }}</h3>
-                        <div class="space-y-3">
-                            <label class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">{{ 'แสดงโปรไฟล์ต่อสาธารณะ' }}</span>
-                                <input type="checkbox" checked class="toggle toggle-sm toggle-primary">
-                            </label>
-                            <label class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">{{ 'แสดงความคืบหน้าบนกระดานผู้นำ' }}</span>
-                                <input type="checkbox" checked class="toggle toggle-sm toggle-primary">
-                            </label>
+                    @if(auth()->user()->isStudent())
+                        {{-- Dummy: Privacy --}}
+                        <div>
+                            <h3 class="text-base font-semibold text-gray-900 mb-4">{{ 'ความเป็นส่วนตัว' }}</h3>
+                            <div class="space-y-3">
+                                <label class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">{{ 'แสดงโปรไฟล์ต่อสาธารณะ' }}</span>
+                                    <input type="checkbox" checked disabled class="toggle toggle-sm toggle-primary">
+                                </label>
+                                <label class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-700">{{ 'แสดงความคืบหน้าบนกระดานผู้นำ' }}</span>
+                                    <input type="checkbox" checked disabled class="toggle toggle-sm toggle-primary">
+                                </label>
+                            </div>
+                            <p class="mt-3 text-xs text-gray-400"><x-icon name="code-branch" class="h-4 w-4 mr-1 inline" /> {{ 'กำลังพัฒนา' }}</p>
                         </div>
-                        <p class="mt-3 text-xs text-gray-400"><x-icon name="code-branch" class="h-4 w-4 mr-1 inline" /> {{ 'กำลังพัฒนา' }}</p>
-                    </div>
+                    @endif
 
                 </div>
 

@@ -85,6 +85,11 @@ class Users extends Component
             'xp' => 'integer|min:0',
         ])->validate();
 
+        $oldName = $user->name;
+        $oldBio = $user->bio;
+        $oldCoins = $user->gamification?->coins;
+        $oldXp = $user->gamification?->xp;
+
         $user->name = trim($name);
         $user->bio = $bio !== '' ? $bio : null;
         $user->save();
@@ -99,7 +104,22 @@ class Users extends Component
             }
         }
 
-        AuditLog::record('user_updated', "แก้ไขข้อมูลผู้ใช้ {$user->name} ({$user->email})");
+        $changes = [];
+        if ($oldName !== $user->name) {
+            $changes[] = "ชื่อ: {$oldName} → {$user->name}";
+        }
+        if ($oldBio !== $user->bio) {
+            $changes[] = 'แก้ไขคำอธิบายตัวตน';
+        }
+        if ($user->isStudent() && $oldCoins !== (int) $coins) {
+            $changes[] = "เหรียญ: {$oldCoins} → {$coins}";
+        }
+        if ($user->isStudent() && $oldXp !== (int) $xp) {
+            $changes[] = "XP: {$oldXp} → {$xp}";
+        }
+
+        $detail = $changes ? implode(', ', $changes) : 'ไม่มีการเปลี่ยนแปลง';
+        AuditLog::record('user_updated', "แก้ไขข้อมูลผู้ใช้ {$user->name} ({$user->email}): {$detail}");
 
         $this->dispatch('notify', message: __('messages.admin.user_updated'));
     }
