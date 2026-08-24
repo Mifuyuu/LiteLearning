@@ -40,7 +40,7 @@
     <div class="min-h-screen flex flex-col relative z-10">
         <main class="flex-1">
             <!-- Hero Section (Copy + Live Leaderboard Podium) -->
-            <section class="relative z-10 min-h-screen lg:min-h-[115vh] flex items-center py-16 overflow-hidden bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/backgrounds.png') }}')">
+            <section class="relative z-10 min-h-screen lg:min-h-[115vh] flex items-center py-16 overflow-hidden bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/bg.png') }}')">
 
                 <!-- Content Container -->
                 <div class="max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 observer-target relative z-10 w-full lg:-translate-y-[7.5vh]">
@@ -50,13 +50,12 @@
                         <img src="{{ asset('images/LiteLearn_Text.png') }}" alt="LiteLearn" class="fade-up-enter delay-100 animate-float-gentle mt-6 w-96 sm:w-lg md:w-152 mx-auto">
 
                         <p class="fade-up-enter delay-200 mt-6 max-w-xl mx-auto text-xl text-[#101114] leading-relaxed">
-                            ทุกงานที่ส่ง ทุกคอมเมนต์ที่ตอบ แปลงเป็น XP และเหรียญให้ทันที
-                            พร้อมกระดานผู้นำที่อัปเดตสด ให้ห้องเรียนสนุกแบบเกมจริง ๆ
+                            สร้างแรงกระตุ้นในการเรียน ด้วยระบบการเรียนรู้แบบ Gamification
                         </p>
 
                         <div class="fade-up-enter delay-300 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                             <a href="{{ route('register') }}" class="btn-3d btn-3d--amber rounded-2xl px-8 py-4 text-base w-full sm:w-64 flex items-center justify-center">
-                                เริ่มสร้างห้องเรียนฟรี <x-icon name="rocket-launch" class="h-4 w-4 ml-2" />
+                                เริ่มสร้างห้องเรียน <x-icon name="rocket-launch" class="h-4 w-4 ml-2" />
                             </a>
                             <a href="{{ route('login') }}" class="btn-3d btn-3d--white rounded-2xl px-8 py-4 text-base w-full sm:w-64 flex items-center justify-center">
                                 เข้าสู่ระบบ <x-icon name="arrow-left-on-rectangle" class="h-4 w-4 ml-2" />
@@ -64,10 +63,14 @@
                         </div>
                     </div>
                 </div>
+
+                <a href="#features" aria-label="เลื่อนลงไปดู features" class="absolute bottom-45 left-1/2 -translate-x-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/80 shadow-lg animate-bounce hover:bg-white transition-colors">
+                    <x-icon name="chevron-down" class="h-6 w-6 text-[#101114]" />
+                </a>
             </section>
 
             <!-- Feature Highlights -->
-            <section class="relative z-10 py-16 md:py-24 overflow-hidden bg-[#055EB2]">
+            <section id="features" class="relative z-10 py-16 md:py-24 overflow-hidden bg-[#055EB2]">
                 <div class="max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 space-y-20 md:space-y-28">
 
                     <!-- Feature: Leaderboard -->
@@ -76,15 +79,15 @@
                             <img src="{{ asset('images/features_trophy.png') }}" alt="ระบบจัดอันดับผู้เรียน" class="w-full max-w-sm lg:max-w-md">
                         </div>
                         <div class="fade-up-enter delay-100 text-center lg:text-left">
-                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-xs font-bold text-(--ll-blue-dark) shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-sm font-bold text-(--ll-blue-dark) shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
                                 <x-icon name="trophy" class="h-3.5 w-3.5" /> ระบบจัดอันดับ
                             </span>
                             <h2 class="mt-4 text-3xl md:text-4xl font-extrabold text-white leading-tight" style="letter-spacing: -0.5px;">
-                                แข่งกันขึ้นโพเดียม เห็นอันดับได้ทุกวินาที
+                                ระบบจัดอันดับผู้เรียนแบบเรียลไทม์
                             </h2>
                             <p class="mt-4 text-lg text-white/80 leading-relaxed">
-                                ทุกงานที่ส่งและทุกคอมเมนต์ที่ตอบ แปลงเป็น XP และเหรียญทันที
-                                กระดานผู้นำอัปเดตแบบเรียลไทม์ ให้นักเรียนอยากกลับมาเช็กอันดับของตัวเองอยู่เสมอ
+                                ส่งงานตรงเวลา เช็คชื่อเข้าเรียน ปลดล็อกความสำเร็จ หรือร่วมกิจกรรมในห้องเรียน
+                                ทุกอย่างเป็นคะแนนสะสมให้ผู้เรียนเห็นอันดับของตัวเองแบบเรียลไทม์
                             </p>
                         </div>
                     </div>
@@ -95,8 +98,8 @@
                             <img src="{{ asset('images/features_theme.png') }}" alt="ธีมดาวเคราะห์สำหรับแต่งห้องเรียน" class="w-full max-w-sm lg:max-w-md">
                         </div>
                         <div class="fade-up-enter delay-100 text-center lg:text-left lg:order-1">
-                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-xs font-bold text-(--ll-blue-dark) shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                                <x-icon name="sparkles" class="h-3.5 w-3.5" /> ธีมห้องเรียน
+                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-sm font-bold text-(--ll-blue-dark) shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+                                <x-icon name="sparkles" class="h-3.5 w-3.5" /> ระบบธีมแต่งห้องเรียน
                             </span>
                             <h2 class="mt-4 text-3xl md:text-4xl font-extrabold text-white leading-tight" style="letter-spacing: -0.5px;">
                                 ให้ครูแต่งห้องเรียนด้วยธีมดาวเคราะห์หลากสไตล์
@@ -114,15 +117,14 @@
                             <img src="{{ asset('images/features_coinie.png') }}" alt="แหล่งที่มาของเหรียญ" class="w-full max-w-sm lg:max-w-md">
                         </div>
                         <div class="fade-up-enter delay-100 text-center lg:text-left">
-                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-xs font-bold text-(--ll-blue-dark) shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
-                                <x-icon name="sparkles" class="h-3.5 w-3.5" /> แหล่งที่มาของเหรียญ
+                            <span class="inline-flex items-center gap-2 rounded-full border border-[#dedee5] bg-white px-4 py-1.5 text-sm font-bold text-(--ll-blue-dark) shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+                                <x-icon name="sparkles" class="h-3.5 w-3.5" /> ระบบเหรียญ
                             </span>
                             <h2 class="mt-4 text-3xl md:text-4xl font-extrabold text-white leading-tight" style="letter-spacing: -0.5px;">
                                 ได้เหรียญจากทุกความขยัน ไม่ใช่แค่ส่งงาน
                             </h2>
                             <p class="mt-4 text-lg text-white/80 leading-relaxed">
-                                ส่งงานตรงเวลา เข้าเรียนครบ ปลดล็อกความสำเร็จ หรือร่วมกิจกรรมในห้องเรียน
-                                ทุกอย่างแปลงเป็นเหรียญให้ทันที สะสมไว้แลกของแต่งโปรไฟล์ได้เลย
+                                ส่งงานตรงเวลา เช็คชื่อเข้าเรียน ปลดล็อกความสำเร็จ ทุกอย่างแปลงเป็นเหรียญให้ทันที สะสมไว้แลกของแต่งโปรไฟล์ได้ตามใจชอบ
                             </p>
                         </div>
                     </div>
@@ -146,33 +148,19 @@
                         <div class="flex items-center mb-6 relative">
                             <img src="{{ asset('images/favicon_full.png') }}" alt="LiteLearn" class="h-9 w-auto object-contain">
                         </div>
-                        <p class="text-[#9497a9] text-sm leading-relaxed max-w-sm">
-                            ยกระดับการจัดการห้องเรียนให้ง่ายและสนุกยิ่งขึ้น
-                            ด้วยเครื่องมือที่ตอบโจทย์ทั้งผู้สอนและผู้เรียน
-                        </p>
-                        <div class="flex gap-4 mt-6">
-                            <a href="#" class="w-10 h-10 rounded-xl bg-[#1a1b23] border border-[#2a2b36] flex items-center justify-center text-[#9497a9] hover:border-(--ll-blue) hover:text-(--ll-blue) transition-all">
-                                <i class="fa-brands fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 rounded-xl bg-[#1a1b23] border border-[#2a2b36] flex items-center justify-center text-[#9497a9] hover:border-(--ll-blue) hover:text-(--ll-blue) transition-all">
-                                <i class="fa-brands fa-twitter"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 rounded-xl bg-[#1a1b23] border border-[#2a2b36] flex items-center justify-center text-[#9497a9] hover:border-(--ll-blue) hover:text-(--ll-blue) transition-all">
-                                <i class="fa-brands fa-discord"></i>
-                            </a>
-                        </div>
+                        <p class="text-[#9497a9] text-sm leading-relaxed max-w-sm">สร้างแรงกระตุ้นในการเรียน ด้วยระบบการเรียนรู้แบบ Gamification.</p>
                     </div>
 
                     <!-- Links section 1 -->
-                    <div class="col-span-1">
+                    {{-- <div class="col-span-1">
                         <h4 class="text-white font-semibold mb-6 uppercase tracking-wider text-sm">ส่วนสำคัญ</h4>
                         <ul class="space-y-4">
                             <li><a href="{{ route('register') }}" class="text-[#9497a9] hover:text-white transition-colors text-sm">สมัครสมาชิกฟรี</a></li>
                         </ul>
-                    </div>
+                    </div> --}}
 
                     <!-- Links section 2 -->
-                    <div class="col-span-1">
+                    {{-- <div class="col-span-1">
                         <h4 class="text-white font-semibold mb-6 uppercase tracking-wider text-sm">ความช่วยเหลือ</h4>
                         <ul class="space-y-4">
                             <li><a href="#" class="text-[#9497a9] hover:text-white transition-colors text-sm">ศูนย์ช่วยเหลือ (Help Center)</a></li>
@@ -180,18 +168,13 @@
                             <li><a href="#" class="text-[#9497a9] hover:text-white transition-colors text-sm">เงื่อนไขการให้บริการ (ToS)</a></li>
                             <li><a href="#" class="text-[#9497a9] hover:text-white transition-colors text-sm">นโยบายความเป็นส่วนตัว (Privacy)</a></li>
                         </ul>
-                    </div>
+                    </div> --}}
                 </div>
 
-                <div class="pt-8 border-t border-[#2a2b36] flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="pt-8 border-t border-[#2a2b36] flex flex-col md:flex-row items-center justify-center gap-4">
                     <p class="text-sm text-[#9497a9] font-medium">
                         &copy; {{ now()->year }} LiteLearn. All rights reserved.
                     </p>
-                    <div class="flex items-center gap-2 text-sm text-[#9497a9]">
-                        <span>Made with</span>
-                        <x-icon name="heart" class="h-4 w-4 text-[#e11d48]" />
-                        <span>in Thailand</span>
-                    </div>
                 </div>
             </div>
         </footer>

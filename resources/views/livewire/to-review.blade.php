@@ -1,7 +1,7 @@
 @section('page-title', 'รอตรวจ')
 
 <div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)]">
+    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)] flex flex-col">
         <div class="p-6 lg:p-8">
             <h1 class="text-3xl font-black tracking-tight text-[#101114] sm:text-4xl">รอตรวจ</h1>
             <p class="mt-2 max-w-2xl text-md leading-6 text-[#686b82]">งานที่รอการตรวจจากครูผู้สอน</p>
@@ -44,7 +44,7 @@
                 <div class="flex items-center gap-2 text-sm text-gray-500 sm:ml-auto">
                     <span class="hidden sm:inline">เรียงโดย</span>
                     <button wire:click="sortBy('turned_in_at')"
-                        class="px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-xs font-medium
+                        class="px-3.5 py-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium
                             {{ $sortField === 'turned_in_at' ? 'bg-blue-50 border-blue-200 text-blue-700' : 'text-gray-600' }}">
                         เวลาส่ง
                         @if($sortField === 'turned_in_at')
@@ -52,7 +52,7 @@
                         @endif
                     </button>
                     <button wire:click="sortBy('user_id')"
-                        class="px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-xs font-medium
+                        class="px-3.5 py-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium
                             {{ $sortField === 'user_id' ? 'bg-blue-50 border-blue-200 text-blue-700' : 'text-gray-600' }}">
                         ชื่อ
                         @if($sortField === 'user_id')
@@ -67,8 +67,8 @@
         @php $submissions = $pendingSubmissions; @endphp
 
         @if($submissions->isEmpty())
-            <div class="border-t border-[#dedee5] p-16 text-center">
-                <img src="{{ asset('images/empty.svg') }}" alt="" class="h-28 w-28 mx-auto mb-4">
+            <div class="mx-6 lg:mx-8 border-t border-[#dedee5] p-16 text-center flex-1 flex flex-col items-center justify-center">
+                <img src="{{ asset('images/empty.svg') }}" alt="" class="h-48 w-48">
                 <h3 class="text-xl font-semibold text-gray-900 mb-2">ตรวจงานครบแล้ว!</h3>
                 <p class="text-gray-500">
                     @if($classroomId || $search)
@@ -79,7 +79,7 @@
                 </p>
             </div>
         @else
-            <div class="border-t border-[#dedee5] divide-y divide-gray-100">
+            <div class="mx-6 lg:mx-8 border-t border-[#dedee5] divide-y divide-gray-100">
                 @foreach($submissions as $sub)
                     <div class="flex items-center p-4 hover:bg-gray-50 transition-colors" wire:key="sub-{{ $sub->id }}">
                         <img src="{{ $sub->user->avatar_url }}" class="w-10 h-10 rounded-full mr-3 shrink-0">
@@ -113,7 +113,7 @@
             </div>
 
             {{-- Pagination --}}
-            <div class="border-t border-[#dedee5] p-4">
+            <div class="mx-6 lg:mx-8 border-t border-[#dedee5] p-4">
                 {{ $submissions->links(data: ['scrollTo' => false]) }}
             </div>
         @endif
