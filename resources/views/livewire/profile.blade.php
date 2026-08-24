@@ -32,10 +32,9 @@
                             <img src="{{ asset($badge->badge_image ?: 'images/achievements/Achievements_Novice.png') }}"
                                 alt="{{ $badge->name }}" title="{{ $badge->name }}" class="h-7 w-7 shrink-0 object-contain">
                         @endforeach
-                        <span class="inline-flex items-center gap-1 rounded-full bg-[rgba(59,130,246,0.16)] px-2.5 py-1 text-xs font-black uppercase tracking-wide text-[#2563eb]">
-                            <x-icon name="user-solid" class="h-3.5 w-3.5 shrink-0" />
-                            {{ match($user->role) { 'student' => 'นักเรียน', 'teacher' => 'ครู', 'admin' => 'แอดมิน', default => ucfirst($user->role) } }}
-                        </span>
+                        <img src="{{ asset(match($user->role) { 'student' => 'images/badge_student.png', 'teacher' => 'images/badge_teacher.png', 'admin' => 'images/badge_administrator.png', default => 'images/badge_student.png' }) }}"
+                            alt="{{ match($user->role) { 'student' => 'นักเรียน', 'teacher' => 'ครู', 'admin' => 'แอดมิน', default => ucfirst($user->role) } }}"
+                            class="h-7 w-auto shrink-0 object-contain">
                     </div>
                 </div>
             </div>

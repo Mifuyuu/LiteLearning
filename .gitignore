@@ -48,3 +48,4 @@ Inspiration.jpg
 *.bat
 /.claude/settings.local.json
 CLAUDE.md
+.env.prod.local

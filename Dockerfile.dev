@@ -1,13 +1,15 @@
 FROM php:8.4-fpm-alpine
 
 RUN apk add --no-cache \
-    git curl libpng-dev oniguruma-dev libxml2-dev libzip-dev icu-dev unzip nodejs npm postgresql-dev \
+    git curl libpng-dev oniguruma-dev libxml2-dev libzip-dev icu-dev unzip nodejs npm \
+    freetype-dev libjpeg-turbo-dev libwebp-dev \
     linux-headers $PHPIZE_DEPS \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug
 
-# PostgreSQL + common ext
-RUN docker-php-ext-install intl pdo pdo_pgsql pgsql zip mbstring exif pcntl bcmath
+# MySQL/MariaDB + common ext
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install intl pdo pdo_mysql zip mbstring exif pcntl bcmath gd
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

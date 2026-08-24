@@ -278,12 +278,12 @@
                                                         index++;
                                                         uploadNext();
                                                     },
-                                                    (progress) => { this.uploadProgress[file.name] = progress.detail.progress; },
                                                     () => {
                                                         delete this.uploadProgress[file.name];
                                                         index++;
                                                         uploadNext();
-                                                    }
+                                                    },
+                                                    (progress) => { this.uploadProgress[file.name] = progress.detail.progress; }
                                                 );
                                             };
                                             uploadNext();

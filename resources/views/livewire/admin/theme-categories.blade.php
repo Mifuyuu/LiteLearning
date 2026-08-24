@@ -33,6 +33,7 @@
 
     {{-- Table --}}
     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
@@ -52,7 +53,7 @@
                         </td>
                         <td class="px-4 py-2">
                             <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full border border-gray-200 shadow-sm shrink-0"
+                                <div class="w-8 h-8 rounded-full shrink-0"
                                     style="background: {{ $category->color }};"></div>
                                 <span class="text-xs font-mono text-gray-500 hidden md:inline">{{ $category->color }}</span>
                             </div>
@@ -95,6 +96,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
 
         {{-- Pagination --}}
         @if ($categories->hasPages())

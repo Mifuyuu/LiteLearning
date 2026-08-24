@@ -141,6 +141,13 @@ class Show extends Component
         ]);
 
         $file = $this->uploadedFile;
+
+        // Capture metadata before store() — it moves/deletes the temp upload, after which
+        // the file object can no longer report its own name/type/size.
+        $originalName = $file->getClientOriginalName();
+        $mimeType = $file->getMimeType();
+        $size = $file->getSize();
+
         $path = $file->store('submissions/'.$this->assignment->id, 's3');
 
         // Ensure we have a submission record
@@ -153,10 +160,10 @@ class Show extends Component
         }
 
         $this->userSubmission->attachments()->create([
-            'file_name' => $file->getClientOriginalName(),
+            'file_name' => $originalName,
             'file_path' => $path,
-            'file_type' => $file->getMimeType(),
-            'file_size' => $file->getSize(),
+            'file_type' => $mimeType,
+            'file_size' => $size,
             'uploaded_by' => auth()->id(),
         ]);
 
@@ -332,12 +339,18 @@ class Show extends Component
         ]);
 
         if ($this->editFile) {
+            // Capture metadata before store() — it moves/deletes the temp upload, after which
+            // the file object can no longer report its own name/type/size.
+            $originalName = $this->editFile->getClientOriginalName();
+            $mimeType = $this->editFile->getMimeType();
+            $size = $this->editFile->getSize();
+
             $path = $this->editFile->store('classwork/attachments/'.$this->classroom->id, 's3');
             $this->assignment->attachments()->create([
-                'file_name' => $this->editFile->getClientOriginalName(),
+                'file_name' => $originalName,
                 'file_path' => $path,
-                'file_type' => $this->editFile->getMimeType(),
-                'file_size' => $this->editFile->getSize(),
+                'file_type' => $mimeType,
+                'file_size' => $size,
                 'uploaded_by' => auth()->id(),
             ]);
             $this->editFile = null;
