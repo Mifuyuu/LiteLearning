@@ -51,16 +51,28 @@ class Attachment extends Model
 
     public function getIconAttribute(): string
     {
-        return match (true) {
-            str_contains($this->file_type, 'image') => 'fa-file-image',
-            str_contains($this->file_type, 'pdf') => 'fa-file-pdf',
-            str_contains($this->file_type, 'word') => 'fa-file-word',
-            str_contains($this->file_type, 'excel'), str_contains($this->file_type, 'spreadsheet') => 'fa-file-excel',
-            str_contains($this->file_type, 'powerpoint'), str_contains($this->file_type, 'presentation') => 'fa-file-powerpoint',
-            str_contains($this->file_type, 'video') => 'fa-file-video',
-            str_contains($this->file_type, 'audio') => 'fa-file-audio',
-            str_contains($this->file_type, 'zip'), str_contains($this->file_type, 'rar') => 'fa-file-archive',
-            default => 'fa-file',
-        };
+        $type = $this->file_type;
+
+        if (str_contains($type, 'image')) {
+            return 'photo';
+        }
+        if (str_contains($type, 'video')) {
+            return 'play-circle';
+        }
+        if (str_contains($type, 'zip') || str_contains($type, 'rar')) {
+            return 'archive-box';
+        }
+        if (
+            str_contains($type, 'pdf') ||
+            str_contains($type, 'word') ||
+            str_contains($type, 'excel') ||
+            str_contains($type, 'spreadsheet') ||
+            str_contains($type, 'powerpoint') ||
+            str_contains($type, 'presentation')
+        ) {
+            return 'document-text';
+        }
+
+        return 'document';
     }
 }

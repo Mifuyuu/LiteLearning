@@ -51,9 +51,6 @@
         href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap"
         rel="stylesheet">
 
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
@@ -397,7 +394,7 @@
             <!-- Page Content -->
             <main class="flex-1 min-h-0 overflow-x-hidden overflow-y-auto px-4 pt-6 pb-28 sm:px-6 sm:pb-6" style="scrollbar-gutter: stable">
                 <div data-content-width="{{ request()->routeIs('store') ? 'full' : 'contained' }}"
-                    class="flex min-h-full w-full flex-col {{ request()->routeIs('store') ? 'max-w-none' : 'mx-auto max-w-7xl' }}">
+                    class="min-h-full w-full {{ request()->routeIs('store') ? 'max-w-none' : 'mx-auto max-w-7xl' }}">
                     @if(auth()->user()->isAdmin() && (request()->route('classroom') instanceof \App\Models\Classroom))
                         <div class="mx-auto mb-4 flex max-w-4xl items-center gap-2 rounded-xl border-2 border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-800">
                             <x-icon name="shield-check" class="h-4 w-4 shrink-0" />

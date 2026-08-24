@@ -32,7 +32,9 @@
 
         ob_start();
         echo '<section class="space-y-5">';
-        echo '<p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#9497a9]">'.e($title).'</p>';
+        if ($title !== '') {
+            echo '<p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#9497a9]">'.e($title).'</p>';
+        }
         foreach ($grouped as $topic => $assignments) {
             echo '<section class="space-y-3">';
             echo '<div class="flex items-center gap-3">';
@@ -114,13 +116,11 @@
         <div class="border-t border-[#dedee5] mx-6"></div>
 
         <div class="p-6 space-y-6">
-            @if($scope !== 'completed')
-                {!! $renderSection($pendingAssignments, $scopeLinks['pending'], 'ไม่มีงานในสถานะนี้') !!}
-            @endif
             @if($scope === 'all')
-                <div class="border-t border-[#dedee5]"></div>
-            @endif
-            @if($scope !== 'pending')
+                {!! $renderSection($assignments, '', 'ไม่มีงานในสถานะนี้') !!}
+            @elseif($scope === 'pending')
+                {!! $renderSection($pendingAssignments, $scopeLinks['pending'], 'ไม่มีงานในสถานะนี้') !!}
+            @else
                 {!! $renderSection($completedAssignments, $scopeLinks['completed'], 'ไม่มีงานในสถานะนี้') !!}
             @endif
         </div>

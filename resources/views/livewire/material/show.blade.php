@@ -2,7 +2,7 @@
     $themeColor = $classroom->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['color'];
 @endphp
 
-<div>
+<div class="max-w-4xl mx-auto">
     <div>
 
         {{-- Breadcrumb --}}

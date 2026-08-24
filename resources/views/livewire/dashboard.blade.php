@@ -88,7 +88,7 @@
                                 {{ number_format($primaryMetric['xp_current']) }} / {{ number_format($primaryMetric['xp_required']) }} XP
                             </span>
                         </div>
-                        <div class="dashboard-liquid-progress mt-5 outline-2 outline-[rgba(37,99,235,0.28)]" role="progressbar"
+                        <div class="dashboard-liquid-progress mt-5" role="progressbar"
                             aria-label="ความคืบหน้าเลเวล" aria-valuemin="0" aria-valuemax="100"
                             aria-valuenow="{{ $primaryMetric['progress_percent'] }}">
                             <span class="dashboard-liquid-fill" style="width: {{ $primaryMetric['progress_percent'] }}%"></span>

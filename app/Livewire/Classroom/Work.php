@@ -129,6 +129,7 @@ class Work extends Component
         }
 
         return view('livewire.classroom.work', [
+            'assignments' => $assignments,
             'pendingAssignments' => $pendingAssignments,
             'completedAssignments' => $completedAssignments,
             'assignmentCount' => $assignments->count(),

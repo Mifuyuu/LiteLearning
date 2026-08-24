@@ -21,7 +21,7 @@ class ClassworkItemFactory extends Factory
             'user_id' => User::factory(),
             'topic_id' => null,
             'title' => $title,
-            'slug' => \App\Models\Traits\HasSlug::generateUniqueSlug($title),
+            'slug' => \App\Models\ClassworkItem::generateUniqueSlug(),
             'description' => fake()->paragraph(),
         ];
     }

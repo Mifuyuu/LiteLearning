@@ -173,23 +173,6 @@ class Assignment extends Model
     }
 
     /**
-     * Get the FontAwesome icon class for this assignment type.
-     */
-    public function typeIcon(): string
-    {
-        return match ($this->type) {
-            'announcement' => 'fa-bullhorn',
-            'attendance' => 'fa-clipboard-check',
-            'file' => 'fa-cloud-arrow-up',
-            'question' => 'fa-pen-to-square',
-            'topic' => 'fa-layer-group',
-            'material' => 'fa-book-open',
-            'project' => 'fa-diagram-project',
-            default => 'fa-file-alt',
-        };
-    }
-
-    /**
      * Get badge color classes for this assignment type.
      * Returns [bg, text] Tailwind classes.
      */

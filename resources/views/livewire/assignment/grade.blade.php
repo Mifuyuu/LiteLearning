@@ -54,7 +54,7 @@
                                 @foreach($submission->attachments as $attachment)
                                     <a href="{{ $attachment->url }}" target="_blank"
                                         class="flex items-center p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100">
-                                        <i class="fas {{ $attachment->icon }} text-gray-400 mr-3"></i>
+                                        <x-icon :name="$attachment->icon" class="h-4 w-4 text-gray-400 mr-3" />
                                         <span class="text-sm text-gray-700">{{ $attachment->file_name }}</span>
                                     </a>
                                 @endforeach

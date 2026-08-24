@@ -18,7 +18,7 @@
                 <p class="text-[#9497a9] text-sm">{{ 'ยังไม่มีข้อมูลการจัดอันดับ' }}</p>
             </div>
         @else
-            <div class="border-t border-[#dedee5] p-6 lg:p-8">
+            <div class="p-6 lg:p-8">
 
                 {{-- Podium layout: 2nd | 1st | 3rd --}}
                 @php
@@ -29,7 +29,7 @@
                         2 => ['wrap' => 'w-1/3 max-w-[160px]', 'avatar' => 'w-14 h-14', 'ring' => 'ring-[rgba(37,99,235,0.2)]', 'name' => 'text-sm font-semibold text-[#686b82]', 'height' => 'h-[72px]', 'bg' => 'bg-[#F49D5F]', 'levelText' => 'text-black font-bold', 'trophy' => 'Trophy_Bronze.png', 'trophySize' => 'h-14 w-14', 'delay' => null],
                     ];
                 @endphp
-                <div class="relative overflow-hidden">
+                <div class="relative -mx-6 -mt-6 lg:-mx-8 lg:-mt-8">
                     <div class="achievement-burst" aria-hidden="true"></div>
                     <div class="relative z-10 flex items-end justify-center gap-3">
                     @foreach($podiumOrder as $idx)
@@ -70,7 +70,7 @@
 
                 {{-- Rank 4+ --}}
                 @if($topStudents->count() > 3)
-                    <div class="mt-8 -mx-6 lg:-mx-8 border-t border-[#dedee5]">
+                    <div class="-mx-6 lg:-mx-8 border-t border-[#dedee5]">
                         @foreach($topStudents->skip(3)->take($limit)->values() as $i => $record)
                             @php $rank = $i + 4;
                             $isMe = auth()->id() === $record->user_id; @endphp

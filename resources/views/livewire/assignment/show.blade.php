@@ -386,6 +386,48 @@
                 </div>
             @endif
 
+            {{-- Assignment info: material notice, or quick stats for the teacher --}}
+            @if($assignment->type === 'material' || ($classroom->canManageClassroom(auth()->user()) && $assignment->requiresSubmission()))
+                <div class="border-t border-[#dedee5] p-6">
+                    @if($assignment->requiresSubmission())
+                        <h3 class="text-sm font-semibold text-gray-700 mb-3">ข้อมูลงาน</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
+                                    <x-icon name="chart-bar" class="h-3.5 w-3.5" />คะแนนเต็ม
+                                </span>
+                                <p class="text-lg font-bold text-gray-900">{{ $assignment->max_score }}</p>
+                            </div>
+                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
+                                    <x-icon name="bolt" class="h-3.5 w-3.5 text-blue-600" />รางวัล EXP
+                                </span>
+                                <p class="text-lg font-bold text-blue-700">{{ $assignment->exp_reward }}</p>
+                            </div>
+                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
+                                    <x-icon name="star-solid" class="h-3.5 w-3.5 text-amber-500" />รางวัลเหรียญ
+                                </span>
+                                <p class="text-lg font-bold text-amber-700">{{ $assignment->coin_reward }}</p>
+                            </div>
+                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
+                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
+                                    <x-icon name="clock" class="h-3.5 w-3.5" />ส่งงานล่าช้า
+                                </span>
+                                <p class="text-lg font-bold {{ $assignment->allow_late_submission ? 'text-green-700' : 'text-gray-400' }}">
+                                    {{ $assignment->allow_late_submission ? 'อนุญาต' : 'ไม่อนุญาต' }}
+                                </p>
+                            </div>
+                        </div>
+                    @else
+                        <div class="text-center py-4">
+                            <x-icon name="book-open" class="h-7 w-7 text-gray-300 mb-2" />
+                            <p class="text-sm text-gray-500">นี่คือเอกสาร - ไม่ต้องส่งงาน</p>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
             {{-- Teacher: Submissions Table --}}
             @if($submissions !== null && ($classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin()))
                 <div class="border-t border-[#dedee5]">
@@ -393,7 +435,7 @@
                         <h3 class="text-lg font-semibold text-gray-900">งานนักเรียน</h3>
                         <div class="flex gap-4 mt-2 text-sm text-gray-500">
                             <span><x-icon name="check-circle" class="h-4 w-4 mr-1 text-green-500" />
-                                {{ $assignment->submittedCount() }} ส่งแล้ว</span>
+                                 ส่งแล้ว {{ $assignment->submittedCount() }} คน</span>
                             <span><x-icon name="star" class="h-4 w-4 mr-1 text-amber-500" /> {{ $assignment->gradedCount() }}
                                 ให้คะแนนแล้ว</span>
                             @if($assignment->averageScore())
@@ -434,48 +476,6 @@
                             </div>
                         @endforeach
                     </div>
-                </div>
-            @endif
-
-            {{-- Assignment info: material notice, or quick stats for the teacher --}}
-            @if($assignment->type === 'material' || ($classroom->canManageClassroom(auth()->user()) && $assignment->requiresSubmission()))
-                <div class="border-t border-[#dedee5] p-6">
-                    @if($assignment->requiresSubmission())
-                        <h3 class="text-sm font-semibold text-gray-700 mb-3">ข้อมูลงาน</h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
-                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                                    <x-icon name="chart-bar" class="h-3.5 w-3.5" />คะแนนเต็ม
-                                </span>
-                                <p class="text-lg font-bold text-gray-900">{{ $assignment->max_score }}</p>
-                            </div>
-                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
-                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                                    <x-icon name="bolt" class="h-3.5 w-3.5 text-blue-600" />รางวัล EXP
-                                </span>
-                                <p class="text-lg font-bold text-blue-700">{{ $assignment->exp_reward }}</p>
-                            </div>
-                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
-                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                                    <x-icon name="star-solid" class="h-3.5 w-3.5 text-amber-500" />รางวัลเหรียญ
-                                </span>
-                                <p class="text-lg font-bold text-amber-700">{{ $assignment->coin_reward }}</p>
-                            </div>
-                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
-                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                                    <x-icon name="clock" class="h-3.5 w-3.5" />ส่งงานล่าช้า
-                                </span>
-                                <p class="text-lg font-bold {{ $assignment->allow_late_submission ? 'text-green-700' : 'text-gray-400' }}">
-                                    {{ $assignment->allow_late_submission ? 'อนุญาต' : 'ไม่อนุญาต' }}
-                                </p>
-                            </div>
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <x-icon name="book-open" class="h-7 w-7 text-gray-300 mb-2" />
-                            <p class="text-sm text-gray-500">นี่คือเอกสาร - ไม่ต้องส่งงาน</p>
-                        </div>
-                    @endif
                 </div>
             @endif
         </div>

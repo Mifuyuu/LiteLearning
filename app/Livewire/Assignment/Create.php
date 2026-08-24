@@ -145,7 +145,7 @@ class Create extends Component
                     'user_id' => $user->id,
                     'topic_id' => $topicId,
                     'title' => $this->title,
-                    'slug' => \App\Models\Traits\HasSlug::generateUniqueSlug($this->title),
+                    'slug' => \App\Models\ClassworkItem::generateUniqueSlug(),
                     'description' => $this->description ? Purifier::clean($this->description) : null,
                     'published_at' => $this->published_at ?: null,
                 ]);
@@ -170,7 +170,7 @@ class Create extends Component
                 'user_id' => $user->id,
                 'topic_id' => $topicId,
                 'title' => $this->title,
-                'slug' => \App\Models\Traits\HasSlug::generateUniqueSlug($this->title),
+                'slug' => \App\Models\ClassworkItem::generateUniqueSlug(),
                 'description' => $this->description ? Purifier::clean($this->description) : null,
                 'published_at' => $this->published_at ?: null,
             ]);
