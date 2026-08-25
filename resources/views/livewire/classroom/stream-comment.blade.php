@@ -18,14 +18,14 @@
             <div class="space-y-3 mb-3">
                 @foreach($comments as $comment)
                     <div class="flex items-start gap-2">
-                        <img src="{{ $comment->user->avatar_url }}" class="w-7 h-7 rounded-full mt-0.5">
-                        <div class="min-w-0 flex-1">
+                        <img src="{{ $comment->user->avatar_url }}" class="w-7 h-7 shrink-0 rounded-full mt-0.5 object-cover">
+                        <div class="min-w-0 flex-1 pr-10">
                             <div class="flex items-center gap-2">
                                 <span
                                     class="max-w-25 truncate text-xs font-semibold text-gray-900">{{ $comment->user->name }}</span>
                                 <span class="shrink-0 text-xs text-gray-400">{{ $comment->created_at->diffForHumans() }}</span>
                             </div>
-                            <p class="text-sm text-gray-700 wrap-break-word">{{ $comment->content }}</p>
+                            <p class="text-sm text-gray-700 wrap-break-word whitespace-pre-line leading-relaxed">{{ $comment->content }}</p>
                         </div>
                         @if($comment->user_id === auth()->id() || $canModerate)
                             <button type="button"

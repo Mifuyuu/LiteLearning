@@ -78,6 +78,18 @@ class Profile extends Component
         $gradedSubmissions = $user->submissions()->whereNotNull('score');
         $submissionsCount = $user->submissions()->whereIn('status', ['turned_in', 'graded', 'returned'])->count();
 
+        $teacherStats = ['assignments_created' => 0, 'graded_submissions' => 0];
+        if ($user->isTeacher()) {
+            $classroomIds = $user->allClassrooms()->pluck('id');
+            $teacherStats['assignments_created'] = \App\Models\Assignment::query()
+                ->whereHas('classworkItem', fn ($q) => $q->whereIn('classroom_id', $classroomIds))
+                ->count();
+            $teacherStats['graded_submissions'] = \App\Models\Submission::query()
+                ->whereHas('assignment.classworkItem', fn ($q) => $q->whereIn('classroom_id', $classroomIds))
+                ->whereNotNull('score')
+                ->count();
+        }
+
         $this->profileStats = [
             'level' => $user->level,
             'xp' => $user->xp,
@@ -87,6 +99,8 @@ class Profile extends Component
             'classrooms' => $this->profileClassrooms->count(),
             'submissions' => $submissionsCount,
             'average_score' => round((float) ($gradedSubmissions->avg('score') ?? 0), 1),
+            'assignments_created' => $teacherStats['assignments_created'],
+            'graded_submissions' => $teacherStats['graded_submissions'],
         ];
     }
 

@@ -6,8 +6,8 @@
             {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <a href="{{ route('classroom.show', $classroom) }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
-            {{ $classroom->name }}
+        <a href="{{ route('classroom.show', $classroom) }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)" title="{{ $classroom->name }}">
+            {{ \Illuminate\Support\Str::limit($classroom->name, 15, '..') }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <span class="font-semibold text-[#101114]">{{ 'งานในชั้นเรียน' }}</span>
@@ -29,14 +29,11 @@
                 <div class="skeleton ml-auto h-10 w-28 rounded-[10px]"></div>
             @endif
         </div>
-
-        <div class="border-t border-[#dedee5] mx-6"></div>
-
+        
         {{-- Work content mockup --}}
         <div class="p-6 space-y-6">
             @for($t = 0; $t < 2; $t++)
                 <section class="space-y-5">
-                    <div class="skeleton h-3 w-28"></div>
                     <section class="space-y-3">
                         <div class="flex items-center gap-3">
                             <div class="skeleton h-3.5 w-32"></div>

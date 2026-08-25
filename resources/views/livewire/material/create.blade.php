@@ -6,7 +6,8 @@
             <a href="{{ route('classrooms') }}" class="hover:text-blue-600 transition-colors">{{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}</a>
             <x-icon name="chevron-right" class="h-3.5 w-3.5 mx-1" />
             <a href="{{ route('classroom.show', $classroom) }}"
-                class="hover:text-blue-600 transition-colors truncate max-w-50">{{ $classroom->name }}</a>
+                class="hover:text-blue-600 transition-colors"
+                title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 15, '..') }}</a>
             <x-icon name="chevron-right" class="h-3.5 w-3.5 mx-1" />
             <span class="text-gray-800 font-medium">{{ 'สร้างเอกสาร' }}</span>
         </nav>

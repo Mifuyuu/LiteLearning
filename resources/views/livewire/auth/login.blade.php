@@ -47,7 +47,7 @@
                     <span class="ml-2 text-sm text-[#686b82]">จดจำฉัน</span>
                 </label>
                 <a href="{{ route('password.request') }}"
-                    class="text-sm text-(--ll-blue) hover:text-(--ll-blue-dark) font-medium transition-colors">
+                    class="text-sm text-(--ll-blue) hover:text-(--ll-blue-dark) hover:underline font-medium transition-colors">
                     ลืมรหัสผ่าน?
                 </a>
             </div>

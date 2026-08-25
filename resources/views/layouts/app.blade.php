@@ -64,7 +64,7 @@
     </style>
 </head>
 
-<body class="h-full overflow-hidden backdrop-bg font-sans antialiased text-[#101114]" x-data="{ sidebarOpen: true, mobileSidebar: false }">
+<body class="h-full overflow-hidden font-sans antialiased text-[#101114]" x-data="{ sidebarOpen: true, mobileSidebar: false }">
 
     {{-- safelist: dynamic name-color classes from store_items.value (Tailwind v4 JIT scan) --}}
     <div class="hidden text-red-500 text-blue-500 text-amber-500 text-purple-600"></div>
@@ -371,7 +371,7 @@
             @click="mobileSidebar = false"></div>
 
         <!-- Main Content -->
-        <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <div class="backdrop-bg flex min-w-0 flex-1 flex-col overflow-hidden">
             <!-- Mobile Header (Visible only on mobile/tablet screens) -->
             <header class="z-10 shrink-0 border-b border-[#dedee5] bg-white lg:hidden">
                 <div class="mx-auto flex h-15 w-full items-center justify-between px-4 sm:px-6">

@@ -40,8 +40,6 @@
             </div>
         </div>
 
-        <div class="border-t border-[#dedee5]"></div>
-
         {{-- Stats + Side Content --}}
         <div class="p-5 lg:px-7 space-y-6">
 
@@ -52,7 +50,8 @@
                 </p>
             </div>
 
-            {{-- Achievements progress bar --}}
+            {{-- Achievements progress bar (student only) --}}
+            @if($user->isStudent())
             <div>
                 <div class="flex items-center justify-between text-sm">
                     <span class="font-semibold text-[#686b82]">คอลเลกชันความสำเร็จ</span>
@@ -62,25 +61,40 @@
                     <div class="h-full rounded-full bg-[#2563eb]" style="width: {{ $completion }}%"></div>
                 </div>
             </div>
+            @endif
 
             {{-- Stat boxes --}}
-            <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="grid grid-cols-2 gap-3 {{ $user->isStudent() ? 'sm:grid-cols-4' : 'sm:grid-cols-3' }}">
                 <div class="rounded-xl border border-[#dedee5] bg-white p-4">
                     <p class="text-2xl font-black text-[#101114]">{{ number_format($profileStats['classrooms']) }}</p>
                     <p class="text-xs font-semibold text-[#9497a9]">ห้องเรียน</p>
                 </div>
                 <div class="rounded-xl border border-[#dedee5] bg-white p-4">
-                    <p class="text-2xl font-black text-[#101114]">{{ number_format($profileStats['submissions']) }}</p>
-                    <p class="text-xs font-semibold text-[#9497a9]">งานที่ส่ง</p>
+                    <p class="text-2xl font-black text-[#101114]">
+                        @if($user->isStudent())
+                            {{ number_format($profileStats['submissions']) }}
+                        @else
+                            {{ number_format($profileStats['assignments_created']) }}
+                        @endif
+                    </p>
+                    <p class="text-xs font-semibold text-[#9497a9]">{{ $user->isStudent() ? 'งานที่ส่ง' : 'งานที่มอบหมาย' }}</p>
                 </div>
                 <div class="rounded-xl border border-[#dedee5] bg-white p-4">
-                    <p class="text-2xl font-black text-[#101114]">{{ number_format($profileStats['average_score'], 1) }}</p>
-                    <p class="text-xs font-semibold text-[#9497a9]">คะแนนเฉลี่ย</p>
+                    <p class="text-2xl font-black text-[#101114]">
+                        @if($user->isStudent())
+                            {{ number_format($profileStats['average_score'], 1) }}
+                        @else
+                            {{ number_format($profileStats['graded_submissions']) }}
+                        @endif
+                    </p>
+                    <p class="text-xs font-semibold text-[#9497a9]">{{ $user->isStudent() ? 'คะแนนเฉลี่ย' : 'งานที่ตรวจแล้ว' }}</p>
                 </div>
+                @if($user->isStudent())
                 <div class="rounded-xl border border-[#dedee5] bg-white p-4">
                     <p class="text-2xl font-black text-[#101114]">{{ $profileStats['achievements'] }}/{{ $profileStats['achievement_total'] }}</p>
                     <p class="text-xs font-semibold text-[#9497a9]">ปลดล็อคแล้ว</p>
                 </div>
+                @endif
             </div>
 
             {{-- Rank chart (student only) --}}
@@ -102,7 +116,8 @@
                 </div>
             @endif
 
-            {{-- Achievements --}}
+            {{-- Achievements (student only) --}}
+            @if($user->isStudent())
             <div>
                 <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                     <div>
@@ -139,6 +154,7 @@
             </div>
 
             <div class="border-t border-[#dedee5]"></div>
+            @endif
 
             {{-- Classrooms --}}
             <div>

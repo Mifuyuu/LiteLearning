@@ -49,7 +49,7 @@
                         <img src="{{ asset('images/LiteLearn_Text.png') }}" alt="LiteLearn" class="fade-up-enter delay-100 animate-float-gentle mt-6 w-96 sm:w-lg md:w-152 mx-auto">
 
                         <p class="fade-up-enter delay-200 mt-6 max-w-xl mx-auto text-xl text-[#101114] leading-relaxed">
-                            สร้างแรงกระตุ้นในการเรียน ด้วยระบบการเรียนรู้แบบ Gamification
+                            เปลี่ยนการเรียนรู้ให้สนุกและท้าทาย ด้วยระบบ Gamification
                         </p>
 
                         <div class="fade-up-enter delay-300 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <a href="#features" aria-label="เลื่อนลงไปดู features" class="absolute bottom-45 left-1/2 -translate-x-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/80 shadow-lg animate-bounce hover:bg-white transition-colors">
+                <a href="#features" aria-label="เลื่อนลงไปดู features" class="absolute bottom-8 sm:bottom-12 lg:bottom-45 left-1/2 -translate-x-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/80 shadow-lg animate-bounce hover:bg-white transition-colors">
                     <x-icon name="chevron-down" class="h-6 w-6 text-[#101114]" />
                 </a>
             </section>

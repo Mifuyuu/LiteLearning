@@ -47,7 +47,7 @@
                 <div class="skeleton h-8 w-48"></div>
                 <div class="skeleton h-4 w-64"></div>
             </div>
-            <div class="skeleton h-9 w-24 rounded-lg shrink-0"></div>
+            {{-- <div class="skeleton h-9 w-24 rounded-lg shrink-0"></div> --}}
         </div>
 
         {{-- Primary metric + Quick stats --}}

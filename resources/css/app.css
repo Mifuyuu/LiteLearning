@@ -597,21 +597,20 @@ input:-webkit-autofill:focus {
     height: 100dvh;
 }
 
-/* ─── Global backdrop image (all pages) ──────────────────────────────── */
+/* ─── Global backdrop image (all authenticated + auth pages) ─────────── */
 .backdrop-bg {
-    background-color: #f3f4f6;
-    background-image: url('/images/backdrop.webp');
+    background-color: #0a1628;
+    background-image: url('/images/background_moon_center.png');
     background-repeat: no-repeat;
-    background-size: max(150vw, 160vh) auto;
+    background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: scroll;
 }
 
-/* ponytail: vw/vh sizing shrinks the image on small screens — bump the zoom
-   so the backdrop keeps roughly the same visual scale as desktop. */
 @media (max-width: 1023px) {
     .backdrop-bg {
-        background-size: max(200vw, 240vh) auto;
+        background-size: cover;
+        background-position: center top;
     }
 }
 

@@ -6,7 +6,7 @@
             {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <span class="font-semibold text-[#101114]">{{ \Illuminate\Support\Str::limit($classroom->name, 30) }}</span>
+        <span class="font-semibold text-[#101114]" title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 25, '..') }}</span>
     </nav>
 @endsection
 @endif

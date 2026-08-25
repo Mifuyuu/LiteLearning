@@ -1,29 +1,29 @@
 <div>
     {{-- Folder tabs: role selector --}}
-    <div class="relative z-10 -mb-px flex items-end gap-1.5 pl-5">
+    <div class="relative z-10 -mb-px flex items-end gap-1.5 pl-10">
         <button type="button" wire:click="$set('role', 'student')" @disabled($otpSent)
             @class([
-                'flex items-center gap-2 rounded-t-xl border px-5 pt-2.5 pb-3 text-sm transition-colors',
+                'flex items-center gap-2 rounded-t-xl border-3 px-5 pt-2.5 pb-3 text-sm transition-colors',
                 $this->role !== 'teacher'
                     ? 'border-[#dedee5] border-b-0 bg-white font-semibold text-[#101114]'
                     : 'border-transparent bg-[#e8eaf0] font-medium text-[#686b82] hover:bg-[#dfe2ea]',
                 $otpSent ? 'cursor-not-allowed opacity-60' : '',
             ])>
-            <x-icon name="user" class="h-4 w-4" />นักสำรวจ
+            <x-icon name="user" class="h-4 w-4" />ผู้เรียน
         </button>
         <button type="button" wire:click="$set('role', 'teacher')" @disabled($otpSent)
             @class([
-                'flex items-center gap-2 rounded-t-xl border px-5 pt-2.5 pb-3 text-sm transition-colors',
+                'flex items-center gap-2 rounded-t-xl border-3 px-5 pt-2.5 pb-3 text-sm transition-colors',
                 $this->role === 'teacher'
                     ? 'border-[#dedee5] border-b-0 bg-white font-semibold text-[#101114]'
                     : 'border-transparent bg-[#e8eaf0] font-medium text-[#686b82] hover:bg-[#dfe2ea]',
                 $otpSent ? 'cursor-not-allowed opacity-60' : '',
             ])>
-            <x-icon name="academic-cap" class="h-4 w-4" />ผู้สร้างโลก
+            <x-icon name="academic-cap" class="h-4 w-4" />ผู้สอน
         </button>
     </div>
 
-    <div class="rounded-2xl border-3 border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]" style="border-top-width: 1px;">
+    <div class="rounded-2xl border-3 border-t-0 border-[#dedee5] bg-white p-8 shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
 
         {{-- Header --}}
         <div class="mb-2">
@@ -123,9 +123,9 @@
 
                 {{-- Submit --}}
                 <button type="submit"
-                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--ll-blue)">
+                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-3.25 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--ll-blue)">
                     <span wire:loading.remove wire:target="register">
-                        <x-icon name="paper-airplane" class="h-4 w-4 mr-2" />สมัครสมาชิก
+                        <x-icon name="user-plus-alt" class="h-4 w-4 mr-2" />สมัครสมาชิก
                     </span>
                     <span wire:loading wire:target="register">
                         <x-icon name="spinner" class="h-4 w-4 mr-2 animate-spin" />กำลังส่ง...
@@ -157,7 +157,7 @@
 
                 {{-- Submit --}}
                 <button type="submit"
-                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-[13px] text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--ll-blue)">
+                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-3.25 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--ll-blue)">
                     <span wire:loading.remove wire:target="verifyOtp">
                         <x-icon name="check" class="h-4 w-4 mr-2" />ยืนยันและสมัครสมาชิก
                     </span>

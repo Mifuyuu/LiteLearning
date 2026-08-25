@@ -152,8 +152,8 @@ class Dashboard extends Component
             'quickStats' => [
                 ['label' => 'ห้องเรียน', 'value' => number_format($ownedClassrooms->count()), 'icon' => 'academic-cap'],
                 ['label' => 'นักเรียน', 'value' => number_format($ownedClassrooms->sum('students_count')), 'icon' => 'users'],
-                ['label' => 'งานที่มอบหมาย', 'value' => number_format($ownedClassrooms->sum('assignments_count')), 'icon' => 'document-text'],
-                ['label' => 'รอตรวจ', 'value' => number_format($reviewProgress['pending']), 'icon' => 'clipboard-document-list'],
+                ['label' => 'งานที่มอบหมาย', 'value' => number_format($ownedClassrooms->sum('assignments_count')), 'icon' => 'clipboard-document-list'],
+                ['label' => 'รอตรวจ', 'value' => number_format($reviewProgress['pending']), 'icon' => 'clock'],
             ],
             'activitySummaries' => [
                 ['label' => 'กิจกรรมในรอบ 6 เดือน', 'value' => $activity['total']],

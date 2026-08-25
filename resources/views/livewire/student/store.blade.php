@@ -135,8 +135,8 @@
                     <p class="text-[#686b82] mb-6">
                         {{ 'คุณแน่ใจหรือไม่ว่าต้องการซื้อ' }}
                         <span class="font-bold text-[#101114] block mt-2 text-lg" x-text="selectedItemName"></span>
-                        <span class="mt-2 flex items-center justify-center gap-1 text-(--ll-blue) font-bold">
-                            {{ 'ในราคา' }} <img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 shrink-0" alt=""> <span x-text="selectedItemPrice"></span> {{ 'เหรียญ?' }}
+                        <span class="mt-2 flex items-center justify-center gap-1 text-[#101114] font-bold">
+                            {{ 'ในราคา' }} <span x-text="selectedItemPrice" class="text-amber-500 font-bold"></span><img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 shrink-0" alt="">{{ 'เหรียญ' }}
                         </span>
                     </p>
 

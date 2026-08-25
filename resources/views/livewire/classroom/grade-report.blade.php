@@ -5,8 +5,8 @@
             ชั้นเรียนของฉัน
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
-            {{ \Illuminate\Support\Str::limit($classroom->name, 30) }}
+        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)" title="{{ $classroom->name }}">
+            {{ \Illuminate\Support\Str::limit($classroom->name, 15, '..') }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <span class="font-semibold text-[#101114]">สมุดเกรด</span>

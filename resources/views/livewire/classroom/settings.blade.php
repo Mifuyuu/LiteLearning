@@ -5,8 +5,8 @@
             {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
-            {{ $classroom->name }}
+        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)" title="{{ $classroom->name }}">
+            {{ \Illuminate\Support\Str::limit($classroom->name, 15, '..') }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <span class="font-semibold text-[#101114]">{{ 'ตั้งค่า' }}</span>
@@ -16,14 +16,13 @@
 <div class="space-y-5 max-w-4xl mx-auto">
     <section class="rounded-xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="border-b border-[#dedee5] p-5">
-            <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">{{ 'ตั้งค่า' }}</p>
             <h1 class="mt-1 text-2xl font-black text-[#101114]">{{ 'ตั้งค่าห้องเรียน' }}</h1>
         </div>
 
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#dedee5] p-5"
             x-data="{ copied: false, copy() { navigator.clipboard.writeText('{{ $classroom->code }}'); this.copied = true; setTimeout(() => this.copied = false, 2000); } }">
             <div>
-                <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">{{ 'รหัสเข้าห้องเรียน' }}</p>
+                <p class="text-xs font-extrabold uppercase text-[#9497a9]">{{ 'รหัสเข้าห้องเรียน' }}</p>
                 <p class="mt-1 font-mono text-2xl font-black text-green-700">{{ $classroom->code }}</p>
             </div>
             <button type="button" @click="copy()"

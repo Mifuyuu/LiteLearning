@@ -6,8 +6,8 @@
             {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <a href="{{ route('classroom.show', $classroom) }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
-            {{ $classroom->name }}
+        <a href="{{ route('classroom.show', $classroom) }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)" title="{{ $classroom->name }}">
+            {{ \Illuminate\Support\Str::limit($classroom->name, 15, '..') }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <span class="font-semibold text-[#101114]">{{ 'สมาชิก' }}</span>
@@ -107,9 +107,8 @@
                     <div class="rounded-xl border border-[#dedee5] bg-(--ll-blue-faint) p-4">
                         <div class="flex items-center gap-3">
                             <div class="skeleton h-11 w-11 shrink-0 rounded-2xl"></div>
-                            <div class="min-w-0 flex-1 space-y-2">
+                            <div class="min-w-0 flex-1">
                                 <div class="skeleton h-4 w-1/3"></div>
-                                <div class="skeleton h-3 w-1/2"></div>
                             </div>
                             @if($isManager)
                                 <div class="skeleton ml-auto h-9 w-9 shrink-0 rounded-[10px]"></div>

@@ -5,15 +5,20 @@
             {{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)">
-            {{ $classroom->name }}
+        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)" title="{{ $classroom->name }}">
+            {{ \Illuminate\Support\Str::limit($classroom->name, 25, '..') }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <span class="font-semibold text-[#101114]">{{ 'สมาชิก' }}</span>
     </nav>
 @endsection
 
-<div class="space-y-6 max-w-4xl mx-auto"
+@php
+    $fallback = \App\Models\ThemeCategory::fallbackFor($classroom->id);
+    $themeColor = $classroom->themeCategory?->color ?? $fallback['color'];
+@endphp
+
+<div class="max-w-4xl mx-auto" style="--cw-color: {{ $themeColor }}; --cw-subtle: {{ $themeColor }}26; --cw-faint: {{ $themeColor }}12;"
     x-data="{ openPopover: null, showKickModal: false, kickName: '', kickId: null, kickType: '' }"
     @click.away="openPopover = null">
     <section class="rounded-2xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] min-h-[calc(100vh-3rem)]">
@@ -21,30 +26,28 @@
         {{-- Sort --}}
         <div class="flex flex-wrap items-center gap-2 p-4">
             <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
-                class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-(--ll-blue) text-white' : 'text-[#686b82] hover:bg-(--ll-blue-hover) hover:text-(--ll-blue)' }}">
+                class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-first-name' ? 'bg-(--cw-color) text-white' : 'text-[#686b82] hover:bg-(--cw-faint) hover:text-(--cw-color)' }}">
                 {{ 'ชื่อต้น' }}
             </a>
             <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-newest']) }}" wire:navigate
-                class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-newest' ? 'bg-(--ll-blue) text-white' : 'text-[#686b82] hover:bg-(--ll-blue-hover) hover:text-(--ll-blue)' }}">
+                class="rounded-[10px] px-4 py-2 text-sm font-medium transition-colors {{ $sort === 'sort-newest' ? 'bg-(--cw-color) text-white' : 'text-[#686b82] hover:bg-(--cw-faint) hover:text-(--cw-color)' }}">
                 {{ 'ใหม่ล่าสุด' }}
             </a>
         </div>
-
-        <div class="border-t border-[#dedee5] mx-6"></div>
-
+        
         {{-- Teachers --}}
         <div class="p-6 pb-4">
             <div class="flex items-center justify-between gap-3">
                 <div>
-                    <h2 class="mt-2 text-xl font-bold text-[#101114]">{{ 'ครูและผู้สอนร่วม' }}</h2>
+                    <h2 class="mt-2 text-xl font-bold text-[#101114]">{{ 'ผู้สอน' }}</h2>
                 </div>
-                <span class="rounded-lg bg-[rgba(104,107,130,0.12)] px-3 py-1 text-xs font-semibold text-[#484b5e]">
+                <span class="rounded-md bg-[rgba(104,107,130,0.12)] px-3 py-1 text-xs font-semibold text-[#484b5e]">
                     {{ 1 + $coTeachers->count() }}
                 </span>
             </div>
 
             <div class="mt-6 space-y-3">
-                <a href="{{ route('profile', $classroom->teacher) }}" wire:navigate class="rounded-xl border border-[#dedee5] bg-(--ll-blue-faint) p-4 block transition hover:border-(--ll-blue)/30 hover:bg-(--ll-blue)/8">
+                <a href="{{ route('profile', $classroom->teacher) }}" wire:navigate class="rounded-lg border border-[#dedee5] bg-(--cw-faint) p-4 block transition hover:border-(--cw-color)/30 hover:bg-(--cw-color)/8">
                     <div class="flex items-center gap-3">
                         <img src="{{ $classroom->teacher->avatar_url }}" alt="{{ $classroom->teacher->name }}" class="h-11 w-11 rounded-2xl object-cover">
                         <div class="min-w-0">
@@ -79,15 +82,15 @@
             </div>
 
             @if($classroom->isOwnedBy(auth()->user()) || auth()->user()->isAdmin())
-                <form wire:submit.prevent="addCoTeacher" class="mt-6 rounded-lg border border-dashed border-[#dedee5] bg-(--ll-blue-faint) p-4">
+                <form wire:submit.prevent="addCoTeacher" class="mt-6 rounded-lg border border-dashed border-[#dedee5] bg-(--cw-faint) p-4">
                     <label class="block">
                         <span class="mb-2 block text-sm font-medium text-[#686b82]">{{ 'เพิ่มผู้สอนร่วม' }}</span>
                         <div class="flex flex-col gap-3 sm:flex-row">
                             <input wire:model="inviteCoTeacherEmail" type="email"
-                                class="w-full rounded-lg border border-[#dedee5] bg-white px-4 py-3 text-sm outline-none transition focus:border-(--ll-blue) focus:ring-2 focus:ring-(--ll-blue-subtle)"
+                                class="w-full rounded-lg border border-[#dedee5] bg-white px-4 py-3 text-sm outline-none transition focus:border-(--cw-color) focus:ring-2 focus:ring-(--cw-subtle)"
                                 placeholder="teacher@example.com">
                             <button type="submit"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-(--ll-blue) px-4 py-3 text-sm font-semibold text-white transition hover:bg-(--ll-blue-dark)">
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-(--cw-color) px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90 shadow-sm">
                                 <x-icon name="user-plus" class="h-4 w-4" />
                                 {{ 'เพิ่ม' }}
                             </button>
@@ -97,9 +100,6 @@
                 </form>
             @endif
         </div>
-
-        {{-- Divider --}}
-        <div class="border-t border-[#dedee5] mx-6"></div>
 
         {{-- Students --}}
         <div class="p-6 pt-4">
@@ -123,7 +123,7 @@
 
             <div class="mt-6 space-y-3">
                 @forelse($students as $member)
-                    <div class="rounded-xl border border-[#dedee5] bg-(--ll-blue-faint) p-4">
+                    <div class="rounded-lg border border-[#dedee5] bg-(--cw-faint) p-4">
                         <div class="flex items-center gap-3">
                             <a href="{{ route('profile', $member) }}" wire:navigate class="flex items-center gap-3 min-w-0 flex-1">
                                 <img src="{{ $member->avatar_url }}" alt="{{ $member->name }}" class="h-11 w-11 rounded-2xl object-cover">
@@ -135,7 +135,7 @@
                             @if($classroom->canManageClassroom(auth()->user()))
                                 <button type="button"
                                     @click="kickId = {{ $member->id }}; kickName = @js($member->name); kickType = 'student'; showKickModal = true"
-                                    class="inline-flex h-9 w-9 items-center justify-center rounded-[10px] text-rose-400 transition hover:bg-rose-50 hover:text-rose-600">
+                                    class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition hover:bg-rose-50 hover:text-rose-600">
                                     <x-icon name="user-minus" class="h-4 w-4" />
                                 </button>
                             @endif
@@ -148,23 +148,25 @@
         </div>
     </section>
 
-    <x-confirm-modal show="showKickModal" cancel="showKickModal = false" heading="ยืนยันการลบ">
-        <x-slot:message>
-            {{ 'ลบ' }} <span class="font-semibold text-[#101114]" x-text="kickName"></span>?
-        </x-slot:message>
-        <button type="button"
-            @click="
-                if (kickType === 'co-teacher') {
-                    $wire.removeCoTeacher(kickId);
-                } else if (kickType === 'all') {
-                    $wire.removeAllMembers();
-                } else {
-                    $wire.removeMember(kickId);
-                }
-                showKickModal = false;
-            "
-            class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
-            {{ 'ลบ' }}
-        </button>
-    </x-confirm-modal>
+    <template x-teleport="body">
+        <x-confirm-modal show="showKickModal" cancel="showKickModal = false" heading="ยืนยันการลบ">
+            <x-slot:message>
+                {{ 'ลบ' }} <span class="font-semibold text-[#101114]" x-text="kickName"></span>?
+            </x-slot:message>
+            <button type="button"
+                @click="
+                    if (kickType === 'co-teacher') {
+                        $wire.removeCoTeacher(kickId);
+                    } else if (kickType === 'all') {
+                        $wire.removeAllMembers();
+                    } else {
+                        $wire.removeMember(kickId);
+                    }
+                    showKickModal = false;
+                "
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                {{ 'ลบ' }}
+            </button>
+        </x-confirm-modal>
+    </template>
 </div>
