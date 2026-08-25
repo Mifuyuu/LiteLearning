@@ -65,7 +65,7 @@
                                 class="absolute menu right-0 top-full z-50 mt-2 w-44 rounded-xl border border-[#dedee5] bg-white p-1.5 shadow-lg">
                                 <li>
                                     <a href="{{ route('assignment.create', $classroom) }}?type=file" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#101114] hover:bg-(--cw-faint) hover:text-(--cw-color)">
-                                        <x-icon name="arrow-up-tray" class="h-4 w-4 shrink-0" />
+                                        <x-icon name="document-text" class="h-4 w-4 shrink-0" />
                                         {{ 'งานส่งไฟล์' }}
                                     </a>
                                 </li>
@@ -83,7 +83,7 @@
                                 </li>
                                 <li>
                                     <a href="{{ route('assignment.create', $classroom) }}?type=attendance" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#101114] hover:bg-(--cw-faint) hover:text-(--cw-color)">
-                                        <x-icon name="check-circle" class="h-4 w-4 shrink-0" />
+                                        <x-icon name="pencil-square" class="h-4 w-4 shrink-0" />
                                         {{ 'งานเช็คชื่อ' }}
                                     </a>
                                 </li>
@@ -157,7 +157,10 @@
                                     <p class="truncate text-sm font-extrabold text-[#101114]">{{ $announcement->user->name }}</p>
                                     <p class="shrink-0 text-xs font-semibold text-[#9497a9]">{{ $announcement->created_at->diffForHumans() }}</p>
                                 </div>
-                                <p class="mt-1 line-clamp-2 text-sm text-[#686b82]">{{ \Illuminate\Support\Str::limit(strip_tags($announcement->content), 120) }}</p>
+                                @if($announcement->title)
+                                    <p class="mt-1 text-sm font-bold text-[#101114] truncate">{{ $announcement->title }}</p>
+                                @endif
+                                <p class="mt-0.5 line-clamp-2 text-xs text-[#686b82]">{{ \Illuminate\Support\Str::limit(strip_tags($announcement->content), 120) }}</p>
                             </div>
                         </div>
                     </a>

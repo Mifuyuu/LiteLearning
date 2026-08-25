@@ -21,7 +21,7 @@
                         wire:model.live.debounce.300ms="search"
                         type="text"
                         placeholder="ค้นหา..."
-                        class="pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 w-48"
+                        class="pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-xl focus:ring-1 focus:ring-blue-500 w-48"
                     />
                 </div>
                 <button wire:click="openCreate" class="btn-3d btn-3d--indigo px-4 py-2 rounded-xl text-sm">
@@ -149,7 +149,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ <span class="text-red-500">*</span></label>
                         <input wire:model="form.name" type="text" placeholder="เช่น ดวงจันทร์, ดาวเคราะห์แดง"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500" />
                         @error('form.name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -164,7 +164,7 @@
                             <input type="text" maxlength="7" placeholder="#6B3FBF"
                                 x-model="localColor"
                                 @blur="$wire.set('form.color', localColor)"
-                                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono" />
+                                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 font-mono" />
                         </div>
                         @error('form.color') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
@@ -173,7 +173,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">รหัสดาวเคราะห์ <span class="text-red-500">*</span></label>
                         <input wire:model="form.planet_key" type="text" placeholder="เช่น earth, ruby, comet"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono" />
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 font-mono" />
                         <p class="text-xs text-gray-400 mt-1">ตัวอักษรอังกฤษพิมพ์เล็ก ตัวเลข - และ _ เท่านั้น ใช้เป็นชื่อไฟล์ภาพ</p>
                         @error('form.planet_key') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>

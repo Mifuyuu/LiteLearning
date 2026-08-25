@@ -87,7 +87,7 @@
                         <span class="mb-2 block text-sm font-medium text-[#686b82]">{{ 'เพิ่มผู้สอนร่วม' }}</span>
                         <div class="flex flex-col gap-3 sm:flex-row">
                             <input wire:model="inviteCoTeacherEmail" type="email"
-                                class="w-full rounded-lg border border-[#dedee5] bg-white px-4 py-3 text-sm outline-none transition focus:border-(--cw-color) focus:ring-2 focus:ring-(--cw-subtle)"
+                                class="w-full rounded-lg border border-[#dedee5] bg-white px-4 py-3 text-sm outline-none transition focus:border-(--cw-color) focus:ring-1 focus:ring-(--cw-subtle)"
                                 placeholder="teacher@example.com">
                             <button type="submit"
                                 class="inline-flex items-center justify-center gap-2 rounded-lg bg-(--cw-color) px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90 shadow-sm">

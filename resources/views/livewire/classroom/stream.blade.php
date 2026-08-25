@@ -37,7 +37,7 @@
                         class="absolute menu right-0 top-full z-50 mt-2 w-44 rounded-xl border border-[#dedee5] bg-white p-1.5 shadow-lg">
                         <li>
                             <a href="{{ route('assignment.create', $classroom) }}?type=file" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#101114] hover:bg-(--cw-faint) hover:text-(--cw-color)">
-                                <x-icon name="arrow-up-tray" class="h-4 w-4 shrink-0" />
+                                <x-icon name="document-text" class="h-4 w-4 shrink-0" />
                                 {{ 'งานส่งไฟล์' }}
                             </a>
                         </li>
@@ -55,7 +55,7 @@
                         </li>
                         <li>
                             <a href="{{ route('assignment.create', $classroom) }}?type=attendance" wire:navigate @click="open = false" class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#101114] hover:bg-(--cw-faint) hover:text-(--cw-color)">
-                                <x-icon name="check-circle" class="h-4 w-4 shrink-0" />
+                                <x-icon name="pencil-square" class="h-4 w-4 shrink-0" />
                                 {{ 'งานเช็คชื่อ' }}
                             </a>
                         </li>
@@ -84,9 +84,44 @@
                                     </button>
                                 @endif
                             </div>
-                            <div class="prose prose-sm mt-3 max-w-none text-[#686b82] [&_p:first-child]:mt-0 [&_p:last-child]:mb-0">
-                                {!! $announcement->content !!}
-                            </div>
+                            @if($announcement->title)
+                                <h3 class="mt-2.5 text-base font-bold text-[#101114]">
+                                    {{ $announcement->title }}
+                                </h3>
+                            @endif
+                            @if($announcement->content)
+                                <div class="prose prose-sm mt-2 max-w-none text-[#686b82] [&_p:first-child]:mt-0 [&_p:last-child]:mb-0">
+                                    {!! $announcement->content !!}
+                                </div>
+                            @endif
+
+                            {{-- Attachments --}}
+                            @if($announcement->attachments->isNotEmpty())
+                                <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                    @foreach($announcement->attachments as $attachment)
+                                        @php
+                                            $ext = strtolower(pathinfo($attachment->file_name, PATHINFO_EXTENSION));
+                                            $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                            $url = \Illuminate\Support\Facades\Storage::disk('s3')->url($attachment->file_path);
+                                        @endphp
+                                        <a href="{{ $url }}" target="_blank"
+                                            class="flex items-center gap-3 p-2.5 rounded-xl border border-[#dedee5] bg-white hover:border-(--cw-color)/40 hover:bg-(--cw-faint) transition-colors group">
+                                            <div class="w-9 h-9 rounded-lg bg-[#f9f9fb] border border-[#dedee5] flex items-center justify-center shrink-0 text-[#686b82] group-hover:text-(--cw-color)">
+                                                @if($isImage)
+                                                    <x-icon name="photo" class="h-5 w-5" />
+                                                @else
+                                                    <x-icon name="document-text" class="h-5 w-5" />
+                                                @endif
+                                            </div>
+                                            <div class="min-w-0 flex-1">
+                                                <p class="text-xs font-semibold text-[#101114] truncate group-hover:text-(--cw-color)">{{ $attachment->file_name }}</p>
+                                                <p class="text-[11px] text-[#9497a9]">{{ number_format($attachment->file_size / 1024 / 1024, 2) }} MB</p>
+                                            </div>
+                                            <x-icon name="arrow-top-right-on-square" class="h-4 w-4 text-[#9497a9] shrink-0 group-hover:text-(--cw-color)" />
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
                     </div>
                     @livewire('classroom.stream-comment', ['announcementId' => $announcement->id], "stream-comment-{$announcement->id}")

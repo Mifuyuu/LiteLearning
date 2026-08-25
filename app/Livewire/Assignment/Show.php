@@ -316,6 +316,12 @@ class Show extends Component
             'editTopic.required' => __('messages.validation.topic'),
         ]);
 
+        if ($this->editType === 'attendance') {
+            $this->editTopic = 'เช็คชื่อ';
+            $this->editDescription = null;
+            $this->editDueDate = null;
+        }
+
         $topicName = trim($this->editTopic);
         $topicId = null;
         if ($topicName) {
@@ -359,7 +365,7 @@ class Show extends Component
         $this->isEditTab = false;
         $this->assignment->refresh();
 
-        session()->flash('message', __('messages.assignment.updated'));
+        $this->dispatch('notify', message: __('messages.assignment.updated'), type: 'success');
     }
 
     public function removeEditAttachment(int $attachmentId): void

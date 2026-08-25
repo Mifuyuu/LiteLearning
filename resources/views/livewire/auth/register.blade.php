@@ -123,7 +123,7 @@
 
                 {{-- Submit --}}
                 <button type="submit"
-                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-3.25 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--ll-blue)">
+                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-3.25 text-sm focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-(--ll-blue)">
                     <span wire:loading.remove wire:target="register">
                         <x-icon name="user-plus-alt" class="h-4 w-4 mr-2" />สมัครสมาชิก
                     </span>
@@ -157,7 +157,7 @@
 
                 {{-- Submit --}}
                 <button type="submit"
-                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-3.25 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--ll-blue)">
+                    class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-3.25 text-sm focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-(--ll-blue)">
                     <span wire:loading.remove wire:target="verifyOtp">
                         <x-icon name="check" class="h-4 w-4 mr-2" />ยืนยันและสมัครสมาชิก
                     </span>

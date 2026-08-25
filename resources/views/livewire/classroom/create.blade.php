@@ -22,7 +22,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'ชื่อห้องเรียน *' }}</label>
                         <input wire:model="name" type="text"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="{{ 'เช่น คณิตศาสตร์ 101' }}">
                         @error('name') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
@@ -31,7 +31,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'ห้อง' }}</label>
                             <input wire:model="section" type="text"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="{{ 'เช่น ห้อง 1/A' }}">
                         </div>
                         {{-- Theme Picker — right side of section --}}
@@ -106,7 +106,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'รายละเอียด' }}</label>
                         <textarea wire:model="description" rows="3"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="{{ 'เพิ่มคำอธิบาย...' }}"></textarea>
                     </div>
 

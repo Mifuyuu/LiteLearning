@@ -50,7 +50,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">รหัส OTP</label>
                     <input wire:model="otp" type="text" maxlength="6" inputmode="numeric" autocomplete="one-time-code" x-on:focus="$wire.clearFieldError('otp')"
-                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm text-center text-2xl tracking-[0.5em] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('otp') border-red-500 @enderror"
+                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm text-center text-2xl tracking-[0.5em] focus:ring-1 focus:ring-blue-500 focus:border-blue-500 @error('otp') border-red-500 @enderror"
                         placeholder="000000">
                     @error('otp') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                 </div>
@@ -85,7 +85,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">รหัสผ่านใหม่</label>
                     <input wire:model="password" type="password" autocomplete="new-password" x-on:focus="$wire.clearFieldError('password')"
-                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-500 @enderror"
+                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-500 @enderror"
                         placeholder="อย่างน้อย 8 ตัวอักษร">
                     @error('password') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                 </div>
@@ -93,7 +93,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">ยืนยันรหัสผ่านใหม่</label>
                     <input wire:model="password_confirmation" type="password" autocomplete="new-password" x-on:focus="$wire.clearFieldError('password_confirmation')"
-                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('password_confirmation') border-red-500 @enderror"
+                        class="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 @error('password_confirmation') border-red-500 @enderror"
                         placeholder="ยืนยันรหัสผ่าน">
                     @error('password_confirmation') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                 </div>

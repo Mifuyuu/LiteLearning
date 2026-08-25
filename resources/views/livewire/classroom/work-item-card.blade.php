@@ -13,9 +13,15 @@
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-2">
-                <span class="inline-flex h-10 w-10 items-center justify-center rounded-[10px]"
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0"
                     style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
-                    <x-icon name="document-text" class="h-5 w-5" />
+                    @if($assignment->type === 'attendance')
+                        <x-icon name="pencil-square" class="h-5 w-5" />
+                    @elseif($assignment->type === 'announcement')
+                        <x-icon name="megaphone" class="h-5 w-5" />
+                    @else
+                        <x-icon name="document-text" class="h-5 w-5" />
+                    @endif
                 </span>
                 <div class="min-w-0">
                     <h4 class="truncate text-lg font-semibold text-[#101114] transition-colors group-hover:text-(--cw-color)">{{ $assignment->title }}</h4>

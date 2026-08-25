@@ -20,54 +20,45 @@ class SendDueDateReminders extends Command
         $now = Carbon::now();
         $sent = 0;
 
-        // Window A: due in 6–24 hours (normal reminder)
-        // Window B: due in 1–6 hours (tight deadline — catches short deadlines too)
-        $windows = [
-            ['start' => 6, 'end' => 24, 'label' => 'early'],
-            ['start' => 1, 'end' => 6, 'label' => 'urgent'],
-        ];
+        $windowStart = $now;
+        $windowEnd = $now->copy()->addHours(24);
 
-        foreach ($windows as $win) {
-            $windowStart = $now->copy()->addHours($win['start']);
-            $windowEnd = $now->copy()->addHours($win['end']);
+        $dueAssignments = Assignment::query()
+            ->where('status', 'published')
+            ->whereNotNull('due_date')
+            ->where('due_date', '>=', $windowStart)
+            ->where('due_date', '<=', $windowEnd)
+            ->where('type', '!=', 'attendance')
+            ->whereHas('classworkItem.classroom.students')
+            ->with(['classworkItem.classroom.students'])
+            ->get();
 
-            $dueAssignments = Assignment::query()
-                ->where('status', 'published')
-                ->whereNotNull('due_date')
-                ->where('due_date', '>=', $windowStart)
-                ->where('due_date', '<=', $windowEnd)
-                ->where('type', '!=', 'attendance')
-                ->whereHas('classworkItem.classroom.students')
-                ->with(['classworkItem.classroom.students'])
-                ->get();
+        foreach ($dueAssignments as $assignment) {
+            $classroom = $assignment->classworkItem->classroom;
+            $students = $classroom->students ?? collect();
 
-            foreach ($dueAssignments as $assignment) {
-                $classroom = $assignment->classworkItem->classroom;
-                $students = $classroom->students ?? collect();
+            $submittedUserIds = Submission::where('assignment_id', $assignment->id)
+                ->whereIn('status', ['turned_in', 'graded'])
+                ->pluck('user_id')
+                ->all();
 
-                $submittedUserIds = Submission::where('assignment_id', $assignment->id)
-                    ->whereIn('status', ['turned_in', 'graded'])
-                    ->pluck('user_id')
-                    ->all();
-
-                foreach ($students as $student) {
-                    if (in_array($student->id, $submittedUserIds, true)) {
-                        continue;
-                    }
-
-                    // Dedup: skip if already notified for this assignment+user
-                    $cacheKey = "due_reminder:{$assignment->id}:{$student->id}";
-                    if (Cache::has($cacheKey)) {
-                        continue;
-                    }
-
-                    $remaining = $assignment->due_date->diffForHumans(now(), ['syntax' => Carbon::DIFF_ABSOLUTE]);
-                    $student->notify(new AssignmentDueSoon($assignment, $remaining));
-
-                    // Track sent — TTL จนเลยกำหนดส่ง + 1 ชม. (กันส่งซ้ำถ้า scheduler ติดขัด)
-                    Cache::put($cacheKey, true, $assignment->due_date->addHour());
-                    $sent++;
+            foreach ($students as $student) {
+                if (in_array($student->id, $submittedUserIds, true)) {
+                    continue;
                 }
+
+                // Dedup: skip if already notified for this assignment+user (ส่งครั้งเดียว)
+                $cacheKey = "due_reminder:{$assignment->id}:{$student->id}";
+                if (Cache::has($cacheKey)) {
+                    continue;
+                }
+
+                $remaining = $assignment->due_date->diffForHumans(syntax: Carbon::DIFF_ABSOLUTE);
+                $student->notify(new AssignmentDueSoon($assignment, $remaining));
+
+                // บันทึก cache จนเลยกำหนดส่ง + 2 ชม. เพื่อไม่ให้ส่งซ้ำอีก
+                Cache::put($cacheKey, true, $assignment->due_date->copy()->addHours(2));
+                $sent++;
             }
         }
 

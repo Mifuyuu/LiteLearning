@@ -176,7 +176,7 @@
                     <div class="activity-grid-cols grid grid-flow-col grid-rows-7 gap-1">
                         @foreach($activityDays as $day)
                             <span data-activity-cell tabindex="0"
-                                class="activity-cell tooltip tooltip-top aspect-square size-3 rounded-[3px] outline-none ring-(--ll-blue) transition hover:ring-2 focus:ring-2 {{ ! $day['is_in_year'] || $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
+                                class="activity-cell tooltip tooltip-top aspect-square size-3 rounded-[3px] outline-none ring-(--ll-blue) transition hover:ring-2 focus:ring-1 {{ ! $day['is_in_year'] || $day['is_future'] ? 'bg-[#f5f3f7]' : $activityLevelClasses[$day['level']] }}"
                                 data-tip="{{ $day['label'] }} · {{ $day['count'] }} กิจกรรม"
                                 aria-label="{{ $day['label'] }}: {{ $day['count'] }} กิจกรรม"></span>
                         @endforeach

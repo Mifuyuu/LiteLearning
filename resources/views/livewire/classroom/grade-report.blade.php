@@ -14,7 +14,7 @@
 @endsection
 
 @php
-    $inputClass = 'rounded-lg border border-[#dedee5] bg-white px-4 py-2.5 text-sm text-[#101114] outline-none transition focus:border-(--ll-blue) focus:ring-2 focus:ring-[rgba(37,99,235,0.12)]';
+    $inputClass = 'rounded-lg border border-[#dedee5] bg-white px-4 py-2.5 text-sm text-[#101114] outline-none transition focus:border-(--ll-blue) focus:ring-1 focus:ring-[rgba(37,99,235,0.12)]';
 @endphp
 
 <div class="max-w-4xl mx-auto space-y-4">

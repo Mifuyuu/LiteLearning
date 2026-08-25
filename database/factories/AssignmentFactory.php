@@ -19,7 +19,7 @@ class AssignmentFactory extends Factory
             'max_score' => fake()->randomElement([10, 20, 50, 100]),
             'due_date' => fake()->dateTimeBetween('now', '+2 weeks'),
             'status' => 'published',
-            'type' => 'question',
+            'type' => 'file',
             'allow_late_submission' => true,
         ];
     }

@@ -9,13 +9,13 @@
                     <x-icon name="magnifying-glass" class="h-4 w-4" />
                 </span>
                 <input type="text" wire:model.live.debounce.300ms="search"
-                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
                     placeholder="ค้นหาด้วยชื่อหรืออีเมล...">
             </div>
             <div class="flex items-center gap-3">
             <div class="relative" x-data="{ open: false }">
                     <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
-                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-1 focus:ring-blue-500">
                         <x-icon name="tag" class="h-4 w-4 text-gray-400" />
                         <span>
                             @if($roleFilter === '') ทุกบทบาท
@@ -61,7 +61,7 @@
 
             <div class="relative" x-data="{ open: false }">
                     <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
-                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-1 focus:ring-blue-500">
                         <x-icon name="circle-solid" class="h-1.5 w-1.5 {{ $statusFilter === 'active' ? 'text-green-500' : ($statusFilter === 'inactive' ? 'text-red-400' : 'text-gray-400') }}" />
                         <span>
                             @if($statusFilter === '') ทุกสถานะ
@@ -138,7 +138,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="relative" x-data="{ open: false }">
                                     <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
-                                        class="flex items-center gap-1.5 text-xs font-bold rounded py-1 px-2 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 {{ $user->id === auth()->id() ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' }}"
+                                        class="flex items-center gap-1.5 text-xs font-bold rounded py-1 px-2 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-1 focus:ring-blue-400 {{ $user->id === auth()->id() ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' }}"
                                         @if($user->id === auth()->id()) disabled @endif>
                                         <span>
                                             @if($user->role === 'admin') แอดมิน
@@ -278,24 +278,24 @@
                         <label class="block">
                             <span class="text-xs font-bold text-[#686b82]">ชื่อ</span>
                             <input type="text" x-model="name" maxlength="{{ \App\Models\User::NAME_MAX_LENGTH }}"
-                                class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                                class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                         </label>
                         <label class="block">
                             <span class="text-xs font-bold text-[#686b82]">Bio</span>
                             <textarea x-model="bio" rows="3" maxlength="500"
-                                class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"></textarea>
+                                class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"></textarea>
                         </label>
                         <template x-if="role === 'student'">
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="block">
                                     <span class="text-xs font-bold text-[#686b82]">เหรียญ</span>
                                     <input type="number" min="0" x-model.number="coins"
-                                        class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                                        class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                                 </label>
                                 <label class="block">
                                     <span class="text-xs font-bold text-[#686b82]">XP</span>
                                     <input type="number" min="0" x-model.number="xp"
-                                        class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                                        class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                                 </label>
                             </div>
                         </template>

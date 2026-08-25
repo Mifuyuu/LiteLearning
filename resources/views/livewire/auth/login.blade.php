@@ -54,7 +54,7 @@
 
             {{-- Submit --}}
             <button type="submit"
-                class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-3.25 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--ll-blue)">
+                class="btn-3d btn-3d--blue w-full flex justify-center items-center rounded-xl px-4 py-3.25 text-sm focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-(--ll-blue)">
                 <span wire:loading.remove wire:target="login"><x-icon name="arrow-left-on-rectangle" class="h-4 w-4 mr-2" />เข้าสู่ระบบ</span>
                 <span wire:loading wire:target="login"><x-icon name="spinner" class="h-4 w-4 mr-2 animate-spin" />
                     กำลังเข้าสู่ระบบ...</span>

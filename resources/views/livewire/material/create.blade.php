@@ -1,84 +1,149 @@
-<div class="max-w-4xl mx-auto" x-data="{ showDeleteFileModal: false, deleteFileIndex: null, deleteFileName: '' }">
-    <div>
+@section('page-title', 'สร้างสื่อการสอน' . ' - ' . $classroom->name)
+@section('breadcrumb')
+    <nav class="flex items-center space-x-1 text-sm">
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">{{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}</a>
+        <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
+        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)" title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 25, '..') }}</a>
+        <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
+        <span class="font-semibold text-[#101114]">{{ 'สร้างสื่อการสอน' }}</span>
+    </nav>
+@endsection
 
-        {{-- Breadcrumb --}}
-        <nav class="flex items-center text-sm text-gray-500 mb-6 flex-wrap gap-1">
-            <a href="{{ route('classrooms') }}" class="hover:text-blue-600 transition-colors">{{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}</a>
-            <x-icon name="chevron-right" class="h-3.5 w-3.5 mx-1" />
-            <a href="{{ route('classroom.show', $classroom) }}"
-                class="hover:text-blue-600 transition-colors"
-                title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 25, '..') }}</a>
-            <x-icon name="chevron-right" class="h-3.5 w-3.5 mx-1" />
-            <span class="text-gray-800 font-medium">{{ 'สร้างเอกสาร' }}</span>
-        </nav>
+@php
+    $themeColor = $classroom->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['color'];
+@endphp
 
-        {{-- Back link --}}
-        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate
-            class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-4 transition-colors">
-            <x-icon name="arrow-left" class="h-4 w-4 mr-2" /> {{ 'กลับไปที่ชั้นเรียน' }}
-        </a>
+<div class="max-w-4xl mx-auto" style="--cw-color: {{ $themeColor }}; --cw-subtle: {{ $themeColor }}26; --cw-faint: {{ $themeColor }}12;" x-data="{ showDeleteFileModal: false, deleteFileIndex: null, deleteFileName: '' }">
+    <form wire:submit.prevent="save" class="rounded-2xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)] flex flex-col">
+        {{-- Header --}}
+        <div class="p-6 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0"
+                    style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
+                    <x-icon name="book-open" class="h-5 w-5" />
+                </div>
+                <div class="min-w-0">
+                    <h1 class="text-xl font-bold text-[#101114] truncate">{{ 'สร้างสื่อการสอน' }}</h1>
+                    <p class="text-xs text-[#686b82] mt-0.5 truncate">{{ $classroom->name }}</p>
+                </div>
+            </div>
 
-        <form wire:submit.prevent="save" class="space-y-5">
+            <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
+                class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0 border border-[#dedee5] text-[#686b82] hover:text-[#101114] hover:bg-gray-100 transition-colors ml-auto"
+                title="{{ 'กลับไปที่งานในชั้นเรียน' }}">
+                <x-icon name="arrow-left" class="h-5 w-5" />
+            </a>
+        </div>
 
+        <div class="p-6 pt-0 space-y-6 flex-1">
             {{-- Title --}}
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'หัวข้อ' }}</label>
+            <div>
+                <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่องาน *' }}</label>
                 <input type="text" wire:model="title"
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    placeholder="{{ 'ชื่อเอกสาร' }}">
-                @error('title') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
+                    placeholder="{{ 'ชื่อเอกสารหรือสื่อการสอน' }}">
+                @error('title') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             {{-- Description (Tiptap editor) --}}
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'รายละเอียด' }}
-                    <span class="text-gray-400 font-normal">({{ 'ไม่บังคับ' }})</span>
+            <div>
+                <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'รายละเอียด' }}
+                    <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
                 </label>
-                <div wire:ignore x-data="tiptapEditor({ wireModel: 'description', placeholder: '{{ 'เพิ่มคำอธิบาย...' }}' })">
+                <div wire:ignore x-data="tiptapEditor({ wireModel: 'description', placeholder: '{{ 'เพิ่มคำอธิบายหรือเนื้อหา...' }}' })">
                     <x-tiptap-toolbar />
                     <div x-ref="editorEl"
                         class="min-h-37.5 border border-gray-200 rounded-b-lg p-3 focus:outline-none prose prose-sm max-w-none">
                     </div>
                 </div>
-                @error('description') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                @error('description') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             {{-- File Upload --}}
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                <label class="block text-sm font-medium text-gray-700 mb-3">
-                    <x-icon name="paperclip" class="h-4 w-4 mr-1 text-gray-400" /> {{ 'ไฟล์แนบ' }}
-                    <span class="text-gray-400 font-normal">({{ 'ไม่บังคับ' }})</span>
+            <div x-data="{ uploading: false, progress: 0, uploadError: '' }"
+                x-on:livewire-upload-start="uploading = true; progress = 0; uploadError = ''"
+                x-on:livewire-upload-finish="uploading = false"
+                x-on:livewire-upload-cancel="uploading = false"
+                x-on:livewire-upload-error="uploading = false; uploadError = 'อัปโหลดไฟล์ไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป (สูงสุด 25MB) กรุณาลองใหม่อีกครั้ง'"
+                x-on:livewire-upload-progress="progress = $event.detail.progress">
+                <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ไฟล์แนบ' }}
+                    <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
                 </label>
 
-                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors"
-                    x-data="{ dragging: false }"
-                    x-on:dragover.prevent="dragging = true"
-                    x-on:dragleave.prevent="dragging = false"
-                    x-on:drop.prevent="dragging = false; $refs.fileInput.files = $event.dataTransfer.files; $refs.fileInput.dispatchEvent(new Event('change'))"
-                    :class="{ 'border-blue-400 bg-blue-50': dragging }">
-                    <x-icon name="arrow-up-tray" class="h-7 w-7 text-gray-400 mb-2" />
-                    <p class="text-sm text-gray-500">{{ 'ลากและวางไฟล์หรือ' }}</p>
-                    <label class="cursor-pointer text-sm text-blue-600 hover:text-blue-500 font-medium">
-                        {{ 'เรียกดู' }}
-                        <input type="file" wire:model="file" class="hidden" x-ref="fileInput">
+                <div class="w-full">
+                    <label for="file-upload"
+                        class="relative flex flex-col items-center justify-center w-full h-32 border-2 border-[#dedee5] border-dashed rounded-xl cursor-pointer bg-[#f9f9fb] hover:bg-(--cw-faint) hover:border-(--cw-color) transition-colors {{ $file ? 'border-(--cw-color) bg-(--cw-faint)' : '' }}">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <x-icon :name="$file ? 'check-circle' : 'arrow-up-tray'" class="h-7 w-7 mb-2 text-[#9497a9] {{ $file ? 'text-(--cw-color)' : '' }}" />
+                            <p class="mb-1 text-sm text-[#686b82]">
+                                @if($file)
+                                    <span class="font-bold text-(--cw-color)">{{ 'เลือกไฟล์แล้ว' }}</span>
+                                @else
+                                    <span class="font-bold">{{ 'คลิกเพื่ออัปโหลด' }}</span> {{ 'หรือลากและวางไฟล์' }}
+                                @endif
+                            </p>
+                            @if(!$file)
+                                <p class="text-xs text-[#9497a9]">{{ 'PDF, DOCX, PPTX, JPG, PNG (สูงสุด 25MB)' }}</p>
+                            @endif
+                        </div>
+                        <input id="file-upload" type="file" wire:model.live="file" class="hidden" />
                     </label>
-                    <p class="text-xs text-gray-400 mt-1">{{ 'สูงสุด 25MB ต่อไฟล์' }}</p>
                 </div>
 
+                {{-- Loading State --}}
+                <div x-show="uploading" x-cloak class="mt-3 w-full bg-blue-50 rounded-lg p-3">
+                    <div class="flex items-center justify-between text-sm text-blue-600 mb-1.5">
+                        <span class="flex items-center gap-2">
+                            <x-icon name="spinner" class="h-4 w-4 animate-spin" />
+                            {{ 'กำลังอัปโหลดไฟล์...' }}
+                        </span>
+                        <span class="font-semibold" x-text="progress + '%'"></span>
+                    </div>
+                    <div class="h-2 bg-blue-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-blue-500 rounded-full transition-all duration-150" :style="`width: ${progress}%`"></div>
+                    </div>
+                </div>
+
+                @error('file')
+                    <p class="mt-2 text-xs text-red-500">{{ $message }}</p>
+                @enderror
+
+                <p x-show="uploadError" x-cloak x-text="uploadError" class="mt-2 text-xs text-red-500"></p>
+
+                {{-- Uploaded Files List --}}
                 @if(count($uploadedFiles) > 0)
                     <div class="mt-3 space-y-2">
-                        @foreach($uploadedFiles as $index => $uploaded)
-                            <div class="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
-                                <div class="flex items-center gap-2 min-w-0">
-                                    <x-icon name="document" class="h-4 w-4 text-gray-400" />
-                                    <span class="text-sm text-gray-700 truncate">{{ $uploaded['name'] }}</span>
-                                    <span class="text-xs text-gray-400">({{ number_format($uploaded['size'] / 1024, 0) }} KB)</span>
+                        <h4 class="text-xs font-semibold text-[#686b82] uppercase tracking-wider mb-2">
+                            {{ 'ไฟล์ที่จะแนบ' }} ({{ count($uploadedFiles) }})
+                        </h4>
+                        @foreach($uploadedFiles as $index => $uploadedFile)
+                            <div class="flex items-center justify-between p-3 bg-[#f9f9fb] border border-[#dedee5] rounded-xl group hover:border-(--cw-color)/30 transition-colors">
+                                <div class="flex items-center space-x-3 overflow-hidden">
+                                    <div class="shrink-0 w-9 h-9 rounded-lg bg-(--cw-faint) text-(--cw-color) flex items-center justify-center">
+                                        @php
+                                            $mime = $uploadedFile['mime'];
+                                            $icon = 'document';
+                                            if (str_contains($mime, 'image'))
+                                                $icon = 'photo';
+                                            elseif (str_contains($mime, 'pdf') || str_contains($mime, 'word') || str_contains($mime, 'video') || str_contains($mime, 'audio'))
+                                                $icon = 'document-text';
+                                        @endphp
+                                        <x-icon :name="$icon" class="h-5 w-5" />
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-[#101114] truncate">
+                                            {{ $uploadedFile['name'] }}
+                                        </p>
+                                        <p class="text-xs text-[#9497a9]">
+                                            {{ number_format($uploadedFile['size'] / 1024 / 1024, 2) }} MB
+                                        </p>
+                                    </div>
                                 </div>
                                 <button type="button"
-                                    @click="deleteFileIndex = {{ $index }}; deleteFileName = @js($uploaded['name']); showDeleteFileModal = true"
-                                    class="text-red-400 hover:text-red-600 transition-colors cursor-pointer"
-                                    title="ลบ">
-                                    <x-icon name="x-mark" class="h-4 w-4" />
+                                    @click="deleteFileIndex = {{ $index }}; deleteFileName = @js($uploadedFile['name']); showDeleteFileModal = true"
+                                    class="text-[#9497a9] hover:text-red-500 shrink-0 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                                    title="{{ 'ลบ' }}">
+                                    <x-icon name="trash" class="h-4 w-4" />
                                 </button>
                             </div>
                         @endforeach
@@ -87,35 +152,36 @@
             </div>
 
             {{-- Topic --}}
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <x-icon name="bookmark" class="h-4 w-4 mr-1 text-gray-400" /> {{ 'หัวข้อ' }}
-                    <span class="text-gray-400 font-normal">({{ 'ไม่บังคับ' }})</span>
+            <div>
+                <label class="block text-sm font-bold text-[#101114] mb-2">
+                    {{ 'หัวข้อ / หมวดหมู่' }}
+                    <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
                 </label>
                 <input type="text" wire:model="topic" list="topics-list"
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    placeholder="{{ 'เลือกหรือสร้างหัวข้อ' }}">
+                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
+                    placeholder="{{ 'เลือกหรือพิมพ์ชื่อหัวข้อใหม่' }}">
                 <datalist id="topics-list">
                     @foreach($this->topics as $t)
                         <option value="{{ $t->name }}">
                     @endforeach
                 </datalist>
             </div>
+        </div>
 
-            {{-- Actions --}}
-            <div class="flex items-center justify-end gap-3 pt-2">
-                <a href="{{ route('classroom.show', $classroom) }}" wire:navigate
-                    class="btn-3d btn-3d--white inline-flex items-center px-5 py-2.5 text-sm font-medium rounded-lg transition-colors">
-                    {{ 'ยกเลิก' }}
-                </a>
-                <button type="submit"
-                    class="btn-3d btn-3d--blue inline-flex items-center px-5 py-2.5 text-sm font-medium rounded-lg transition-colors">
-                    <x-icon name="check" class="h-4 w-4 mr-2" /> {{ 'เผยแพร่เอกสาร' }}
-                </button>
-            </div>
-        </form>
-    </div>
+        {{-- Actions Footer --}}
+        <div class="p-6 bg-[#f9f9fb] border-t border-[#dedee5] flex items-center justify-end gap-3">
+            <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
+                class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">
+                {{ 'ยกเลิก' }}
+            </a>
+            <button type="submit"
+                class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold rounded-lg text-white bg-(--cw-color) hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40">
+                <x-icon name="check" class="h-4 w-4 mr-2" /> {{ 'เผยแพร่สื่อการสอน' }}
+            </button>
+        </div>
+    </form>
 
+    {{-- Modal Delete File --}}
     <template x-teleport="body">
         <x-confirm-modal show="showDeleteFileModal" cancel="showDeleteFileModal = false" heading="ยืนยันการลบไฟล์">
             <x-slot:message>

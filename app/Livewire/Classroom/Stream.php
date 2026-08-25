@@ -45,7 +45,7 @@ class Stream extends Component
 
         $this->classroom->load(['teacher', 'students', 'coTeachers']);
 
-        $announcementsQuery = $this->classroom->announcements()->with(['classworkItem.user', 'comments.user']);
+        $announcementsQuery = $this->classroom->announcements()->with(['classworkItem.user', 'comments.user', 'attachments']);
         if (! $this->classroom->canManageClassroom($user)) {
             $announcementsQuery->where(function ($query): void {
                 $query->whereNull('classwork_items.published_at')

@@ -112,31 +112,31 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">XP ต่อเลเวล (ตัวคูณ)</label>
                     <input type="number" wire:model="xpPerLevelMultiplier" min="1"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                     @error('xpPerLevelMultiplier') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">เหรียญเมื่อเช็คชื่อ</label>
                     <input type="number" wire:model="attendanceCoinReward" min="0"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                     @error('attendanceCoinReward') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">XP เมื่อเช็คชื่อ</label>
                     <input type="number" wire:model="attendanceXpReward" min="0"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                     @error('attendanceXpReward') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">ขีดจำกัดรายงานปัญหา (ครั้ง/10 นาที)</label>
                     <input type="number" wire:model="bugReportRateLimit" min="1"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                     @error('bugReportRateLimit') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">ขีดจำกัดเข้าร่วมห้องเรียน (ครั้ง/นาที)</label>
                     <input type="number" wire:model="classroomJoinRateLimit" min="1"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                     @error('classroomJoinRateLimit') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>

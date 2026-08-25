@@ -105,7 +105,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">{{ 'หัวข้อ' }}</label>
                         <input type="text" wire:model="title"
-                            class="w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:border-transparent transition
+                            class="w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-1 focus:border-transparent transition
                             @error('title') border-red-300 focus:ring-red-400 @else border-gray-200 focus:ring-blue-400 @enderror"
                             placeholder="{{ 'เกิดปัญหาอะไรขึ้น?' }}" maxlength="100">
                         <div class="min-h-5 mt-1">@error('title') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror</div>
@@ -115,7 +115,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">{{ 'รายละเอียด' }}</label>
                         <textarea wire:model="message" rows="4"
-                            class="w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:border-transparent transition resize-none
+                            class="w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-1 focus:border-transparent transition resize-none
                             @error('message') border-red-300 focus:ring-red-400 @else border-gray-200 focus:ring-blue-400 @enderror"
                             placeholder="{{ 'อธิบายรายละเอียดของปัญหา...' }}" maxlength="2000"></textarea>
                         <div class="min-h-5 mt-1.5">@error('message') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror</div>

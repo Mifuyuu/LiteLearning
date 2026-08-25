@@ -179,7 +179,7 @@
                                 <input wire:model="name" type="text" maxlength="{{ \App\Models\User::NAME_MAX_LENGTH }}"
                                     x-on:input="remaining = {{ \App\Models\User::NAME_MAX_LENGTH }} - $event.target.value.length"
                                     class="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-300
-                                           focus:outline-none focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 transition-all"
+                                           focus:outline-none focus:ring-1 focus:ring-blue-400/40 focus:border-blue-400 transition-all"
                                     placeholder="{{ 'ชื่อที่แสดงของคุณ' }}">
                                 <button type="submit" disabled wire:target="name"
                                     wire:dirty.attr.remove="disabled"
@@ -208,7 +208,7 @@
                                     maxlength="{{ \App\Models\User::USERNAME_MAX_LENGTH }}"
                                     x-on:input="remaining = {{ \App\Models\User::USERNAME_MAX_LENGTH }} - $event.target.value.length"
                                     class="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-300 lowercase
-                                           focus:outline-none focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 transition-all"
+                                           focus:outline-none focus:ring-1 focus:ring-blue-400/40 focus:border-blue-400 transition-all"
                                     placeholder="{{ 'เช่น john_doe' }}">
                                 <button type="submit" disabled wire:target="username"
                                     wire:dirty.attr.remove="disabled"
@@ -317,7 +317,7 @@
                     </button>
                     <button @click="saveCrop()"
                         class="btn-3d btn-3d--blue rounded-xl px-6 py-2 text-sm font-bold">
-                        บันทึกการเปลี่ยนแปลง
+                        บันทึกการแก้ไข
                     </button>
                 </div>
             </div>

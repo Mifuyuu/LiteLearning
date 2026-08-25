@@ -131,6 +131,8 @@ class StreamComment extends Component
     public function render()
     {
         $commentable = $this->resolveCommentable();
+        $classroom = $commentable->classroom;
+        $themeColor = $classroom?->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($classroom?->id ?? 0)['color'];
 
         $comments = Comment::where('commentable_type', $commentable::class)
             ->where('commentable_id', $commentable->getKey())
@@ -140,7 +142,8 @@ class StreamComment extends Component
 
         return view('livewire.classroom.stream-comment', [
             'comments' => $comments,
-            'canModerate' => $commentable->classroom?->canManageClassroom(Auth::user()) ?? false,
+            'canModerate' => $classroom?->canManageClassroom(Auth::user()) ?? false,
+            'themeColor' => $themeColor,
         ]);
     }
 }

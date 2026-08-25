@@ -643,4 +643,66 @@ class RegressionFixesTest extends TestCase
         $this->assertDatabaseMissing('assignments', ['id' => $assignment->id]);
         $this->assertDatabaseMissing('classwork_items', ['id' => $classworkItemId]);
     }
+
+    public function test_student_can_checkin_late_when_session_closed_and_late_allowed(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
+
+        $assignment = Assignment::factory()->attendance()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'status' => 'published',
+            'allow_late_submission' => true,
+        ]);
+
+        AttendanceSession::create([
+            'classwork_item_id' => $assignment->classwork_item_id,
+            'is_active' => false,
+        ]);
+
+        Livewire::actingAs($student)
+            ->test(AssignmentAttendance::class, ['classroom' => $classroom, 'assignment' => $assignment])
+            ->call('checkinLate')
+            ->assertSet('alreadyCheckedIn', true);
+
+        $submission = $assignment->submissionFor($student);
+        $this->assertNotNull($submission);
+        $this->assertEquals('turned_in', $submission->status);
+        $this->assertStringContainsString('เช็คชื่อสาย', $submission->content);
+    }
+
+    public function test_student_cannot_checkin_late_when_late_disabled(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
+
+        $assignment = Assignment::factory()->attendance()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'status' => 'published',
+            'allow_late_submission' => false,
+        ]);
+
+        AttendanceSession::create([
+            'classwork_item_id' => $assignment->classwork_item_id,
+            'is_active' => false,
+        ]);
+
+        Livewire::actingAs($student)
+            ->test(AssignmentAttendance::class, ['classroom' => $classroom, 'assignment' => $assignment])
+            ->call('checkinLate')
+            ->assertSet('alreadyCheckedIn', false);
+
+        $submission = $assignment->submissionFor($student);
+        $this->assertTrue($submission === null || $submission->status === 'assigned');
+    }
 }

@@ -27,7 +27,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'รหัสห้องเรียน' }}</label>
                             <input wire:model.live="code" type="text" maxlength="6"
-                                class="w-full border rounded-lg px-3 py-3 text-center text-2xl font-mono tracking-wider uppercase focus:ring-2 focus:ring-blue-500 focus:border-blue-500 {{ $errors->has('code') ? 'border-red-500' : 'border-gray-300' }}"
+                                class="w-full border rounded-lg px-3 py-3 text-center text-2xl font-mono tracking-wider uppercase focus:ring-1 focus:ring-blue-500 focus:border-blue-500 {{ $errors->has('code') ? 'border-red-500' : 'border-gray-300' }}"
                                 placeholder="ABC123">
                             <div class="h-5 mt-1">
                                 @error('code') <p class="text-sm text-red-500">{{ $message }}</p> @enderror

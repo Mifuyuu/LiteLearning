@@ -78,7 +78,7 @@
                             @endif
                             <div class="flex flex-col sm:flex-row gap-2">
                                 <textarea wire:model="replyDrafts.{{ $report->id }}" rows="2" placeholder="พิมพ์ข้อความตอบกลับ..."
-                                    class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                                    class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500"></textarea>
                                 <button type="button" wire:click="submitReply({{ $report->id }})"
                                     class="shrink-0 self-start px-4 py-2 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
                                     ส่งการตอบกลับ

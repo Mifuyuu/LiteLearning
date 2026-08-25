@@ -56,7 +56,7 @@
                                     @if($achievement->coin_reward > 0)
                                         <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2.5 py-1 text-amber-600">
                                             +{{ $achievement->coin_reward }}
-                                            <x-icon name="star-solid" class="h-3.5 w-3.5" />
+                                            <img src="{{ asset('images/Coin.svg') }}" class="h-3.5 w-3.5 shrink-0" alt="">
                                         </span>
                                     @endif
                                     @if($achievement->xp_reward > 0)

@@ -79,7 +79,7 @@ class Show extends Component
         $this->isEditTab = false;
         $this->material->refresh();
 
-        session()->flash('message', __('messages.material.updated'));
+        $this->dispatch('notify', message: __('messages.material.updated'), type: 'success');
     }
 
     public function deleteMaterial(): void

@@ -41,13 +41,13 @@
                 <label class="block">
                     <span class="mb-2 block text-sm font-bold text-[#101114]">{{ 'ชื่อ' }}</span>
                     <input wire:model="name" type="text"
-                        class="w-full rounded-[10px] border border-[#dedee5] bg-white px-4 py-3 text-sm text-[#101114] outline-none transition focus:border-(--ll-blue) focus:ring-2 focus:ring-(--ll-blue-subtle)">
+                        class="w-full rounded-[10px] border border-[#dedee5] bg-white px-4 py-3 text-sm text-[#101114] outline-none transition focus:border-(--ll-blue) focus:ring-1 focus:ring-(--ll-blue-subtle)">
                     @error('name') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
                 </label>
                 <label class="block">
                     <span class="mb-2 block text-sm font-bold text-[#101114]">{{ 'ห้อง' }}</span>
                     <input wire:model="section" type="text"
-                        class="w-full rounded-[10px] border border-[#dedee5] bg-white px-4 py-3 text-sm text-[#101114] outline-none transition focus:border-(--ll-blue) focus:ring-2 focus:ring-(--ll-blue-subtle)">
+                        class="w-full rounded-[10px] border border-[#dedee5] bg-white px-4 py-3 text-sm text-[#101114] outline-none transition focus:border-(--ll-blue) focus:ring-1 focus:ring-(--ll-blue-subtle)">
                     @error('section') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
                 </label>
             </div>
@@ -55,7 +55,7 @@
             <label class="block">
                 <span class="mb-2 block text-sm font-bold text-[#101114]">{{ 'รายละเอียด' }}</span>
                 <textarea wire:model="description" rows="4"
-                    class="w-full rounded-[10px] border border-[#dedee5] bg-white px-4 py-3 text-sm text-[#101114] outline-none transition focus:border-(--ll-blue) focus:ring-2 focus:ring-(--ll-blue-subtle)"></textarea>
+                    class="w-full rounded-[10px] border border-[#dedee5] bg-white px-4 py-3 text-sm text-[#101114] outline-none transition focus:border-(--ll-blue) focus:ring-1 focus:ring-(--ll-blue-subtle)"></textarea>
                 @error('description') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
             </label>
 

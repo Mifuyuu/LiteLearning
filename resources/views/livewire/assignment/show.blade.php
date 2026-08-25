@@ -16,28 +16,30 @@
     $themeColor = $classroom->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['color'];
 @endphp
 
-<div class="max-w-4xl mx-auto" x-data="{ copiedToast: false, showDeleteModal: false, showDeleteFileModal: false, deleteFileId: null, deleteFileName: '', deleteFileType: 'submission' }">
-    <!-- Back (previous page, falls back to classroom home on direct load) -->
-    <a href="{{ route('classroom.show', $classroom) }}" onclick="if (history.length > 1) { history.back(); return false; }"
-        class="inline-flex items-center text-base font-medium text-gray-600 hover:text-gray-800 mb-6">
-        <x-icon name="arrow-left" class="h-5 w-5 mr-2" /> กลับ
-    </a>
-
+<div class="max-w-4xl mx-auto" style="--cw-color: {{ $themeColor }}; --cw-subtle: {{ $themeColor }}26; --cw-faint: {{ $themeColor }}12;" x-data="{ copiedToast: false, showDeleteModal: false, showDeleteFileModal: false, deleteFileId: null, deleteFileName: '', deleteFileType: 'submission' }">
     @if(!$isEditTab)
-        <div class="rounded-2xl border-3 border-[#dedee5] bg-white relative z-10">
+        <div class="rounded-2xl border-3 border-[#dedee5] bg-white relative z-10 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)] flex flex-col">
             <!-- Header -->
-            <div class="p-4 sm:p-6 border-b border-gray-200">
+            <div class="p-4 sm:p-6">
                 <div class="flex flex-row items-start justify-between gap-3">
                     <div class="flex items-start min-w-0">
                         <div class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0"
                             style="background-color: {{ $themeColor }}20; color: {{ $themeColor }}">
-                            <x-icon name="document-text" class="h-5 w-5" />
+                            @if($assignment->type === 'attendance')
+                                <x-icon name="pencil-square" class="h-5 w-5" />
+                            @elseif($assignment->type === 'announcement')
+                                <x-icon name="megaphone" class="h-5 w-5" />
+                            @elseif($assignment->type === 'material')
+                                <x-icon name="book-open" class="h-5 w-5" />
+                            @else
+                                <x-icon name="document-text" class="h-5 w-5" />
+                            @endif
                         </div>
                         <div class="ml-3 sm:ml-4 min-w-0">
                             <div class="flex items-center gap-2 min-w-0">
                                 <h1 class="truncate text-lg sm:text-xl font-bold text-gray-900">
                                     {{ $assignment->title }}</h1>
-                                <span class="px-2.5 py-0.5 rounded-full text-xs font-medium shrink-0"
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold shrink-0"
                                     style="background-color: {{ $themeColor }}20; color: {{ $themeColor }}">
                                     {{ $assignment->typeLabel() }}
                                 </span>
@@ -49,39 +51,48 @@
                             </div>
                         </div>
                     </div>
-                    @if($classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin())
-                        <div class="relative ml-auto shrink-0" x-data="{ open: false }">
-                            <button @click.stop="open = !open" type="button"
-                                class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer">
-                                <x-icon name="ellipsis-vertical" class="h-4 w-4" />
-                            </button>
-                            <div x-show="open" x-cloak @click.outside="open = false"
-                                x-transition:enter="transition ease-out duration-100"
-                                x-transition:enter-start="opacity-0 scale-95"
-                                x-transition:enter-end="opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-75"
-                                x-transition:leave-start="opacity-100 scale-100"
-                                x-transition:leave-end="opacity-0 scale-95"
-                                class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                                <button
-                                    @click.stop="navigator.clipboard.writeText('{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}'); open = false; copiedToast = true; setTimeout(() => copiedToast = false, 2000)"
-                                    class="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                    <x-icon name="link" class="h-5 w-5 text-gray-400" />
-                                    <span class="ml-2">คัดลอกลิงก์</span>
+                    <div class="flex items-center gap-2 ml-auto shrink-0">
+                        @if($classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin())
+                            <div class="relative" x-data="{ open: false }">
+                                <button @click.stop="open = !open" type="button"
+                                    class="w-10 h-10 flex items-center justify-center rounded-[10px] text-[#686b82] hover:text-[#101114] hover:bg-gray-100 border border-[#dedee5] transition-colors cursor-pointer"
+                                    title="ตัวเลือก">
+                                    <x-icon name="ellipsis-vertical" class="h-5 w-5" />
                                 </button>
-                                <button wire:click="openEditTab" @click.stop="open = false"
-                                    class="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                    <x-icon name="pencil" class="h-5 w-5 text-gray-400" />
-                                    <span class="ml-2">แก้ไข</span>
-                                </button>
-                                <button @click="showDeleteModal = true; open = false"
-                                    class="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                    <x-icon name="trash" class="h-5 w-5 text-red-400" />
-                                    <span class="ml-2">ลบ</span>
-                                </button>
+                                <div x-show="open" x-cloak @click.outside="open = false"
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                                    <button
+                                        @click.stop="navigator.clipboard.writeText('{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}'); open = false; copiedToast = true; setTimeout(() => copiedToast = false, 2000)"
+                                        class="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                        <x-icon name="link" class="h-5 w-5 text-gray-400" />
+                                        <span class="ml-2">คัดลอกลิงก์</span>
+                                    </button>
+                                    <button wire:click="openEditTab" @click.stop="open = false"
+                                        class="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                        <x-icon name="pencil" class="h-5 w-5 text-gray-400" />
+                                        <span class="ml-2">แก้ไข</span>
+                                    </button>
+                                    <button @click="showDeleteModal = true; open = false"
+                                        class="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                        <x-icon name="trash" class="h-5 w-5 text-red-400" />
+                                        <span class="ml-2">ลบ</span>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    @endif
+                        @endif
+
+                        <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
+                            class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0 border border-[#dedee5] text-[#686b82] hover:text-[#101114] hover:bg-gray-100 transition-colors"
+                            title="{{ 'กลับไปที่งานในชั้นเรียน' }}">
+                            <x-icon name="arrow-left" class="h-5 w-5" />
+                        </a>
+                    </div>
                 </div>
 
                 <div class="mt-4 flex items-center gap-4 text-sm flex-wrap">
@@ -90,16 +101,6 @@
                         กำหนดส่ง:
                         {{ $assignment->due_date ? $assignment->due_date->translatedFormat('j M Y, H:i') : 'ไม่มีกำหนด' }}
                     </span>
-                    @if($assignment->type !== 'material' && $assignment->type !== 'attendance')
-                        <span class="inline-flex items-center text-gray-500">
-                            <x-icon name="bolt" class="text-blue-600 mr-1 h-4 w-4 shrink-0" />
-                            {{ $assignment->exp_reward }} EXP
-                        </span>
-                        <span class="inline-flex items-center text-gray-500">
-                            <x-icon name="star-solid" class="text-amber-500 mr-1 h-4 w-4 shrink-0" />
-                            {{ $assignment->coin_reward }} เหรียญ
-                        </span>
-                    @endif
 
                     {{-- Late submission indicators --}}
                     @if($assignment->isOverdue())
@@ -120,13 +121,14 @@
                 </div>
             </div>
 
-            <!-- Description -->
-            <div class="p-6">
-                @if($assignment->description)
-                    <div class="prose prose-sm max-w-none text-gray-700 [&_p]:my-0 [&_p]:leading-relaxed">
-                        {!! $assignment->description !!}
-                    </div>
-                @endif
+            <!-- Description & Attachments -->
+            @if($assignment->type !== 'attendance' && ($assignment->description || $assignment->attachments->count()))
+                <div class="p-6">
+                    @if($assignment->description)
+                        <div class="prose prose-sm max-w-none text-gray-700 [&_p]:my-0 [&_p]:leading-relaxed">
+                            {!! $assignment->description !!}
+                        </div>
+                    @endif
 
                 <!-- Attachments -->
                 @if($assignment->attachments->count())
@@ -204,6 +206,47 @@
                     </div>
                 @endif
             </div>
+            @endif
+
+            {{-- Assignment info / stats (shown for both students and teachers) --}}
+            @if($assignment->requiresSubmission() && (!$assignment->isAttendance() || auth()->user()->isStudent()))
+                <div class="border-t border-[#dedee5] p-6">
+                    <h3 class="text-sm font-bold text-[#101114] mb-3">{{ 'ข้อมูลงาน' }}</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
+                            <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
+                                <x-icon name="academic-cap" class="h-4 w-4 text-[#9497a9]" />{{ 'คะแนนเต็ม' }}
+                            </span>
+                            <p class="text-lg font-bold text-[#101114]">{{ $assignment->max_score }}</p>
+                        </div>
+                        <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
+                            <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
+                                <x-icon name="bolt" class="h-4 w-4 text-blue-600" />{{ 'รางวัล EXP' }}
+                            </span>
+                            <p class="text-lg font-bold text-blue-700">{{ $assignment->exp_reward }}</p>
+                        </div>
+                        <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
+                            <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
+                                <x-icon name="star-solid" class="h-4 w-4 text-amber-500" />{{ 'รางวัลเหรียญ' }}
+                            </span>
+                            <p class="text-lg font-bold text-amber-600">{{ $assignment->coin_reward }}</p>
+                        </div>
+                        <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
+                            <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
+                                <x-icon name="clock" class="h-4 w-4 text-[#9497a9]" />{{ 'ส่งงานล่าช้า' }}
+                            </span>
+                            <p class="text-lg font-bold {{ $assignment->allow_late_submission ? 'text-green-600' : 'text-red-500' }}">
+                                {{ $assignment->allow_late_submission ? 'อนุญาต' : 'ไม่อนุญาต' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @elseif($assignment->type === 'material')
+                <div class="border-t border-[#dedee5] p-6 text-center">
+                    <x-icon name="book-open" class="h-7 w-7 text-gray-300 mb-2 mx-auto" />
+                    <p class="text-sm text-gray-500">{{ 'นี่คือเอกสาร - ไม่ต้องส่งงาน' }}</p>
+                </div>
+            @endif
 
             {{-- Attendance session (embedded for attendance type) --}}
             @if($assignment->isAttendance())
@@ -291,7 +334,7 @@
                                         isDragging: false,
                                         uploadProgress: {},
                                         get uploading() {
-                                            return Object.keys(this.uploadProgress).length > 0;
+                                             return Object.keys(this.uploadProgress).length > 0;
                                         },
                                         uploadFiles(files) {
                                             if (!files.length) return;
@@ -371,7 +414,7 @@
                             @else
                                 {{-- Text submission for 'question' type --}}
                                 <textarea wire:model="submissionContent" rows="6"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-3"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 mb-3"
                                     placeholder="พิมพ์คำตอบของคุณที่นี่..." @if(!$assignment->canAcceptSubmission())
                                     disabled @endif></textarea>
                             @endif
@@ -415,50 +458,8 @@
                 </div>
             @endif
 
-            {{-- Assignment info: material notice, or quick stats for the teacher --}}
-            @if($assignment->type === 'material' || ($classroom->canManageClassroom(auth()->user()) && $assignment->requiresSubmission()))
-                <div class="border-t border-[#dedee5] p-6">
-                    @if($assignment->requiresSubmission())
-                        <h3 class="text-sm font-semibold text-gray-700 mb-3">ข้อมูลงาน</h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
-                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                                    <x-icon name="chart-bar" class="h-3.5 w-3.5" />คะแนนเต็ม
-                                </span>
-                                <p class="text-lg font-bold text-gray-900">{{ $assignment->max_score }}</p>
-                            </div>
-                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
-                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                                    <x-icon name="bolt" class="h-3.5 w-3.5 text-blue-600" />รางวัล EXP
-                                </span>
-                                <p class="text-lg font-bold text-blue-700">{{ $assignment->exp_reward }}</p>
-                            </div>
-                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
-                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                                    <x-icon name="star-solid" class="h-3.5 w-3.5 text-amber-500" />รางวัลเหรียญ
-                                </span>
-                                <p class="text-lg font-bold text-amber-700">{{ $assignment->coin_reward }}</p>
-                            </div>
-                            <div class="rounded-lg bg-gray-50 px-3 py-2.5">
-                                <span class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                                    <x-icon name="clock" class="h-3.5 w-3.5" />ส่งงานล่าช้า
-                                </span>
-                                <p class="text-lg font-bold {{ $assignment->allow_late_submission ? 'text-green-700' : 'text-gray-400' }}">
-                                    {{ $assignment->allow_late_submission ? 'อนุญาต' : 'ไม่อนุญาต' }}
-                                </p>
-                            </div>
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <x-icon name="book-open" class="h-7 w-7 text-gray-300 mb-2" />
-                            <p class="text-sm text-gray-500">นี่คือเอกสาร - ไม่ต้องส่งงาน</p>
-                        </div>
-                    @endif
-                </div>
-            @endif
-
             {{-- Teacher: Submissions Table --}}
-            @if($submissions !== null && ($classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin()))
+            @if(!$assignment->isAttendance() && $submissions !== null && ($classroom->canManageClassroom(auth()->user()) || auth()->user()->isAdmin()))
                 <div class="border-t border-[#dedee5]">
                     <div class="p-4 sm:p-6 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900">งานนักเรียน</h3>
@@ -512,50 +513,77 @@
         {{-- ────────────────────────────────────────────── --}}
         {{-- Edit Tab --}}
         {{-- ────────────────────────────────────────────── --}}
-        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div class="p-5 border-b border-gray-200 flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-gray-900">แก้ไขงาน</h3>
+        <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)] flex flex-col">
+            <div class="p-6 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0"
+                        style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
+                        <x-icon name="pencil-square" class="h-5 w-5" />
+                    </div>
+                    <h2 class="text-lg font-bold text-[#101114] truncate">{{ 'แก้ไขงาน' }}</h2>
+                </div>
                 <button wire:click="cancelEditTab" type="button"
-                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
-                    <x-icon name="arrow-left" class="h-4 w-4 mr-1.5" />กลับ
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0 border border-[#dedee5] text-[#686b82] hover:text-[#101114] hover:bg-gray-100 transition-colors ml-auto"
+                    title="{{ 'ยกเลิก' }}">
+                    <x-icon name="arrow-left" class="h-5 w-5" />
                 </button>
             </div>
 
-            <form wire:submit.prevent="saveAssignment" class="p-5 space-y-4">
+            <form wire:submit.prevent="saveAssignment" class="flex-1 flex flex-col justify-between"
+                x-data="{
+                    initialTitle: @js($assignment->title ?? ''),
+                    initialDescription: @js($assignment->description ?? ''),
+                    initialMaxScore: {{ (int) ($assignment->max_score ?? 100) }},
+                    initialExpReward: {{ (int) ($assignment->exp_reward ?? 0) }},
+                    initialCoinReward: {{ (int) ($assignment->coin_reward ?? 0) }},
+                    initialDueDate: @js($assignment->due_date ? $assignment->due_date->format('Y-m-d\TH:i') : ''),
+                    initialStatus: @js($assignment->status ?? 'published'),
+                    initialTopic: @js($assignment->topic?->name ?? ''),
+                    initialAllowLate: {{ $assignment->allow_late_submission ? 'true' : 'false' }},
+                    get isDirty() {
+                        return ($wire.editTitle ?? '') !== this.initialTitle ||
+                               ($wire.editDescription ?? '') !== this.initialDescription ||
+                               Number($wire.editMaxScore ?? 0) !== this.initialMaxScore ||
+                               Number($wire.editExpReward ?? 0) !== this.initialExpReward ||
+                               Number($wire.editCoinReward ?? 0) !== this.initialCoinReward ||
+                               ($wire.editDueDate ?? '') !== this.initialDueDate ||
+                               ($wire.editStatus ?? '') !== this.initialStatus ||
+                               ($wire.editTopic ?? '') !== this.initialTopic ||
+                               Boolean($wire.editAllowLateSubmission) !== this.initialAllowLate ||
+                               Boolean($wire.editFile);
+                    }
+                }">
+                <div class="p-6 pt-0 space-y-6 flex-1">
                 <!-- Type Badge (read-only) -->
                 @php
                     $typeInfo = [
-                            'announcement' => ['icon' => 'megaphone', 'label' => 'ประกาศ'],
-                            'question' => ['icon' => 'pencil-square', 'label' => 'คำถาม'],
-                            'file' => ['icon' => 'arrow-up-tray', 'label' => 'งานส่งไฟล์'],
-                            'attendance' => ['icon' => 'clipboard-document-check', 'label' => 'งานเช็คชื่อ'],
-                            'material' => ['icon' => 'book-open', 'label' => 'สื่อการสอน'],
-                            'project' => ['icon' => 'squares-2x2', 'label' => 'โปรเจกต์'],
+                        'announcement' => ['icon' => 'megaphone', 'label' => 'ประกาศ'],
+                        'file' => ['icon' => 'document-text', 'label' => 'งานส่งไฟล์'],
+                        'attendance' => ['icon' => 'pencil-square', 'label' => 'งานเช็คชื่อ'],
+                        'material' => ['icon' => 'book-open', 'label' => 'สื่อการสอน'],
                     ];
                     $current = $typeInfo[$editType] ?? ['icon' => 'pencil-square', 'label' => ucfirst($editType)];
                 @endphp
-                <div class="flex items-center gap-3 bg-white px-5 py-3.5 rounded-xl border border-gray-200">
-                    <div class="w-9 h-9 rounded-full flex items-center justify-center"
-                        style="background-color: {{ $themeColor }}20; color: {{ $themeColor }}">
-                        <x-icon :name="$current['icon']" class="h-4 w-4" />
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-400 leading-none mb-0.5">ประเภท</p>
-                        <p class="text-sm font-semibold" style="color: {{ $themeColor }}">
-                            {{ $current['label'] }}</p>
-                    </div>
-                </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ *</label>
-                    <input wire:model="editTitle" type="text" maxlength="50"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <div class="mt-1 flex justify-between items-center">
-                        @error('editTitle') <p class="text-sm text-red-500">{{ $message }}</p> @else <span></span> @enderror
-                        <span class="text-xs" :class="$wire.editTitle.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
-                            <span x-text="$wire.editTitle.length">0</span>/50
-                        </span>
-                </div>
+                @if($editType === 'attendance')
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ชื่องาน</label>
+                        <input wire:model.live.debounce.100ms="editTitle" type="text" readonly disabled
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none">
+                    </div>
+                @else
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ชื่องาน *</label>
+                        <input wire:model.live.debounce.100ms="editTitle" type="text" maxlength="50"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                        <div class="mt-1 flex justify-between items-center">
+                            @error('editTitle') <p class="text-sm text-red-500">{{ $message }}</p> @else <span></span> @enderror
+                            <span class="text-xs" :class="$wire.editTitle.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
+                                <span x-text="$wire.editTitle.length">0</span>/50
+                            </span>
+                        </div>
+                    </div>
+                @endif
 
                 @if($editType !== 'attendance')
                     <div>
@@ -576,49 +604,49 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">
                                 {{ $editType === 'attendance' ? 'คะแนนเช็คชื่อ' : 'คะแนน' }}
                             </label>
-                            <input wire:model="editMaxScore" type="number" min="0" max="100"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <input wire:model.live.debounce.100ms="editMaxScore" type="number" min="0" max="100"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
                             @error('editMaxScore') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
                                 <x-icon name="bolt" class="text-blue-600 mr-1.5 h-4 w-4 shrink-0" />รางวัล EXP
                             </label>
-                            <input wire:model="editExpReward" type="number" min="0" max="9999"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <input wire:model.live.debounce.100ms="editExpReward" type="number" min="0" max="9999"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
                             @error('editExpReward') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
                                 <x-icon name="star-solid" class="text-amber-500 mr-1.5 h-4 w-4 shrink-0" />รางวัลเหรียญ
                             </label>
-                            <input wire:model="editCoinReward" type="number" min="0" max="9999"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                            <input wire:model.live.debounce.100ms="editCoinReward" type="number" min="0" max="9999"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-amber-500 focus:border-amber-500">
                             @error('editCoinReward') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                         </div>
 
                         @if($editType !== 'attendance')
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">วันกำหนดส่ง</label>
-                                <input wire:model="editDueDate" type="datetime-local"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                <input wire:model.live="editDueDate" type="datetime-local"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white">
                                 @error('editDueDate') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                             </div>
                         @endif
                     </div>
                 @endif
 
-                @if(!in_array($editType, ['announcement', 'material', 'topic', 'attendance']))
+                @if(!in_array($editType, ['announcement', 'material', 'topic']))
                     <!-- Allow late submission toggle -->
                     <div class="flex items-center gap-3">
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input wire:model="editAllowLateSubmission" type="checkbox" class="sr-only peer">
+                            <input wire:model.live="editAllowLateSubmission" type="checkbox" class="sr-only peer">
                             <div
-                                class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600">
+                                class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600">
                             </div>
                         </label>
                         <span class="text-sm text-gray-700">
-                            อนุญาตให้ส่งงานล่าช้า
+                            {{ $editType === 'attendance' ? 'อนุญาตให้เช็คชื่อสาย (หลังจากครูปิดเซสชัน)' : 'อนุญาตให้ส่งงานล่าช้า' }}
                         </span>
                     </div>
                 @endif
@@ -676,31 +704,40 @@
                     </div>
                 @endif
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ</label>
-                    <input wire:model="editTopic" type="text"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    @error('editTopic') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-                </div>
+                @if($editType === 'attendance')
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ</label>
+                        <input type="text" readonly disabled value="เช็คชื่อ"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none">
+                    </div>
+                @else
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ</label>
+                        <input wire:model.live.debounce.100ms="editTopic" type="text"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                        @error('editTopic') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                    </div>
+                @endif
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">สถานะ</label>
-                    <select wire:model="editStatus"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <select wire:model.live="editStatus"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
                         <option value="draft">ฉบับร่าง</option>
                         <option value="published">เผยแพร่แล้ว</option>
                     </select>
                     @error('editStatus') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                 </div>
 
-                <div class="pt-2 flex justify-end gap-2">
+                <div class="flex items-center justify-end gap-3 mt-auto">
                     <button wire:click="cancelEditTab" type="button"
-                        class="px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">ยกเลิก</button>
-                    <button type="submit"
-                        class="btn-3d btn-3d--blue px-5 py-2.5 text-sm font-medium rounded-lg transition-colors">
-                        <span wire:loading.remove wire:target="saveAssignment">อัปเดตงาน</span>
-                        <span wire:loading wire:target="saveAssignment"><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" />
-                            กำลังบันทึก...</span>
+                        class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">{{ 'ยกเลิก' }}</button>
+                    <button type="submit" :disabled="!isDirty"
+                        class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold rounded-lg text-white transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+                        :class="isDirty ? 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]' : 'bg-gray-400'">
+                        <x-icon name="check" class="h-4 w-4 mr-1.5" />
+                        <span wire:loading.remove wire:target="saveAssignment">{{ 'บันทึกการแก้ไข' }}</span>
+                        <span wire:loading wire:target="saveAssignment"><x-icon name="spinner" class="h-4 w-4 mr-1.5 animate-spin" />{{ 'กำลังบันทึก...' }}</span>
                     </button>
                 </div>
             </form>

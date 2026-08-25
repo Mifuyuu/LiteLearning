@@ -9,14 +9,14 @@
                     <x-icon name="magnifying-glass" class="h-4 w-4" />
                 </span>
                 <input type="text" wire:model.live.debounce.300ms="search"
-                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
                     placeholder="ค้นหาด้วยชื่อหรือรหัส...">
             </div>
 
             <div class="w-full sm:w-auto">
                 <div class="relative" x-data="{ open: false }">
                     <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
-                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-48">
+                        class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-1 focus:ring-blue-500 w-full sm:w-48">
                         <x-icon name="funnel" class="h-4 w-4 text-gray-400" />
                         <span>
                             @if($statusFilter === '') ห้องเรียนทั้งหมด

@@ -184,6 +184,62 @@ class Attendance extends Component
         session()->flash('attendance_success', __('messages.attendance.success'));
     }
 
+    public function checkinLate(): void
+    {
+        $user = auth()->user();
+
+        // Must be a student
+        abort_unless($user->isStudent(), 403);
+
+        // Session must NOT be active (if active, they should use OTP)
+        if ($this->session?->is_active) {
+            session()->flash('attendance_error', 'ขณะนี้กำลังเปิดเซสชันเช็คชื่อ กรุณากรอกรหัส OTP บนหน้าจอ');
+
+            return;
+        }
+
+        // Must allow late check-in
+        if (! $this->assignment->allow_late_submission) {
+            session()->flash('attendance_error', 'ไม่อนุญาตให้เช็คชื่อสาย');
+
+            return;
+        }
+
+        // Already checked in
+        if ($this->alreadyCheckedIn) {
+            session()->flash('attendance_error', __('messages.attendance.already'));
+
+            return;
+        }
+
+        // Create or update submission
+        $submission = $this->assignment->submissionFor($user);
+        $wasAlreadyTurnedIn = $submission?->isTurnedIn() ?? false;
+        if (! $submission) {
+            $submission = $this->assignment->submissions()->firstOrCreate([
+                'user_id' => $user->id,
+            ], [
+                'status' => 'assigned',
+            ]);
+            $wasAlreadyTurnedIn = false;
+        }
+
+        $submission->update([
+            'content' => 'เช็คชื่อสายเวลา ' . now()->format('H:i:s'),
+        ]);
+        $submission->turnIn();
+
+        $this->alreadyCheckedIn = true;
+
+        if (! $wasAlreadyTurnedIn) {
+            $gamification = app(GamificationService::class);
+            $gamification->awardForAttendanceCheckin($user, $this->assignment->id);
+            $gamification->awardForAssignmentTurnedIn($user, $this->assignment->id);
+        }
+
+        session()->flash('attendance_success', 'บันทึกการเช็คชื่อสายเรียบร้อยแล้ว');
+    }
+
     public function getCheckedInStudentsProperty()
     {
         return $this->assignment->submissions()

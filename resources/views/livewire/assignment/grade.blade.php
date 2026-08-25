@@ -80,7 +80,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">คะแนน</label>
                         <div class="flex items-center gap-2">
                             <input wire:model="score" type="number" min="0" max="{{ $assignment->max_score }}"
-                                class="w-24 border border-gray-300 rounded-lg px-3 py-2.5 text-center text-lg font-bold focus:ring-2 focus:ring-blue-500">
+                                class="w-24 border border-gray-300 rounded-lg px-3 py-2.5 text-center text-lg font-bold focus:ring-1 focus:ring-blue-500">
                             <span class="text-gray-500 text-lg">/</span>
                             <span class="text-lg font-bold text-gray-900">{{ $assignment->max_score }}</span>
                         </div>
@@ -91,7 +91,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ข้อเสนอแนะ</label>
                         <textarea wire:model="feedback" rows="4"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500"
                             placeholder="เพิ่มข้อเสนอแนะสำหรับนักเรียน..."></textarea>
                     </div>
 

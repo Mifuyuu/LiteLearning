@@ -32,7 +32,7 @@ class AssignmentDueSoon extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('งานใกล้ถึงกำหนดส่ง! — ' . $this->assignment->title)
-            ->greeting('สวัสดี ' . $notifiable->name . '!')
+            ->greeting('สวัสดี ' . ($notifiable->name ?? 'นักเรียน') . '!')
             ->line('งานต่อไปนี้กำลังจะถึงกำหนดส่ง:')
             ->line('**' . $this->assignment->title . '**')
             ->line('วิชา: ' . $classroom->name)

@@ -59,6 +59,11 @@ class Create extends Component
         if ($requestType && in_array($requestType, $allowed, true)) {
             $this->type = $requestType;
         }
+
+        if ($this->type === 'attendance') {
+            $this->title = 'เช็คชื่อประจำวันที่ ' . now()->format('d/m/y');
+            $this->topic = 'เช็คชื่อ';
+        }
     }
 
     protected function allowedMimes(): string
@@ -122,7 +127,10 @@ class Create extends Component
         }
 
         if ($this->type === 'attendance') {
+            $this->title = 'เช็คชื่อประจำวันที่ ' . now()->format('d/m/y');
+            $this->topic = 'เช็คชื่อ';
             $this->description = '';
+            $this->due_date = null;
         }
 
         // Handle topic

@@ -9,13 +9,13 @@ class PruneExpiredOtps extends Command
 {
     protected $signature = 'otp:prune';
 
-    protected $description = 'ลบ OTP ที่หมดอายุแล้วออกจากฐานข้อมูล';
+    protected $description = 'Delete expired OTPs from the database';
 
     public function handle(): int
     {
         $deleted = EmailOtpVerification::where('expires_at', '<', now())->delete();
 
-        $this->info("ลบ OTP ที่หมดอายุแล้ว {$deleted} รายการ");
+        $this->info("Deleted {$deleted} expired OTPs.");
 
         return Command::SUCCESS;
     }

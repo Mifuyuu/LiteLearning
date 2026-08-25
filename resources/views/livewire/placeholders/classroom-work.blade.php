@@ -20,13 +20,15 @@
 <div class="max-w-4xl mx-auto">
     <section class="rounded-2xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] min-h-[calc(100vh-3rem)]">
 
-        {{-- Scope tabs --}}
-        <div class="flex flex-wrap items-center gap-2 p-4">
-            <div class="skeleton h-9 w-16 rounded-[10px]"></div>
-            <div class="skeleton h-9 w-20 rounded-[10px]"></div>
-            <div class="skeleton h-9 w-20 rounded-[10px]"></div>
+        {{-- Scope tabs & Create button --}}
+        <div class="p-4 sm:p-6 border-b border-[#dedee5] flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+                <div class="skeleton h-9 w-16 rounded-[10px]"></div>
+                <div class="skeleton h-9 w-20 rounded-[10px]"></div>
+                <div class="skeleton h-9 w-20 rounded-[10px]"></div>
+            </div>
             @if($isManager)
-                <div class="skeleton ml-auto h-10 w-28 rounded-[10px]"></div>
+                <div class="skeleton ml-auto h-10 w-24 rounded-[10px] shrink-0"></div>
             @endif
         </div>
         

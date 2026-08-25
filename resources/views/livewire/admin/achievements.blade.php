@@ -9,7 +9,7 @@
                     <x-icon name="magnifying-glass" class="h-4 w-4" />
                 </span>
                 <input type="text" wire:model.live.debounce.300ms="search"
-                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
                     placeholder="ค้นหาความสำเร็จ...">
             </div>
 
@@ -142,7 +142,7 @@
                     <!-- รหัส (ซ้าย) -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">รหัส</label>
-                        <input type="text" wire:model="form.code" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <input type="text" wire:model="form.code" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                         @error('form.code') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <!-- รูปไอคอน (ขวา) -->
@@ -172,21 +172,21 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">ชื่อ</label>
-                    <input type="text" wire:model="form.name" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="text" wire:model="form.name" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                     @error('form.name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">คำอธิบาย</label>
-                    <textarea wire:model="form.description" rows="2" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                    <textarea wire:model="form.description" rows="2" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">รางวัลเหรียญ</label>
-                        <input type="number" wire:model="form.coin_reward" min="0" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <input type="number" wire:model="form.coin_reward" min="0" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">รางวัล XP</label>
-                        <input type="number" wire:model="form.xp_reward" min="0" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <input type="number" wire:model="form.xp_reward" min="0" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                     </div>
                 </div>
                 <div class="flex items-center gap-2 mt-1">

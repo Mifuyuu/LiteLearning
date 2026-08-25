@@ -1,7 +1,8 @@
-<div class="border-t border-gray-100" x-data="{ showDeleteCommentModal: false, deleteCommentId: null }"
-    @keydown.escape.window="showDeleteCommentModal = false">
+<div x-data="{ showDeleteCommentModal: false, deleteCommentId: null }"
+    @keydown.escape.window="showDeleteCommentModal = false"
+    style="--cw-color: {{ $themeColor }}; --cw-subtle: {{ $themeColor }}1a;">
     <button wire:click="toggleComments"
-        class="flex items-center gap-2 px-5 py-3 text-sm text-gray-500 hover:text-gray-700 w-full text-left">
+        class="flex items-center gap-2 py-3 text-sm text-gray-500 hover:text-(--cw-color) transition-colors w-full text-left cursor-pointer">
         <x-icon name="chat-bubble-left-right" class="h-4 w-4" />
         {{ $comments->count() }} ความคิดเห็น
     </button>
@@ -13,7 +14,7 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 -translate-y-1">
-        <div class="px-5 pb-4">
+        <div class="pb-4">
             <!-- Comments list -->
             <div class="space-y-3 mb-3">
                 @foreach($comments as $comment)
@@ -30,7 +31,7 @@
                         @if($comment->user_id === auth()->id() || $canModerate)
                             <button type="button"
                                 @click="deleteCommentId = {{ $comment->id }}; showDeleteCommentModal = true"
-                                class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                                class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-red-50 hover:text-red-600 cursor-pointer"
                                 aria-label="ลบความคิดเห็น">
                                 <x-icon name="trash" class="h-4 w-4" />
                             </button>
@@ -41,13 +42,14 @@
 
             <!-- Add comment -->
             <div class="flex items-center gap-2">
-                <img src="{{ auth()->user()->avatar_url }}" class="w-7 h-7 rounded-full">
+                <img src="{{ auth()->user()->avatar_url }}" class="w-7 h-7 rounded-full object-cover">
                 <div class="flex-1 relative">
                     <input wire:model="commentText" wire:keydown.enter="addComment" type="text"
-                        class="w-full rounded-[10px] border border-gray-300 px-4 py-2 pr-11 text-sm outline-none transition focus:border-(--ll-blue) focus:ring-1 focus:ring-(--ll-blue)"
+                        class="w-full rounded-[10px] border border-gray-300 px-4 py-2 pr-11 text-sm outline-none transition focus:border-(--cw-color) focus:ring-1 focus:ring-(--cw-color)"
                         placeholder="เพิ่มความคิดเห็น...">
                     <button wire:click="addComment"
-                        class="absolute right-1.5 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-(--ll-blue) transition hover:bg-[rgba(37,99,235,0.08)] hover:text-(--ll-blue-dark)">
+                        class="absolute right-1.5 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg transition cursor-pointer text-(--cw-color) hover:bg-(--cw-subtle)"
+                        title="ส่งความคิดเห็น">
                         <x-icon name="paper-airplane" class="h-4 w-4" />
                     </button>
                 </div>
@@ -59,7 +61,7 @@
         <x-confirm-modal show="showDeleteCommentModal" cancel="showDeleteCommentModal = false"
             heading="ลบความคิดเห็น" message="คุณแน่ใจหรือว่าต้องการลบความคิดเห็นนี้? การดำเนินการนี้ไม่สามารถยกเลิกได้">
             <button type="button" @click="$wire.deleteComment(deleteCommentId); showDeleteCommentModal = false"
-                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700 cursor-pointer">
                 {{ 'ลบ' }}
             </button>
         </x-confirm-modal>
