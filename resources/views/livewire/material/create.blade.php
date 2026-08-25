@@ -36,13 +36,30 @@
         </div>
 
         <div class="p-6 pt-0 space-y-6 flex-1">
-            {{-- Title --}}
-            <div>
-                <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่องาน *' }}</label>
-                <input type="text" wire:model="title"
-                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
-                    placeholder="{{ 'ชื่อเอกสารหรือสื่อการสอน' }}">
-                @error('title') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+            {{-- Title & Topic row --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่อสื่อการสอน *' }}</label>
+                    <input type="text" wire:model="title"
+                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
+                        placeholder="{{ 'ชื่อเอกสารหรือสื่อการสอน' }}">
+                    @error('title') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-[#101114] mb-2">
+                        <x-icon name="tag" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'หัวข้อ / หมวดหมู่' }}
+                        <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
+                    </label>
+                    <input type="text" wire:model="topic" list="topics-list"
+                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
+                        placeholder="{{ 'เลือกหรือพิมพ์ชื่อหัวข้อใหม่' }}">
+                    <datalist id="topics-list">
+                        @foreach($this->topics as $t)
+                            <option value="{{ $t->name }}">
+                        @endforeach
+                    </datalist>
+                </div>
             </div>
 
             {{-- Description (Tiptap editor) --}}
@@ -150,33 +167,19 @@
                     </div>
                 @endif
             </div>
-
-            {{-- Topic --}}
-            <div>
-                <label class="block text-sm font-bold text-[#101114] mb-2">
-                    {{ 'หัวข้อ / หมวดหมู่' }}
-                    <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
-                </label>
-                <input type="text" wire:model="topic" list="topics-list"
-                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
-                    placeholder="{{ 'เลือกหรือพิมพ์ชื่อหัวข้อใหม่' }}">
-                <datalist id="topics-list">
-                    @foreach($this->topics as $t)
-                        <option value="{{ $t->name }}">
-                    @endforeach
-                </datalist>
-            </div>
         </div>
 
         {{-- Actions Footer --}}
         <div class="p-6 bg-[#f9f9fb] border-t border-[#dedee5] flex items-center justify-end gap-3">
             <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
-                class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">
+                class="inline-flex items-center justify-center px-4 sm:px-5 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">
                 {{ 'ยกเลิก' }}
             </a>
             <button type="submit"
-                class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold rounded-lg text-white bg-(--cw-color) hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40">
-                <x-icon name="check" class="h-4 w-4 mr-2" /> {{ 'เผยแพร่สื่อการสอน' }}
+                class="inline-flex items-center justify-center px-3.5 sm:px-6 py-2.5 text-sm font-bold rounded-lg text-white bg-(--cw-color) hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+                title="{{ 'เผยแพร่สื่อการสอน' }}">
+                <x-icon name="check" class="h-4 w-4 sm:mr-2" />
+                <span class="hidden sm:inline">{{ 'เผยแพร่สื่อการสอน' }}</span>
             </button>
         </div>
     </form>

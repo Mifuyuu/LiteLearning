@@ -4,7 +4,7 @@
         Teacher: Attendance Session Controls
         ────────────────────────────────────────────── --}}
         <div>
-            <div class="p-5 border-b border-gray-200">
+            <div class="p-5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-gray-900">เซสชันเช็คชื่อ</h3>
                     @if($session?->is_active)
@@ -74,7 +74,7 @@
                     </div>
                     <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
                         <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
-                            <x-icon name="star-solid" class="h-4 w-4 text-amber-500" />{{ 'รางวัลเหรียญ' }}
+                            <img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 shrink-0" alt="">{{ 'รางวัลเหรียญ' }}
                         </span>
                         <p class="text-lg font-bold text-amber-600">{{ $assignment->coin_reward }}</p>
                     </div>
@@ -201,6 +201,31 @@
                         </div>
                     @endif
                 @endif
+            </div>
+
+            {{-- ข้อมูลงาน (Assignment info for Student) --}}
+            <div class="border-t border-[#dedee5] p-6">
+                <h4 class="text-sm font-bold text-[#101114] mb-3">{{ 'ข้อมูลงาน' }}</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
+                        <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
+                            <x-icon name="academic-cap" class="h-4 w-4 text-[#9497a9]" />{{ 'คะแนนเช็คชื่อ' }}
+                        </span>
+                        <p class="text-lg font-bold text-[#101114]">{{ $assignment->max_score }}</p>
+                    </div>
+                    <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
+                        <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
+                            <x-icon name="bolt" class="h-4 w-4 text-blue-600" />{{ 'รางวัล EXP' }}
+                        </span>
+                        <p class="text-lg font-bold text-blue-700">{{ $assignment->exp_reward }}</p>
+                    </div>
+                    <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
+                        <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
+                            <img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 shrink-0" alt="">{{ 'รางวัลเหรียญ' }}
+                        </span>
+                        <p class="text-lg font-bold text-amber-600">{{ $assignment->coin_reward }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     @endif

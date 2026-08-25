@@ -5,10 +5,50 @@ import StarterKit from '@tiptap/starter-kit';
 import { TextAlign } from '@tiptap/extension-text-align';
 import Placeholder from '@tiptap/extension-placeholder';
 import ApexCharts from 'apexcharts';
+import flatpickr from 'flatpickr';
+import { Thai } from 'flatpickr/dist/l10n/th.js';
 
 window.Cropper = Cropper;
+window.flatpickr = flatpickr;
 
 document.addEventListener('alpine:init', () => {
+    Alpine.data('datetimePicker', ({ wireModel, placeholder = 'เลือกวันและเวลา' }) => {
+        let picker = null;
+
+        return {
+            init() {
+                const self = this;
+                const inputEl = self.$refs.inputEl;
+                if (!inputEl) return;
+
+                picker = flatpickr(inputEl, {
+                    locale: Thai,
+                    enableTime: true,
+                    time_24hr: true,
+                    dateFormat: 'Y-m-d H:i',
+                    altInput: true,
+                    altFormat: 'j M Y เวลา H:i น.',
+                    altInputClass: inputEl.className,
+                    placeholder: placeholder,
+                    defaultDate: self.$wire.get(wireModel) || null,
+                    onChange(selectedDates, dateStr) {
+                        self.$wire.set(wireModel, dateStr || null);
+                    },
+                });
+
+                self.$watch('$wire.' + wireModel, (val) => {
+                    if (picker && val !== picker.input.value) {
+                        picker.setDate(val || '', false);
+                    }
+                });
+            },
+
+            destroy() {
+                picker?.destroy();
+                picker = null;
+            }
+        };
+    });
     Alpine.data('rankChart', (points) => ({
         activePoint: points.length - 1,
 

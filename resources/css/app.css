@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "cropperjs/dist/cropper.css";
+@import "flatpickr/dist/flatpickr.css";
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
     themes: light --default;
@@ -799,3 +800,76 @@ input:-webkit-autofill:focus {
     background: linear-gradient(145deg, #93c5fd, #3b82f6);
     transform: rotate(-24deg);
 }
+
+/* ── Flatpickr Thai Datetimepicker Customization ── */
+.flatpickr-calendar {
+    font-family: inherit;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #dedee5;
+    padding: 0.5rem;
+    background: #ffffff;
+}
+.flatpickr-calendar.arrowTop:before,
+.flatpickr-calendar.arrowTop:after {
+    border-bottom-color: #dedee5;
+}
+.flatpickr-months {
+    padding: 0.25rem 0;
+}
+.flatpickr-current-month {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #101114;
+}
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    font-weight: 700;
+}
+.flatpickr-weekdays {
+    margin-top: 0.25rem;
+}
+span.flatpickr-weekday {
+    font-weight: 600;
+    color: #9497a9;
+    font-size: 0.8rem;
+}
+.flatpickr-day {
+    border-radius: 0.5rem;
+    font-weight: 600;
+    color: #101114;
+    line-height: 38px;
+    height: 38px;
+}
+.flatpickr-day.today {
+    border-color: #3b82f6;
+    color: #2563eb;
+}
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.selected.inRange,
+.flatpickr-day.selected:focus,
+.flatpickr-day.selected:hover,
+.flatpickr-day.selected.prevMonthDay,
+.flatpickr-day.selected.nextMonthDay {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+    font-weight: 700;
+}
+.flatpickr-day:hover:not(.selected) {
+    background: #eff6ff;
+    border-color: transparent;
+    color: #2563eb;
+}
+.flatpickr-time {
+    border-top: 1px solid #dedee5;
+    padding-top: 0.5rem;
+}
+.flatpickr-time input:hover,
+.flatpickr-time .flatpickr-am-pm:hover,
+.flatpickr-time input:focus,
+.flatpickr-time .flatpickr-am-pm:focus {
+    background: #f9f9fb;
+}
+

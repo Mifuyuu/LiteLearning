@@ -16,6 +16,10 @@ class AttendanceSession extends Model
     // like a TOTP — no grace period past rotation.
     public const CODE_VALIDITY_SECONDS = 10;
 
+    // If teacher navigates away or closes the tab, rotation stops.
+    // After 90 seconds without rotation, the session is considered abandoned and auto-closed.
+    public const STALE_TIMEOUT_SECONDS = 90;
+
     protected $fillable = [
         'classwork_item_id',
         'current_code',
@@ -68,6 +72,36 @@ class AttendanceSession extends Model
         }
 
         return $this->code_rotated_at->diffInSeconds(now()) >= self::CODE_VALIDITY_SECONDS;
+    }
+
+    /**
+     * Check if the session has become stale (no code rotation from teacher).
+     */
+    public function isStale(): bool
+    {
+        if (! $this->is_active) {
+            return false;
+        }
+
+        if (! $this->code_rotated_at) {
+            return true;
+        }
+
+        return $this->code_rotated_at->diffInSeconds(now()) >= self::STALE_TIMEOUT_SECONDS;
+    }
+
+    /**
+     * Check and automatically close the session if it is stale.
+     */
+    public function checkAndCloseIfStale(): bool
+    {
+        if ($this->isStale()) {
+            $this->stop();
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

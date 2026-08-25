@@ -705,4 +705,89 @@ class RegressionFixesTest extends TestCase
         $submission = $assignment->submissionFor($student);
         $this->assertTrue($submission === null || $submission->status === 'assigned');
     }
+
+    public function test_stale_attendance_session_is_automatically_closed(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
+
+        $assignment = Assignment::factory()->attendance()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'status' => 'published',
+            'allow_late_submission' => true,
+        ]);
+
+        $session = AttendanceSession::create([
+            'classwork_item_id' => $assignment->classwork_item_id,
+            'is_active' => true,
+            'current_code' => '123456',
+            'started_at' => now()->subMinutes(5),
+            'code_rotated_at' => now()->subMinutes(2), // 120s ago (> 90s timeout)
+        ]);
+
+        $this->assertTrue($session->isStale());
+
+        // When student accesses component, session auto-closes
+        Livewire::actingAs($student)
+            ->test(AssignmentAttendance::class, ['classroom' => $classroom, 'assignment' => $assignment])
+            ->call('checkinLate')
+            ->assertSet('alreadyCheckedIn', true);
+
+        $session->refresh();
+        $this->assertFalse($session->is_active);
+        $this->assertNull($session->current_code);
+    }
+
+    public function test_close_stale_attendance_sessions_command(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+
+        $assignment1 = Assignment::factory()->attendance()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'status' => 'published',
+        ]);
+
+        $assignment2 = Assignment::factory()->attendance()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'status' => 'published',
+        ]);
+
+        // Stale session (not rotated for 2 minutes)
+        $staleSession = AttendanceSession::create([
+            'classwork_item_id' => $assignment1->classwork_item_id,
+            'is_active' => true,
+            'current_code' => '111111',
+            'code_rotated_at' => now()->subMinutes(2),
+        ]);
+
+        // Active session (rotated 10 seconds ago)
+        $activeSession = AttendanceSession::create([
+            'classwork_item_id' => $assignment2->classwork_item_id,
+            'is_active' => true,
+            'current_code' => '222222',
+            'code_rotated_at' => now()->subSeconds(5),
+        ]);
+
+        $this->artisan('attendance:close-stale')
+            ->assertSuccessful();
+
+        $staleSession->refresh();
+        $activeSession->refresh();
+
+        $this->assertFalse($staleSession->is_active);
+        $this->assertNull($staleSession->current_code);
+
+        $this->assertTrue($activeSession->is_active);
+        $this->assertEquals('222222', $activeSession->current_code);
+    }
 }
+

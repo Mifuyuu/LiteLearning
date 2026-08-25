@@ -55,32 +55,60 @@
         </div>
 
         <div class="p-6 pt-0 space-y-6 flex-1">
-            {{-- Title --}}
-            @if($type === 'attendance')
-                <div>
-                    <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่องาน' }}</label>
-                    <input type="text" readonly disabled
-                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none"
-                        value="เช็คชื่อประจำวันที่ {{ now()->format('d/m/y') }}">
+            {{-- Title & Topic row --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {{-- Title --}}
+                <div class="{{ $type === 'announcement' ? 'md:col-span-2' : '' }}">
+                    @if($type === 'attendance')
+                        <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่อเรื่อง *' }}</label>
+                        <input type="text" readonly disabled
+                            class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none"
+                            value="เช็คชื่อประจำวันที่ {{ now()->format('d/m/y') }}">
+                    @else
+                        <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่อเรื่อง *' }}</label>
+                        <input wire:model="title" type="text" maxlength="50"
+                            class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)"
+                            placeholder="{{ 'จำเป็นต้องใส่ชื่อเรื่อง' }}">
+                        <div class="mt-1 flex justify-between items-center">
+                            @error('title')
+                                <p class="text-xs text-red-500">{{ $message }}</p>
+                            @else
+                                <span></span>
+                            @enderror
+                            <span class="text-xs" :class="$wire.title.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
+                                <span x-text="$wire.title.length">0</span>/50
+                            </span>
+                        </div>
+                    @endif
                 </div>
-            @else
-                <div>
-                    <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่องาน *' }}</label>
-                    <input wire:model="title" type="text" maxlength="50"
-                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)"
-                        placeholder="{{ 'ชื่องาน *' }}">
-                    <div class="mt-1 flex justify-between items-center">
-                        @error('title')
-                            <p class="text-xs text-red-500">{{ $message }}</p>
-                        @else
-                            <span></span>
-                        @enderror
-                        <span class="text-xs" :class="$wire.title.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
-                            <span x-text="$wire.title.length">0</span>/50
-                        </span>
+
+                {{-- Topic --}}
+                @if($type === 'attendance')
+                    <div>
+                        <label class="block text-sm font-bold text-[#101114] mb-2">
+                            {{ 'หัวข้อ / หมวดหมู่' }}
+                        </label>
+                        <input type="text" readonly disabled
+                            class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none"
+                            value="เช็คชื่อ">
                     </div>
-                </div>
-            @endif
+                @elseif($type !== 'announcement')
+                    <div>
+                        <label class="block text-sm font-bold text-[#101114] mb-2">
+                            <x-icon name="tag" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'หัวข้อ / หมวดหมู่' }}
+                            <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
+                        </label>
+                        <input wire:model="topic" type="text" list="topics-list"
+                            class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)"
+                            placeholder="{{ 'เลือกหรือพิมพ์สร้างหัวข้อใหม่' }}">
+                        <datalist id="topics-list">
+                            @foreach($this->topics as $t)
+                                <option value="{{ $t->name }}">
+                            @endforeach
+                        </datalist>
+                    </div>
+                @endif
+            </div>
 
             {{-- Description (Tiptap editor) --}}
             @if($type !== 'attendance')
@@ -195,118 +223,75 @@
                 </div>
             @endif
 
-            {{-- Options: Topic + Auto-Publish + Due Date + Points --}}
+            {{-- Options: Auto-Publish + Due Date + Points --}}
             @if($type !== 'announcement')
-                <div class="space-y-4 pt-2 border-t border-[#dedee5]">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {{-- Topic --}}
-                        @if($type === 'attendance')
-                            <div>
-                                 <label class="block text-sm font-bold text-[#101114] mb-1.5">
-                                     <x-icon name="tag" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'หัวข้อ' }}
-                                 </label>
-                                 <input type="text" readonly disabled
-                                     class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none"
-                                     value="เช็คชื่อ">
-                            </div>
-                        @else
-                            <div>
-                                <label class="block text-sm font-bold text-[#101114] mb-1.5">
-                                    <x-icon name="tag" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'หัวข้อ' }}
-                                    <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
-                                </label>
-                                <input wire:model="topic" type="text" list="topics-list"
-                                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)"
-                                    placeholder="{{ 'เลือกหรือพิมพ์สร้างหัวข้อใหม่' }}">
-                                <datalist id="topics-list">
-                                    @foreach($this->topics as $t)
-                                        <option value="{{ $t->name }}">
-                                    @endforeach
-                                </datalist>
-                            </div>
-                        @endif
-
+                <div class="space-y-4 pt-2">
+                    <div class="grid grid-cols-1 {{ in_array($type, ['material', 'attendance', 'topic']) ? '' : 'md:grid-cols-2' }} gap-4">
                         {{-- Auto-Publish At --}}
                         <div>
                             <label class="block text-sm font-bold text-[#101114] mb-1.5">
                                 <x-icon name="clock" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'กำหนดเวลาเผยแพร่' }}
                                 <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
                             </label>
-                            <input type="datetime-local" wire:model="published_at"
-                                class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) bg-white">
+                            <div wire:ignore x-data="datetimePicker({ wireModel: 'published_at', placeholder: 'เลือกวันและเวลาเผยแพร่' })">
+                                <input x-ref="inputEl" type="text"
+                                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) bg-white cursor-pointer"
+                                    placeholder="{{ 'เลือกวันและเวลาเผยแพร่' }}">
+                            </div>
                             <p class="text-xs text-[#9497a9] mt-1">{{ 'เว้นว่างไว้เพื่อเผยแพร่ทันที' }}</p>
                             @error('published_at')
                                 <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                    </div>
 
-                    {{-- Due Date + Points + EXP + Coin row --}}
-                    @if(!in_array($type, ['material', 'topic']))
-                        @if($type === 'attendance')
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="flex items-center text-sm font-bold text-[#101114] mb-1.5">
-                                        <x-icon name="academic-cap" class="text-[#9497a9] mr-1.5 h-4 w-4 shrink-0" />{{ 'คะแนนเช็คชื่อ' }}
-                                    </label>
-                                    <input wire:model="max_score" type="number" min="0" max="100"
-                                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)">
-                                    @error('max_score')
-                                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                                    @enderror
+                        {{-- Due Date --}}
+                        @if(!in_array($type, ['material', 'attendance', 'topic']))
+                            <div>
+                                <label class="block text-sm font-bold text-[#101114] mb-1.5">
+                                    <x-icon name="clock" class="h-4 w-4 mr-1.5 text-[#9497a9]" />{{ 'วันกำหนดส่ง' }}
+                                    <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
+                                </label>
+                                <div wire:ignore x-data="datetimePicker({ wireModel: 'due_date', placeholder: 'เลือกวันและเวลากำหนดส่ง' })">
+                                    <input x-ref="inputEl" type="text"
+                                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) bg-white cursor-pointer"
+                                        placeholder="{{ 'เลือกวันและเวลากำหนดส่ง' }}">
                                 </div>
-                                <div>
-                                    <label class="flex items-center text-sm font-bold text-[#101114] mb-1.5">
-                                        <x-icon name="bolt" class="text-blue-600 mr-1.5 h-4 w-4 shrink-0" />{{ 'รางวัล EXP' }}
-                                    </label>
-                                    <input wire:model="exp_reward" type="number" min="0" max="9999"
-                                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)">
-                                </div>
-                                <div>
-                                    <label class="flex items-center text-sm font-bold text-[#101114] mb-1.5">
-                                        <x-icon name="star-solid" class="text-amber-500 mr-1.5 h-4 w-4 shrink-0" />{{ 'รางวัลเหรียญ' }}
-                                    </label>
-                                    <input wire:model="coin_reward" type="number" min="0" max="9999"
-                                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)">
-                                </div>
-                            </div>
-                        @else
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                @if(!in_array($type, ['material', 'announcement', 'topic']))
-                                    <div>
-                                        <label class="flex items-center text-sm font-bold text-[#101114] mb-1.5">
-                                            <x-icon name="academic-cap" class="text-[#9497a9] mr-1.5 h-4 w-4 shrink-0" />{{ 'คะแนนเต็ม' }}
-                                        </label>
-                                        <input wire:model="max_score" type="number" min="0" max="100"
-                                            class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)">
-                                        @error('max_score')
-                                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                @endif
-                                <div>
-                                    <label class="block text-sm font-bold text-[#101114] mb-1.5">
-                                        <x-icon name="clock" class="h-4 w-4 mr-1.5 text-[#9497a9]" />{{ 'วันกำหนดส่ง' }}
-                                    </label>
-                                    <input wire:model="due_date" type="datetime-local"
-                                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) bg-white">
-                                </div>
-                                <div>
-                                    <label class="flex items-center text-sm font-bold text-[#101114] mb-1.5">
-                                        <x-icon name="bolt" class="text-blue-600 mr-1.5 h-4 w-4 shrink-0" />{{ 'รางวัล EXP' }}
-                                    </label>
-                                    <input wire:model="exp_reward" type="number" min="0" max="9999"
-                                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)">
-                                </div>
-                                <div>
-                                    <label class="flex items-center text-sm font-bold text-[#101114] mb-1.5">
-                                        <x-icon name="star-solid" class="text-amber-500 mr-1.5 h-4 w-4 shrink-0" />{{ 'รางวัลเหรียญ' }}
-                                    </label>
-                                    <input wire:model="coin_reward" type="number" min="0" max="9999"
-                                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)">
-                                </div>
+                                <p class="text-xs text-[#9497a9] mt-1">{{ 'เว้นว่างไว้หากไม่มีกำหนดส่ง' }}</p>
+                                @error('due_date')
+                                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         @endif
+                    </div>
+
+                    {{-- Points + EXP + Coin row --}}
+                    @if(!in_array($type, ['material', 'topic']))
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="flex items-center text-sm font-bold text-[#101114] mb-1.5">
+                                    <x-icon name="academic-cap" class="text-[#9497a9] mr-1.5 h-4 w-4 shrink-0" />{{ $type === 'attendance' ? 'คะแนนเช็คชื่อ' : 'คะแนนเต็ม' }}
+                                </label>
+                                <input wire:model="max_score" type="number" min="0" max="100"
+                                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)">
+                                @error('max_score')
+                                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label class="flex items-center text-sm font-bold text-[#101114] mb-1.5">
+                                    <x-icon name="bolt" class="text-blue-600 mr-1.5 h-4 w-4 shrink-0" />{{ 'รางวัล EXP' }}
+                                </label>
+                                <input wire:model="exp_reward" type="number" min="0" max="9999"
+                                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)">
+                            </div>
+                            <div>
+                                <label class="flex items-center text-sm font-bold text-[#101114] mb-1.5">
+                                    <img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 mr-1.5 shrink-0" alt="">{{ 'รางวัลเหรียญ' }}
+                                </label>
+                                <input wire:model="coin_reward" type="number" min="0" max="9999"
+                                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)">
+                            </div>
+                        </div>
 
                         {{-- Allow late submission --}}
                         <div class="flex items-center gap-3 pt-2">
@@ -327,24 +312,24 @@
 
         {{-- Actions Footer --}}
         <div class="p-6 bg-[#f9f9fb] border-t border-[#dedee5] flex items-center justify-between gap-3 mt-auto">
-            @if($type !== 'announcement')
-                <div x-show="!$wire.published_at">
-                    <button type="button" wire:click="saveDraft"
-                        class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">
-                        <x-icon name="document-text" class="h-4 w-4 mr-1.5" />{{ 'บันทึกฉบับร่าง' }}
-                    </button>
-                </div>
-            @else
-                <div></div>
-            @endif
+            <div>
+                @if($type !== 'announcement')
+                    <div x-show="!$wire.published_at" x-cloak>
+                        <button type="button" wire:click="saveDraft"
+                            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">
+                            <x-icon name="document-text" class="h-5 w-5 mr-1.5" />{{ 'บันทึกฉบับร่าง' }}
+                        </button>
+                    </div>
+                @endif
+            </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 ml-auto">
                 <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
                     class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">
                     {{ 'ยกเลิก' }}
                 </a>
                 <button type="submit"
-                    class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40">
+                    class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold rounded-lg text-white bg-(--cw-color) hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40">
                     <span wire:loading.remove wire:target="save"><x-icon name="paper-airplane" class="h-4 w-4 mr-1.5" />{{ $type === 'announcement' ? 'โพสต์' : ($type === 'attendance' ? 'สร้างงานเช็คชื่อ' : 'มอบหมาย') }}</span>
                     <span wire:loading wire:target="save"><x-icon name="spinner" class="h-4 w-4 mr-1.5 animate-spin" />{{ $type === 'announcement' ? 'กำลังโพสต์...' : ($type === 'attendance' ? 'กำลังสร้าง...' : 'กำลังมอบหมาย...') }}</span>
                 </button>

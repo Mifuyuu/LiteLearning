@@ -41,6 +41,8 @@ class Attendance extends Component
         $this->verifyContentAccess($classroom, $assignment);
 
         $this->session = $assignment->attendanceSession;
+        $this->session?->checkAndCloseIfStale();
+        $this->session?->refresh();
 
         // Check if student already checked in
         if (auth()->user()->isStudent()) {
@@ -111,6 +113,9 @@ class Attendance extends Component
 
         // Must be a student
         abort_unless($user->isStudent(), 403);
+
+        $this->session?->checkAndCloseIfStale();
+        $this->session?->refresh();
 
         // Session must be active
         if (! $this->session?->is_active) {
@@ -191,6 +196,9 @@ class Attendance extends Component
         // Must be a student
         abort_unless($user->isStudent(), 403);
 
+        $this->session?->checkAndCloseIfStale();
+        $this->session?->refresh();
+
         // Session must NOT be active (if active, they should use OTP)
         if ($this->session?->is_active) {
             session()->flash('attendance_error', 'ขณะนี้กำลังเปิดเซสชันเช็คชื่อ กรุณากรอกรหัส OTP บนหน้าจอ');
@@ -250,6 +258,9 @@ class Attendance extends Component
 
     public function render()
     {
+        $this->session?->checkAndCloseIfStale();
+        $this->session?->refresh();
+
         return view('livewire.assignment.attendance');
     }
 }

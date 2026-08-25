@@ -95,30 +95,32 @@
                     </div>
                 </div>
 
-                <div class="mt-4 flex items-center gap-4 text-sm flex-wrap">
-                    <span class="text-gray-500">
-                        <x-icon name="clock" class="h-4 w-4 mr-1" />
-                        กำหนดส่ง:
-                        {{ $assignment->due_date ? $assignment->due_date->translatedFormat('j M Y, H:i') : 'ไม่มีกำหนด' }}
-                    </span>
+                @if(!$assignment->isAttendance())
+                    <div class="mt-4 flex items-center gap-4 text-sm flex-wrap">
+                        <span class="text-gray-500">
+                            <x-icon name="clock" class="h-4 w-4 mr-1" />
+                            กำหนดส่ง:
+                            {{ $assignment->due_date ? $assignment->due_date->translatedFormat('j M Y, H:i') : 'ไม่มีกำหนด' }}
+                        </span>
 
-                    {{-- Late submission indicators --}}
-                    @if($assignment->isOverdue())
-                        @if($assignment->canSubmitLate())
-                            <span class="text-red-500 font-medium text-xs px-2 py-0.5 bg-red-50 rounded-full">
-                                <x-icon name="exclamation-triangle" class="h-4 w-4 mr-1" />
-                                {{ $assignment->overdueDescription() }}
-                            </span>
-                            <span class="text-amber-600 text-xs px-2 py-0.5 bg-amber-50 rounded-full">
-                                อนุญาตให้ส่งงานล่าช้า
-                            </span>
-                        @else
-                            <span class="text-red-600 font-medium text-xs px-2 py-0.5 bg-red-50 rounded-full">
-                                <x-icon name="lock" class="h-4 w-4 mr-1" />ปิดรับงานแล้ว
-                            </span>
+                        {{-- Late submission indicators --}}
+                        @if($assignment->isOverdue())
+                            @if($assignment->canSubmitLate())
+                                <span class="text-red-500 font-medium text-xs px-2 py-0.5 bg-red-50 rounded-full">
+                                    <x-icon name="exclamation-triangle" class="h-4 w-4 mr-1" />
+                                    {{ $assignment->overdueDescription() }}
+                                </span>
+                                <span class="text-amber-600 text-xs px-2 py-0.5 bg-amber-50 rounded-full">
+                                    อนุญาตให้ส่งงานล่าช้า
+                                </span>
+                            @else
+                                <span class="text-red-600 font-medium text-xs px-2 py-0.5 bg-red-50 rounded-full">
+                                    <x-icon name="lock" class="h-4 w-4 mr-1" />ปิดรับงานแล้ว
+                                </span>
+                            @endif
                         @endif
-                    @endif
-                </div>
+                    </div>
+                @endif
             </div>
 
             <!-- Description & Attachments -->
@@ -209,7 +211,7 @@
             @endif
 
             {{-- Assignment info / stats (shown for both students and teachers) --}}
-            @if($assignment->requiresSubmission() && (!$assignment->isAttendance() || auth()->user()->isStudent()))
+            @if($assignment->requiresSubmission() && !$assignment->isAttendance())
                 <div class="border-t border-[#dedee5] p-6">
                     <h3 class="text-sm font-bold text-[#101114] mb-3">{{ 'ข้อมูลงาน' }}</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -227,7 +229,7 @@
                         </div>
                         <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
                             <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
-                                <x-icon name="star-solid" class="h-4 w-4 text-amber-500" />{{ 'รางวัลเหรียญ' }}
+                                <img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 shrink-0" alt="">{{ 'รางวัลเหรียญ' }}
                             </span>
                             <p class="text-lg font-bold text-amber-600">{{ $assignment->coin_reward }}</p>
                         </div>
@@ -618,7 +620,7 @@
                         </div>
                         <div>
                             <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                                <x-icon name="star-solid" class="text-amber-500 mr-1.5 h-4 w-4 shrink-0" />รางวัลเหรียญ
+                                <img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 mr-1.5 shrink-0" alt="">รางวัลเหรียญ
                             </label>
                             <input wire:model.live.debounce.100ms="editCoinReward" type="number" min="0" max="9999"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-amber-500 focus:border-amber-500">
@@ -628,8 +630,11 @@
                         @if($editType !== 'attendance')
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">วันกำหนดส่ง</label>
-                                <input wire:model.live="editDueDate" type="datetime-local"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                <div wire:ignore x-data="datetimePicker({ wireModel: 'editDueDate', placeholder: 'เลือกวันและเวลากำหนดส่ง' })">
+                                    <input x-ref="inputEl" type="text"
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white cursor-pointer"
+                                        placeholder="{{ 'เลือกวันและเวลากำหนดส่ง' }}">
+                                </div>
                                 @error('editDueDate') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                             </div>
                         @endif
@@ -734,7 +739,7 @@
                         class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">{{ 'ยกเลิก' }}</button>
                     <button type="submit" :disabled="!isDirty"
                         class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold rounded-lg text-white transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
-                        :class="isDirty ? 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]' : 'bg-gray-400'">
+                        :class="isDirty ? 'bg-(--cw-color) hover:opacity-90 active:scale-[0.98]' : 'bg-gray-400'">
                         <x-icon name="check" class="h-4 w-4 mr-1.5" />
                         <span wire:loading.remove wire:target="saveAssignment">{{ 'บันทึกการแก้ไข' }}</span>
                         <span wire:loading wire:target="saveAssignment"><x-icon name="spinner" class="h-4 w-4 mr-1.5 animate-spin" />{{ 'กำลังบันทึก...' }}</span>
