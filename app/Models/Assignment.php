@@ -283,10 +283,10 @@ class Assignment extends Model
     public function submittedCount(): int
     {
         if ($this->relationLoaded('submissions')) {
-            return $this->submissions->filter(fn ($submission) => in_array($submission->status, ['turned_in', 'graded', 'returned'], true))->count();
+            return $this->submissions->filter(fn ($submission) => in_array($submission->status, ['turned_in', 'graded'], true))->count();
         }
 
-        return $this->submissions()->whereIn('status', ['turned_in', 'graded', 'returned'])->count();
+        return $this->submissions()->whereIn('status', ['turned_in', 'graded'])->count();
     }
 
     public function gradedCount(): int

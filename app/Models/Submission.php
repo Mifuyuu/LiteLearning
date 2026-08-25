@@ -78,7 +78,7 @@ class Submission extends Model
     // Helpers
     public function isTurnedIn(): bool
     {
-        return in_array($this->status, ['turned_in', 'graded', 'returned']);
+        return in_array($this->status, ['turned_in', 'graded']);
     }
 
     public function isGraded(): bool
@@ -121,10 +121,13 @@ class Submission extends Model
         ]);
     }
 
-    public function returnSubmission(): void
+    public function returnSubmission(?string $feedback = null): void
     {
-        $this->update([
-            'status' => 'returned',
-        ]);
+        $data = ['status' => 'returned'];
+        if ($feedback !== null) {
+            $data['feedback'] = $feedback;
+        }
+
+        $this->update($data);
     }
 }

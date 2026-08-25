@@ -21,57 +21,119 @@
                 @php
                     $i = 0;
                 @endphp
-                @foreach($upcoming->groupBy(fn($a) => $a->due_date->format('Y-m-d')) as $date => $assignments)
-                    <div>
-                        <div class="flex items-center gap-3 mb-3">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">
-                                {{ \Carbon\Carbon::parse($date)->translatedFormat('l') }}
-                            </span>
-                            <span class="text-sm font-medium text-gray-500">
-                                {{ \Carbon\Carbon::parse($date)->translatedFormat('j F Y') }}
-                            </span>
-                            <div class="flex-1 h-px bg-gray-200"></div>
-                            <span class="text-xs text-gray-500 bg-white border border-gray-200 rounded-full px-2 py-0.5">
-                                {{ $assignments->count() }} {{ 'รายการ' }}
-                            </span>
-                        </div>
+                @foreach($upcoming->groupBy(fn($a) => $a->due_date ? $a->due_date->format('Y-m-d') : 'no_due_date') as $date => $assignments)
+                    @if($date === 'no_due_date')
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    {{ 'ไม่มีกำหนดส่ง' }}
+                                </span>
+                                <div class="flex-1 h-px bg-gray-200"></div>
+                                <span class="text-xs text-gray-500 bg-white border border-gray-200 rounded-full px-2 py-0.5">
+                                    {{ $assignments->count() }} {{ 'รายการ' }}
+                                </span>
+                            </div>
 
-                        <div class="space-y-2">
-                            @foreach($assignments as $a)
-                                @php
-                                    $isOverdue = $a->due_date->isPast();
-                                    $isUrgent = $isOverdue || $a->due_date->lt(now()->addDay());
-                                    $room = $a->classworkItem->classroom;
-                                    $themeColor = $room->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($room->id)['color'];
-                                @endphp
-                                <a href="{{ route('assignment.show', ['classroom' => $a->classworkItem->classroom, 'assignment' => $a]) }}"
-                                   class="rounded-lg border border-[#dedee5] bg-white hover:shadow-[0_0_0_2px_var(--room-color)] flex items-center gap-4 p-4 transition-shadow duration-150 group animate__animated animate__fadeInUp"
-                                   style="--room-color: {{ $themeColor }}; animation-delay: {{ $i++ * 60 }}ms;">
-                                    <div class="w-3 h-3 rounded-full shrink-0 ring-2 ring-white"
-                                         style="background-color: {{ $themeColor }}"></div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-base font-medium text-gray-900 truncate">
-                                            {{ $a->title }}
-                                        </p>
-                                        <p class="text-sm text-gray-500 truncate mt-0.5">
-                                            {{ $a->classworkItem->classroom->name }}
-                                        </p>
-                                    </div>
-                                    <div class="text-right shrink-0">
-                                        <span class="text-sm font-medium {{ $isUrgent ? 'text-red-600' : 'text-gray-500' }}">
-                                            {{ $a->due_date->translatedFormat('H:i') }}
-                                        </span>
-                                        @if($isOverdue)
-                                            <p class="text-sm text-red-500 mt-0.5">{{ 'เลยกำหนดแล้ว' }}</p>
-                                        @elseif($isUrgent)
-                                            <p class="text-sm text-red-500 mt-0.5">{{ 'ใกล้กำหนดส่ง' }}</p>
-                                        @endif
-                                    </div>
-                                    <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />
-                                </a>
-                            @endforeach
+                            <div class="space-y-2">
+                                @foreach($assignments as $a)
+                                    @php
+                                        $currentIndex = $i++;
+                                        $room = $a->classworkItem->classroom;
+                                        $themeColor = $room->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($room->id)['color'];
+                                        $submission = $a->submissions->firstWhere('user_id', auth()->id());
+                                        $isReturned = $submission?->status === 'returned';
+                                    @endphp
+                                    <a href="{{ route('assignment.show', ['classroom' => $a->classworkItem->classroom, 'assignment' => $a]) }}"
+                                       x-data="{ show: false }" x-init="setTimeout(() => show = true, {{ $currentIndex * 60 }})" x-show="show" x-cloak
+                                       x-transition:enter="transition ease-out duration-400"
+                                       x-transition:enter-start="opacity-0 translate-y-6"
+                                       x-transition:enter-end="opacity-100 translate-y-0"
+                                       class="rounded-lg border border-[#dedee5] bg-white hover:shadow-[0_0_0_2px_var(--room-color)] flex items-center gap-4 p-4 transition-all duration-300 group"
+                                       style="--room-color: {{ $themeColor }};">
+                                        <div class="w-3 h-3 rounded-full shrink-0 ring-2 ring-white"
+                                             style="background-color: {{ $themeColor }}"></div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-base font-medium text-gray-900 truncate">
+                                                {{ $a->title }}
+                                            </p>
+                                            <p class="text-sm text-gray-500 truncate mt-0.5">
+                                                {{ $a->classworkItem->classroom->name }}
+                                            </p>
+                                        </div>
+                                        <div class="text-right shrink-0">
+                                            <span class="text-sm font-medium text-gray-500">
+                                                {{ 'ไม่มีกำหนด' }}
+                                            </span>
+                                            @if($isReturned)
+                                                <p class="text-sm text-amber-600 font-semibold mt-0.5">{{ 'ส่งคืนแล้ว' }}</p>
+                                            @endif
+                                        </div>
+                                        <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
+                    @else
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-xs font-semibold uppercase tracking-wider text-(--ll-blue)">
+                                    {{ \Carbon\Carbon::parse($date)->translatedFormat('l') }}
+                                </span>
+                                <span class="text-sm font-medium text-gray-500">
+                                    {{ \Carbon\Carbon::parse($date)->translatedFormat('j F Y') }}
+                                </span>
+                                <div class="flex-1 h-px bg-gray-200"></div>
+                                <span class="text-xs text-gray-500 bg-white border border-gray-200 rounded-full px-2 py-0.5">
+                                    {{ $assignments->count() }} {{ 'รายการ' }}
+                                </span>
+                            </div>
+
+                            <div class="space-y-2">
+                                @foreach($assignments as $a)
+                                    @php
+                                        $currentIndex = $i++;
+                                        $isOverdue = $a->due_date->isPast();
+                                        $isUrgent = $isOverdue || $a->due_date->lt(now()->addDay());
+                                        $room = $a->classworkItem->classroom;
+                                        $themeColor = $room->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($room->id)['color'];
+                                        $submission = $a->submissions->firstWhere('user_id', auth()->id());
+                                        $isReturned = $submission?->status === 'returned';
+                                    @endphp
+                                    <a href="{{ route('assignment.show', ['classroom' => $a->classworkItem->classroom, 'assignment' => $a]) }}"
+                                       x-data="{ show: false }" x-init="setTimeout(() => show = true, {{ $currentIndex * 60 }})" x-show="show" x-cloak
+                                       x-transition:enter="transition ease-out duration-400"
+                                       x-transition:enter-start="opacity-0 translate-y-6"
+                                       x-transition:enter-end="opacity-100 translate-y-0"
+                                       class="rounded-lg border border-[#dedee5] bg-white hover:shadow-[0_0_0_2px_var(--room-color)] flex items-center gap-4 p-4 transition-all duration-300 group"
+                                       style="--room-color: {{ $themeColor }};">
+                                        <div class="w-3 h-3 rounded-full shrink-0 ring-2 ring-white"
+                                             style="background-color: {{ $themeColor }}"></div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-base font-medium text-gray-900 truncate">
+                                                {{ $a->title }}
+                                            </p>
+                                            <p class="text-sm text-gray-500 truncate mt-0.5">
+                                                {{ $a->classworkItem->classroom->name }}
+                                            </p>
+                                        </div>
+                                        <div class="text-right shrink-0">
+                                            <span class="text-sm font-medium {{ $isUrgent ? 'text-red-600' : 'text-gray-500' }}">
+                                                {{ $a->due_date->translatedFormat('H:i') }}
+                                            </span>
+                                            @if($isReturned)
+                                                <p class="text-sm text-amber-600 font-semibold mt-0.5">{{ 'ส่งคืนแล้ว' }}</p>
+                                            @elseif($isOverdue)
+                                                <p class="text-sm text-red-500 mt-0.5">{{ 'เลยกำหนดแล้ว' }}</p>
+                                            @elseif($isUrgent)
+                                                <p class="text-sm text-red-500 mt-0.5">{{ 'ใกล้กำหนดส่ง' }}</p>
+                                            @endif
+                                        </div>
+                                        <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 @endforeach
             </div>
         @endif

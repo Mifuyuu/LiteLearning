@@ -255,7 +255,7 @@ class GamificationService
             return;
         }
 
-        $turnedInCount = $user->submissions()->whereIn('status', ['turned_in', 'graded', 'returned'])->count();
+        $turnedInCount = $user->submissions()->whereIn('status', ['turned_in', 'graded'])->count();
         if ($turnedInCount >= 1) {
             $this->unlockAchievement($user, 'first_assignment_turned_in');
         }
@@ -356,7 +356,7 @@ class GamificationService
             ->leftJoin('submissions', function ($join) use ($user) {
                 $join->on('submissions.assignment_id', '=', 'assignments.id')
                     ->where('submissions.user_id', $user->id)
-                    ->whereIn('submissions.status', ['turned_in', 'graded', 'returned']);
+                    ->whereIn('submissions.status', ['turned_in', 'graded']);
             })
             ->groupBy('classrooms.id')
             ->havingRaw('COUNT(assignments.id) > 0')

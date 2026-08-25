@@ -150,7 +150,7 @@
                                     {{ 'ยกเลิก' }}
                                 </button>
                                 <button type="submit"
-                                    class="btn-3d btn-3d--indigo inline-flex items-center px-5 py-2.5 text-sm font-medium rounded-lg">
+                                    class="btn-3d btn-3d--blue inline-flex items-center px-5 py-2.5 text-sm font-medium rounded-lg">
                                     <x-icon name="check" class="h-4 w-4 mr-2" /> {{ 'บันทึก' }}
                                 </button>
                             </div>
@@ -196,23 +196,13 @@
         </div>
 
         {{-- Delete modal --}}
-        @if($showDeleteModal)
-            <div class="fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center p-4" x-data x-cloak>
-                <div class="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full" @click.outside="$wire.closeDeleteModal()">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ 'ลบเอกสาร' }}</h3>
-                    <p class="text-sm text-gray-600 mb-5">{{ 'เอกสารนี้และไฟล์แนบทั้งหมดจะถูกลบอย่างถาวร การดำเนินการนี้ไม่สามารถยกเลิกได้' }}</p>
-                    <div class="flex justify-end gap-3">
-                        <button wire:click="closeDeleteModal"
-                            class="btn-3d btn-3d--white inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg">
-                            {{ 'ยกเลิก' }}
-                        </button>
-                        <button wire:click="deleteMaterial"
-                            class="btn-3d btn-3d--red inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg">
-                            <x-icon name="trash" class="h-4 w-4 mr-2" /> {{ 'ลบ' }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        @endif
+        <template x-teleport="body">
+            <x-confirm-modal show="$wire.showDeleteModal" cancel="$wire.closeDeleteModal()" heading="ยืนยันการลบเอกสาร" message="เอกสารนี้และไฟล์แนบทั้งหมดจะถูกลบอย่างถาวร การดำเนินการนี้ไม่สามารถยกเลิกได้">
+                <button type="button" wire:click="deleteMaterial"
+                    class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                    {{ 'ลบเอกสาร' }}
+                </button>
+            </x-confirm-modal>
+        </template>
     </div>
 </div>

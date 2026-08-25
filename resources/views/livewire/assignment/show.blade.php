@@ -16,7 +16,7 @@
     $themeColor = $classroom->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['color'];
 @endphp
 
-<div class="max-w-4xl mx-auto" x-data="{ copiedToast: false, showDeleteModal: false }">
+<div class="max-w-4xl mx-auto" x-data="{ copiedToast: false, showDeleteModal: false, showDeleteFileModal: false, deleteFileId: null, deleteFileName: '', deleteFileType: 'submission' }">
     <!-- Back (previous page, falls back to classroom home on direct load) -->
     <a href="{{ route('classroom.show', $classroom) }}" onclick="if (history.length > 1) { history.back(); return false; }"
         class="inline-flex items-center text-base font-medium text-gray-600 hover:text-gray-800 mb-6">
@@ -218,12 +218,22 @@
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-900">งานของคุณ</h3>
                         @if($userSubmission)
-                            <span
-                                class="text-xs px-2.5 py-1 rounded-full font-medium capitalize
-                                    {{ $userSubmission->status === 'turned_in' ? 'bg-blue-100 text-blue-700' :
-                        ($userSubmission->status === 'graded' ? 'bg-green-100 text-green-700' :
-                            ($userSubmission->status === 'returned' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700')) }}">
-                                {{ str_replace('_', ' ', $userSubmission->status) }}
+                            @php
+                                $subStatusClasses = [
+                                    'turned_in' => 'bg-blue-100 text-blue-700',
+                                    'graded' => 'bg-green-100 text-green-700',
+                                    'returned' => 'bg-amber-100 text-amber-800 font-semibold',
+                                    'assigned' => 'bg-gray-100 text-gray-700',
+                                ];
+                                $subStatusLabels = [
+                                    'turned_in' => 'ส่งแล้ว',
+                                    'graded' => 'ให้คะแนนแล้ว',
+                                    'returned' => 'ส่งคืนแล้ว',
+                                    'assigned' => 'มอบหมายแล้ว',
+                                ];
+                            @endphp
+                            <span class="text-xs px-2.5 py-1 rounded-full font-medium {{ $subStatusClasses[$userSubmission->status] ?? 'bg-gray-100 text-gray-700' }}">
+                                {{ $subStatusLabels[$userSubmission->status] ?? $userSubmission->status }}
                             </span>
                         @else
                             <span
@@ -244,11 +254,29 @@
                     @endif
 
                     @if($userSubmission?->isGraded())
-                        <div class="mt-3 p-3 bg-green-50 rounded-lg">
+                        <div class="mt-3 p-3.5 bg-green-50 border border-green-200 rounded-xl">
                             <p class="text-2xl font-bold text-green-700">{{ $userSubmission->score }}<span
                                     class="text-sm font-normal text-green-600">/{{ $assignment->max_score }}</span></p>
                             @if($userSubmission->feedback)
-                                <p class="text-sm text-green-600 mt-1">{{ $userSubmission->feedback }}</p>
+                                <div class="mt-2 pt-2 border-t border-green-200/60">
+                                    <p class="text-xs font-semibold text-green-800">ข้อเสนอแนะจากผู้สอน:</p>
+                                    <p class="text-sm text-green-700 mt-0.5 whitespace-pre-line leading-relaxed">{{ $userSubmission->feedback }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
+                    @if($userSubmission?->status === 'returned')
+                        <div class="mt-3 p-3.5 bg-amber-50 border border-amber-200 rounded-xl">
+                            <div class="flex items-center gap-2">
+                                <x-icon name="arrow-uturn-left" class="h-4 w-4 text-amber-600 shrink-0" />
+                                <p class="text-sm font-bold text-amber-800">ผู้สอนได้ส่งงานคืนให้แก้ไข</p>
+                            </div>
+                            @if($userSubmission->feedback)
+                                <div class="mt-2.5 pt-2 border-t border-amber-200/70">
+                                    <p class="text-xs font-semibold text-amber-800">ข้อเสนอแนะจากผู้สอน:</p>
+                                    <p class="text-sm text-amber-900 mt-1 whitespace-pre-line leading-relaxed">{{ $userSubmission->feedback }}</p>
+                                </div>
                             @endif
                         </div>
                     @endif
@@ -330,9 +358,10 @@
                                                     <p class="text-xs font-medium text-gray-700 truncate">{{ $attachment->file_name }}</p>
                                                     <p class="text-xs text-gray-400">{{ $attachment->formatted_size }}</p>
                                                 </div>
-                                                <button wire:click="removeFile({{ $attachment->id }})"
-                                                    wire:confirm="ลบไฟล์นี้?"
-                                                    class="p-1 text-gray-400 hover:text-red-500 rounded transition-colors">
+                                                <button type="button"
+                                                    @click="deleteFileId = {{ $attachment->id }}; deleteFileName = @js($attachment->file_name); deleteFileType = 'submission'; showDeleteFileModal = true"
+                                                    class="p-1 text-gray-400 hover:text-red-500 rounded transition-colors cursor-pointer"
+                                                    title="ลบไฟล์">
                                                     <x-icon name="x-mark" class="h-4 w-4" />
                                                 </button>
                                             </div>
@@ -460,17 +489,17 @@
                                                 <span class="text-green-600">ให้คะแนนแล้ว:
                                                     {{ $sub->score }}/{{ $assignment->max_score }}</span>
                                             @elseif($sub->status === 'returned')
-                                                <span class="text-blue-600">ส่งคืนแล้ว</span>
+                                                <span class="text-amber-600 font-semibold">ส่งคืนแล้ว</span>
                                             @else
                                                 <span class="text-gray-400">ยังไม่ส่ง</span>
                                             @endif
                                         </p>
                                     </div>
                                 </div>
-                                @if($sub->isTurnedIn())
+                                @if($sub->isTurnedIn() || $sub->status === 'returned')
                                     <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $sub]) }}"
                                         class="px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors">
-                                        <x-icon :name="$sub->isGraded() ? 'eye' : 'pencil'" class="h-4 w-4 mr-1" />{{ $sub->isGraded() ? 'ดูคะแนน' : 'ให้คะแนน' }}
+                                        <x-icon :name="$sub->isGraded() ? 'eye' : ($sub->status === 'returned' ? 'arrow-uturn-left' : 'pencil')" class="h-4 w-4 mr-1" />{{ $sub->isGraded() ? 'ดูคะแนน' : ($sub->status === 'returned' ? 'ดูงานที่ส่งคืน' : 'ให้คะแนน') }}
                                     </a>
                                 @endif
                             </div>
@@ -613,9 +642,10 @@
                                             <x-icon name="document-text" class="h-4 w-4 text-gray-400 mr-2 shrink-0" />
                                             <span class="text-xs text-gray-700 truncate">{{ $attachment->file_name }}</span>
                                         </div>
-                                        <button type="button" wire:click="removeEditAttachment({{ $attachment->id }})"
-                                            wire:loading.attr="disabled"
-                                            class="text-red-400 hover:text-red-600 shrink-0 ml-2 cursor-pointer">
+                                        <button type="button"
+                                            @click="deleteFileId = {{ $attachment->id }}; deleteFileName = @js($attachment->file_name); deleteFileType = 'edit'; showDeleteFileModal = true"
+                                            class="text-red-400 hover:text-red-600 shrink-0 ml-2 cursor-pointer"
+                                            title="ลบไฟล์">
                                             <x-icon name="trash" class="h-4 w-4" />
                                         </button>
                                     </div>
@@ -677,43 +707,35 @@
         </div>
     @endif
 
+    <!-- Delete File Modal -->
+    <template x-teleport="body">
+        <x-confirm-modal show="showDeleteFileModal" cancel="showDeleteFileModal = false" heading="ยืนยันการลบไฟล์">
+            <x-slot:message>
+                {{ 'คุณต้องการลบไฟล์' }} <span class="font-semibold text-[#101114]" x-text="deleteFileName"></span> {{ 'ใช่หรือไม่?' }}
+            </x-slot:message>
+            <button type="button"
+                @click="
+                    if (deleteFileType === 'submission') {
+                        $wire.removeFile(deleteFileId);
+                    } else if (deleteFileType === 'edit') {
+                        $wire.removeEditAttachment(deleteFileId);
+                    }
+                    showDeleteFileModal = false;
+                "
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                {{ 'ลบไฟล์' }}
+            </button>
+        </x-confirm-modal>
+    </template>
+
     <!-- Delete Assignment Modal -->
     <template x-teleport="body">
-        <div x-show="showDeleteModal" x-cloak
-            class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/60"
-            @click.self="showDeleteModal = false">
-            <div x-show="showDeleteModal" x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-100"
-                x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                class="w-full max-w-md bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden"
-                @click.stop>
-                <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-                    <div>
-                        <h4 class="text-base font-semibold text-gray-900">ลบงาน</h4>
-                        <p class="text-sm text-gray-500 mt-1">
-                            คุณแน่ใจหรือว่าต้องการลบงานนี้? การกระทำนี้ไม่สามารถยกเลิกได้
-                        </p>
-                    </div>
-                    <button type="button" @click="showDeleteModal = false"
-                        class="text-gray-400 hover:text-gray-600 transition-colors">
-                        <x-icon name="x-mark" class="h-5 w-5" />
-                    </button>
-                </div>
-                <div class="px-6 py-5">
-                    <div class="flex justify-end gap-2">
-                        <button type="button" @click="showDeleteModal = false"
-                            class="inline-flex items-center px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                            <x-icon name="x-mark" class="h-4 w-4 mr-1.5" />ยกเลิก
-                        </button>
-                        <button type="button" @click="$wire.deleteAssignment(); showDeleteModal = false"
-                            class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-700 transition-colors inline-flex items-center">
-                            <x-icon name="trash" class="h-4 w-4 mr-1.5" />ลบ
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <x-confirm-modal show="showDeleteModal" cancel="showDeleteModal = false" heading="ยืนยันการลบงาน" message="คุณแน่ใจหรือว่าต้องการลบงานนี้? การกระทำนี้ไม่สามารถยกเลิกได้">
+            <button type="button" @click="$wire.deleteAssignment(); showDeleteModal = false"
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                {{ 'ลบงาน' }}
+            </button>
+        </x-confirm-modal>
     </template>
 
     <!-- Copied Toast -->

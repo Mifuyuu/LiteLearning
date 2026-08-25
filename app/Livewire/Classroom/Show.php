@@ -71,7 +71,7 @@ class Show extends Component
         }
         $this->classroom->setRelation('assignments', $assignments);
 
-        $materialsQuery = $this->classroom->materials()->with(['classworkItem.user', 'classworkItem.topic']);
+        $materialsQuery = $this->classroom->materials()->with(['classworkItem.user', 'classworkItem.topic', 'attachments']);
         if (! $this->classroom->canManageClassroom($user)) {
             $materialsQuery->where(function ($query): void {
                 $query->whereNull('classwork_items.published_at')

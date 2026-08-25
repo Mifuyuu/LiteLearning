@@ -68,7 +68,7 @@ class Dashboard extends Component
     ): array {
         $submissions = $user->submissions()
             ->with('assignment')
-            ->whereIn('status', ['turned_in', 'graded', 'returned'])
+            ->whereIn('status', ['turned_in', 'graded'])
             ->get();
         $onTimeCount = $submissions->filter(
             fn (Submission $submission): bool => ! $submission->isLate()
@@ -86,7 +86,7 @@ class Dashboard extends Component
             })
             ->whereDoesntHave('submissions', function ($query) use ($user): void {
                 $query->where('user_id', $user->id)
-                    ->whereIn('status', ['turned_in', 'graded', 'returned']);
+                    ->whereIn('status', ['turned_in', 'graded']);
             })
             ->count();
         $gamificationService = app(GamificationService::class);

@@ -98,7 +98,7 @@
                     <!-- Actions -->
                     <div class="space-y-2 pt-2">
                         <button wire:click="grade"
-                            class="btn-3d btn-3d--indigo w-full py-2.5 text-sm font-medium rounded-lg transition-colors">
+                            class="btn-3d btn-3d--blue w-full py-2.5 text-sm font-medium rounded-lg transition-colors">
                             <span wire:loading.remove wire:target="grade">
                                     {{ $submission->isGraded() ? 'อัปเดตคะแนน' : 'บันทึกคะแนน' }}
                             </span>
@@ -106,10 +106,10 @@
                                 กำลังบันทึก...</span>
                         </button>
 
-                        @if($submission->isTurnedIn())
+                        @if($submission->isTurnedIn() || $submission->status === 'returned')
                             <button wire:click="returnSubmission"
                                 class="w-full py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
-                                ส่งคืนนักเรียน
+                                {{ $submission->status === 'returned' ? 'ส่งคืนพร้อมข้อเสนอแนะใหม่' : 'ส่งคืนนักเรียน' }}
                             </button>
                         @endif
                     </div>
@@ -120,6 +120,11 @@
                             <p class="text-sm text-green-700 font-medium">ให้คะแนนแล้ว
                                 {{ $submission->graded_at?->translatedFormat('j M, H:i') }}
                             </p>
+                        </div>
+                    @elseif($submission->status === 'returned')
+                        <div class="mt-2 p-3 bg-amber-50 rounded-lg text-center">
+                            <x-icon name="arrow-uturn-left" class="h-5 w-5 text-amber-500 mb-1 inline-block" />
+                            <p class="text-sm text-amber-700 font-medium">ส่งคืนงานให้นักเรียนแก้ไขแล้ว</p>
                         </div>
                     @endif
                 </div>

@@ -114,9 +114,29 @@ class Work extends Component
         })->values();
     }
 
+    private function visibleMaterials(): Collection
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $materials = $this->classroom->materials()
+            ->with(['classworkItem.topic', 'classworkItem.user', 'attachments'])
+            ->latest()
+            ->get();
+
+        if (! $this->classroom->canManageClassroom($user)) {
+            $materials = $materials->filter(function (\App\Models\Material $material): bool {
+                return ! $material->classworkItem?->published_at?->isFuture();
+            })->values();
+        }
+
+        return $materials;
+    }
+
     public function render()
     {
         $assignments = $this->visibleAssignments();
+        $materials = $this->visibleMaterials();
         $pendingAssignments = $this->pendingAssignments($assignments);
         $completedAssignments = $this->completedAssignments($assignments);
 
@@ -130,9 +150,10 @@ class Work extends Component
 
         return view('livewire.classroom.work', [
             'assignments' => $assignments,
+            'materials' => $materials,
             'pendingAssignments' => $pendingAssignments,
             'completedAssignments' => $completedAssignments,
-            'assignmentCount' => $assignments->count(),
+            'assignmentCount' => $assignments->count() + $materials->count(),
         ])->title($this->classroom->name.' - '.'งานในชั้นเรียน');
     }
 }

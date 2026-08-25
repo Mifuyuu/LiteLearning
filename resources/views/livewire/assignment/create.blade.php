@@ -13,7 +13,7 @@
     </nav>
 @endsection
 
-<div class="max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto" x-data="{ showDeleteFileModal: false, deleteFileIndex: null, deleteFileName: '' }">
     <!-- Back -->
     <a href="{{ route('classroom.show', $classroom) }}"
         class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
@@ -178,8 +178,9 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <button type="button" wire:click="removeFile({{ $index }})"
-                                        class="text-gray-400 hover:text-red-500 shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"
+                                    <button type="button"
+                                        @click="deleteFileIndex = {{ $index }}; deleteFileName = @js($uploadedFile['name']); showDeleteFileModal = true"
+                                        class="text-gray-400 hover:text-red-500 shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors cursor-pointer"
                                         title="ลบ">
                                         <x-icon name="x-mark" class="h-4 w-4" />
                                     </button>
@@ -298,4 +299,17 @@
             </div>
         </div>
     </form>
+
+    <template x-teleport="body">
+        <x-confirm-modal show="showDeleteFileModal" cancel="showDeleteFileModal = false" heading="ยืนยันการลบไฟล์">
+            <x-slot:message>
+                {{ 'คุณต้องการลบไฟล์' }} <span class="font-semibold text-[#101114]" x-text="deleteFileName"></span> {{ 'ใช่หรือไม่?' }}
+            </x-slot:message>
+            <button type="button"
+                @click="$wire.removeFile(deleteFileIndex); showDeleteFileModal = false"
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                {{ 'ลบไฟล์' }}
+            </button>
+        </x-confirm-modal>
+    </template>
 </div>

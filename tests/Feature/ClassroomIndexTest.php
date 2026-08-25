@@ -95,4 +95,43 @@ class ClassroomIndexTest extends TestCase
         $response->assertOk();
         $response->assertSeeText('Shared Physics');
     }
+
+    public function test_classroom_work_page_renders_materials_under_topics(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        /** @var User $student */
+        $student = User::factory()->create(['role' => 'student']);
+
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
+
+        $topic = \App\Models\Topic::create([
+            'classroom_id' => $classroom->id,
+            'name' => 'บทเรียนที่ 1 วิทยาศาสตร์',
+        ]);
+
+        $item = \App\Models\ClassworkItem::create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'topic_id' => $topic->id,
+            'type' => 'material',
+            'title' => 'เอกสารประกอบการสอนบทที่ 1',
+            'description' => 'อ่านทบทวนก่อนสอบ',
+            'published_at' => now()->subMinute(),
+        ]);
+
+        \App\Models\Material::create([
+            'classwork_item_id' => $item->id,
+        ]);
+
+        \Livewire\Livewire::actingAs($student)
+            ->test(\App\Livewire\Classroom\Work::class, [
+                'classroom' => $classroom,
+                'scope' => 'all',
+            ])
+            ->assertSee('บทเรียนที่ 1 วิทยาศาสตร์')
+            ->assertSee('เอกสารประกอบการสอนบทที่ 1')
+            ->assertSee('สื่อการสอน');
+    }
 }

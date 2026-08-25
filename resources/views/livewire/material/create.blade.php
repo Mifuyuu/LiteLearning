@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto" x-data="{ showDeleteFileModal: false, deleteFileIndex: null, deleteFileName: '' }">
     <div>
 
         {{-- Breadcrumb --}}
@@ -7,7 +7,7 @@
             <x-icon name="chevron-right" class="h-3.5 w-3.5 mx-1" />
             <a href="{{ route('classroom.show', $classroom) }}"
                 class="hover:text-blue-600 transition-colors"
-                title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 15, '..') }}</a>
+                title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 25, '..') }}</a>
             <x-icon name="chevron-right" class="h-3.5 w-3.5 mx-1" />
             <span class="text-gray-800 font-medium">{{ 'สร้างเอกสาร' }}</span>
         </nav>
@@ -74,8 +74,10 @@
                                     <span class="text-sm text-gray-700 truncate">{{ $uploaded['name'] }}</span>
                                     <span class="text-xs text-gray-400">({{ number_format($uploaded['size'] / 1024, 0) }} KB)</span>
                                 </div>
-                                <button type="button" wire:click="removeFile({{ $index }})"
-                                    class="text-red-400 hover:text-red-600 transition-colors">
+                                <button type="button"
+                                    @click="deleteFileIndex = {{ $index }}; deleteFileName = @js($uploaded['name']); showDeleteFileModal = true"
+                                    class="text-red-400 hover:text-red-600 transition-colors cursor-pointer"
+                                    title="ลบ">
                                     <x-icon name="x-mark" class="h-4 w-4" />
                                 </button>
                             </div>
@@ -107,10 +109,23 @@
                     {{ 'ยกเลิก' }}
                 </a>
                 <button type="submit"
-                    class="btn-3d btn-3d--indigo inline-flex items-center px-5 py-2.5 text-sm font-medium rounded-lg transition-colors">
+                    class="btn-3d btn-3d--blue inline-flex items-center px-5 py-2.5 text-sm font-medium rounded-lg transition-colors">
                     <x-icon name="check" class="h-4 w-4 mr-2" /> {{ 'เผยแพร่เอกสาร' }}
                 </button>
             </div>
         </form>
     </div>
+
+    <template x-teleport="body">
+        <x-confirm-modal show="showDeleteFileModal" cancel="showDeleteFileModal = false" heading="ยืนยันการลบไฟล์">
+            <x-slot:message>
+                {{ 'คุณต้องการลบไฟล์' }} <span class="font-semibold text-[#101114]" x-text="deleteFileName"></span> {{ 'ใช่หรือไม่?' }}
+            </x-slot:message>
+            <button type="button"
+                @click="$wire.removeFile(deleteFileIndex); showDeleteFileModal = false"
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                {{ 'ลบไฟล์' }}
+            </button>
+        </x-confirm-modal>
+    </template>
 </div>

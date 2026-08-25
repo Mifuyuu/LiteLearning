@@ -27,18 +27,30 @@ class Calendar extends Component
             $upcoming = $upcoming->merge(
                 $classroom->assignments()->published()
                     ->whereNotIn('assignments.type', ['material', 'announcement', 'topic'])
-                    ->whereNotNull('due_date')
                     ->whereDoesntHave('submissions', function ($query) use ($user): void {
                         $query->where('user_id', $user->id)
-                            ->whereIn('status', ['turned_in', 'graded', 'returned']);
+                            ->whereIn('status', ['turned_in', 'graded']);
                     })
-                    ->with('classworkItem.classroom.themeCategory')
-                    ->orderBy('due_date')
+                    ->with(['classworkItem.classroom.themeCategory', 'submissions' => function ($query) use ($user): void {
+                        $query->where('user_id', $user->id);
+                    }])
                     ->get()
             );
         }
 
-        $this->upcoming = $upcoming->sortBy('due_date')->take(20)->values();
+        $this->upcoming = $upcoming->sort(function ($a, $b) {
+            if ($a->due_date === null && $b->due_date === null) {
+                return 0;
+            }
+            if ($a->due_date === null) {
+                return 1;
+            }
+            if ($b->due_date === null) {
+                return -1;
+            }
+
+            return $a->due_date <=> $b->due_date;
+        })->values();
     }
 
     public function render()

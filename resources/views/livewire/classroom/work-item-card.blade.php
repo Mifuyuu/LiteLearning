@@ -20,20 +20,22 @@
                 <div class="min-w-0">
                     <h4 class="truncate text-lg font-semibold text-[#101114] transition-colors group-hover:text-(--cw-color)">{{ $assignment->title }}</h4>
                     <div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-[#686b82]">
-                        <span>{{ $assignment->typeLabel() }}</span>
                         @if($assignment->due_date)
                             <span class="inline-flex items-center gap-1 rounded-md bg-[rgba(104,107,130,0.12)] px-2.5 py-1 text-[#484b5e]">
                                 <x-icon name="clock" class="h-3 w-3" />
                                 {{ 'กำหนดส่ง ' . $assignment->due_date->translatedFormat('j M Y H:i') }}
                             </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 rounded-md bg-[rgba(104,107,130,0.12)] px-2.5 py-1 text-[#484b5e]">
+                                <x-icon name="clock" class="h-3 w-3" />
+                                {{ 'ไม่มีกำหนดส่ง' }}
+                            </span>
                         @endif
-                        @if($assignment->topic)
                             <span class="inline-flex items-center gap-1 rounded-md px-2.5 py-1"
                                 style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
                                 <x-icon name="tag" class="h-3 w-3" />
-                                {{ $assignment->topic }}
+                                {{ $assignment->typeLabel() }}
                             </span>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -50,10 +52,20 @@
                     {{ $submittedCount }}/{{ $studentCount }} {{ 'ส่งแล้ว' }}
                 </span>
             @else
-                <span class="inline-flex items-center gap-2 rounded-md px-3 py-1 text-sm font-semibold {{ $isCompleted ? 'bg-[rgba(20,158,97,0.16)] text-[#026b3f]' : 'bg-[rgba(104,107,130,0.12)] text-[#484b5e]' }}">
-                    <x-icon :name="$isCompleted ? 'check-circle' : 'clock'" class="h-4 w-4" />
-                    {{ $isCompleted ? 'เสร็จแล้ว' : 'ยังไม่ทำ' }}
-                </span>
+                @php
+                    $isReturned = $submission?->status === 'returned';
+                @endphp
+                @if($isReturned)
+                    <span class="inline-flex items-center gap-2 rounded-md bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-700">
+                        <x-icon name="arrow-uturn-left" class="h-4 w-4" />
+                        {{ 'ถูกตีกลับ' }}
+                    </span>
+                @else
+                    <span class="inline-flex items-center gap-2 rounded-md px-3 py-1 text-sm font-semibold {{ $isCompleted ? 'bg-[rgba(20,158,97,0.16)] text-[#026b3f]' : 'bg-[rgba(104,107,130,0.12)] text-[#484b5e]' }}">
+                        <x-icon :name="$isCompleted ? 'check-circle' : 'clock'" class="h-4 w-4" />
+                        {{ $isCompleted ? 'เสร็จแล้ว' : 'ยังไม่ทำ' }}
+                    </span>
+                @endif
             @endif
 
             @if($assignment->status !== 'published')

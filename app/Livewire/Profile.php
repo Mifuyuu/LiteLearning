@@ -76,7 +76,7 @@ class Profile extends Component
     private function computeProfileStats(User $user): void
     {
         $gradedSubmissions = $user->submissions()->whereNotNull('score');
-        $submissionsCount = $user->submissions()->whereIn('status', ['turned_in', 'graded', 'returned'])->count();
+        $submissionsCount = $user->submissions()->whereIn('status', ['turned_in', 'graded'])->count();
 
         $teacherStats = ['assignments_created' => 0, 'graded_submissions' => 0];
         if ($user->isTeacher()) {

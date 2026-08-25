@@ -107,27 +107,27 @@
                 <div class="mb-5">
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">URL</label>
                     <input x-ref="linkInput" x-model="linkUrl" type="url"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="https://example.com"
                         @keydown.enter.prevent="saveLink()">
                 </div>
 
                 {{-- Actions --}}
-                <div class="flex flex-col gap-2.5">
+                <div class="flex items-center gap-2.5">
                     <button type="button" @click="saveLink()"
-                        class="btn-3d btn-3d--blue w-full py-2.5 font-bold rounded-lg text-sm transition-all">
-                        <x-icon name="check" class="h-4 w-4 mr-1.5" /> {{ 'บันทึก' }}
+                        class="flex-1 py-2.5 font-bold rounded-lg text-sm text-white bg-blue-600 hover:bg-blue-700 transition-all flex items-center justify-center gap-1.5 shadow-sm">
+                        <x-icon name="check" class="h-4 w-4" />
+                        <span>{{ 'บันทึก' }}</span>
                     </button>
-                    <div class="flex gap-2.5">
-                        <button type="button" @click="removeLink()" x-show="isActive('link')"
-                            class="flex-1 py-2.5 text-sm font-medium text-red-600 border border-red-200 hover:bg-red-50 rounded-lg transition-colors">
-                            <x-icon name="link-slash" class="h-4 w-4 mr-1" /> {{ 'ลบ' }}
-                        </button>
-                        <button type="button" @click="showLinkModal = false"
-                            class="flex-1 py-2.5 text-sm font-medium text-gray-600 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors">
-                            {{ 'ยกเลิก' }}
-                        </button>
-                    </div>
+                    <button type="button" @click="removeLink()" x-show="isActive('link')"
+                        class="flex-1 py-2.5 text-sm font-medium text-red-600 border border-red-200 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center gap-1">
+                        <x-icon name="link-slash" class="h-4 w-4" />
+                        <span>{{ 'ลบ' }}</span>
+                    </button>
+                    <button type="button" @click="showLinkModal = false"
+                        class="flex-1 py-2.5 text-sm font-medium text-gray-600 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center">
+                        <span>{{ 'ยกเลิก' }}</span>
+                    </button>
                 </div>
             </div>
         </div>

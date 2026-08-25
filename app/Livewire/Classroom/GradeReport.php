@@ -145,7 +145,7 @@ class GradeReport extends Component
             ->whereIn('assignment_id', $assignments->pluck('id'))
             ->get();
 
-        $turnedIn = $submissions->whereIn('status', ['turned_in', 'graded', 'returned'])->count();
+        $turnedIn = $submissions->whereIn('status', ['turned_in', 'graded'])->count();
         $graded = $submissions->where('status', 'graded');
         $pendingGrading = $submissions->where('status', 'turned_in')->count();
 

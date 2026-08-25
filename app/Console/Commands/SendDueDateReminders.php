@@ -46,7 +46,7 @@ class SendDueDateReminders extends Command
                 $students = $classroom->students ?? collect();
 
                 $submittedUserIds = Submission::where('assignment_id', $assignment->id)
-                    ->whereIn('status', ['turned_in', 'graded', 'returned'])
+                    ->whereIn('status', ['turned_in', 'graded'])
                     ->pluck('user_id')
                     ->all();
 

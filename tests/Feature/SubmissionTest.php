@@ -276,4 +276,69 @@ class SubmissionTest extends TestCase
 
         $this->assertStringEndsWith('/g/'.$submission->id, $url);
     }
+
+    public function test_teacher_can_return_submission_with_feedback_and_student_sees_feedback(): void
+    {
+        $submission = Submission::where('assignment_id', $this->assignment->id)
+            ->where('user_id', $this->student->id)
+            ->firstOrFail();
+        $submission->turnIn();
+
+        Livewire::actingAs($this->teacher)
+            ->test(\App\Livewire\Assignment\Grade::class, [
+                'classroom' => $this->classroom,
+                'assignment' => $this->assignment,
+                'submission' => $submission,
+            ])
+            ->set('feedback', 'กรุณาแก้ไขเนื้อหาในย่อหน้าที่ 2 เพิ่มเติม')
+            ->call('returnSubmission')
+            ->assertHasNoErrors();
+
+        $submission->refresh();
+        $this->assertSame('returned', $submission->status);
+        $this->assertSame('กรุณาแก้ไขเนื้อหาในย่อหน้าที่ 2 เพิ่มเติม', $submission->feedback);
+        $this->assertFalse($submission->isTurnedIn());
+
+        // Student views assignment and sees the feedback
+        Livewire::actingAs($this->student)
+            ->test(\App\Livewire\Assignment\Show::class, [
+                'classroom' => $this->classroom,
+                'assignment' => $this->assignment,
+            ])
+            ->assertSee('ผู้สอนได้ส่งงานคืนให้แก้ไข')
+            ->assertSee('กรุณาแก้ไขเนื้อหาในย่อหน้าที่ 2 เพิ่มเติม')
+            ->assertSee('ส่งคืนแล้ว');
+    }
+
+    public function test_calendar_shows_all_unsubmitted_and_returned_tasks_sorted_by_priority(): void
+    {
+        $submission = Submission::where('assignment_id', $this->assignment->id)
+            ->where('user_id', $this->student->id)
+            ->firstOrFail();
+        $submission->returnSubmission('แก้ไขด่วน');
+
+        $assignmentNoDueDate = Assignment::factory()->create([
+            'user_id' => $this->teacher->id,
+            'classroom_id' => $this->classroom->id,
+            'type' => 'question',
+            'status' => 'published',
+            'due_date' => null,
+        ]);
+
+        $assignmentUrgent = Assignment::factory()->create([
+            'user_id' => $this->teacher->id,
+            'classroom_id' => $this->classroom->id,
+            'type' => 'question',
+            'status' => 'published',
+            'due_date' => now()->addHours(2),
+        ]);
+
+        Livewire::actingAs($this->student)
+            ->test(\App\Livewire\Student\Calendar::class)
+            ->assertSee($this->assignment->title)
+            ->assertSee($assignmentNoDueDate->title)
+            ->assertSee($assignmentUrgent->title)
+            ->assertSee('ไม่มีกำหนดส่ง')
+            ->assertSee('ส่งคืนแล้ว');
+    }
 }

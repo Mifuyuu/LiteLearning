@@ -76,7 +76,11 @@ class Grade extends Component
 
     public function returnSubmission(): void
     {
-        $this->submission->returnSubmission();
+        $this->validate([
+            'feedback' => 'nullable|string',
+        ]);
+
+        $this->submission->returnSubmission($this->feedback);
         $this->submission->refresh();
 
         session()->flash('message', __('messages.assignment.returned'));

@@ -6,7 +6,7 @@
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)" title="{{ $classroom->name }}">
-            {{ \Illuminate\Support\Str::limit($classroom->name, 15, '..') }}
+            {{ \Illuminate\Support\Str::limit($classroom->name, 10, '..') }}
         </a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <span class="font-semibold text-[#101114]">{{ 'งานในชั้นเรียน' }}</span>
@@ -30,31 +30,38 @@
             ])->render();
         }
 
-        $grouped = $items->groupBy(fn ($assignment) => $assignment->topic ?? 'ทั่วไป');
+        $grouped = $items->groupBy(fn ($item) => $item->topic ?? 'ทั่วไป');
 
         ob_start();
         echo '<section class="space-y-5">';
         if ($title !== '') {
             // echo '<p class="text-xs font-semibold uppercase text-[#9497a9]">'.e($title).'</p>';
         }
-        foreach ($grouped as $topic => $assignments) {
+        foreach ($grouped as $topic => $groupItems) {
             echo '<section class="space-y-3">';
             echo '<div class="flex items-center gap-3">';
             echo '<h3 class="text-sm font-semibold uppercase text-[#9497a9]">'.e($topic).'</h3>';
             echo '<div class="h-px flex-1 bg-[#dedee5]"></div>';
             echo '</div>';
             echo '<div class="space-y-3">';
-            foreach ($assignments as $assignment) {
-                $submission = auth()->user()->isStudent()
-                    ? $assignment->submissions->firstWhere('user_id', auth()->id())
-                    : null;
-                $isCompleted = $submission?->isTurnedIn() ?? false;
-                echo view('livewire.classroom.work-item-card', [
-                    'assignment' => $assignment,
-                    'classroom' => $classroom,
-                    'submission' => $submission,
-                    'isCompleted' => $isCompleted,
-                ])->render();
+            foreach ($groupItems as $item) {
+                if ($item instanceof \App\Models\Material) {
+                    echo view('livewire.classroom.material-item-card', [
+                        'material' => $item,
+                        'classroom' => $classroom,
+                    ])->render();
+                } else {
+                    $submission = auth()->user()->isStudent()
+                        ? $item->submissions->firstWhere('user_id', auth()->id())
+                        : null;
+                    $isCompleted = $submission?->isTurnedIn() ?? false;
+                    echo view('livewire.classroom.work-item-card', [
+                        'assignment' => $item,
+                        'classroom' => $classroom,
+                        'submission' => $submission,
+                        'isCompleted' => $isCompleted,
+                    ])->render();
+                }
             }
             echo '</div>';
             echo '</section>';
@@ -117,7 +124,7 @@
 
         <div class="p-6 space-y-6">
             @if($scope === 'all')
-                {!! $renderSection($assignments, '', 'ไม่มีงานในสถานะนี้') !!}
+                {!! $renderSection($assignments->concat($materials)->sortByDesc(fn($item) => $item->created_at)->values(), '', 'ไม่มีงานในสถานะนี้') !!}
             @elseif($scope === 'pending')
                 {!! $renderSection($pendingAssignments, $scopeLinks['pending'], 'ไม่มีงานในสถานะนี้') !!}
             @else

@@ -135,9 +135,15 @@
                                             </a>
                                         @elseif($submission && $submission->isTurnedIn())
                                             <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $submission]) }}" wire:navigate
-                                                class="inline-flex items-center gap-1 rounded-[7px] bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-600 transition hover:bg-amber-100">
+                                                class="inline-flex items-center gap-1 rounded-[7px] bg-blue-50 px-2.5 py-1 text-xs font-bold text-(--ll-blue) transition hover:bg-blue-100">
                                                 <x-icon name="clock" class="h-3 w-3" />
                                                 รอตรวจ
+                                            </a>
+                                        @elseif($submission && $submission->status === 'returned')
+                                            <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $submission]) }}" wire:navigate
+                                                class="inline-flex items-center gap-1 rounded-[7px] bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700 transition hover:bg-amber-100">
+                                                <x-icon name="arrow-uturn-left" class="h-3 w-3" />
+                                                ส่งคืน
                                             </a>
                                         @else
                                             <span class="text-[#c9cbd6]">—</span>
