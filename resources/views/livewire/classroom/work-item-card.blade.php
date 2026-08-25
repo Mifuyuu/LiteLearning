@@ -21,7 +21,7 @@
                         @if($assignment->due_date)
                             <span class="inline-flex items-center gap-1 rounded-md bg-[rgba(104,107,130,0.12)] px-2.5 py-1 text-[#484b5e]">
                                 <x-icon name="clock" class="h-3 w-3" />
-                                {{ 'กำหนดส่ง ' . $assignment->due_date->format('d M Y H:i') }}
+                                {{ 'กำหนดส่ง ' . $assignment->due_date->translatedFormat('j M Y H:i') }}
                             </span>
                         @endif
                         @if($assignment->topic)
