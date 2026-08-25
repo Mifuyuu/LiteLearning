@@ -67,4 +67,31 @@ class SystemSettingsTest extends TestCase
 
         $this->assertSame(99, app(SettingsService::class)->int('attendance_coin_reward'));
     }
+
+    public function test_admin_can_export_database(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = Livewire::actingAs($admin)
+            ->test(SystemSettings::class)
+            ->call('exportDatabase');
+
+        $response->assertFileDownloaded();
+    }
+
+    public function test_database_export_service_generates_valid_sql(): void
+    {
+        User::factory()->create(['name' => 'Database Export Test User']);
+
+        $exporter = app(\App\Services\DatabaseExportService::class);
+
+        ob_start();
+        $exporter->dumpToOutput();
+        $sqlOutput = ob_get_clean();
+
+        $this->assertNotEmpty($sqlOutput);
+        $this->assertStringContainsString('LiteLearning Database Backup', $sqlOutput);
+        $this->assertStringContainsString('users', $sqlOutput);
+        $this->assertStringContainsString('Database Export Test User', $sqlOutput);
+    }
 }

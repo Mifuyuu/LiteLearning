@@ -44,7 +44,34 @@
             </div>
         </div>
 
-        {{-- Maintenance mode --}}
+        {{-- Database Export / Backup --}}
+        <div class="border-t border-[#dedee5] mx-6 sm:mx-8"></div>
+        <div class="p-6 sm:p-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">ส่งออกฐานข้อมูล (Database Export)</h2>
+                    <p class="text-sm text-gray-500 mt-0.5">
+                        สร้างและดาวน์โหลดไฟล์ SQL Dump สำหรับการสำรองข้อมูล (Backup) หรือย้ายฐานข้อมูลของระบบ
+                    </p>
+                    <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium border border-blue-100">
+                            <x-icon name="circle-solid" class="h-1.5 w-1.5 text-blue-600" />
+                            ไดรเวอร์: <strong class="font-bold">{{ strtoupper($dbDriver) }}</strong>
+                        </span>
+                        <span>• รูปแบบไฟล์: <strong class="text-gray-700 font-semibold">.sql (UTF-8)</strong></span>
+                    </div>
+                </div>
+                <div>
+                    <button wire:click="exportDatabase" wire:loading.attr="disabled"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all shrink-0 cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                        <x-icon name="arrow-down-tray" class="h-4 w-4" wire:loading.remove wire:target="exportDatabase" />
+                        <x-icon name="spinner" class="h-4 w-4 animate-spin" wire:loading wire:target="exportDatabase" />
+                        <span wire:loading.remove wire:target="exportDatabase">ดาวน์โหลด SQL Backup</span>
+                        <span wire:loading wire:target="exportDatabase">กำลังส่งออกฐานข้อมูล...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="border-t border-[#dedee5] mx-6 sm:mx-8"></div>
         <div class="p-6 sm:p-8">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -60,7 +87,7 @@
                     </span>
                 </div>
                 @if($isDownForMaintenance)
-                    <button wire:click="disableMaintenance" class="btn-3d btn-3d--green px-5 py-2 rounded-xl text-sm shrink-0">
+                    <button wire:click="disableMaintenance" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-bold transition-colors shrink-0 cursor-pointer">
                         เปิดใช้งานระบบ
                     </button>
                 @else

@@ -100,6 +100,17 @@ class SystemSettings extends Component
         $this->dispatch('notify', message: __('messages.admin.maintenance_disabled'));
     }
 
+    public function exportDatabase()
+    {
+        abort_unless(auth()->user()->isAdmin(), 403);
+
+        AuditLog::record('database_exported', 'ส่งออกสำเนาฐานข้อมูล (Database Export)');
+
+        $exporter = app(\App\Services\DatabaseExportService::class);
+
+        return $exporter->exportStream();
+    }
+
     public function render()
     {
         $analytics = app(AdminAnalyticsService::class);
