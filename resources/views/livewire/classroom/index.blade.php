@@ -38,14 +38,12 @@
     {{-- ── Empty state ── --}}
     @if($classrooms->isEmpty())
         <div data-classroom-empty-state data-empty-state-centered="true"
-            class="flex min-h-0 flex-1 items-center justify-center">
-            <div class="flex flex-col items-center gap-5 text-center">
-                <div data-empty-state-image-crop>
-                    <img src="{{ asset('images/empty.svg') }}" alt=""
-                        class="h-44 w-44 select-none object-contain" />
-                </div>
-                <p class="text-base font-medium text-[#686b82]">ยังไม่มีดวงดาวที่ค้นพบ...</p>
+            class="mt-4 bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] flex min-h-[calc(100vh-8.5rem)] flex-col items-center justify-center p-8 text-center">
+            <div data-empty-state-image-crop>
+                <img src="{{ asset('images/empty.svg') }}" alt=""
+                    class="h-44 w-44 select-none object-contain" />
             </div>
+            <p class="mt-4 text-base font-medium text-[#686b82]">ยังไม่มีดวงดาวที่ค้นพบ...</p>
         </div>
 
     @else

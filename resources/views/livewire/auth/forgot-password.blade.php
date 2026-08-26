@@ -61,20 +61,45 @@
                     <span wire:loading wire:target="verifyOtp"><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" /> กำลังตรวจสอบ...</span>
                 </button>
 
-                <div class="text-center space-y-2">
-                    @if($resendCooldown > 0)
-                        <p class="text-sm text-gray-400">ส่งรหัสใหม่ได้ใน {{ $resendCooldown }} วินาที</p>
-                    @else
+                <div x-data="{
+                    cooldown: $wire.entangle('resendCooldown'),
+                    timer: null,
+                    startTimer() {
+                        if (this.timer) clearInterval(this.timer);
+                        this.timer = setInterval(() => {
+                            if (this.cooldown > 0) {
+                                this.cooldown--;
+                            } else {
+                                clearInterval(this.timer);
+                                this.timer = null;
+                            }
+                        }, 1000);
+                    }
+                }" x-init="
+                    startTimer();
+                    $watch('cooldown', value => {
+                        if (value > 0 && !timer) {
+                            startTimer();
+                        }
+                    });
+                " class="text-center space-y-2">
+                    <template x-if="cooldown > 0">
+                        <p class="text-sm text-gray-400">
+                            ส่งรหัสใหม่ได้ใน <span x-text="cooldown" class="font-semibold text-blue-600"></span> วินาที
+                        </p>
+                    </template>
+                    <template x-if="cooldown <= 0">
                         <button type="button" wire:click="resendOtp"
-                            class="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                            ส่งรหัสใหม่
+                            class="text-sm text-blue-600 hover:text-blue-700 font-medium cursor-pointer inline-flex items-center">
+                            <x-icon name="arrow-path" class="h-4 w-4 mr-1" />ส่งรหัสใหม่
                         </button>
-                    @endif
-                    <br>
-                    <button type="button" wire:click="$set('step', 1)"
-                        class="text-sm text-gray-500 hover:text-gray-700">
-                        เปลี่ยนอีเมล
-                    </button>
+                    </template>
+                    <div>
+                        <button type="button" wire:click="$set('step', 1)"
+                            class="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">
+                            เปลี่ยนอีเมล
+                        </button>
+                    </div>
                 </div>
             </form>
         @endif

@@ -90,9 +90,19 @@ class Profile extends Component
                 ->count();
         }
 
+        $gamificationService = app(\App\Services\GamificationService::class);
+        $currentLevelStartXp = $gamificationService->totalXpForLevel($user->level);
+        $nextLevelXp = $gamificationService->totalXpForLevel($user->level + 1);
+        $xpInCurrentLevel = max(0, $user->xp - $currentLevelStartXp);
+        $xpNeededInLevel = max(1, $nextLevelXp - $currentLevelStartXp);
+
         $this->profileStats = [
             'level' => $user->level,
             'xp' => $user->xp,
+            'xp_current' => $xpInCurrentLevel,
+            'xp_required' => $xpNeededInLevel,
+            'xp_remaining' => max(0, $nextLevelXp - $user->xp),
+            'level_progress_percent' => (int) min(100, round(($xpInCurrentLevel / $xpNeededInLevel) * 100)),
             'coins' => $user->coins,
             'achievements' => $this->unlockedAchievements->count(),
             'achievement_total' => $this->allAchievements->count(),

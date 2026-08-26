@@ -1,11 +1,7 @@
 <div class="max-w-4xl mx-auto">
     @section('page-title', 'โปรไฟล์')
 
-    @php
-        $completion = $profileStats['achievement_total'] > 0
-            ? (int) round(($profileStats['achievements'] / $profileStats['achievement_total']) * 100)
-            : 0;
-    @endphp
+
 
     <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden">
 
@@ -50,15 +46,31 @@
                 </p>
             </div>
 
-            {{-- Achievements progress bar (student only) --}}
+            {{-- Level progress bar (student only) --}}
             @if($user->isStudent())
-            <div>
-                <div class="flex items-center justify-between text-sm">
-                    <span class="font-semibold text-[#686b82]">คอลเลกชันความสำเร็จ</span>
-                    <span class="font-black text-[#2563eb]">{{ $completion }}%</span>
+            <div class="rounded-xl border border-[#dedee5] bg-white p-4 sm:p-5 flex items-center gap-4 sm:gap-5">
+                {{-- Left: Level Number with light blue circular background --}}
+                <div class="flex flex-col items-center justify-center rounded-full bg-(--ll-blue-subtle) h-16 w-16 sm:h-18 sm:w-18 shrink-0">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-(--ll-blue)">เลเวล</span>
+                    <span class="text-2xl sm:text-3xl font-black leading-none text-[#101114] mt-0.5">{{ $profileStats['level'] }}</span>
                 </div>
-                <div class="mt-2 h-2 overflow-hidden rounded-full bg-[rgba(59,130,246,0.08)]">
-                    <div class="h-full rounded-full bg-[#2563eb]" style="width: {{ $completion }}%"></div>
+
+                {{-- Right: Dashboard-style level progressbar --}}
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-bold uppercase text-(--ll-blue)">ความคืบหน้าเลเวล</span>
+                        <span class="rounded-[9px] bg-(--ll-blue-subtle) px-2.5 py-0.5 text-xs font-bold text-(--ll-blue)">
+                            {{ number_format($profileStats['xp_current']) }} / {{ number_format($profileStats['xp_required']) }} XP
+                        </span>
+                    </div>
+                    <div class="dashboard-liquid-progress outline-2 outline-[rgba(37,99,235,0.28)] mt-2" role="progressbar"
+                        aria-label="ความคืบหน้าเลเวล" aria-valuemin="0" aria-valuemax="100"
+                        aria-valuenow="{{ $profileStats['level_progress_percent'] }}">
+                        <span class="dashboard-liquid-fill" style="width: {{ $profileStats['level_progress_percent'] }}%"></span>
+                    </div>
+                    <p class="mt-1.5 text-xs text-[#686b82]">
+                        อีก {{ number_format($profileStats['xp_remaining']) }} XP จะถึงเลเวล {{ $profileStats['level'] + 1 }}
+                    </p>
                 </div>
             </div>
             @endif

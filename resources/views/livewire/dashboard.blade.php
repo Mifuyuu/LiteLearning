@@ -55,7 +55,7 @@
         }
     </style>
 
-    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
+    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] min-h-[calc(100vh-3rem)]">
 
         {{-- Header --}}
         <div class="flex items-center justify-between gap-4 p-5 lg:p-7">

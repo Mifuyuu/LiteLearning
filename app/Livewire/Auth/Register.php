@@ -110,7 +110,7 @@ class Register extends Component
                 'password' => Hash::make($this->password),
                 'role' => $this->role,
             ],
-            'expires_at' => now()->addMinutes(10),
+            'expires_at' => now()->addMinutes(5),
         ]);
 
         (new AnonymousNotifiable)

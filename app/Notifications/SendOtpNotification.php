@@ -19,11 +19,11 @@ class SendOtpNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('รหัสยืนยันอีเมลของคุณ')
+            ->subject('รหัสยืนยันสำหรับ LiteLearn')
             ->greeting('สวัสดี!')
-            ->line('รหัสยืนยันอีเมลของคุณคือ:')
+            ->line('รหัสยืนยันสำหรับ LiteLearn ของคุณคือ:')
             ->line('**'.$this->otp.'**')
             ->line('รหัสนี้จะหมดอายุใน 5 นาที')
-            ->line('หากคุณไม่ได้สมัครสมาชิก กรุณาเพิกเฉยต่ออีเมลนี้');
+            ->line('หากคุณไม่ได้ทำรายการใน LiteLearn กรุณาเพิกเฉยต่ออีเมลนี้');
     }
 }

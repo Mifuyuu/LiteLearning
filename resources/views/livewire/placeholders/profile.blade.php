@@ -1,6 +1,6 @@
 @section('page-title', 'โปรไฟล์')
 <div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-2xl border border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden">
+    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden">
 
         {{-- Cover --}}
         <div class="skeleton h-48 w-full rounded-none"></div>
@@ -23,12 +23,17 @@
         {{-- Stats --}}
         <div class="border-t border-[#dedee5]"></div>
         <div class="p-5 lg:px-7 space-y-6">
-            <div class="space-y-2">
-                <div class="flex justify-between">
-                    <div class="skeleton h-4 w-40"></div>
-                    <div class="skeleton h-4 w-10"></div>
+            {{-- Level progress placeholder --}}
+            <div class="rounded-xl border border-[#dedee5] bg-white p-4 sm:p-5 flex items-center gap-4 sm:gap-5">
+                <div class="skeleton h-16 w-16 sm:h-18 sm:w-18 rounded-full shrink-0"></div>
+                <div class="min-w-0 flex-1 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <div class="skeleton h-3.5 w-28"></div>
+                        <div class="skeleton h-5 w-24 rounded-lg"></div>
+                    </div>
+                    <div class="skeleton h-8 w-full rounded-xl"></div>
+                    <div class="skeleton h-3 w-40"></div>
                 </div>
-                <div class="skeleton h-2 w-full rounded-full"></div>
             </div>
 
             <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">

@@ -600,7 +600,7 @@ input:-webkit-autofill:focus {
 
 /* ─── Global backdrop image (all authenticated + auth pages) ─────────── */
 .backdrop-bg {
-    background-color: #0a1628;
+    background-color: #ffffff;
     background-image: url('/images/background_moon_center.png');
     background-repeat: no-repeat;
     background-size: cover;

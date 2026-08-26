@@ -167,7 +167,28 @@
                 </button>
 
                 {{-- Resend OTP --}}
-                <div x-data="{ cooldown: $wire.entangle('resendCooldown') }" class="text-center">
+                <div x-data="{
+                    cooldown: $wire.entangle('resendCooldown'),
+                    timer: null,
+                    startTimer() {
+                        if (this.timer) clearInterval(this.timer);
+                        this.timer = setInterval(() => {
+                            if (this.cooldown > 0) {
+                                this.cooldown--;
+                            } else {
+                                clearInterval(this.timer);
+                                this.timer = null;
+                            }
+                        }, 1000);
+                    }
+                }" x-init="
+                    startTimer();
+                    $watch('cooldown', value => {
+                        if (value > 0 && !timer) {
+                            startTimer();
+                        }
+                    });
+                " class="text-center">
                     <template x-if="cooldown > 0">
                         <p class="text-sm text-[#9497a9]">
                             ส่งรหัสอีกครั้งได้ใน
@@ -177,7 +198,7 @@
                     </template>
                     <template x-if="cooldown <= 0">
                         <button type="button" wire:click="sendOtp"
-                            class="text-sm text-(--ll-blue) hover:text-(--ll-blue-dark) font-semibold transition-colors">
+                            class="text-sm text-(--ll-blue) hover:text-(--ll-blue-dark) font-semibold transition-colors cursor-pointer inline-flex items-center">
                             <x-icon name="arrow-path" class="h-4 w-4 mr-1" />ส่งรหัสอีกครั้ง
                         </button>
                     </template>
