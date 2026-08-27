@@ -45,10 +45,6 @@
                                 {{ $classroom->section }}
                             </span>
                         @endif
-                        <span class="inline-flex items-center gap-1.5 rounded-lg bg-[rgba(104,107,130,0.12)] px-3 py-1.5 text-[#484b5e]">
-                            <x-icon name="users" class="h-3.5 w-3.5" />
-                            {{ $students->count() }} {{ 'นักเรียน' }}
-                        </span>
                     </div>
                 </div>
 
@@ -56,9 +52,9 @@
                     @if($manager)
                         <div class="relative" x-data="{ open: false }" @click.away="open = false">
                             <button type="button" @click="open = !open"
-                                class="inline-flex cursor-pointer items-center gap-2 rounded-[10px] bg-(--cw-color) px-4 py-2.5 text-sm font-extrabold text-white transition hover:opacity-90 shadow-sm">
+                                class="inline-flex cursor-pointer items-center gap-1 sm:gap-2 rounded-[10px] bg-(--cw-color) px-3 sm:px-4 py-2.5 text-sm font-extrabold text-white transition hover:opacity-90 shadow-sm">
                                 <x-icon name="plus" class="h-4 w-4" />
-                                {{ 'สร้าง' }}
+                                <span class="hidden sm:inline">{{ 'สร้าง' }}</span>
                                 <x-icon name="chevron-down" class="h-3.5 w-3.5 transition-transform" ::class="open ? 'rotate-180' : ''" />
                             </button>
                             <ul x-show="open" x-cloak
@@ -97,7 +93,7 @@
         {{-- Quick links: 3 sections divided inside the box --}}
         <div class="grid divide-y divide-[#f2eff5] border-t border-[#f2eff5] lg:grid-cols-3 lg:divide-x lg:divide-y-0">
             <a href="{{ route('classroom.stream', $classroom) }}" wire:navigate
-                class="block p-5 transition hover:bg-(--cw-faint)">
+                class="block p-6 transition hover:bg-(--cw-faint)">
                 <div class="flex items-center gap-3">
                     <span class="flex h-10 w-10 items-center justify-center rounded-lg"
                         style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
@@ -110,7 +106,7 @@
             </a>
 
             <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
-                class="block p-5 transition hover:bg-(--cw-faint)">
+                class="block p-6 transition hover:bg-(--cw-faint)">
                 <div class="flex items-center gap-3">
                     <span class="flex h-10 w-10 items-center justify-center rounded-[10px]"
                         style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
@@ -123,7 +119,7 @@
             </a>
 
             <a href="{{ route('classroom.roster', ['classroom' => $classroom, 'sort' => 'sort-first-name']) }}" wire:navigate
-                class="block p-5 transition hover:bg-(--cw-faint)">
+                class="block p-6 transition hover:bg-(--cw-faint)">
                 <div class="flex items-center gap-3">
                     <span class="flex h-10 w-10 items-center justify-center rounded-[10px]"
                         style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
@@ -137,7 +133,7 @@
         </div>
 
         {{-- กระดานสนทนา --}}
-        <div class="border-t border-[#f2eff5] p-5">
+        <div class="border-t border-[#f2eff5] p-6">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <h2 class="mt-1 text-xl font-black text-[#101114]">{{ 'กระดานสนทนาล่าสุด' }}</h2>
@@ -171,7 +167,7 @@
         </div>
 
         {{-- ต้องดูแล --}}
-        <div class="border-t border-[#f2eff5] p-5">
+        <div class="border-t border-[#f2eff5] p-6">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <h2 class="mt-1 text-xl font-black text-[#101114]">{{ 'งานในชั้นเรียนที่ต้องดูแล' }}</h2>
@@ -185,7 +181,7 @@
                         class="block rounded-[10px] border border-[#dedee5] px-3 py-3 transition hover:border-(--cw-color)/30 hover:bg-(--cw-faint)">
                         <p class="truncate text-sm font-extrabold text-[#101114]">{{ $assignment->title }}</p>
                         <p class="mt-1 text-xs font-semibold text-[#9497a9]">
-                            {{ $assignment->due_date ? 'กำหนดส่ง ' . $assignment->due_date->format('d M Y H:i') : 'ไม่มีกำหนด' }}
+                            {{ $assignment->due_date ? 'กำหนดส่ง ' . $assignment->due_date->translatedFormat('j M Y H:i') : 'ไม่มีกำหนด' }}
                         </p>
                     </a>
                 @empty

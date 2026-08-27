@@ -4,7 +4,7 @@
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
     themes: light --default;
-    include: card, badge, avatar, tooltip, skeleton, toggle, checkbox;
+    include: card, badge, avatar, tooltip, skeleton, toggle, checkbox, dropdown;
     logs: false;
 }
 
@@ -34,8 +34,6 @@
 
     /* ── Surface & Text ──────────────────────────────── */
     --ll-bg:              #ffffff;
-    --ll-surface:         #ffffff;
-    --ll-surface-soft:    #f9f9fb;
     --ll-border:          #dedee5;
     --ll-border-muted:    rgba(104, 107, 130, 0.24);
     --ll-ink:             #101114;
@@ -280,35 +278,6 @@ body {
     display: none !important;
 }
 
-/* ─── Tabs horizontal scrollbar ──────────────────────────────────────── */
-.tabs-scroll {
-    scrollbar-width: thin;
-}
-
-.tabs-scroll::-webkit-scrollbar {
-    height: 4px;
-}
-
-.tabs-scroll::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.tabs-scroll::-webkit-scrollbar-thumb {
-    background: rgba(37, 99, 235, 0.3);
-    border-radius: 9999px;
-}
-
-@media (max-width: 640px) {
-    .tabs-scroll {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    .tabs-scroll::-webkit-scrollbar {
-        display: none;
-    }
-}
-
 /* ─── Sidebar scrollbar ──────────────────────────────────────────────── */
 .sidebar-scroll {
     scrollbar-width: thin;
@@ -462,12 +431,6 @@ input:-webkit-autofill:focus {
     overflow: hidden;
 }
 
-.auth-animated {
-    will-change: transform, opacity;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-}
-
 /* ─── Tiptap editor ──────────────────────────────────────────────────── */
 .tiptap {
     outline: none;
@@ -615,16 +578,6 @@ input:-webkit-autofill:focus {
     }
 }
 
-/* ─── Dot-grid background (auth / space-bg pages) ────────────────────── */
-.space-bg {
-    background-color: #fafafa;
-    background-image: radial-gradient(#dedee5 1px, transparent 1px);
-    background-size: 32px 32px;
-    position: relative;
-}
-
-
-
 /* ─── Float animation (mascot) ───────────────────────────────────────── */
 @keyframes floatOrb {
     0%, 100% { transform: translateY(0); }
@@ -643,172 +596,21 @@ input:-webkit-autofill:focus {
 
 
 
-/* ─── Panel & Surface utilities ──────────────────────────────────────── */
-.ll-panel {
-    background: #ffffff;
-    border: 1px solid #dedee5;
-    border-radius: 16px;
-    box-shadow: rgba(0, 0, 0, 0.03) 0px 4px 24px;
-}
-
-.ll-hero-panel {
-    position: relative;
-    background: linear-gradient(135deg, #ffffff 0%, rgba(243, 240, 255, 0.55) 100%);
-    border: 1px solid #dedee5;
-    border-radius: 16px;
-    box-shadow: rgba(0, 0, 0, 0.03) 0px 4px 24px;
-}
-
-.ll-hero-panel::after {
-    content: "";
-    position: absolute;
-    right: 20%;
-    bottom: 0;
-    width: 220px;
-    height: 72px;
-    border-radius: 9999px 9999px 0 0;
-    background: rgba(59, 130, 246, 0.12);
-    transform: translateY(42px);
-}
-
-.ll-surface {
-    background: var(--ll-surface);
-    border: 1px solid var(--ll-border);
-}
-
-.ll-soft {
-    background: var(--ll-surface-soft);
-    border: 1px solid var(--ll-border);
-}
-
-.ll-icon {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: #ffffff;
-}
-
-/* ─── 3D Card ────────────────────────────────────────────────────────── */
-.card-3d {
-    --card-3d-bg:     #ffffff;
-    --card-3d-border: var(--ll-border);
-    background: var(--card-3d-bg);
-    border: 1px solid var(--card-3d-border);
-    border-radius: 12px;
-    box-shadow: rgba(0, 0, 0, 0.03) 0px 4px 24px;
-    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.card-3d:active {
-    transform: translateY(3px);
-}
-
-.card-3d-interactive:hover {
-    transform: translateY(-2px);
-    border-color: rgba(37, 99, 235, 0.4);
-    box-shadow: rgba(37, 99, 235, 0.12) 0px 8px 24px;
-}
-
-/* Variants */
-.card-3d--purple {
-    --card-3d-bg:     #ffffff;
-    --card-3d-border: #dedee5;
-}
-
-.card-3d--sky {
-    --card-3d-bg:     rgba(59, 130, 246, 0.04);
-    --card-3d-border: rgba(59, 130, 246, 0.2);
-}
-
-.card-3d--green {
-    --card-3d-bg:     #f0fdf4;
-    --card-3d-border: #bbf7d0;
-}
-
-.card-3d--amber {
-    --card-3d-bg:     #fffbeb;
-    --card-3d-border: #fde68a;
-}
-
-.card-3d--rose {
-    --card-3d-bg:     #fff1f2;
-    --card-3d-border: #fecdd3;
-}
-
-.card-3d--dark {
-    --card-3d-bg:     #172554;
-    --card-3d-border: #1d4ed8;
-}
-
-/* ─── Mascot badge (CSS-only) ────────────────────────────────────────── */
-.ll-mascot-badge {
-    position: relative;
-    width: 148px;
-    height: 132px;
-    transform: rotate(-6deg);
-}
-
-.ll-mascot-face {
-    position: absolute;
-    inset: 16px 18px 10px 18px;
-    border-radius: 42% 42% 46% 46%;
-    background: linear-gradient(145deg, #3b82f6, #2563eb);
-}
-
-.ll-mascot-face::before,
-.ll-mascot-face::after {
-    content: "";
-    position: absolute;
-    top: 32px;
-    width: 31px;
-    height: 38px;
-    border-radius: 9999px;
-    background: #ffffff;
-}
-
-.ll-mascot-face::before {
-    left: 27px;
-}
-
-.ll-mascot-face::after {
-    right: 27px;
-}
-
-.ll-mascot-face span {
-    position: absolute;
-    top: 45px;
-    z-index: 1;
-    width: 13px;
-    height: 16px;
-    border-radius: 9999px;
-    background: #101114;
-}
-
-.ll-mascot-face span:first-child {
-    left: 36px;
-}
-
-.ll-mascot-face span:last-child {
-    right: 36px;
-}
-
-.ll-mascot-wing {
-    position: absolute;
-    left: -2px;
-    bottom: 18px;
-    width: 54px;
-    height: 68px;
-    border-radius: 60% 16% 62% 28%;
-    background: linear-gradient(145deg, #93c5fd, #3b82f6);
-    transform: rotate(-24deg);
-}
-
 /* ── Flatpickr Thai Datetimepicker Customization ── */
 .flatpickr-calendar {
     font-family: inherit;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     border: 1px solid #dedee5;
-    padding: 0.5rem;
+    padding-bottom: 0.5rem;
     background: #ffffff;
+    width: 320px;
+}
+.flatpickr-days,
+.dayContainer {
+    width: 320px;
+    min-width: 320px;
+    max-width: 320px;
 }
 .flatpickr-calendar.arrowTop:before,
 .flatpickr-calendar.arrowTop:after {
@@ -839,6 +641,7 @@ span.flatpickr-weekday {
     color: #101114;
     line-height: 38px;
     height: 38px;
+    max-width: none;
 }
 .flatpickr-day.today {
     border-color: #3b82f6;

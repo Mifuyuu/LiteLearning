@@ -12,6 +12,31 @@ window.Cropper = Cropper;
 window.flatpickr = flatpickr;
 
 document.addEventListener('alpine:init', () => {
+    Alpine.data('otpCountdown', (wireModel = 'resendCooldown') => ({
+        cooldown: null,
+        timer: null,
+
+        init() {
+            this.cooldown = this.$wire.entangle(wireModel);
+            this.startTimer();
+            this.$watch('cooldown', (value) => {
+                if (value > 0 && !this.timer) this.startTimer();
+            });
+        },
+
+        startTimer() {
+            if (this.timer) clearInterval(this.timer);
+            this.timer = setInterval(() => {
+                if (this.cooldown > 0) {
+                    this.cooldown--;
+                } else {
+                    clearInterval(this.timer);
+                    this.timer = null;
+                }
+            }, 1000);
+        },
+    }));
+
     Alpine.data('datetimePicker', ({ wireModel, placeholder = 'เลือกวันและเวลา' }) => {
         let picker = null;
 
@@ -23,6 +48,7 @@ document.addEventListener('alpine:init', () => {
 
                 picker = flatpickr(inputEl, {
                     locale: Thai,
+                    disableMobile: true,
                     enableTime: true,
                     time_24hr: true,
                     dateFormat: 'Y-m-d H:i',
@@ -41,6 +67,14 @@ document.addEventListener('alpine:init', () => {
                         picker.setDate(val || '', false);
                     }
                 });
+
+                (picker.altInput || inputEl).addEventListener('mousedown', () => {
+                    if (picker.isOpen) picker.close();
+                });
+            },
+
+            clear() {
+                picker?.clear();
             },
 
             destroy() {

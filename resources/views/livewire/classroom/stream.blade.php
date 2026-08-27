@@ -19,7 +19,7 @@
 @endphp
 
 <div class="max-w-4xl mx-auto" style="--cw-color: {{ $themeColor }}; --cw-subtle: {{ $themeColor }}26; --cw-faint: {{ $themeColor }}12;">
-    <section class="rounded-xl border-3 border-[#dedee5] bg-white p-5 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] min-h-[calc(100vh-3rem)]">
+    <section class="rounded-2xl border-3 border-[#dedee5] bg-white p-6 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] min-h-[calc(100vh-3rem)]">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 {{-- <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-[#9497a9]">{{ 'กระดานสนทนา' }}</p> --}}
@@ -28,9 +28,9 @@
             @if($manager)
                 <div class="relative" x-data="{ open: false }" @click.away="open = false">
                     <button type="button" @click="open = !open"
-                        class="inline-flex cursor-pointer items-center gap-2 rounded-[10px] bg-(--cw-color) px-4 py-2.5 text-sm font-extrabold text-white transition hover:opacity-90 shadow-sm">
+                        class="inline-flex cursor-pointer items-center gap-1 sm:gap-2 rounded-[10px] bg-(--cw-color) px-3 sm:px-4 py-2.5 text-sm font-extrabold text-white transition hover:opacity-90 shadow-sm">
                         <x-icon name="plus" class="h-4 w-4" />
-                        {{ 'สร้าง' }}
+                        <span class="hidden sm:inline">{{ 'สร้าง' }}</span>
                         <x-icon name="chevron-down" class="h-3.5 w-3.5 transition-transform" ::class="open ? 'rotate-180' : ''" />
                     </button>
                     <ul x-show="open" x-cloak

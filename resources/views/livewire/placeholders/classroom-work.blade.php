@@ -21,7 +21,7 @@
     <section class="rounded-2xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] min-h-[calc(100vh-3rem)]">
 
         {{-- Scope tabs & Create button --}}
-        <div class="p-4 sm:p-6 border-b border-[#dedee5] flex flex-wrap items-center justify-between gap-3">
+        <div class="p-6 sm:p-6 flex flex-wrap items-center justify-between gap-3">
             <div class="flex flex-wrap items-center gap-2">
                 <div class="skeleton h-9 w-16 rounded-[10px]"></div>
                 <div class="skeleton h-9 w-20 rounded-[10px]"></div>

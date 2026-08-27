@@ -62,10 +62,9 @@
             <div class="relative" x-data="{ open: false }">
                     <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
                         class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 hover:bg-white transition-colors focus:outline-none focus:ring-1 focus:ring-blue-500">
-                        <x-icon name="circle-solid" class="h-1.5 w-1.5 {{ $statusFilter === 'active' ? 'text-green-500' : ($statusFilter === 'inactive' ? 'text-red-400' : 'text-gray-400') }}" />
                         <span>
                             @if($statusFilter === '') ทุกสถานะ
-                            @elseif($statusFilter === 'active') ใช้งาน
+                            @elseif($statusFilter === 'active') เปิดใช้งาน
                             @else ปิดใช้งาน
                             @endif
                         </span>
@@ -87,7 +86,7 @@
                             </button>
                             <button type="button" role="menuitem" wire:click="$set('statusFilter', 'active')" @click="open = false"
                                 class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $statusFilter === 'active' ? 'text-blue-700 bg-blue-50' : 'text-gray-700' }}">
-                                ใช้งาน
+                                เปิดใช้งาน
                                 @if($statusFilter === 'active') <x-icon name="check" class="h-4 w-4" /> @endif
                             </button>
                             <button type="button" role="menuitem" wire:click="$set('statusFilter', 'inactive')" @click="open = false"
@@ -197,8 +196,7 @@
                                     class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold transition-colors
                                                 {{ $user->is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' }}"
                                     @if($user->id === auth()->id()) disabled @endif>
-                                    <x-icon name="circle-solid" class="h-1.5 w-1.5 mr-1.5" />
-                                    {{ $user->is_active ? 'ใช้งาน' : 'ปิดใช้งาน' }}
+                                    {{ $user->is_active ? 'เปิดใช้งาน' : 'ปิดใช้งาน' }}
                                 </button>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">

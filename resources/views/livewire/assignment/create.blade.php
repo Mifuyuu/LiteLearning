@@ -233,10 +233,14 @@
                                 <x-icon name="clock" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'กำหนดเวลาเผยแพร่' }}
                                 <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
                             </label>
-                            <div wire:ignore x-data="datetimePicker({ wireModel: 'published_at', placeholder: 'เลือกวันและเวลาเผยแพร่' })">
+                            <div wire:ignore x-data="datetimePicker({ wireModel: 'published_at', placeholder: 'เลือกวันและเวลาเผยแพร่' })" class="relative">
                                 <input x-ref="inputEl" type="text"
-                                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) bg-white cursor-pointer"
+                                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 pr-9 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) bg-white cursor-pointer"
                                     placeholder="{{ 'เลือกวันและเวลาเผยแพร่' }}">
+                                <button type="button" x-show="$wire.published_at" x-cloak @click="clear()"
+                                    class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9497a9] hover:text-[#101114]">
+                                    <x-icon name="x-mark" class="h-4 w-4" />
+                                </button>
                             </div>
                             <p class="text-xs text-[#9497a9] mt-1">{{ 'เว้นว่างไว้เพื่อเผยแพร่ทันที' }}</p>
                             @error('published_at')
@@ -251,10 +255,14 @@
                                     <x-icon name="clock" class="h-4 w-4 mr-1.5 text-[#9497a9]" />{{ 'วันกำหนดส่ง' }}
                                     <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
                                 </label>
-                                <div wire:ignore x-data="datetimePicker({ wireModel: 'due_date', placeholder: 'เลือกวันและเวลากำหนดส่ง' })">
+                                <div wire:ignore x-data="datetimePicker({ wireModel: 'due_date', placeholder: 'เลือกวันและเวลากำหนดส่ง' })" class="relative">
                                     <input x-ref="inputEl" type="text"
-                                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) bg-white cursor-pointer"
+                                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 pr-9 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) bg-white cursor-pointer"
                                         placeholder="{{ 'เลือกวันและเวลากำหนดส่ง' }}">
+                                    <button type="button" x-show="$wire.due_date" x-cloak @click="clear()"
+                                        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9497a9] hover:text-[#101114]">
+                                        <x-icon name="x-mark" class="h-4 w-4" />
+                                    </button>
                                 </div>
                                 <p class="text-xs text-[#9497a9] mt-1">{{ 'เว้นว่างไว้หากไม่มีกำหนดส่ง' }}</p>
                                 @error('due_date')
@@ -316,8 +324,8 @@
                 @if($type !== 'announcement')
                     <div x-show="!$wire.published_at" x-cloak>
                         <button type="button" wire:click="saveDraft"
-                            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">
-                            <x-icon name="document-text" class="h-5 w-5 mr-1.5" />{{ 'บันทึกฉบับร่าง' }}
+                            class="inline-flex items-center justify-center w-11 h-11 sm:w-auto sm:h-auto sm:px-4 sm:py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">
+                            <x-icon name="document-text" class="h-5 w-5 sm:mr-1.5" /><span class="hidden sm:inline">{{ 'บันทึกฉบับร่าง' }}</span>
                         </button>
                     </div>
                 @endif
@@ -329,9 +337,9 @@
                     {{ 'ยกเลิก' }}
                 </a>
                 <button type="submit"
-                    class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold rounded-lg text-white bg-(--cw-color) hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40">
-                    <span wire:loading.remove wire:target="save"><x-icon name="paper-airplane" class="h-4 w-4 mr-1.5" />{{ $type === 'announcement' ? 'โพสต์' : ($type === 'attendance' ? 'สร้างงานเช็คชื่อ' : 'มอบหมาย') }}</span>
-                    <span wire:loading wire:target="save"><x-icon name="spinner" class="h-4 w-4 mr-1.5 animate-spin" />{{ $type === 'announcement' ? 'กำลังโพสต์...' : ($type === 'attendance' ? 'กำลังสร้าง...' : 'กำลังมอบหมาย...') }}</span>
+                    class="inline-flex items-center justify-center w-11 h-11 sm:w-auto sm:h-auto sm:px-6 sm:py-2.5 text-sm font-bold rounded-lg text-white bg-(--cw-color) hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40">
+                    <span wire:loading.remove wire:target="save" class="inline-flex items-center"><x-icon name="paper-airplane" class="h-4 w-4 sm:mr-1.5" /><span class="hidden sm:inline">{{ $type === 'announcement' ? 'โพสต์' : ($type === 'attendance' ? 'สร้างงานเช็คชื่อ' : 'มอบหมาย') }}</span></span>
+                    <span wire:loading wire:target="save" class="inline-flex items-center"><x-icon name="spinner" class="h-4 w-4 sm:mr-1.5 animate-spin" /><span class="hidden sm:inline">{{ $type === 'announcement' ? 'กำลังโพสต์...' : ($type === 'attendance' ? 'กำลังสร้าง...' : 'กำลังมอบหมาย...') }}</span></span>
                 </button>
             </div>
         </div>

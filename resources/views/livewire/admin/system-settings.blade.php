@@ -80,9 +80,8 @@
                     <p class="text-sm text-gray-500 mt-0.5">
                         เมื่อเปิดใช้งาน ผู้ใช้ทุกคนยกเว้นคุณจะไม่สามารถเข้าใช้งานระบบได้ชั่วคราว
                     </p>
-                    <span class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-2
                         {{ $isDownForMaintenance ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-800' }}">
-                        <x-icon name="circle-solid" class="h-2 w-2" />
                         {{ $isDownForMaintenance ? 'กำลังปิดปรับปรุง' : 'ระบบทำงานปกติ' }}
                     </span>
                 </div>

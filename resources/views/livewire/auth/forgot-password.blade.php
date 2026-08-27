@@ -61,28 +61,7 @@
                     <span wire:loading wire:target="verifyOtp"><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" /> กำลังตรวจสอบ...</span>
                 </button>
 
-                <div x-data="{
-                    cooldown: $wire.entangle('resendCooldown'),
-                    timer: null,
-                    startTimer() {
-                        if (this.timer) clearInterval(this.timer);
-                        this.timer = setInterval(() => {
-                            if (this.cooldown > 0) {
-                                this.cooldown--;
-                            } else {
-                                clearInterval(this.timer);
-                                this.timer = null;
-                            }
-                        }, 1000);
-                    }
-                }" x-init="
-                    startTimer();
-                    $watch('cooldown', value => {
-                        if (value > 0 && !timer) {
-                            startTimer();
-                        }
-                    });
-                " class="text-center space-y-2">
+                <div x-data="otpCountdown('resendCooldown')" class="text-center space-y-2">
                     <template x-if="cooldown > 0">
                         <p class="text-sm text-gray-400">
                             ส่งรหัสใหม่ได้ใน <span x-text="cooldown" class="font-semibold text-blue-600"></span> วินาที

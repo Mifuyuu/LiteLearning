@@ -196,7 +196,7 @@ class GradeReport extends Component
 
             $headers = ['ชื่อ', 'อีเมล'];
             foreach ($assignments as $assignment) {
-                $headers[] = $assignment->title.' (/'.$assignment->max_score.')';
+                $headers[] = $assignment->title.' (เต็ม '.$assignment->max_score.')';
             }
             $headers[] = 'คะแนนรวม';
             $headers[] = 'เฉลี่ย (%)';
@@ -209,7 +209,7 @@ class GradeReport extends Component
                 foreach ($assignments as $assignment) {
                     $submission = $scoreMap[$student->id][$assignment->id] ?? null;
                     if ($submission && $submission->isGraded()) {
-                        $row[] = $submission->score.'/'.$assignment->max_score;
+                        $row[] = $submission->score;
                     } elseif ($submission && $submission->isTurnedIn()) {
                         $row[] = 'รอให้คะแนน';
                     } else {
@@ -217,7 +217,8 @@ class GradeReport extends Component
                     }
                 }
 
-                $row[] = $summary['maxPossible'] > 0 ? $summary['totalScore'].'/'.$summary['maxPossible'] : '-';
+                // ="x/y" forces Excel/Sheets to treat it as text instead of auto-converting to a date.
+                $row[] = $summary['maxPossible'] > 0 ? '="'.$summary['totalScore'].'/'.$summary['maxPossible'].'"' : '-';
                 $row[] = $summary['avgPercent'] !== null ? $summary['avgPercent'].'%' : '-';
                 fputcsv($handle, $row);
             }

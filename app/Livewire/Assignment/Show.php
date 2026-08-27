@@ -318,7 +318,7 @@ class Show extends Component
 
         if ($this->editType === 'attendance') {
             $this->editTopic = 'เช็คชื่อ';
-            $this->editDescription = null;
+            $this->editDescription = '';
             $this->editDueDate = null;
         }
 

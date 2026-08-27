@@ -122,6 +122,14 @@ class ThemeCategories extends Component
         $this->reset('form', 'editingId', 'planetImageUpload');
     }
 
+    public function toggleActive(ThemeCategory $category): void
+    {
+        $category->is_active = ! $category->is_active;
+        $category->save();
+
+        $this->dispatch('notify', message: __('messages.admin.theme_status_updated'), type: 'success');
+    }
+
     public function delete(ThemeCategory $category): void
     {
         $category->delete();

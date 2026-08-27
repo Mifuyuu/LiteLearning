@@ -567,25 +567,43 @@
                     $current = $typeInfo[$editType] ?? ['icon' => 'pencil-square', 'label' => ucfirst($editType)];
                 @endphp
 
-                @if($editType === 'attendance')
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ชื่องาน</label>
-                        <input wire:model.live.debounce.100ms="editTitle" type="text" readonly disabled
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none">
-                    </div>
-                @else
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ชื่องาน *</label>
-                        <input wire:model.live.debounce.100ms="editTitle" type="text" maxlength="50"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                        <div class="mt-1 flex justify-between items-center">
-                            @error('editTitle') <p class="text-sm text-red-500">{{ $message }}</p> @else <span></span> @enderror
-                            <span class="text-xs" :class="$wire.editTitle.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
-                                <span x-text="$wire.editTitle.length">0</span>/50
-                            </span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    @if($editType === 'attendance')
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ชื่องาน</label>
+                            <input wire:model.live.debounce.100ms="editTitle" type="text" readonly disabled
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none">
                         </div>
-                    </div>
-                @endif
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ</label>
+                            <input type="text" readonly disabled value="เช็คชื่อ"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none">
+                        </div>
+                    @else
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ชื่องาน *</label>
+                            <input wire:model.live.debounce.100ms="editTitle" type="text" maxlength="50"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                            <div class="mt-1 flex justify-between items-center">
+                                @error('editTitle') <p class="text-sm text-red-500">{{ $message }}</p> @else <span></span> @enderror
+                                <span class="text-xs" :class="$wire.editTitle.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
+                                    <span x-text="$wire.editTitle.length">0</span>/50
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ</label>
+                            <input wire:model.live.debounce.100ms="editTopic" type="text" list="topics-list-edit"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                            <datalist id="topics-list-edit">
+                                @foreach($this->topics as $t)
+                                    <option value="{{ $t->name }}">
+                                @endforeach
+                            </datalist>
+                            @error('editTopic') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
+                        </div>
+                    @endif
+                </div>
 
                 @if($editType !== 'attendance')
                     <div>
@@ -630,10 +648,14 @@
                         @if($editType !== 'attendance')
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">วันกำหนดส่ง</label>
-                                <div wire:ignore x-data="datetimePicker({ wireModel: 'editDueDate', placeholder: 'เลือกวันและเวลากำหนดส่ง' })">
+                                <div wire:ignore x-data="datetimePicker({ wireModel: 'editDueDate', placeholder: 'เลือกวันและเวลากำหนดส่ง' })" class="relative">
                                     <input x-ref="inputEl" type="text"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white cursor-pointer"
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 pr-9 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white cursor-pointer"
                                         placeholder="{{ 'เลือกวันและเวลากำหนดส่ง' }}">
+                                    <button type="button" x-show="$wire.editDueDate" x-cloak @click="clear()"
+                                        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                        <x-icon name="x-mark" class="h-4 w-4" />
+                                    </button>
                                 </div>
                                 @error('editDueDate') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                             </div>
@@ -664,73 +686,107 @@
                         x-on:livewire-upload-cancel="uploading = false"
                         x-on:livewire-upload-error="uploading = false; uploadError = 'อัปโหลดไฟล์ไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป (สูงสุด 25MB) กรุณาลองใหม่อีกครั้ง'"
                         x-on:livewire-upload-progress="progress = $event.detail.progress">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ไฟล์แนบ</label>
+                        <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ไฟล์แนบ' }}
+                            <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
+                        </label>
+
+                        <div class="w-full">
+                            <label for="edit-file-upload"
+                                class="relative flex flex-col items-center justify-center w-full h-32 border-2 border-[#dedee5] border-dashed rounded-xl cursor-pointer bg-[#f9f9fb] hover:bg-(--cw-faint) hover:border-(--cw-color) transition-colors {{ $editFile ? 'border-(--cw-color) bg-(--cw-faint)' : '' }}">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <x-icon :name="$editFile ? 'check-circle' : 'arrow-up-tray'" class="h-7 w-7 mb-2 text-[#9497a9] {{ $editFile ? 'text-(--cw-color)' : '' }}" />
+                                    <p class="mb-1 text-sm text-[#686b82]">
+                                        @if($editFile)
+                                            <span class="font-bold text-(--cw-color)">{{ 'เลือกไฟล์แล้ว' }}</span>
+                                        @else
+                                            <span class="font-bold">{{ 'คลิกเพื่ออัปโหลด' }}</span> {{ 'หรือลากและวางไฟล์' }}
+                                        @endif
+                                    </p>
+                                    @if(!$editFile)
+                                        <p class="text-xs text-[#9497a9]">{{ 'PDF, DOCX, PPTX, JPG, PNG (สูงสุด 25MB)' }}</p>
+                                    @endif
+                                </div>
+                                <input id="edit-file-upload" type="file" wire:model.live="editFile" class="hidden" />
+                            </label>
+                        </div>
+
+                        {{-- Loading State --}}
+                        <div x-show="uploading" x-cloak class="mt-3 w-full bg-blue-50 rounded-lg p-3">
+                            <div class="flex items-center justify-between text-sm text-blue-600 mb-1.5">
+                                <span class="flex items-center gap-2">
+                                    <x-icon name="spinner" class="h-4 w-4 animate-spin" />
+                                    {{ 'กำลังอัปโหลดไฟล์...' }}
+                                </span>
+                                <span class="font-semibold" x-text="progress + '%'"></span>
+                            </div>
+                            <div class="h-2 bg-blue-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-500 rounded-full transition-all duration-150" :style="`width: ${progress}%`"></div>
+                            </div>
+                        </div>
+
+                        @error('editFile')
+                            <p class="mt-2 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
+
+                        <p x-show="uploadError" x-cloak x-text="uploadError" class="mt-2 text-xs text-red-500"></p>
 
                         @if($assignment->attachments->count())
-                            <div class="mb-2 space-y-1">
+                            <div class="mt-3 space-y-2">
+                                <h4 class="text-xs font-semibold text-[#686b82] uppercase tracking-wider mb-2">
+                                    {{ 'ไฟล์แนบปัจจุบัน' }} ({{ $assignment->attachments->count() }})
+                                </h4>
                                 @foreach($assignment->attachments as $attachment)
-                                    <div class="flex items-center justify-between border border-gray-200 rounded-lg px-3 py-2"
+                                    <div class="flex items-center justify-between p-3 bg-[#f9f9fb] border border-[#dedee5] rounded-xl group hover:border-(--cw-color)/30 transition-colors"
                                         wire:key="edit-attach-{{ $attachment->id }}">
-                                        <div class="flex items-center min-w-0">
-                                            <x-icon name="document-text" class="h-4 w-4 text-gray-400 mr-2 shrink-0" />
-                                            <span class="text-xs text-gray-700 truncate">{{ $attachment->file_name }}</span>
+                                        <div class="flex items-center space-x-3 overflow-hidden">
+                                            <div class="shrink-0 w-9 h-9 rounded-lg bg-(--cw-faint) text-(--cw-color) flex items-center justify-center">
+                                                <x-icon :name="$attachment->icon" class="h-5 w-5" />
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-semibold text-[#101114] truncate">
+                                                    {{ $attachment->file_name }}
+                                                </p>
+                                                <p class="text-xs text-[#9497a9]">
+                                                    {{ $attachment->formatted_size }}
+                                                </p>
+                                            </div>
                                         </div>
                                         <button type="button"
                                             @click="deleteFileId = {{ $attachment->id }}; deleteFileName = @js($attachment->file_name); deleteFileType = 'edit'; showDeleteFileModal = true"
-                                            class="text-red-400 hover:text-red-600 shrink-0 ml-2 cursor-pointer"
-                                            title="ลบไฟล์">
+                                            class="text-[#9497a9] hover:text-red-500 shrink-0 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                                            title="{{ 'ลบ' }}">
                                             <x-icon name="trash" class="h-4 w-4" />
                                         </button>
                                     </div>
                                 @endforeach
                             </div>
                         @endif
-
-                        <label for="edit-file-upload"
-                            class="relative flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors {{ $editFile ? 'border-blue-500 bg-blue-50' : '' }}">
-                            <div class="flex flex-col items-center justify-center py-3">
-                                <x-icon :name="$editFile ? 'check-circle' : 'arrow-up-tray'" class="h-6 w-6 mb-2 {{ $editFile ? 'text-blue-500' : 'text-gray-400' }}" />
-                                @if($editFile)
-                                    <p class="text-sm"><span class="font-semibold text-blue-600">{{ $editFile->getClientOriginalName() }}</span></p>
-                                @else
-                                    <p class="text-sm text-gray-500"><span class="font-semibold">เพิ่มไฟล์แนบ</span> (PDF, DOCX, PPTX, JPG, PNG · 25MB)</p>
-                                @endif
-                            </div>
-                            <input id="edit-file-upload" type="file" wire:model.live="editFile" class="hidden" />
-                        </label>
-
-                        <div x-show="uploading" x-cloak class="mt-2 w-full bg-blue-50 rounded-lg p-2">
-                            <div class="h-1.5 bg-blue-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-blue-500 transition-all" :style="`width: ${progress}%`"></div>
-                            </div>
-                        </div>
-                        <p x-show="uploadError" x-cloak x-text="uploadError" class="mt-1 text-xs text-red-500"></p>
-                        @error('editFile') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-                    </div>
-                @endif
-
-                @if($editType === 'attendance')
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ</label>
-                        <input type="text" readonly disabled value="เช็คชื่อ"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none">
-                    </div>
-                @else
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ</label>
-                        <input wire:model.live.debounce.100ms="editTopic" type="text"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                        @error('editTopic') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
                 @endif
 
                 <div>
+                    @php
+                        $statusOptions = ['draft' => 'ฉบับร่าง', 'published' => 'เผยแพร่แล้ว'];
+                    @endphp
                     <label class="block text-sm font-medium text-gray-700 mb-1">สถานะ</label>
-                    <select wire:model.live="editStatus"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="draft">ฉบับร่าง</option>
-                        <option value="published">เผยแพร่แล้ว</option>
-                    </select>
+                    <div class="dropdown w-full">
+                        <div tabindex="0" role="button"
+                            class="w-full flex items-center justify-between border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 cursor-pointer">
+                            <span>{{ $statusOptions[$editStatus] ?? $editStatus }}</span>
+                            <x-icon name="chevron-down" class="h-4 w-4 text-gray-400" />
+                        </div>
+                        <ul tabindex="0" class="dropdown-content z-10 mt-1 w-full bg-white rounded-lg shadow-lg border border-gray-200 py-1">
+                            @foreach($statusOptions as $value => $label)
+                                <li>
+                                    <button type="button" wire:click="$set('editStatus', '{{ $value }}')"
+                                        onclick="document.activeElement.blur()"
+                                        class="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors {{ $editStatus === $value ? 'text-blue-600 font-medium' : 'text-gray-700' }}">
+                                        {{ $label }}
+                                    </button>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                     @error('editStatus') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                 </div>
 

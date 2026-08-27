@@ -17,10 +17,7 @@ class Settings extends Component
 {
     public function placeholder(array $params = [])
     {
-        $title = isset($params['classroom'])
-            ? 'ตั้งค่า' . ' - ' . $params['classroom']->name
-            : 'ตั้งค่า';
-        return view('livewire.placeholders.generic', array_merge($params, ['pageTitle' => $title]));
+        return view('livewire.placeholders.classroom-settings', $params);
     }
     #[Locked]
     public Classroom $classroom;

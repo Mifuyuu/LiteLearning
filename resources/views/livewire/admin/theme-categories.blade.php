@@ -40,6 +40,7 @@
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-20">ดาว</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-32">สี</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-40">ชื่อ</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-32">รหัสดาวเคราะห์</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell w-28">สถานะ</th>
                     <th class="px-6 py-3 text-right text-sm font-bold text-gray-500 uppercase tracking-wider w-36">การดำเนินการ</th>
                 </tr>
@@ -47,31 +48,29 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse ($categories as $category)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-4 py-4">
+                        <td class="px-4 py-4 whitespace-nowrap">
                             <img src="/images/planets/planet_{{ $category->planet_key }}.svg" alt="planet {{ $category->planet_key }}"
                                 class="w-10 h-10 object-contain" />
                         </td>
-                        <td class="px-4 py-2">
+                        <td class="px-4 py-2 whitespace-nowrap">
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-full shrink-0"
                                     style="background: {{ $category->color }};"></div>
                                 <span class="text-xs font-mono text-gray-500 hidden md:inline">{{ $category->color }}</span>
                             </div>
                         </td>
-                        <td class="px-4 py-2">
+                        <td class="px-4 py-2 whitespace-nowrap">
                             <div class="text-sm font-semibold text-gray-800">{{ $category->name }}</div>
-                            <div class="text-xs text-gray-400 mt-0.5">ดาวเคราะห์: {{ $category->planet_key }}</div>
                         </td>
-                        <td class="px-4 py-2 hidden sm:table-cell">
-                            @if ($category->is_active)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <x-icon name="circle-solid" class="h-2 w-2 mr-1.5" />ใช้งาน
-                                </span>
-                            @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
-                                    <x-icon name="circle-solid" class="h-2 w-2 mr-1.5" />ปิดใช้งาน
-                                </span>
-                            @endif
+                        <td class="px-4 py-2 whitespace-nowrap">
+                            <span class="text-xs font-mono text-gray-500">{{ $category->planet_key }}</span>
+                        </td>
+                        <td class="px-4 py-2 whitespace-nowrap hidden sm:table-cell">
+                            <button wire:click="toggleActive({{ $category->id }})"
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors cursor-pointer
+                                {{ $category->is_active ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
+                                {{ $category->is_active ? 'เปิดใช้งาน' : 'ปิดใช้งาน' }}
+                            </button>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right">
                             <div class="flex justify-end gap-3 text-gray-400">
@@ -89,7 +88,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-gray-500 italic text-sm">
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-500 italic text-sm">
                             {{ $search ? 'ไม่พบหมวดหมู่ที่ค้นหา' : 'ยังไม่มีหมวดหมู่ธีม' }}
                         </td>
                     </tr>

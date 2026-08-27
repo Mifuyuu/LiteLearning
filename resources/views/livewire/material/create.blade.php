@@ -172,13 +172,15 @@
         {{-- Actions Footer --}}
         <div class="p-6 bg-[#f9f9fb] border-t border-[#dedee5] flex items-center justify-end gap-3">
             <a href="{{ route('classroom.work', ['classroom' => $classroom, 'scope' => 'all']) }}" wire:navigate
-                class="inline-flex items-center justify-center px-4 sm:px-5 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">
-                {{ 'ยกเลิก' }}
+                class="inline-flex items-center justify-center w-11 h-11 sm:w-auto sm:h-auto sm:px-5 sm:py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer"
+                title="{{ 'ยกเลิก' }}">
+                <x-icon name="x-mark" class="h-5 w-5 sm:hidden" />
+                <span class="hidden sm:inline">{{ 'ยกเลิก' }}</span>
             </a>
             <button type="submit"
-                class="inline-flex items-center justify-center px-3.5 sm:px-6 py-2.5 text-sm font-bold rounded-lg text-white bg-(--cw-color) hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+                class="inline-flex items-center justify-center w-11 h-11 sm:w-auto sm:h-auto sm:px-6 sm:py-2.5 text-sm font-bold rounded-lg text-white bg-(--cw-color) hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
                 title="{{ 'เผยแพร่สื่อการสอน' }}">
-                <x-icon name="check" class="h-4 w-4 sm:mr-2" />
+                <x-icon name="check" class="h-5 w-5 sm:mr-2" />
                 <span class="hidden sm:inline">{{ 'เผยแพร่สื่อการสอน' }}</span>
             </button>
         </div>

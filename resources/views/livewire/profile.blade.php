@@ -1,8 +1,6 @@
 <div class="max-w-4xl mx-auto">
     @section('page-title', 'โปรไฟล์')
 
-
-
     <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden">
 
         {{-- Cover + Bio --}}

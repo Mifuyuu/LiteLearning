@@ -20,7 +20,7 @@
         <div class="skeleton h-32 w-full rounded-none sm:h-40"></div>
 
         {{-- Header --}}
-        <div class="p-5 sm:p-6">
+        <div class="p-6 sm:p-6">
             <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                 <div class="min-w-0">
                     <div class="skeleton h-3 w-16"></div>
@@ -44,7 +44,7 @@
         {{-- Quick links: 3 sections divided inside the box --}}
         <div class="grid divide-y divide-[#f2eff5] border-t border-[#f2eff5] lg:grid-cols-3 lg:divide-x lg:divide-y-0">
             @for($i = 0; $i < 3; $i++)
-                <div class="p-5">
+                <div class="p-6">
                     <div class="flex items-center gap-3">
                         <div class="skeleton h-10 w-10 rounded-[10px]"></div>
                         <div class="skeleton h-8 w-8"></div>
@@ -56,7 +56,7 @@
         </div>
 
         {{-- กระดานสนทนา --}}
-        <div class="border-t border-[#f2eff5] p-5">
+        <div class="border-t border-[#f2eff5] p-6">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <div class="skeleton h-3 w-20"></div>
@@ -83,7 +83,7 @@
         </div>
 
         {{-- ต้องดูแล --}}
-        <div class="border-t border-[#f2eff5] p-5">
+        <div class="border-t border-[#f2eff5] p-6">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <div class="skeleton h-3 w-20"></div>
