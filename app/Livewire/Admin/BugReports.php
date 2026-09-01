@@ -19,6 +19,12 @@ class BugReports extends Component
         ]);
     }
 
+    public function delete(int $id): void
+    {
+        BugReport::findOrFail($id)->delete();
+        $this->dispatch('notify', message: __('messages.admin.bug_report_deleted'));
+    }
+
     public function submitReply(int $id): void
     {
         $this->validate([

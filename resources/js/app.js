@@ -37,6 +37,42 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 
+    Alpine.data('otpInput', (wireModel = 'otp', length = 6) => ({
+        digits: Array(length).fill(''),
+
+        init() {
+            this.value = this.$wire.entangle(wireModel);
+            if (this.value) this.digits = Array.from({ length }, (_, i) => this.value[i] || '');
+        },
+
+        boxes() {
+            return this.$el.querySelectorAll('input');
+        },
+
+        onInput(i, e) {
+            const v = e.target.value.replace(/\D/g, '').slice(-1);
+            this.digits[i] = v;
+            this.value = this.digits.join('');
+            if (v && i < length - 1) this.boxes()[i + 1].focus();
+        },
+
+        onKeydown(i, e) {
+            if (e.key === 'Backspace' && !this.digits[i] && i > 0) {
+                this.digits[i - 1] = '';
+                this.value = this.digits.join('');
+                this.boxes()[i - 1].focus();
+            }
+        },
+
+        onPaste(e) {
+            e.preventDefault();
+            const text = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, length);
+            this.digits = Array.from({ length }, (_, i) => text[i] || '');
+            this.value = this.digits.join('');
+            this.boxes()[Math.min(text.length, length - 1)].focus();
+        },
+    }));
+
     Alpine.data('datetimePicker', ({ wireModel, placeholder = 'เลือกวันและเวลา' }) => {
         let picker = null;
 

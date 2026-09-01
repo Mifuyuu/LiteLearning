@@ -1,8 +1,9 @@
 @section('page-title', 'จัดการร้านค้า')
 
 <div class="space-y-6 ">
+    <div class="bg-white rounded-2xl border-3 border-gray-200 overflow-hidden">
     <!-- Header -->
-    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
+    <div class="p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
             <div class="relative w-full sm:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -28,7 +29,7 @@
     </div>
 
     <!-- Store Items Table -->
-    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div class="border-t border-gray-200">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
@@ -116,6 +117,7 @@
                 {{ $items->links() }}
             </div>
         @endif
+    </div>
     </div>
 
 <div x-data="{ showDeleteModal: false, deleteId: null, deleteName: '' }"

@@ -143,15 +143,20 @@
                 </div>
 
                 {{-- OTP Input --}}
-                <div>
-                    <label for="otp" class="block text-sm font-medium text-[#686b82] mb-1">
+                <div x-data="otpInput('otp')">
+                    <label class="block text-sm font-medium text-[#686b82] mb-1 text-center">
                         รหัส OTP (6 หลัก)
                     </label>
-                    <input id="otp" type="text" wire:model="otp" inputmode="numeric" pattern="\d{6}" maxlength="6" autofocus
-                        autocomplete="one-time-code" placeholder="000000"
-                        class="w-full px-4 py-3 border border-[#dedee5] rounded-[10px] text-2xl font-bold text-center text-[#101114] tracking-[0.5em] focus:ring-1 focus:ring-(--ll-blue) focus:border-(--ll-blue) transition-colors @error('otp') border-red-500 @enderror">
+                    <div class="flex justify-center gap-2">
+                        <template x-for="i in 6" :key="i">
+                            <input type="text" inputmode="numeric" maxlength="1" :autofocus="i === 1"
+                                :value="digits[i - 1]" @input="onInput(i - 1, $event)"
+                                @keydown="onKeydown(i - 1, $event)" @paste="onPaste($event)"
+                                class="input w-12 h-14 text-center text-2xl font-bold @error('otp') input-error @else input-primary @enderror">
+                        </template>
+                    </div>
                     @error('otp')
-                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-red-500 text-center">{{ $message }}</p>
                     @enderror
                 </div>
 

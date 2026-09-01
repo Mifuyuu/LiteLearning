@@ -7,32 +7,28 @@
 }">
 
 
+    <div class="bg-white rounded-2xl border-3 border-gray-200 overflow-hidden">
     {{-- Header --}}
-    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-                <h2 class="text-xl font-bold text-gray-800">หมวดหมู่ธีม</h2>
-                <p class="text-sm text-gray-500 mt-0.5">จัดการธีมห้องเรียน</p>
+    <div class="p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+            <div class="relative w-full sm:w-96">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                    <x-icon name="magnifying-glass" class="h-4 w-4" />
+                </span>
+                <input type="text" wire:model.live.debounce.300ms="search"
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                    placeholder="ค้นหา...">
             </div>
-            <div class="flex items-center gap-3">
-                <div class="relative">
-                    <x-icon name="magnifying-glass" class="h-4 w-4 text-gray-400" />
-                    <input
-                        wire:model.live.debounce.300ms="search"
-                        type="text"
-                        placeholder="ค้นหา..."
-                        class="pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-xl focus:ring-1 focus:ring-blue-500 w-48"
-                    />
-                </div>
-                <button wire:click="openCreate" class="btn-3d btn-3d--indigo px-4 py-2 rounded-xl text-sm">
-                    <x-icon name="plus" class="h-4 w-4 mr-1.5" />เพิ่มหมวดหมู่
-                </button>
-            </div>
+            <button wire:click="openCreate"
+                class="btn-3d btn-3d--blue inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-colors">
+                <x-icon name="plus" class="h-4 w-4" />
+                เพิ่มหมวดหมู่
+            </button>
         </div>
     </div>
 
     {{-- Table --}}
-    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div class="border-t border-gray-200">
         <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -41,7 +37,7 @@
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-32">สี</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-40">ชื่อ</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-32">รหัสดาวเคราะห์</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell w-28">สถานะ</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-500 uppercase tracking-wider w-28">สถานะ</th>
                     <th class="px-6 py-3 text-right text-sm font-bold text-gray-500 uppercase tracking-wider w-36">การดำเนินการ</th>
                 </tr>
             </thead>
@@ -65,7 +61,7 @@
                         <td class="px-4 py-2 whitespace-nowrap">
                             <span class="text-xs font-mono text-gray-500">{{ $category->planet_key }}</span>
                         </td>
-                        <td class="px-4 py-2 whitespace-nowrap hidden sm:table-cell">
+                        <td class="px-4 py-2 whitespace-nowrap">
                             <button wire:click="toggleActive({{ $category->id }})"
                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors cursor-pointer
                                 {{ $category->is_active ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
@@ -103,6 +99,7 @@
                 {{ $categories->links() }}
             </div>
         @endif
+    </div>
     </div>
 
     {{-- Create / Edit Modal --}}
@@ -206,7 +203,7 @@
                         class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-colors">
                         ยกเลิก
                     </button>
-                    <button wire:click="save" class="btn-3d btn-3d--indigo px-5 py-2 rounded-xl text-sm">
+                    <button wire:click="save" class="btn-3d btn-3d--blue px-5 py-2 rounded-xl text-sm">
                         {{ $editingId ? 'บันทึกการแก้ไข' : 'สร้างหมวดหมู่' }}
                     </button>
                 </div>

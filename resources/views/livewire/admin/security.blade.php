@@ -1,19 +1,20 @@
 @section('page-title', 'ความปลอดภัยของระบบ')
 
 <div class="space-y-6">
-    <div class="flex gap-2 border-b border-gray-200">
-        <button type="button" wire:click="$set('tab', 'audit-log')"
-            class="px-4 py-2.5 text-sm font-bold border-b-2 transition-colors {{ $tab === 'audit-log' ? 'border-blue-600 text-blue-700' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
-            บันทึกการใช้งาน
-        </button>
-        <button type="button" wire:click="$set('tab', 'sessions')"
-            class="px-4 py-2.5 text-sm font-bold border-b-2 transition-colors {{ $tab === 'sessions' ? 'border-blue-600 text-blue-700' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
-            เซสชันที่กำลังใช้งาน
-        </button>
-    </div>
+    <div class="bg-white rounded-2xl border-3 border-gray-200 overflow-hidden min-h-[calc(100vh-3rem)]">
 
-    @if($tab === 'audit-log')
-        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div class="flex gap-2 border-b border-gray-200 px-4 sm:px-6">
+            <button type="button" wire:click="$set('tab', 'audit-log')"
+                class="px-4 py-3 text-sm font-bold border-b-2 transition-colors {{ $tab === 'audit-log' ? 'border-blue-600 text-blue-700' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+                บันทึกการใช้งาน
+            </button>
+            <button type="button" wire:click="$set('tab', 'sessions')"
+                class="px-4 py-3 text-sm font-bold border-b-2 transition-colors {{ $tab === 'sessions' ? 'border-blue-600 text-blue-700' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+                เซสชันที่กำลังใช้งาน
+            </button>
+        </div>
+
+        @if($tab === 'audit-log')
             <div class="overflow-x-auto [scrollbar-width:thin]">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
@@ -55,9 +56,7 @@
                     {{ $auditLogs->links() }}
                 </div>
             @endif
-        </div>
-    @else
-        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        @else
             <div class="overflow-x-auto [scrollbar-width:thin]">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
@@ -113,20 +112,20 @@
                     {{ $sessions->links() }}
                 </div>
             @endif
-        </div>
-    @endif
+        @endif
 
-    <div x-data="{ showRevokeModal: false, revokeId: null }"
-        @open-revoke-session.window="revokeId = $event.detail.id; showRevokeModal = true"
-        @keydown.escape.window="showRevokeModal = false">
-        <template x-teleport="body">
-            <x-confirm-modal show="showRevokeModal" cancel="showRevokeModal = false" icon="arrow-right-on-rectangle"
-                heading="เพิกถอนเซสชัน" message="ผู้ใช้ของเซสชันนี้จะถูกออกจากระบบทันที ต้องการดำเนินการต่อหรือไม่?">
-                <button type="button" @click="$wire.revokeSession(revokeId); showRevokeModal = false"
-                    class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
-                    เพิกถอน
-                </button>
-            </x-confirm-modal>
-        </template>
+        <div x-data="{ showRevokeModal: false, revokeId: null }"
+            @open-revoke-session.window="revokeId = $event.detail.id; showRevokeModal = true"
+            @keydown.escape.window="showRevokeModal = false">
+            <template x-teleport="body">
+                <x-confirm-modal show="showRevokeModal" cancel="showRevokeModal = false" icon="arrow-right-on-rectangle"
+                    heading="เพิกถอนเซสชัน" message="ผู้ใช้ของเซสชันนี้จะถูกออกจากระบบทันที ต้องการดำเนินการต่อหรือไม่?">
+                    <button type="button" @click="$wire.revokeSession(revokeId); showRevokeModal = false"
+                        class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                        เพิกถอน
+                    </button>
+                </x-confirm-modal>
+            </template>
+        </div>
     </div>
 </div>

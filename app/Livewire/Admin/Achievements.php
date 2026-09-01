@@ -75,6 +75,7 @@ class Achievements extends Component
 
         if ($this->editingId) {
             $achievement = Achievement::findOrFail($this->editingId);
+            unset($data['code']);
             $achievement->update($data);
             $this->dispatch('notify', message: __('messages.admin.achievement_updated'));
         } else {

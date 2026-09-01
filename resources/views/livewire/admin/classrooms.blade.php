@@ -1,8 +1,9 @@
 @section('page-title', 'จัดการห้องเรียน')
 
 <div class="space-y-6 ">
+    <div class="bg-white rounded-2xl border-3 border-gray-200 overflow-hidden">
     <!-- Filters and Search -->
-    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
+    <div class="p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
             <div class="relative w-full sm:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -59,7 +60,7 @@
     </div>
 
     <!-- Classrooms Table -->
-    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div class="border-t border-gray-200">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
@@ -103,10 +104,10 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold {{ $classroom->is_archived ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }}">
+                                <button wire:click="toggleArchived({{ $classroom->id }})"
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold transition-colors cursor-pointer {{ $classroom->is_archived ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200' }}">
                                     {{ $classroom->is_archived ? 'เก็บถาวรแล้ว' : 'เปิดใช้งาน' }}
-                                </span>
+                                </button>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right font-medium">
                                 <div class="flex justify-end gap-3 text-gray-400">
@@ -143,19 +144,21 @@
                 {{ $classrooms->links() }}
             </div>
         @endif
-        <div x-data="{ showDeleteModal: false, deleteId: null, deleteName: '' }"
-            @open-delete-classroom.window="deleteId = $event.detail.id; deleteName = $event.detail.name; showDeleteModal = true"
-            @keydown.escape.window="showDeleteModal = false">
-            <template x-teleport="body">
-                <x-confirm-modal show="showDeleteModal" cancel="showDeleteModal = false" heading="ยืนยันการลบ">
-                    <x-slot:message>
-                        คุณแน่ใจหรือไม่ว่าต้องการลบ <span class="font-semibold text-[#101114]" x-text="deleteName"></span>? การกระทำนี้ไม่สามารถย้อนกลับได้
-                    </x-slot:message>
-                    <button type="button" @click="$wire.deleteClassroom(deleteId); showDeleteModal = false"
-                        class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
-                        ลบ
-                    </button>
-                </x-confirm-modal>
-            </template>
-        </div>
     </div>
+    </div>
+    <div x-data="{ showDeleteModal: false, deleteId: null, deleteName: '' }"
+        @open-delete-classroom.window="deleteId = $event.detail.id; deleteName = $event.detail.name; showDeleteModal = true"
+        @keydown.escape.window="showDeleteModal = false">
+        <template x-teleport="body">
+            <x-confirm-modal show="showDeleteModal" cancel="showDeleteModal = false" heading="ยืนยันการลบ">
+                <x-slot:message>
+                    คุณแน่ใจหรือไม่ว่าต้องการลบ <span class="font-semibold text-[#101114]" x-text="deleteName"></span>? การกระทำนี้ไม่สามารถย้อนกลับได้
+                </x-slot:message>
+                <button type="button" @click="$wire.deleteClassroom(deleteId); showDeleteModal = false"
+                    class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                    ลบ
+                </button>
+            </x-confirm-modal>
+        </template>
+    </div>
+</div>

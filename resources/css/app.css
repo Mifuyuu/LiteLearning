@@ -4,7 +4,7 @@
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
     themes: light --default;
-    include: card, badge, avatar, tooltip, skeleton, toggle, checkbox, dropdown;
+    include: card, badge, avatar, tooltip, skeleton, toggle, checkbox, dropdown, input;
     logs: false;
 }
 
@@ -17,6 +17,11 @@
     --font-sans:
         "Google Sans", "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Admin table cards (including their pagination footer) stay light-themed regardless of OS dark mode; the page scrollbar still follows it via :root's color-scheme. */
+.bg-white.rounded-2xl.border.border-gray-200.overflow-hidden {
+    color-scheme: light;
 }
 
 :root {

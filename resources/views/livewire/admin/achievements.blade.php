@@ -1,31 +1,32 @@
 @section('page-title', 'จัดการความสำเร็จ')
 
 <div class="space-y-6 ">
-    <!-- Header -->
-    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
-        <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
-            <div class="relative w-full sm:w-96">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                    <x-icon name="magnifying-glass" class="h-4 w-4" />
-                </span>
-                <input type="text" wire:model.live.debounce.300ms="search"
-                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
-                    placeholder="ค้นหาความสำเร็จ...">
-            </div>
+    <div class="bg-white rounded-2xl border-3 border-gray-200 overflow-hidden">
+        <!-- Header -->
+        <div class="p-4 sm:p-6">
+            <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+                <div class="relative w-full sm:w-96">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                        <x-icon name="magnifying-glass" class="h-4 w-4" />
+                    </span>
+                    <input type="text" wire:model.live.debounce.300ms="search"
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                        placeholder="ค้นหาความสำเร็จ...">
+                </div>
 
-            <div class="flex items-center gap-4">
-                <span class="text-xs text-gray-400 font-medium">เฉพาะความสำเร็จที่เปิดใช้งานเท่านั้นที่ปลดล็อกได้</span>
-                <button wire:click="openCreate"
-                    class="btn-3d btn-3d--indigo inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-colors">
-                    <x-icon name="plus" class="h-4 w-4" />
-                    เพิ่มความสำเร็จ
-                </button>
+                <div class="flex items-center gap-4">
+                    <span class="text-xs text-gray-400 font-medium">เฉพาะความสำเร็จที่เปิดใช้งานเท่านั้นที่ปลดล็อกได้</span>
+                    <button wire:click="openCreate"
+                        class="btn-3d btn-3d--blue inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-colors">
+                        <x-icon name="plus" class="h-4 w-4" />
+                        เพิ่มความสำเร็จ
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Table -->
-    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <!-- Table -->
+        <div class="border-t border-gray-200">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
@@ -99,6 +100,7 @@
                 {{ $achievements->links() }}
             </div>
         @endif
+        </div>
     </div>
 
 <div x-data="{ showDeleteModal: false, deleteId: null, deleteName: '' }"
@@ -142,7 +144,7 @@
                     <!-- รหัส (ซ้าย) -->
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">รหัส</label>
-                        <input type="text" wire:model="form.code" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
+                        <input type="text" wire:model="form.code" @disabled($editingId) class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500">
                         @error('form.code') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <!-- รูปไอคอน (ขวา) -->
@@ -201,7 +203,7 @@
                 <button wire:click="$set('showModal', false)" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                     ยกเลิก
                 </button>
-                <button wire:click="save" class="btn-3d btn-3d--indigo px-6 py-2 text-sm font-bold rounded-lg transition-colors">
+                <button wire:click="save" class="btn-3d btn-3d--blue px-6 py-2 text-sm font-bold rounded-lg transition-colors">
                     บันทึกความสำเร็จ
                 </button>
             </div>

@@ -1,7 +1,7 @@
 <div class="max-w-4xl mx-auto">
     @section('page-title', 'โปรไฟล์')
 
-    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden">
+    <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)]">
 
         {{-- Cover + Bio --}}
         <div class="relative h-48 overflow-hidden bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_24%),linear-gradient(135deg,#1e40af,#2563eb_48%,#3b82f6)]">
@@ -74,6 +74,7 @@
             @endif
 
             {{-- Stat boxes --}}
+            @unless($user->isAdmin())
             <div class="grid grid-cols-2 gap-3 {{ $user->isStudent() ? 'sm:grid-cols-4' : 'sm:grid-cols-3' }}">
                 <div class="rounded-xl border border-[#dedee5] bg-white p-4">
                     <p class="text-2xl font-black text-[#101114]">{{ number_format($profileStats['classrooms']) }}</p>
@@ -106,6 +107,7 @@
                 </div>
                 @endif
             </div>
+            @endunless
 
             {{-- Rank chart (student only) --}}
             @if($user->isStudent() && !empty($chartPoints))
@@ -167,6 +169,7 @@
             @endif
 
             {{-- Classrooms --}}
+            @unless($user->isAdmin())
             <div>
                 <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                     <div>
@@ -222,6 +225,7 @@
                     @endforelse
                 </div>
             </div>
+            @endunless
 
             {{-- Recent submissions (only if has any) --}}
             @if($recentSubmissions->isNotEmpty())

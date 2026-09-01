@@ -34,14 +34,14 @@ class Security extends Component
     {
         return view('livewire.admin.security', [
             'auditLogs' => $this->tab === 'audit-log'
-                ? AuditLog::with('user')->latest()->paginate(15)
+                ? AuditLog::with('user')->latest()->paginate(15, pageName: 'auditPage')
                 : null,
             'sessions' => $this->tab === 'sessions'
                 ? DB::table('sessions')
                     ->join('users', 'users.id', '=', 'sessions.user_id')
                     ->select('sessions.*', 'users.name as user_name', 'users.email as user_email')
                     ->orderByDesc('sessions.last_activity')
-                    ->paginate(15)
+                    ->paginate(15, pageName: 'sessionsPage')
                 : null,
         ]);
     }

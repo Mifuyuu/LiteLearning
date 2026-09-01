@@ -28,6 +28,14 @@ class Classrooms extends Component
         $this->dispatch('notify', message: __('messages.admin.classroom_deleted'));
     }
 
+    public function toggleArchived(Classroom $classroom)
+    {
+        abort_unless(auth()->user()->isAdmin(), 403);
+        $classroom->is_archived = ! $classroom->is_archived;
+        $classroom->save();
+        $this->dispatch('notify', message: __('messages.admin.classroom_status_updated'));
+    }
+
     public function render()
     {
         $query = Classroom::query()->with(['teacher', 'members', 'themeCategory']);

@@ -1,8 +1,9 @@
 @section('page-title', 'จัดการผู้ใช้')
 
 <div class="space-y-6 ">
+    <div class="bg-white rounded-2xl border-3 border-gray-200 overflow-hidden">
     <!-- Filters and Search -->
-    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
+    <div class="p-4 sm:p-6">
         <div class="flex flex-wrap items-center gap-3 justify-between">
             <div class="relative w-full sm:w-96">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -102,7 +103,7 @@
     </div>
 
     <!-- Users Table -->
-    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div class="border-t border-gray-200">
         <div class="overflow-x-auto [scrollbar-width:thin]">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
@@ -241,6 +242,8 @@
                 {{ $users->links() }}
             </div>
         @endif
+    </div>
+    </div>
     <div x-data="{ showDeleteModal: false, deleteId: null, deleteName: '' }"
         @open-delete-user.window="deleteId = $event.detail.id; deleteName = $event.detail.name; showDeleteModal = true"
         @keydown.escape.window="showDeleteModal = false">
