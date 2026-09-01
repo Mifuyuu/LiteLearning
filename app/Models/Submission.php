@@ -2,33 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Str;
 
 class Submission extends Model
 {
-    use HasFactory;
-
-    protected static function booted(): void
-    {
-        static::creating(function (Submission $submission) {
-            if (empty($submission->slug)) {
-                $submission->slug = static::generateUniqueSlug();
-            }
-        });
-    }
-
-    public static function generateUniqueSlug(): string
-    {
-        do {
-            $slug = Str::random(16);
-        } while (static::where('slug', $slug)->exists());
-
-        return $slug;
-    }
+    use HasFactory, HasSlug;
 
     protected $fillable = [
         'slug',

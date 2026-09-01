@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Pivots\ClassroomUserPivot;
+use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +15,7 @@ use Illuminate\Support\Str;
 
 class Classroom extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSlug;
 
     protected $fillable = [
         'teacher_id',
@@ -40,9 +41,6 @@ class Classroom extends Model
         static::creating(function (Classroom $classroom) {
             if (empty($classroom->code)) {
                 $classroom->code = self::generateUniqueCode();
-            }
-            if (empty($classroom->slug)) {
-                $classroom->slug = self::generateUniqueSlug();
             }
         });
     }
@@ -83,15 +81,6 @@ class Classroom extends Model
         } while (self::where('code', $code)->exists());
 
         return $code;
-    }
-
-    public static function generateUniqueSlug(): string
-    {
-        do {
-            $slug = Str::random(16);
-        } while (self::where('slug', $slug)->exists());
-
-        return $slug;
     }
 
     // Relationships
