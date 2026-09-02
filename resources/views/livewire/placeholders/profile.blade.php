@@ -21,8 +21,7 @@
         </div>
 
         {{-- Stats --}}
-        <div class="border-t border-[#dedee5]"></div>
-        <div class="p-5 lg:px-7 space-y-6">
+        <div class="p-5 pt-0 lg:px-7 space-y-6">
             {{-- Level progress placeholder --}}
             <div class="rounded-xl border border-[#dedee5] bg-white p-4 sm:p-5 flex items-center gap-4 sm:gap-5">
                 <div class="skeleton h-16 w-16 sm:h-18 sm:w-18 rounded-full shrink-0"></div>

@@ -2,13 +2,13 @@
 @section('breadcrumb')
     <nav class="flex items-center space-x-1 text-sm">
         <a href="{{ route('classrooms') }}"
-            class="text-gray-500 hover:text-blue-600 transition-colors">{{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}</a>
+            class="text-gray-500 hover:text-blue-600 transition-colors">...</a>
         <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />
         <a href="{{ route('classroom.show', $classroom) }}" class="text-gray-500 hover:text-blue-600 transition-colors"
-            title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 15, '..') }}</a>
+            title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 10, '..') }}</a>
         <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />
         <span class="text-gray-800 font-semibold"
-            title="{{ $assignment->title }}">{{ \Illuminate\Support\Str::limit($assignment->title, 25, '..') }}</span>
+            title="{{ $assignment->title }}">{{ \Illuminate\Support\Str::limit($assignment->title, 10, '..') }}</span>
     </nav>
 @endsection
 

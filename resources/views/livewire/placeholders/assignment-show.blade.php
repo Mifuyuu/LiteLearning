@@ -3,13 +3,13 @@
 @section('breadcrumb')
     <nav class="flex items-center space-x-1 text-sm">
         <a href="{{ route('classrooms') }}"
-            class="text-[#686b82] hover:text-(--ll-blue) transition-colors">{{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}</a>
+            class="text-[#686b82] hover:text-(--ll-blue) transition-colors">...</a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <a href="{{ route('classroom.show', $classroom) }}" class="text-[#686b82] hover:text-(--ll-blue) transition-colors"
-            title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 15, '..') }}</a>
+            title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 10, '..') }}</a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <span class="text-[#101114] font-semibold"
-            title="{{ isset($assignment) ? $assignment->title : '' }}">{{ isset($assignment) ? \Illuminate\Support\Str::limit($assignment->title, 25, '..') : '' }}</span>
+            title="{{ isset($assignment) ? $assignment->title : '' }}">{{ isset($assignment) ? \Illuminate\Support\Str::limit($assignment->title, 10, '..') : '' }}</span>
     </nav>
 @endsection
 @endif

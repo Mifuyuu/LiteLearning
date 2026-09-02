@@ -1,11 +1,11 @@
 @section('page-title', $material->title . ' - ' . $classroom->name)
 @section('breadcrumb')
     <nav class="flex items-center space-x-1 text-sm">
-        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">{{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}</a>
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">...</a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)" title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 8, '..') }}</a>
+        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)" title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 10, '..') }}</a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
-        <span class="font-semibold text-[#101114]" title="{{ $material->title }}">{{ \Illuminate\Support\Str::limit($material->title, 8, '..') }}</span>
+        <span class="font-semibold text-[#101114]" title="{{ $material->title }}">{{ \Illuminate\Support\Str::limit($material->title, 10, '..') }}</span>
     </nav>
 @endsection
 

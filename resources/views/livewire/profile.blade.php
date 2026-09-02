@@ -35,7 +35,7 @@
         </div>
 
         {{-- Stats + Side Content --}}
-        <div class="p-5 lg:px-7 space-y-6">
+        <div class="p-5 pt-0 lg:px-7 space-y-6">
 
             {{-- Bio --}}
             @if($isOwnProfile)
@@ -64,15 +64,14 @@
             @if($user->isStudent())
             <div class="rounded-xl border border-[#dedee5] bg-white p-4 sm:p-5 flex items-center gap-4 sm:gap-5">
                 {{-- Left: Level Number with light blue circular background --}}
-                <div class="flex flex-col items-center justify-center rounded-full bg-(--ll-blue-subtle) h-16 w-16 sm:h-18 sm:w-18 shrink-0">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-(--ll-blue)">เลเวล</span>
-                    <span class="text-2xl sm:text-3xl font-black leading-none text-[#101114] mt-0.5">{{ $profileStats['level'] }}</span>
+                <div class="flex flex-col items-center justify-center shrink-0">
+                    <img src="{{ asset('images/Experience.svg') }}" alt="" class="h-16 w-16 sm:h-18 sm:w-18 object-contain">
                 </div>
 
                 {{-- Right: Dashboard-style level progressbar --}}
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center justify-between gap-2">
-                        <span class="text-xs font-bold uppercase text-(--ll-blue)">ความคืบหน้าเลเวล</span>
+                        <span class="text-sm font-bold uppercase text-[#686b82]">เลเวล <span class="text-(--ll-blue)">{{ $profileStats['level'] }}</span></span>
                         <span class="rounded-[9px] bg-(--ll-blue-subtle) px-2.5 py-0.5 text-xs font-bold text-(--ll-blue)">
                             {{ number_format($profileStats['xp_current']) }} / {{ number_format($profileStats['xp_required']) }} XP
                         </span>
