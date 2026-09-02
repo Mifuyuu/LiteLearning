@@ -39,27 +39,21 @@
             {{-- Title & Topic row --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่อสื่อการสอน *' }}</label>
+                    <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่อสื่อการสอน' }} <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="title"
                         class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
                         placeholder="{{ 'ชื่อเอกสารหรือสื่อการสอน' }}">
                     @error('title') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
-                <div>
+                <x-topic-input :topics="$this->topics" :value="$topic" wire:model="topic"
+                    class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
+                    placeholder="{{ 'เลือกหรือพิมพ์ชื่อหัวข้อใหม่' }}">
                     <label class="block text-sm font-bold text-[#101114] mb-2">
                         <x-icon name="tag" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'หัวข้อ / หมวดหมู่' }}
                         <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
                     </label>
-                    <input type="text" wire:model="topic" list="topics-list"
-                        class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
-                        placeholder="{{ 'เลือกหรือพิมพ์ชื่อหัวข้อใหม่' }}">
-                    <datalist id="topics-list">
-                        @foreach($this->topics as $t)
-                            <option value="{{ $t->name }}">
-                        @endforeach
-                    </datalist>
-                </div>
+                </x-topic-input>
             </div>
 
             {{-- Description (Tiptap editor) --}}
@@ -103,7 +97,7 @@
                                 <p class="text-xs text-[#9497a9]">{{ 'PDF, DOCX, PPTX, JPG, PNG (สูงสุด 25MB)' }}</p>
                             @endif
                         </div>
-                        <input id="file-upload" type="file" wire:model.live="file" class="hidden" />
+                        <input id="file-upload" type="file" wire:model.live="file" multiple class="hidden" />
                     </label>
                 </div>
 
@@ -166,6 +160,29 @@
                         @endforeach
                     </div>
                 @endif
+            </div>
+
+            {{-- Auto-Publish At --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-[#101114] mb-1.5">
+                        <x-icon name="clock" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'กำหนดเวลาเผยแพร่' }}
+                        <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
+                    </label>
+                    <div wire:ignore x-data="datetimePicker({ wireModel: 'published_at', placeholder: 'เลือกวันและเวลาเผยแพร่' })" class="relative">
+                        <input x-ref="inputEl" type="text"
+                            class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 pr-9 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) bg-white cursor-pointer"
+                            placeholder="{{ 'เลือกวันและเวลาเผยแพร่' }}">
+                        <button type="button" x-show="$wire.published_at" x-cloak @click="clear()"
+                            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9497a9] hover:text-[#101114]">
+                            <x-icon name="x-mark" class="h-4 w-4" />
+                        </button>
+                    </div>
+                    <p class="text-xs text-[#9497a9] mt-1">{{ 'เว้นว่างไว้เพื่อเผยแพร่ทันที' }}</p>
+                    @error('published_at')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
         </div>
 

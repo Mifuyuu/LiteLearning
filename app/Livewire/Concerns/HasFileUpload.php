@@ -20,21 +20,28 @@ trait HasFileUpload
 
     public function updatedFile(): void
     {
+        $files = is_array($this->file) ? $this->file : array_filter([$this->file]);
+
+        if (! $files) {
+            return;
+        }
+
         $this->validate([
-            'file' => 'file|max:'.$this->maxFileSizeKb().'|mimes:'.$this->allowedMimes(),
+            'file.*' => 'file|max:'.$this->maxFileSizeKb().'|mimes:'.$this->allowedMimes(),
         ]);
 
-        if ($this->file) {
+        foreach ($files as $file) {
             $this->uploadedFiles[] = [
-                'tmpPath' => $this->file->getRealPath(),
-                'name' => $this->file->getClientOriginalName(),
-                'size' => $this->file->getSize(),
-                'mime' => $this->file->getMimeType(),
-                'file' => $this->file,
+                'tmpPath' => $file->getRealPath(),
+                'name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType(),
+                'file' => $file,
                 'id' => $this->generateAttachmentId(),
             ];
-            $this->file = null;
         }
+
+        $this->file = null;
     }
 
     public function removeFile(int $index): void

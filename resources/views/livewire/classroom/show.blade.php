@@ -153,10 +153,9 @@
                                     <p class="truncate text-sm font-extrabold text-[#101114]">{{ $announcement->user->name }}</p>
                                     <p class="shrink-0 text-xs font-semibold text-[#9497a9]">{{ $announcement->created_at->diffForHumans() }}</p>
                                 </div>
-                                @if($announcement->title)
-                                    <p class="mt-1 text-sm font-bold text-[#101114] truncate">{{ $announcement->title }}</p>
+                                @if($announcement->content)
+                                    <p class="mt-0.5 line-clamp-2 text-xs text-[#686b82]">{{ \Illuminate\Support\Str::limit(strip_tags($announcement->content), 120) }}</p>
                                 @endif
-                                <p class="mt-0.5 line-clamp-2 text-xs text-[#686b82]">{{ \Illuminate\Support\Str::limit(strip_tags($announcement->content), 120) }}</p>
                             </div>
                         </div>
                     </a>

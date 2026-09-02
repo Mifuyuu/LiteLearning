@@ -130,7 +130,8 @@ class Classroom extends Model
             'id',
             'id'
         )->where('classwork_items.type', 'announcement')
-            ->latest('classwork_items.created_at');
+            ->latest('classwork_items.created_at')
+            ->orderByDesc('classwork_items.id');
     }
 
     public function classworkItems(): HasMany
@@ -152,7 +153,8 @@ class Classroom extends Model
             'classwork_item_id', // FK on assignments
             'id',                // local key on classrooms
             'id'                 // local key on classwork_items
-        )->latest('classwork_items.created_at');
+        )->latest('classwork_items.created_at')
+            ->orderByDesc('classwork_items.id');
     }
 
     public function materials(): HasManyThrough
@@ -164,7 +166,8 @@ class Classroom extends Model
             'classwork_item_id',
             'id',
             'id'
-        )->latest('classwork_items.created_at');
+        )->latest('classwork_items.created_at')
+            ->orderByDesc('classwork_items.id');
     }
 
     public function topics(): HasMany

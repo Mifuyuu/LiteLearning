@@ -177,9 +177,9 @@ class GradeReport extends Component
             ->pluck('name');
     }
 
-    public function getTypesProperty(): array
+    public function getTypesProperty(): Collection
     {
-        return ['file', 'question', 'project', 'attendance'];
+        return collect(['file', 'attendance']);
     }
 
     public function exportCsv(): StreamedResponse

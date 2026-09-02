@@ -16,66 +16,75 @@
     </nav>
 @endsection
 
-<div class="max-w-4xl mx-auto">
-    <!-- Back -->
-    <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}"
-        class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6">
-        <x-icon name="arrow-left" class="h-4 w-4 mr-2" /> กลับไปที่ {{ $assignment->title }}
-    </a>
+@php
+    $themeColor = $classroom->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['color'];
+@endphp
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Submission Content -->
-        <div class="lg:col-span-2">
-            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <div class="p-5 border-b border-gray-200">
-                    <div class="flex items-center">
-                        <img src="{{ $submission->user->avatar_url }}" class="w-10 h-10 rounded-full mr-3">
-                        <div>
-                            <p class="font-semibold text-gray-900">{{ $submission->user->name }}</p>
-                            <p class="text-xs text-gray-500">
-                                ส่งแล้ว {{ $submission->turned_in_at?->translatedFormat('j M Y, H:i') }}
-                            </p>
-                        </div>
+<div class="max-w-4xl mx-auto" style="--cw-color: {{ $themeColor }}; --cw-subtle: {{ $themeColor }}26; --cw-faint: {{ $themeColor }}12;">
+    <div class="rounded-2xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)] flex flex-col">
+        {{-- Header --}}
+        <div class="p-4 sm:p-6 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0"
+                    style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
+                    <x-icon name="check-circle" class="h-5 w-5" />
+                </div>
+                <div class="min-w-0">
+                    <h1 class="text-lg sm:text-xl font-bold text-gray-900 truncate">ให้คะแนน</h1>
+                    <p class="text-sm text-gray-500 truncate">{{ $assignment->title }}</p>
+                </div>
+            </div>
+            <a href="{{ route('assignment.show', ['classroom' => $classroom, 'assignment' => $assignment]) }}"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0 border border-[#dedee5] text-[#686b82] hover:text-[#101114] hover:bg-gray-100 transition-colors ml-auto"
+                title="กลับไปที่ {{ $assignment->title }}">
+                <x-icon name="arrow-left" class="h-5 w-5" />
+            </a>
+        </div>
+
+        <div class="border-t border-[#dedee5] p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+            {{-- Submission Content --}}
+            <div class="lg:col-span-2">
+                <div class="flex items-center mb-4">
+                    <img src="{{ $submission->user->avatar_url }}" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <p class="font-semibold text-gray-900">{{ $submission->user->name }}</p>
+                        <p class="text-xs text-gray-500">
+                            ส่งแล้ว {{ $submission->turned_in_at?->translatedFormat('j M Y, H:i') }}
+                        </p>
                     </div>
                 </div>
 
-                <div class="p-5">
-                    <h3 class="text-sm font-semibold text-gray-700 mb-2">คำตอบของนักเรียน</h3>
-                    @if($submission->content)
-                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ $submission->content }}</p>
-                        </div>
-                    @else
-                        <p class="text-sm text-gray-400 italic">ไม่มีคำตอบที่เป็นข้อความ</p>
-                    @endif
+                <h3 class="text-sm font-semibold text-gray-700 mb-2">คำตอบของนักเรียน</h3>
+                @if($submission->content)
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ $submission->content }}</p>
+                    </div>
+                @else
+                    <p class="text-sm text-gray-400 italic">ไม่มีคำตอบที่เป็นข้อความ</p>
+                @endif
 
-                    @if($submission->attachments->count())
-                        <div class="mt-4">
-                            <h3 class="text-sm font-semibold text-gray-700 mb-2">ไฟล์แนบ</h3>
-                            <div class="space-y-2">
-                                @foreach($submission->attachments as $attachment)
-                                    <a href="{{ $attachment->url }}" target="_blank"
-                                        class="flex items-center p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100">
-                                        <x-icon :name="$attachment->icon" class="h-4 w-4 text-gray-400 mr-3" />
-                                        <span class="text-sm text-gray-700">{{ $attachment->file_name }}</span>
-                                    </a>
-                                @endforeach
-                            </div>
+                @if($submission->attachments->count())
+                    <div class="mt-4">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-2">ไฟล์แนบ</h3>
+                        <div class="space-y-2">
+                            @foreach($submission->attachments as $attachment)
+                                <a href="{{ $attachment->url }}" target="_blank"
+                                    class="flex items-center p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100">
+                                    <x-icon :name="$attachment->icon" class="h-4 w-4 text-gray-400 mr-3" />
+                                    <span class="text-sm text-gray-700">{{ $attachment->file_name }}</span>
+                                </a>
+                            @endforeach
                         </div>
-                    @endif
-                </div>
+                    </div>
+                @endif
             </div>
-        </div>
 
-        <!-- Grading Panel -->
-        <div>
-            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-0">
-                <div class="p-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">ให้คะแนน</h3>
-                </div>
+            {{-- Grading Panel --}}
+            <div class="lg:border-l lg:border-[#dedee5] lg:pl-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">ให้คะแนน</h3>
 
-                <div class="p-4 space-y-4">
-                    <!-- Score -->
+                <div class="space-y-4">
+                    {{-- Score --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">คะแนน</label>
                         <div class="flex items-center gap-2">
@@ -87,7 +96,7 @@
                         @error('score') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
 
-                    <!-- Feedback -->
+                    {{-- Feedback --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ข้อเสนอแนะ</label>
                         <textarea wire:model="feedback" rows="4"
@@ -95,7 +104,7 @@
                             placeholder="เพิ่มข้อเสนอแนะสำหรับนักเรียน..."></textarea>
                     </div>
 
-                    <!-- Actions -->
+                    {{-- Actions --}}
                     <div class="space-y-2 pt-2">
                         <button wire:click="grade"
                             class="btn-3d btn-3d--blue w-full py-2.5 text-sm font-medium rounded-lg transition-colors">

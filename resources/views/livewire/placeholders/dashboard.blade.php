@@ -59,7 +59,7 @@
                             <div class="skeleton h-3 w-20"></div>
                             <div class="skeleton h-10 w-12"></div>
                         </div>
-                        <div class="skeleton h-6 w-24 rounded-lg"></div>
+                        <div class="skeleton h-6 w-24 rounded-sm"></div>
                     </div>
                     <div class="skeleton h-2 w-full rounded-full mt-5"></div>
                     <div class="skeleton h-3 w-40 mt-2"></div>

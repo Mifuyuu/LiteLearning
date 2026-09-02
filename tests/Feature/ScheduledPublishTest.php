@@ -40,7 +40,7 @@ class ScheduledPublishTest extends TestCase
             'coin_reward' => 0,
             'due_date' => null,
             'status' => 'scheduled',
-            'type' => 'question',
+            'type' => 'file',
             'allow_late_submission' => true,
         ]);
 
@@ -75,7 +75,7 @@ class ScheduledPublishTest extends TestCase
             'coin_reward' => 0,
             'due_date' => null,
             'status' => 'scheduled',
-            'type' => 'question',
+            'type' => 'file',
             'allow_late_submission' => true,
         ]);
 
@@ -113,7 +113,7 @@ class ScheduledPublishTest extends TestCase
             'coin_reward' => 0,
             'due_date' => null,
             'status' => 'scheduled',
-            'type' => 'question',
+            'type' => 'file',
             'allow_late_submission' => true,
         ]);
 

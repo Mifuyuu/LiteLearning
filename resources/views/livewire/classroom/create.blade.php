@@ -20,7 +20,7 @@
 
                 <form wire:submit.prevent="create" class="p-6 space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'ชื่อห้องเรียน *' }}</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'ชื่อห้องเรียน' }} <span class="text-red-500">*</span></label>
                         <input wire:model="name" type="text"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="{{ 'เช่น คณิตศาสตร์ 101' }}">

@@ -56,7 +56,7 @@ class Show extends Component
 
     public string $editStatus = 'published';
 
-    public string $editType = 'question';
+    public string $editType = 'file';
 
     public string $editTopic = '';
 
@@ -304,7 +304,7 @@ class Show extends Component
             'editCoinReward' => 'integer|min:0|max:9999',
             'editDueDate' => 'nullable|date',
             'editStatus' => 'required|in:draft,published,closed',
-            'editType' => 'required|in:attendance,file,question,project,announcement,material,topic',
+            'editType' => 'required|in:attendance,file,announcement,material,topic',
             'editTopic' => 'nullable|string|max:255',
             'editAllowLateSubmission' => 'boolean',
         ], [

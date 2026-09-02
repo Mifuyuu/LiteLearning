@@ -67,11 +67,13 @@
                     {{ $isStudent ? 'ดูว่าการเรียนรู้ของคุณกำลังเติบโตอย่างไรในวันนี้' : 'เริ่มต้นจากงานที่ต้องตรวจสอบ' }}
                 </p>
             </div>
-            <a href="{{ $isStudent ? route('calendar') : route('to-review') }}" wire:navigate
-                class="inline-flex shrink-0 items-center gap-2 rounded-lg bg-(--ll-blue-subtle) px-3 py-2 text-sm font-semibold text-(--ll-blue) transition hover:bg-(--ll-blue-hover)">
-                <x-icon name="calendar-days" class="h-4 w-4" />
-                <span class="hidden sm:inline">{{ $isStudent ? 'ปฏิทิน' : 'รอตรวจ' }}</span>
-            </a>
+            @unless($isStudent)
+                <a href="{{ route('to-review') }}" wire:navigate
+                    class="inline-flex shrink-0 items-center gap-2 rounded-lg bg-(--ll-blue-subtle) px-3 py-2 text-sm font-semibold text-(--ll-blue) transition hover:bg-(--ll-blue-hover)">
+                    <x-icon name="clipboard-document-check" class="h-4 w-4" />
+                    <span class="hidden sm:inline">รอตรวจ</span>
+                </a>
+            @endunless
         </div>
 
         {{-- Primary metric + Quick stats --}}
@@ -84,7 +86,7 @@
                                 <p class="text-xs font-bold uppercase text-(--ll-blue)">เลเวลปัจจุบัน</p>
                                 <p class="mt-2 text-5xl font-bold leading-none text-[#101114]">{{ $primaryMetric['level'] }}</p>
                             </div>
-                            <span class="rounded-[9px] bg-(--ll-blue-subtle) px-2.5 py-1 text-xs font-bold text-(--ll-blue)">
+                            <span class="rounded-sm bg-(--ll-blue-subtle) px-2.5 py-1 text-xs font-bold text-(--ll-blue)">
                                 {{ number_format($primaryMetric['xp_current']) }} / {{ number_format($primaryMetric['xp_required']) }} XP
                             </span>
                         </div>

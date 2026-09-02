@@ -4,7 +4,6 @@ import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import { TextAlign } from '@tiptap/extension-text-align';
 import Placeholder from '@tiptap/extension-placeholder';
-import ApexCharts from 'apexcharts';
 import flatpickr from 'flatpickr';
 import { Thai } from 'flatpickr/dist/l10n/th.js';
 
@@ -34,42 +33,6 @@ document.addEventListener('alpine:init', () => {
                     this.timer = null;
                 }
             }, 1000);
-        },
-    }));
-
-    Alpine.data('otpInput', (wireModel = 'otp', length = 6) => ({
-        digits: Array(length).fill(''),
-
-        init() {
-            this.value = this.$wire.entangle(wireModel);
-            if (this.value) this.digits = Array.from({ length }, (_, i) => this.value[i] || '');
-        },
-
-        boxes() {
-            return this.$el.querySelectorAll('input');
-        },
-
-        onInput(i, e) {
-            const v = e.target.value.replace(/\D/g, '').slice(-1);
-            this.digits[i] = v;
-            this.value = this.digits.join('');
-            if (v && i < length - 1) this.boxes()[i + 1].focus();
-        },
-
-        onKeydown(i, e) {
-            if (e.key === 'Backspace' && !this.digits[i] && i > 0) {
-                this.digits[i - 1] = '';
-                this.value = this.digits.join('');
-                this.boxes()[i - 1].focus();
-            }
-        },
-
-        onPaste(e) {
-            e.preventDefault();
-            const text = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, length);
-            this.digits = Array.from({ length }, (_, i) => text[i] || '');
-            this.value = this.digits.join('');
-            this.boxes()[Math.min(text.length, length - 1)].focus();
         },
     }));
 
@@ -119,43 +82,45 @@ document.addEventListener('alpine:init', () => {
             }
         };
     });
+    // Hand-rolled sparkline: plain SVG path + hover math, no charting library
+    // for one small line chart.
     Alpine.data('rankChart', (points) => ({
+        points,
+        hover: false,
         activePoint: points.length - 1,
+        viewH: 40,
+        padY: 4,
 
-        get activeRank() { return Number(points[this.activePoint].rank).toLocaleString(); },
+        get activeRank() { return Number(this.points[this.activePoint].rank).toLocaleString(); },
+        get activeDay() { return this.points[this.activePoint].day; },
 
-        init() {
-            // ponytail: Livewire evaluates x-data on the morphed fragment before it's
-            // attached to the document, so $refs.chart is briefly undefined here.
-            // requestAnimationFrame runs after that attach completes; look it up
-            // again inside the callback rather than closing over the stale value.
-            requestAnimationFrame(() => {
-                const el = this.$refs.chart;
-                // Livewire's lazy-load hydration calls init() more than once for the
-                // same element; guard against mounting a second chart onto it.
-                if (!el || el.dataset.chartMounted) return;
-                el.dataset.chartMounted = '1';
-                new ApexCharts(el, {
-                    chart: {
-                        type: 'area',
-                        height: el.clientHeight,
-                        sparkline: { enabled: true },
-                        animations: { enabled: false },
-                        events: {
-                            dataPointMouseEnter: (_e, _ctx, { dataPointIndex }) => { this.activePoint = dataPointIndex; },
-                        },
-                    },
-                    series: [{ name: 'อันดับ', data: points.map((p) => p.rank) }],
-                    yaxis: { reversed: true },
-                    colors: ['#2563eb'],
-                    stroke: { curve: 'smooth', width: 2.5 },
-                    fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.15, opacityTo: 0 } },
-                    tooltip: {
-                        x: { formatter: (_val, { dataPointIndex }) => points[dataPointIndex].day },
-                        y: { formatter: (val) => '#' + Number(val).toLocaleString() },
-                    },
-                }).render();
-            });
+        x(i) { return this.points.length > 1 ? (i / (this.points.length - 1)) * 100 : 50; },
+        y(rank) {
+            const ranks = this.points.map((p) => p.rank);
+            const min = Math.min(...ranks), max = Math.max(...ranks);
+            const usable = this.viewH - this.padY * 2;
+            return max === min ? this.viewH / 2 : this.padY + ((rank - min) / (max - min)) * usable;
+        },
+        get linePath() {
+            const coords = this.points.map((p, i) => [this.x(i), this.y(p.rank)]);
+            let path = `M${coords[0][0].toFixed(2)},${coords[0][1].toFixed(2)}`;
+            for (let i = 1; i < coords.length; i++) {
+                const [x0, y0] = coords[i - 1];
+                const [x1, y1] = coords[i];
+                const xMid = (x0 + x1) / 2;
+                path += ` C${xMid.toFixed(2)},${y0.toFixed(2)} ${xMid.toFixed(2)},${y1.toFixed(2)} ${x1.toFixed(2)},${y1.toFixed(2)}`;
+            }
+            return path;
+        },
+        get areaPath() {
+            return `${this.linePath} L${this.x(this.points.length - 1).toFixed(2)},${this.viewH} L${this.x(0).toFixed(2)},${this.viewH} Z`;
+        },
+
+        onMove(e) {
+            const rect = this.$refs.chart.getBoundingClientRect();
+            const ratio = (e.clientX - rect.left) / rect.width;
+            const i = Math.round(ratio * (this.points.length - 1));
+            this.activePoint = Math.min(Math.max(i, 0), this.points.length - 1);
         },
     }));
 

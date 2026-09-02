@@ -143,21 +143,17 @@
                 </div>
 
                 {{-- OTP Input --}}
-                <div x-data="otpInput('otp')">
-                    <label class="block text-sm font-medium text-[#686b82] mb-1 text-center">
+                <div>
+                    <label for="otp" class="block text-sm font-medium text-[#686b82] mb-1 text-center">
                         รหัส OTP (6 หลัก)
                     </label>
-                    <div class="flex justify-center gap-2">
-                        <template x-for="i in 6" :key="i">
-                            <input type="text" inputmode="numeric" maxlength="1" :autofocus="i === 1"
-                                :value="digits[i - 1]" @input="onInput(i - 1, $event)"
-                                @keydown="onKeydown(i - 1, $event)" @paste="onPaste($event)"
-                                class="input w-12 h-14 text-center text-2xl font-bold @error('otp') input-error @else input-primary @enderror">
-                        </template>
-                    </div>
+                    <input id="otp" type="text" wire:model="otp" inputmode="numeric" pattern="\d{6}" maxlength="6" autofocus
+                        autocomplete="one-time-code" placeholder="000000"
+                        class="input w-full text-center text-2xl font-bold tracking-[0.5em] @error('otp') input-error @else input-primary @enderror">
                     @error('otp')
                         <p class="mt-1 text-xs text-red-500 text-center">{{ $message }}</p>
                     @enderror
+                    <p class="mt-2 text-xs text-[#9497a9] text-center">ไม่พบอีเมล? ลองตรวจสอบในโฟลเดอร์จดหมายขยะ (Junk/Spam)</p>
                 </div>
 
                 {{-- Submit --}}

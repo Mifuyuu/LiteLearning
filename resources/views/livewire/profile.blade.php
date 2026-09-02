@@ -38,11 +38,27 @@
         <div class="p-5 lg:px-7 space-y-6">
 
             {{-- Bio --}}
-            <div class="rounded-xl border border-[#dedee5] bg-white p-4 sm:p-5">
-                <p class="text-sm leading-6 text-slate-600">
-                    {{ $user->bio ?: 'โปรไฟล์การเรียนรู้, ความคืบหน้าในห้องเรียน และการสะสมความสำเร็จ' }}
-                </p>
-            </div>
+            @if($isOwnProfile)
+                <div x-data="{ editing: false, bioText: @js($user->bio ?? '') }"
+                    class="rounded-xl border border-[#dedee5] bg-white p-4 sm:p-5">
+                    <p x-show="!editing" @click="editing = true; $nextTick(() => $refs.bioInput.focus())"
+                        class="cursor-text rounded-lg text-sm leading-6 text-slate-600 transition-colors hover:bg-slate-50">
+                        {{ $user->bio ?: 'คลิกเพื่อเพิ่มคำอธิบายตัวตน...' }}
+                    </p>
+                    <textarea x-show="editing" x-cloak x-ref="bioInput" x-model="bioText" maxlength="250" rows="2"
+                        @keydown.enter.prevent="$wire.updateBio(bioText); editing = false"
+                        @keydown.escape="bioText = @js($user->bio ?? ''); editing = false"
+                        @blur="bioText = @js($user->bio ?? ''); editing = false"
+                        class="w-full resize-none rounded-lg border border-[#dedee5] p-2 text-sm leading-6 text-slate-600 focus:outline-none focus:ring-2 focus:ring-(--ll-blue)"
+                    ></textarea>
+                </div>
+            @else
+                <div class="rounded-xl border border-[#dedee5] bg-white p-4 sm:p-5">
+                    <p class="text-sm leading-6 text-slate-600">
+                        {{ $user->bio ?: 'โปรไฟล์การเรียนรู้, ความคืบหน้าในห้องเรียน และการสะสมความสำเร็จ' }}
+                    </p>
+                </div>
+            @endif
 
             {{-- Level progress bar (student only) --}}
             @if($user->isStudent())
@@ -124,7 +140,30 @@
                             </div>
                         </div>
                     </div>
-                    <div class="relative mt-5 h-24" x-ref="chart"></div>
+                    <div class="relative mt-5 h-24" x-ref="chart"
+                        @mousemove="onMove($event)"
+                        @mouseenter="hover = true"
+                        @mouseleave="hover = false; activePoint = points.length - 1">
+                        <svg class="h-full w-full" viewBox="0 0 100 40" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="rank-fill" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#2563eb" stop-opacity="0.15" />
+                                    <stop offset="100%" stop-color="#2563eb" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                            <path :d="areaPath" fill="url(#rank-fill)" stroke="none" />
+                            <path :d="linePath" fill="none" stroke="#2563eb" stroke-width="2"
+                                vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div class="pointer-events-none absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600 ring-2 ring-white"
+                            :style="`left: ${x(activePoint)}%; top: ${(y(points[activePoint].rank) / viewH) * 100}%`"
+                            x-show="hover" x-cloak></div>
+                        <div class="pointer-events-none absolute -translate-x-1/2 -translate-y-[calc(100%+8px)] whitespace-nowrap rounded-lg bg-slate-900 px-2 py-1 text-[10px] font-bold text-white"
+                            :style="`left: ${x(activePoint)}%; top: ${(y(points[activePoint].rank) / viewH) * 100}%`"
+                            x-show="hover" x-cloak>
+                            <span x-text="activeDay"></span> · #<span x-text="activeRank"></span>
+                        </div>
+                    </div>
                 </div>
             @endif
 

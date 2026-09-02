@@ -19,7 +19,6 @@ export default defineConfig({
             output: {
                 manualChunks(id) {
                     if (id.includes('node_modules')) {
-                        if (id.includes('apexcharts')) return 'vendor-apexcharts';
                         if (id.includes('@tiptap')) return 'vendor-tiptap';
                         if (id.includes('cropperjs')) return 'vendor-cropper';
                     }

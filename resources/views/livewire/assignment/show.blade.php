@@ -111,7 +111,7 @@
                                     {{ $assignment->overdueDescription() }}
                                 </span>
                                 <span class="text-amber-600 text-xs px-2 py-0.5 bg-amber-50 rounded-full">
-                                    อนุญาตให้ส่งงานล่าช้า
+                                    <x-icon name="clock" class="h-4 w-4 mr-1" />อนุญาตให้ส่งงานล่าช้า
                                 </span>
                             @else
                                 <span class="text-red-600 font-medium text-xs px-2 py-0.5 bg-red-50 rounded-full">
@@ -210,11 +210,20 @@
             </div>
             @endif
 
+            @php
+                $showInfoPane = $assignment->requiresSubmission() && !$assignment->isAttendance();
+                $showMaterialNote = $assignment->type === 'material';
+                $showSubmissionPane = auth()->user()->isStudent() && $showInfoPane;
+            @endphp
+
             {{-- Assignment info / stats (shown for both students and teachers) --}}
-            @if($assignment->requiresSubmission() && !$assignment->isAttendance())
-                <div class="border-t border-[#dedee5] p-6">
+            @if($showInfoPane || $showMaterialNote)
+                <div class="border-t border-[#dedee5] {{ $showSubmissionPane ? 'lg:grid lg:grid-cols-2' : '' }}">
+
+            @if($showInfoPane)
+                <div class="p-6">
                     <h3 class="text-sm font-bold text-[#101114] mb-3">{{ 'ข้อมูลงาน' }}</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 {{ $showSubmissionPane ? 'lg:grid-cols-1' : '' }} gap-3">
                         <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
                             <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
                                 <x-icon name="academic-cap" class="h-4 w-4 text-[#9497a9]" />{{ 'คะแนนเต็ม' }}
@@ -233,33 +242,19 @@
                             </span>
                             <p class="text-lg font-bold text-amber-600">{{ $assignment->coin_reward }}</p>
                         </div>
-                        <div class="rounded-xl border border-[#dedee5] bg-[#f9f9fb] p-3.5">
-                            <span class="flex items-center gap-1.5 text-sm text-[#686b82] mb-1 font-medium">
-                                <x-icon name="clock" class="h-4 w-4 text-[#9497a9]" />{{ 'ส่งงานล่าช้า' }}
-                            </span>
-                            <p class="text-lg font-bold {{ $assignment->allow_late_submission ? 'text-green-600' : 'text-red-500' }}">
-                                {{ $assignment->allow_late_submission ? 'อนุญาต' : 'ไม่อนุญาต' }}
-                            </p>
-                        </div>
                     </div>
                 </div>
             @elseif($assignment->type === 'material')
-                <div class="border-t border-[#dedee5] p-6 text-center">
+                <div class="p-6 text-center">
                     <x-icon name="book-open" class="h-7 w-7 text-gray-300 mb-2 mx-auto" />
                     <p class="text-sm text-gray-500">{{ 'นี่คือเอกสาร - ไม่ต้องส่งงาน' }}</p>
                 </div>
             @endif
 
-            {{-- Attendance session (embedded for attendance type) --}}
-            @if($assignment->isAttendance())
-                <div class="border-t border-[#dedee5]">
-                    @livewire('assignment.attendance', ['classroom' => $classroom, 'assignment' => $assignment], 'attendance-' . $assignment->id)
-                </div>
-            @endif
-
-            {{-- Student: Your Submission --}}
-            @if(auth()->user()->isStudent() && $assignment->requiresSubmission() && !$assignment->isAttendance())
-                <div class="border-t border-[#dedee5] p-6">
+                {{-- Student: Your Submission --}}
+                @if($showSubmissionPane)
+                <div class="lg:border-l lg:border-[#dedee5] lg:my-6 p-6">
+                    <div class="border-t border-[#dedee5] mb-4 lg:hidden"></div>
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-900">งานของคุณ</h3>
                         @if($userSubmission)
@@ -288,10 +283,8 @@
 
                     {{-- Overdue warning --}}
                     @if($assignment->isOverdue())
-                        <div
-                            class="mt-3 p-2 rounded-lg {{ $assignment->canSubmitLate() ? 'bg-amber-50 border border-amber-200' : 'bg-red-50 border border-red-200' }}">
-                            <p
-                                class="text-xs font-medium {{ $assignment->canSubmitLate() ? 'text-amber-700' : 'text-red-700' }}">
+                        <div class="mt-3 p-2 rounded-lg bg-red-50 border border-red-200">
+                            <p class="text-xs font-medium text-red-700">
                                 <x-icon :name="$assignment->canSubmitLate() ? 'exclamation-triangle' : 'lock'" class="h-4 w-4 mr-1" />
                                 {{ $assignment->canSubmitLate() ? $assignment->overdueDescription() : 'ปิดรับงานแล้ว' }}
                             </p>
@@ -339,12 +332,13 @@
                                              return Object.keys(this.uploadProgress).length > 0;
                                         },
                                         uploadFiles(files) {
+                                            files = Array.from(files);
                                             if (!files.length) return;
+                                            files.forEach((file) => { this.uploadProgress[file.name] = 0; });
                                             let index = 0;
                                             const uploadNext = () => {
                                                 if (index >= files.length) return;
                                                 let file = files[index];
-                                                this.uploadProgress[file.name] = 0;
                                                 $wire.upload('uploadedFile', file,
                                                     () => {
                                                         delete this.uploadProgress[file.name];
@@ -366,12 +360,12 @@
                                     @dragleave.prevent="isDragging = false"
                                     @dragover.prevent
                                     @drop.prevent="isDragging = false; uploadFiles($event.dataTransfer.files)">
-                                    <label :class="isDragging ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-gray-50'"
+                                    <label for="submission-file-upload" :class="isDragging ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-gray-50'"
                                         class="flex flex-col items-center justify-center w-full py-6 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
                                         <x-icon name="arrow-up-tray" class="h-7 w-7 text-gray-400 mb-2" />
                                         <p class="text-sm text-gray-500">ลากไฟล์มาที่นี่หรือคลิกเพื่ออัปโหลด</p>
                                         <p class="text-xs text-gray-400 mt-1">ขนาดไฟล์สูงสุด: 25MB รองรับหลายไฟล์</p>
-                                        <input x-ref="fileInput" type="file" class="hidden" multiple
+                                        <input id="submission-file-upload" x-ref="fileInput" type="file" class="hidden" multiple
                                             @change="uploadFiles($event.target.files); $event.target.value = ''">
                                     </label>
 
@@ -398,11 +392,14 @@
                                         @foreach($userSubmission->attachments as $attachment)
                                             <div class="flex items-center p-2 bg-gray-50 border border-gray-200 rounded-lg"
                                                 wire:key="file-{{ $attachment->id }}">
-                                                <x-icon :name="$attachment->icon" class="h-4 w-4 text-gray-400 mr-2" />
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-xs font-medium text-gray-700 truncate">{{ $attachment->file_name }}</p>
-                                                    <p class="text-xs text-gray-400">{{ $attachment->formatted_size }}</p>
-                                                </div>
+                                                <a href="{{ $attachment->url }}" target="_blank"
+                                                    class="flex items-center flex-1 min-w-0 hover:opacity-80 transition-opacity">
+                                                    <x-icon :name="$attachment->icon" class="h-4 w-4 text-gray-400 mr-2 shrink-0" />
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-xs font-medium text-gray-700 truncate">{{ $attachment->file_name }}</p>
+                                                        <p class="text-xs text-gray-400">{{ $attachment->formatted_size }}</p>
+                                                    </div>
+                                                </a>
                                                 <button type="button"
                                                     @click="deleteFileId = {{ $attachment->id }}; deleteFileName = @js($attachment->file_name); deleteFileType = 'submission'; showDeleteFileModal = true"
                                                     class="p-1 text-gray-400 hover:text-red-500 rounded transition-colors cursor-pointer"
@@ -413,12 +410,6 @@
                                         @endforeach
                                     </div>
                                 @endif
-                            @else
-                                {{-- Text submission for 'question' type --}}
-                                <textarea wire:model="submissionContent" rows="6"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 mb-3"
-                                    placeholder="พิมพ์คำตอบของคุณที่นี่..." @if(!$assignment->canAcceptSubmission())
-                                    disabled @endif></textarea>
                             @endif
 
                             @if($assignment->canAcceptSubmission())
@@ -458,6 +449,15 @@
                         @endif
                     </div>
                 </div>
+                @endif
+            </div>
+            @endif
+
+            {{-- Attendance session (embedded for attendance type) --}}
+            @if($assignment->isAttendance())
+                <div class="border-t border-[#dedee5]">
+                    @livewire('assignment.attendance', ['classroom' => $classroom, 'assignment' => $assignment], 'attendance-' . $assignment->id)
+                </div>
             @endif
 
             {{-- Teacher: Submissions Table --}}
@@ -466,10 +466,9 @@
                     <div class="p-4 sm:p-6 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900">งานนักเรียน</h3>
                         <div class="flex gap-4 mt-2 text-sm text-gray-500">
-                            <span><x-icon name="check-circle" class="h-4 w-4 mr-1 text-green-500" />
+                            <span><x-icon name="user" class="h-4 w-4 mr-1 text-primary" />
                                  ส่งแล้ว {{ $assignment->submittedCount() }} คน</span>
-                            <span><x-icon name="star" class="h-4 w-4 mr-1 text-amber-500" /> {{ $assignment->gradedCount() }}
-                                ให้คะแนนแล้ว</span>
+                            <span><x-icon name="check-circle" class="h-4 w-4 mr-1 text-green-500" />ให้คะแนนแล้ว {{ $assignment->gradedCount() }} คน</span>
                             @if($assignment->averageScore())
                                 <span><x-icon name="chart-bar" class="h-4 w-4 mr-1 text-blue-500" /> เฉลี่ย:
                                     {{ round($assignment->averageScore()) }}/{{ $assignment->max_score }}</span>
@@ -492,7 +491,7 @@
                                                 <span class="text-green-600">ให้คะแนนแล้ว:
                                                     {{ $sub->score }}/{{ $assignment->max_score }}</span>
                                             @elseif($sub->status === 'returned')
-                                                <span class="text-amber-600 font-semibold">ส่งคืนแล้ว</span>
+                                                <span class="text-amber-600">ส่งคืนให้แก้ไข</span>
                                             @else
                                                 <span class="text-gray-400">ยังไม่ส่ง</span>
                                             @endif
@@ -512,297 +511,7 @@
             @endif
         </div>
     @else
-        {{-- ────────────────────────────────────────────── --}}
-        {{-- Edit Tab --}}
-        {{-- ────────────────────────────────────────────── --}}
-        <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)] flex flex-col">
-            <div class="p-6 flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0"
-                        style="background-color: {{ $themeColor }}20; color: {{ $themeColor }};">
-                        <x-icon name="pencil-square" class="h-5 w-5" />
-                    </div>
-                    <h2 class="text-lg font-bold text-[#101114] truncate">{{ 'แก้ไขงาน' }}</h2>
-                </div>
-                <button wire:click="cancelEditTab" type="button"
-                    class="inline-flex h-10 w-10 items-center justify-center rounded-[10px] shrink-0 border border-[#dedee5] text-[#686b82] hover:text-[#101114] hover:bg-gray-100 transition-colors ml-auto"
-                    title="{{ 'ยกเลิก' }}">
-                    <x-icon name="arrow-left" class="h-5 w-5" />
-                </button>
-            </div>
-
-            <form wire:submit.prevent="saveAssignment" class="flex-1 flex flex-col justify-between"
-                x-data="{
-                    initialTitle: @js($assignment->title ?? ''),
-                    initialDescription: @js($assignment->description ?? ''),
-                    initialMaxScore: {{ (int) ($assignment->max_score ?? 100) }},
-                    initialExpReward: {{ (int) ($assignment->exp_reward ?? 0) }},
-                    initialCoinReward: {{ (int) ($assignment->coin_reward ?? 0) }},
-                    initialDueDate: @js($assignment->due_date ? $assignment->due_date->format('Y-m-d\TH:i') : ''),
-                    initialStatus: @js($assignment->status ?? 'published'),
-                    initialTopic: @js($assignment->topic?->name ?? ''),
-                    initialAllowLate: {{ $assignment->allow_late_submission ? 'true' : 'false' }},
-                    get isDirty() {
-                        return ($wire.editTitle ?? '') !== this.initialTitle ||
-                               ($wire.editDescription ?? '') !== this.initialDescription ||
-                               Number($wire.editMaxScore ?? 0) !== this.initialMaxScore ||
-                               Number($wire.editExpReward ?? 0) !== this.initialExpReward ||
-                               Number($wire.editCoinReward ?? 0) !== this.initialCoinReward ||
-                               ($wire.editDueDate ?? '') !== this.initialDueDate ||
-                               ($wire.editStatus ?? '') !== this.initialStatus ||
-                               ($wire.editTopic ?? '') !== this.initialTopic ||
-                               Boolean($wire.editAllowLateSubmission) !== this.initialAllowLate ||
-                               Boolean($wire.editFile);
-                    }
-                }">
-                <div class="p-6 pt-0 space-y-6 flex-1">
-                <!-- Type Badge (read-only) -->
-                @php
-                    $typeInfo = [
-                        'announcement' => ['icon' => 'megaphone', 'label' => 'ประกาศ'],
-                        'file' => ['icon' => 'document-text', 'label' => 'งานส่งไฟล์'],
-                        'attendance' => ['icon' => 'pencil-square', 'label' => 'งานเช็คชื่อ'],
-                        'material' => ['icon' => 'book-open', 'label' => 'สื่อการสอน'],
-                    ];
-                    $current = $typeInfo[$editType] ?? ['icon' => 'pencil-square', 'label' => ucfirst($editType)];
-                @endphp
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    @if($editType === 'attendance')
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">ชื่องาน</label>
-                            <input wire:model.live.debounce.100ms="editTitle" type="text" readonly disabled
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ</label>
-                            <input type="text" readonly disabled value="เช็คชื่อ"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none">
-                        </div>
-                    @else
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">ชื่องาน *</label>
-                            <input wire:model.live.debounce.100ms="editTitle" type="text" maxlength="50"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                            <div class="mt-1 flex justify-between items-center">
-                                @error('editTitle') <p class="text-sm text-red-500">{{ $message }}</p> @else <span></span> @enderror
-                                <span class="text-xs" :class="$wire.editTitle.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
-                                    <span x-text="$wire.editTitle.length">0</span>/50
-                                </span>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">หัวข้อ</label>
-                            <input wire:model.live.debounce.100ms="editTopic" type="text" list="topics-list-edit"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                            <datalist id="topics-list-edit">
-                                @foreach($this->topics as $t)
-                                    <option value="{{ $t->name }}">
-                                @endforeach
-                            </datalist>
-                            @error('editTopic') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-                        </div>
-                    @endif
-                </div>
-
-                @if($editType !== 'attendance')
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">รายละเอียด</label>
-                        <div wire:ignore x-data="tiptapEditor({ wireModel: 'editDescription', placeholder: 'เพิ่มรายละเอียดหรือคำแนะนำสำหรับงานนี้...' })">
-                            <x-tiptap-toolbar />
-                            <div x-ref="editorEl"
-                                class="min-h-37.5 border border-gray-200 rounded-b-lg p-3 focus:outline-none prose prose-sm max-w-none">
-                            </div>
-                        </div>
-                        @error('editDescription') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-                    </div>
-                @endif
-
-                @if(!in_array($editType, ['material', 'announcement', 'topic']))
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                {{ $editType === 'attendance' ? 'คะแนนเช็คชื่อ' : 'คะแนน' }}
-                            </label>
-                            <input wire:model.live.debounce.100ms="editMaxScore" type="number" min="0" max="100"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                            @error('editMaxScore') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-                        </div>
-                        <div>
-                            <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                                <x-icon name="bolt" class="text-blue-600 mr-1.5 h-4 w-4 shrink-0" />รางวัล EXP
-                            </label>
-                            <input wire:model.live.debounce.100ms="editExpReward" type="number" min="0" max="9999"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                            @error('editExpReward') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-                        </div>
-                        <div>
-                            <label class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                                <img src="{{ asset('images/Coin.svg') }}" class="h-4 w-4 mr-1.5 shrink-0" alt="">รางวัลเหรียญ
-                            </label>
-                            <input wire:model.live.debounce.100ms="editCoinReward" type="number" min="0" max="9999"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-1 focus:ring-amber-500 focus:border-amber-500">
-                            @error('editCoinReward') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-                        </div>
-
-                        @if($editType !== 'attendance')
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">วันกำหนดส่ง</label>
-                                <div wire:ignore x-data="datetimePicker({ wireModel: 'editDueDate', placeholder: 'เลือกวันและเวลากำหนดส่ง' })" class="relative">
-                                    <input x-ref="inputEl" type="text"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 pr-9 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white cursor-pointer"
-                                        placeholder="{{ 'เลือกวันและเวลากำหนดส่ง' }}">
-                                    <button type="button" x-show="$wire.editDueDate" x-cloak @click="clear()"
-                                        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                        <x-icon name="x-mark" class="h-4 w-4" />
-                                    </button>
-                                </div>
-                                @error('editDueDate') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-                            </div>
-                        @endif
-                    </div>
-                @endif
-
-                @if(!in_array($editType, ['announcement', 'material', 'topic']))
-                    <!-- Allow late submission toggle -->
-                    <div class="flex items-center gap-3">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input wire:model.live="editAllowLateSubmission" type="checkbox" class="sr-only peer">
-                            <div
-                                class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600">
-                            </div>
-                        </label>
-                        <span class="text-sm text-gray-700">
-                            {{ $editType === 'attendance' ? 'อนุญาตให้เช็คชื่อสาย (หลังจากครูปิดเซสชัน)' : 'อนุญาตให้ส่งงานล่าช้า' }}
-                        </span>
-                    </div>
-                @endif
-
-                @if($editType !== 'attendance')
-                    <!-- Attachments (existing + new) -->
-                    <div x-data="{ uploading: false, progress: 0, uploadError: '' }"
-                        x-on:livewire-upload-start="uploading = true; progress = 0; uploadError = ''"
-                        x-on:livewire-upload-finish="uploading = false"
-                        x-on:livewire-upload-cancel="uploading = false"
-                        x-on:livewire-upload-error="uploading = false; uploadError = 'อัปโหลดไฟล์ไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป (สูงสุด 25MB) กรุณาลองใหม่อีกครั้ง'"
-                        x-on:livewire-upload-progress="progress = $event.detail.progress">
-                        <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ไฟล์แนบ' }}
-                            <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
-                        </label>
-
-                        <div class="w-full">
-                            <label for="edit-file-upload"
-                                class="relative flex flex-col items-center justify-center w-full h-32 border-2 border-[#dedee5] border-dashed rounded-xl cursor-pointer bg-[#f9f9fb] hover:bg-(--cw-faint) hover:border-(--cw-color) transition-colors {{ $editFile ? 'border-(--cw-color) bg-(--cw-faint)' : '' }}">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <x-icon :name="$editFile ? 'check-circle' : 'arrow-up-tray'" class="h-7 w-7 mb-2 text-[#9497a9] {{ $editFile ? 'text-(--cw-color)' : '' }}" />
-                                    <p class="mb-1 text-sm text-[#686b82]">
-                                        @if($editFile)
-                                            <span class="font-bold text-(--cw-color)">{{ 'เลือกไฟล์แล้ว' }}</span>
-                                        @else
-                                            <span class="font-bold">{{ 'คลิกเพื่ออัปโหลด' }}</span> {{ 'หรือลากและวางไฟล์' }}
-                                        @endif
-                                    </p>
-                                    @if(!$editFile)
-                                        <p class="text-xs text-[#9497a9]">{{ 'PDF, DOCX, PPTX, JPG, PNG (สูงสุด 25MB)' }}</p>
-                                    @endif
-                                </div>
-                                <input id="edit-file-upload" type="file" wire:model.live="editFile" class="hidden" />
-                            </label>
-                        </div>
-
-                        {{-- Loading State --}}
-                        <div x-show="uploading" x-cloak class="mt-3 w-full bg-blue-50 rounded-lg p-3">
-                            <div class="flex items-center justify-between text-sm text-blue-600 mb-1.5">
-                                <span class="flex items-center gap-2">
-                                    <x-icon name="spinner" class="h-4 w-4 animate-spin" />
-                                    {{ 'กำลังอัปโหลดไฟล์...' }}
-                                </span>
-                                <span class="font-semibold" x-text="progress + '%'"></span>
-                            </div>
-                            <div class="h-2 bg-blue-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-blue-500 rounded-full transition-all duration-150" :style="`width: ${progress}%`"></div>
-                            </div>
-                        </div>
-
-                        @error('editFile')
-                            <p class="mt-2 text-xs text-red-500">{{ $message }}</p>
-                        @enderror
-
-                        <p x-show="uploadError" x-cloak x-text="uploadError" class="mt-2 text-xs text-red-500"></p>
-
-                        @if($assignment->attachments->count())
-                            <div class="mt-3 space-y-2">
-                                <h4 class="text-xs font-semibold text-[#686b82] uppercase tracking-wider mb-2">
-                                    {{ 'ไฟล์แนบปัจจุบัน' }} ({{ $assignment->attachments->count() }})
-                                </h4>
-                                @foreach($assignment->attachments as $attachment)
-                                    <div class="flex items-center justify-between p-3 bg-[#f9f9fb] border border-[#dedee5] rounded-xl group hover:border-(--cw-color)/30 transition-colors"
-                                        wire:key="edit-attach-{{ $attachment->id }}">
-                                        <div class="flex items-center space-x-3 overflow-hidden">
-                                            <div class="shrink-0 w-9 h-9 rounded-lg bg-(--cw-faint) text-(--cw-color) flex items-center justify-center">
-                                                <x-icon :name="$attachment->icon" class="h-5 w-5" />
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <p class="text-sm font-semibold text-[#101114] truncate">
-                                                    {{ $attachment->file_name }}
-                                                </p>
-                                                <p class="text-xs text-[#9497a9]">
-                                                    {{ $attachment->formatted_size }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <button type="button"
-                                            @click="deleteFileId = {{ $attachment->id }}; deleteFileName = @js($attachment->file_name); deleteFileType = 'edit'; showDeleteFileModal = true"
-                                            class="text-[#9497a9] hover:text-red-500 shrink-0 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
-                                            title="{{ 'ลบ' }}">
-                                            <x-icon name="trash" class="h-4 w-4" />
-                                        </button>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                @endif
-
-                <div>
-                    @php
-                        $statusOptions = ['draft' => 'ฉบับร่าง', 'published' => 'เผยแพร่แล้ว'];
-                    @endphp
-                    <label class="block text-sm font-medium text-gray-700 mb-1">สถานะ</label>
-                    <div class="dropdown w-full">
-                        <div tabindex="0" role="button"
-                            class="w-full flex items-center justify-between border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 cursor-pointer">
-                            <span>{{ $statusOptions[$editStatus] ?? $editStatus }}</span>
-                            <x-icon name="chevron-down" class="h-4 w-4 text-gray-400" />
-                        </div>
-                        <ul tabindex="0" class="dropdown-content z-10 mt-1 w-full bg-white rounded-lg shadow-lg border border-gray-200 py-1">
-                            @foreach($statusOptions as $value => $label)
-                                <li>
-                                    <button type="button" wire:click="$set('editStatus', '{{ $value }}')"
-                                        onclick="document.activeElement.blur()"
-                                        class="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors {{ $editStatus === $value ? 'text-blue-600 font-medium' : 'text-gray-700' }}">
-                                        {{ $label }}
-                                    </button>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @error('editStatus') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
-                </div>
-
-                <div class="flex items-center justify-end gap-3 mt-auto">
-                    <button wire:click="cancelEditTab" type="button"
-                        class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold rounded-lg border border-[#dedee5] bg-white text-[#686b82] hover:bg-gray-100 hover:text-[#101114] transition-colors cursor-pointer">{{ 'ยกเลิก' }}</button>
-                    <button type="submit" :disabled="!isDirty"
-                        class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold rounded-lg text-white transition-all cursor-pointer shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
-                        :class="isDirty ? 'bg-(--cw-color) hover:opacity-90 active:scale-[0.98]' : 'bg-gray-400'">
-                        <x-icon name="check" class="h-4 w-4 mr-1.5" />
-                        <span wire:loading.remove wire:target="saveAssignment">{{ 'บันทึกการแก้ไข' }}</span>
-                        <span wire:loading wire:target="saveAssignment"><x-icon name="spinner" class="h-4 w-4 mr-1.5 animate-spin" />{{ 'กำลังบันทึก...' }}</span>
-                    </button>
-                </div>
-            </form>
-        </div>
+        @include('livewire.assignment.show-edit-tab')
     @endif
 
     <!-- Delete File Modal -->

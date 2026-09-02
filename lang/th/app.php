@@ -4,11 +4,9 @@ return [
     // Assignment types
     'type_attendance' => 'งานเช็คชื่อ',
     'type_file' => 'งานส่งไฟล์',
-    'type_question' => 'คำถาม',
     'type_topic' => 'หัวข้อ',
     'type_material' => 'สื่อการสอน',
     'type_announcement' => 'ประกาศ',
-    'type_project' => 'โปรเจกต์',
 
     // Overdue descriptions
     'overdue_days' => 'เลยกำหนด :days วัน :hours ชั่วโมง',

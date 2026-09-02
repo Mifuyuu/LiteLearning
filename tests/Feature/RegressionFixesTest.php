@@ -88,7 +88,7 @@ class RegressionFixesTest extends TestCase
         /** @var User $teacher */
         $teacher = User::factory()->create(['role' => 'teacher']);
         $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
-        $assignment = Assignment::factory()->question()->create([
+        $assignment = Assignment::factory()->file()->create([
             'classroom_id' => $classroom->id,
             'user_id' => $teacher->id,
             'status' => 'published',
@@ -554,7 +554,7 @@ class RegressionFixesTest extends TestCase
             'name' => 'Unit 1',
         ]);
 
-        $assignment = Assignment::factory()->question()->create([
+        $assignment = Assignment::factory()->file()->create([
             'classroom_id' => $classroom->id,
             'user_id' => $teacher->id,
             'status' => 'published',
@@ -613,7 +613,7 @@ class RegressionFixesTest extends TestCase
         $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
         $classroom->members()->attach($student->id, ['role' => 'student', 'joined_at' => now()]);
 
-        $assignment = Assignment::factory()->question()->create([
+        $assignment = Assignment::factory()->file()->create([
             'classroom_id' => $classroom->id,
             'user_id' => $teacher->id,
             'status' => 'published',

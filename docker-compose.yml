@@ -66,6 +66,32 @@ services:
       exit 0;
       "
 
+  # Scheduler — รัน Laravel scheduler (classwork:publish-scheduled ฯลฯ) ทุกนาที
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: scheduler
+    restart: unless-stopped
+    command: sh -c "composer install --no-interaction --prefer-dist --optimize-autoloader && php artisan schedule:work"
+    volumes:
+      - .:/var/www/html:delegated
+      - scheduler_vendor:/var/www/html/vendor
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_DATABASE: litelearning
+      DB_USERNAME: litelearning_user
+      DB_PASSWORD: secretpassword
+      AWS_ENDPOINT: http://minio:9000
+      AWS_USE_PATH_STYLE_ENDPOINT: "true"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
   # Cloudflared (Tunnel)
   cloudflared:
     image: cloudflare/cloudflared:latest
@@ -81,3 +107,4 @@ services:
 volumes:
   mariadb_data:
   minio_data:
+  scheduler_vendor:

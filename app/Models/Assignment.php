@@ -147,11 +147,6 @@ class Assignment extends Model
         return $this->type === 'file';
     }
 
-    public function isQuestion(): bool
-    {
-        return $this->type === 'question';
-    }
-
     public function isAnnouncement(): bool
     {
         return $this->type === 'announcement';
@@ -160,11 +155,6 @@ class Assignment extends Model
     public function isTopic(): bool
     {
         return $this->type === 'topic';
-    }
-
-    public function isProject(): bool
-    {
-        return $this->type === 'project';
     }
 
     public function isMaterial(): bool
@@ -181,11 +171,9 @@ class Assignment extends Model
         return match ($this->type) {
             'attendance' => ['bg-amber-100', 'text-amber-700'],
             'file' => ['bg-blue-100', 'text-blue-700'],
-            'question' => ['bg-green-100', 'text-green-700'],
             'topic' => ['bg-cyan-100', 'text-cyan-700'],
             'material' => ['bg-slate-100', 'text-slate-700'],
             'announcement' => ['bg-orange-100', 'text-orange-700'],
-            'project' => ['bg-rose-100', 'text-rose-700'],
             default => ['bg-gray-100', 'text-gray-700'],
         };
     }
@@ -198,11 +186,9 @@ class Assignment extends Model
         return match ($this->type) {
             'attendance' => __('app.type_attendance'),
             'file' => __('app.type_file'),
-            'question' => __('app.type_question'),
             'topic' => __('app.type_topic'),
             'material' => __('app.type_material'),
             'announcement' => __('app.type_announcement'),
-            'project' => __('app.type_project'),
             default => ucfirst($this->type),
         };
     }

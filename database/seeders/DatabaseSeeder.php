@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
                 ],
                 'topics' => ['จำนวนเต็ม', 'เศษส่วนและทศนิยม', 'สมการเชิงเส้น'],
                 'assignments' => [
-                    ['title' => 'แบบฝึกหัดจำนวนเต็มชุดที่ 1', 'type' => 'question', 'topic' => 'จำนวนเต็ม', 'days' => -5, 'max_score' => 10, 'submission_states' => ['graded', 'graded', 'turned_in', 'returned', 'assigned', 'graded', 'turned_in', 'assigned']],
+                    ['title' => 'แบบฝึกหัดจำนวนเต็มชุดที่ 1', 'type' => 'file', 'topic' => 'จำนวนเต็ม', 'days' => -5, 'max_score' => 10, 'submission_states' => ['graded', 'graded', 'turned_in', 'returned', 'assigned', 'graded', 'turned_in', 'assigned']],
                     ['title' => 'ใบงานเศษส่วนและทศนิยม', 'type' => 'file', 'topic' => 'เศษส่วนและทศนิยม', 'days' => 2, 'max_score' => 20, 'submission_states' => ['turned_in', 'turned_in', 'graded', 'assigned', 'assigned', 'turned_in', 'assigned', 'assigned']],
                     ['title' => 'กิจกรรมเช็คชื่อคาบเช้า', 'type' => 'attendance', 'topic' => null, 'days' => 1, 'max_score' => 1, 'submission_states' => ['graded', 'graded', 'graded', 'graded', 'turned_in', 'graded', 'assigned', 'graded']],
                     ['title' => 'สรุปบทเรียนเรื่องสมการเชิงเส้น', 'type' => 'material', 'topic' => 'สมการเชิงเส้น', 'days' => null, 'max_score' => 0, 'submission_states' => []],
@@ -68,8 +68,8 @@ class DatabaseSeeder extends Seeder
                 ],
                 'topics' => ['อัลกอริทึม', 'ผังงาน', 'โครงงานดิจิทัล'],
                 'assignments' => [
-                    ['title' => 'ออกแบบผังงานการแก้ปัญหา', 'type' => 'project', 'topic' => 'ผังงาน', 'days' => 4, 'max_score' => 50, 'submission_states' => ['turned_in', 'graded', 'turned_in', 'assigned', 'returned', 'turned_in', 'assigned', 'assigned', 'graded']],
-                    ['title' => 'ตอบคำถามเรื่องอัลกอริทึม', 'type' => 'question', 'topic' => 'อัลกอริทึม', 'days' => -2, 'max_score' => 10, 'submission_states' => ['graded', 'graded', 'graded', 'turned_in', 'graded', 'returned', 'graded', 'assigned', 'turned_in']],
+                    ['title' => 'ออกแบบผังงานการแก้ปัญหา', 'type' => 'file', 'topic' => 'ผังงาน', 'days' => 4, 'max_score' => 50, 'submission_states' => ['turned_in', 'graded', 'turned_in', 'assigned', 'returned', 'turned_in', 'assigned', 'assigned', 'graded']],
+                    ['title' => 'ตอบคำถามเรื่องอัลกอริทึม', 'type' => 'file', 'topic' => 'อัลกอริทึม', 'days' => -2, 'max_score' => 10, 'submission_states' => ['graded', 'graded', 'graded', 'turned_in', 'graded', 'returned', 'graded', 'assigned', 'turned_in']],
                     ['title' => 'ชุดสื่อการเรียนรู้เรื่องโครงงาน', 'type' => 'material', 'topic' => 'โครงงานดิจิทัล', 'days' => null, 'max_score' => 0, 'submission_states' => []],
                 ],
             ],
@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
                 'topics' => ['Daily Conversation', 'Reading Practice'],
                 'assignments' => [
                     ['title' => 'Speaking Practice: Introduce Yourself', 'type' => 'file', 'topic' => 'Daily Conversation', 'days' => 3, 'max_score' => 20, 'submission_states' => ['turned_in', 'assigned', 'turned_in', 'graded', 'assigned', 'turned_in', 'graded', 'assigned']],
-                    ['title' => 'Reading Quiz Unit 2', 'type' => 'question', 'topic' => 'Reading Practice', 'days' => -1, 'max_score' => 15, 'submission_states' => ['graded', 'graded', 'turned_in', 'graded', 'returned', 'graded', 'assigned', 'turned_in']],
+                    ['title' => 'Reading Quiz Unit 2', 'type' => 'file', 'topic' => 'Reading Practice', 'days' => -1, 'max_score' => 15, 'submission_states' => ['graded', 'graded', 'turned_in', 'graded', 'returned', 'graded', 'assigned', 'turned_in']],
                     ['title' => 'เฉลยและคำศัพท์สำคัญประจำบท', 'type' => 'material', 'topic' => 'Reading Practice', 'days' => null, 'max_score' => 0, 'submission_states' => []],
                 ],
             ],
@@ -204,7 +204,7 @@ class DatabaseSeeder extends Seeder
                     'due_date' => $dueDate,
                     'status' => 'published',
                     'type' => $assignmentData['type'],
-                    'allow_late_submission' => in_array($assignmentData['type'], ['project', 'file'], true),
+                    'allow_late_submission' => $assignmentData['type'] === 'file',
                 ]);
 
                 foreach ($assignmentData['submission_states'] as $studentIndex => $status) {

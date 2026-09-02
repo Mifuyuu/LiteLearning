@@ -630,7 +630,7 @@ class GamificationTest extends TestCase
         return Assignment::factory()->create(array_merge([
             'classwork_item_id' => $classworkItem->id,
             'status' => 'published',
-            'type' => 'question',
+            'type' => 'file',
         ], $attributes));
     }
 

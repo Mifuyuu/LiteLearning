@@ -28,6 +28,8 @@ class Create extends Component
 
     public string $topic = '';
 
+    public ?string $published_at = null;
+
     public function mount(Classroom $classroom): void
     {
         /** @var \App\Models\User $user */
@@ -57,6 +59,7 @@ class Create extends Component
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'topic' => 'nullable|string|max:255',
+            'published_at' => ['nullable', 'date', 'after:now', 'before:'.now()->addYears(5)->toDateTimeString()],
         ], [
             'title.required' => __('messages.validation.title_material'),
             'description.required' => __('messages.validation.description'),
@@ -79,6 +82,7 @@ class Create extends Component
                 'title' => $this->title,
                 'slug' => \App\Models\ClassworkItem::generateUniqueSlug(),
                 'description' => $this->description ? Purifier::clean($this->description) : null,
+                'published_at' => $this->published_at ?: null,
             ]);
 
             $material = Material::create([

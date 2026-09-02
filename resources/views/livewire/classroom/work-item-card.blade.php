@@ -76,8 +76,14 @@
 
             @if($assignment->status !== 'published')
                 <span class="inline-flex items-center gap-2 rounded-md bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
-                    <x-icon name="flag" class="h-4 w-4" />
-                    {{ ucfirst($assignment->status) }}
+                    <x-icon :name="$assignment->status === 'draft' ? 'document-duplicate' : ($assignment->status === 'scheduled' ? 'clock' : 'flag')" class="h-4 w-4" />
+                    @if($assignment->status === 'draft')
+                        {{ 'ฉบับร่าง' }}
+                    @elseif($assignment->status === 'scheduled')
+                        {{ $assignment->classworkItem?->published_at?->translatedFormat('j M Y H:i') ?? 'กำหนดเผยแพร่' }}
+                    @else
+                        {{ ucfirst($assignment->status) }}
+                    @endif
                 </span>
             @endif
         </div>

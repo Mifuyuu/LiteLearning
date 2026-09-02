@@ -64,7 +64,12 @@
                 <div class="grid grid-cols-4 gap-3 sm:grid-cols-7">
                     @foreach($themes as $theme)
                         <button type="button" wire:click="$set('theme_category_id', {{ $theme->id }})"
-                            class="rounded-[10px] border-2 p-2 transition {{ $theme_category_id == $theme->id ? 'border-(--ll-blue) bg-(--ll-blue-subtle)' : 'border-[#dedee5] hover:border-[rgba(37,99,235,0.3)] hover:bg-(--ll-blue-faint)' }}">
+                            class="relative rounded-[10px] border-2 p-2 transition {{ $theme_category_id == $theme->id ? 'border-(--ll-blue) bg-(--ll-blue-subtle)' : 'border-[#dedee5] hover:border-[rgba(37,99,235,0.3)] hover:bg-(--ll-blue-faint)' }}">
+                            @if($theme_category_id == $theme->id)
+                                <span class="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-(--ll-blue) text-white shadow-sm">
+                                    <x-icon name="check" class="h-3 w-3" />
+                                </span>
+                            @endif
                             <img src="/images/planets/planet_{{ $theme->planet_key }}.svg" alt="{{ $theme->name }}" class="mx-auto h-12 w-12 object-contain">
                         </button>
                     @endforeach

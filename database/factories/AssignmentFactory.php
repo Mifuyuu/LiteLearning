@@ -70,25 +70,11 @@ class AssignmentFactory extends Factory
         ]);
     }
 
-    public function question(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'type' => 'question',
-        ]);
-    }
-
     public function topic(): static
     {
         return $this->state(fn (array $attributes) => [
             'type' => 'topic',
             'max_score' => 0,
-        ]);
-    }
-
-    public function project(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'type' => 'project',
         ]);
     }
 

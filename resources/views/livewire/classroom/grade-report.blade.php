@@ -157,7 +157,7 @@
                                         <td class="px-3 py-3 border-l border-[#ece9f0] text-center">
                                             @if($submission && $submission->isGraded())
                                                 <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $submission]) }}" wire:navigate
-                                                    class="inline-flex items-center gap-1 rounded-[7px] bg-[rgba(37,99,235,0.12)] px-2.5 py-1 text-xs font-bold text-(--ll-blue) transition hover:bg-[rgba(37,99,235,0.2)]">
+                                                    class="inline-flex items-center gap-1 rounded-[7px] bg-green-100 px-2.5 py-1 text-xs font-bold text-green-700 transition hover:bg-green-200">
                                                     {{ $submission->score }}/{{ $maxScore }}
                                                 </a>
                                             @elseif($submission && $submission->isTurnedIn())

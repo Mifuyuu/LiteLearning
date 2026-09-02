@@ -158,7 +158,7 @@ class Users extends Component
         }
 
         return view('livewire.admin.users', [
-            'users' => $query->withSum('attachments', 'file_size')->latest()->paginate(15),
+            'users' => $query->with('gamification')->withSum('attachments', 'file_size')->latest()->paginate(15),
         ]);
     }
 }

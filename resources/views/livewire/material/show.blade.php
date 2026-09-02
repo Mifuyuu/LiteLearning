@@ -172,25 +172,20 @@
                     {{-- Title + Topic --}}
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่องาน *' }}</label>
+                            <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่องาน' }} <span class="text-red-500">*</span></label>
                             <input type="text" wire:model.live.debounce.100ms="editTitle"
                                 class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm">
                             @error('editTitle') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'หัวข้อ / หมวดหมู่' }}
+                        <x-topic-input :topics="$this->topics" :value="$editTopic" wire:model.live.debounce.100ms="editTopic"
+                            class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
+                            placeholder="{{ 'เลือกหรือพิมพ์ชื่อหัวข้อใหม่' }}">
+                            <label class="block text-sm font-bold text-[#101114] mb-2">
+                                <x-icon name="tag" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'หัวข้อ / หมวดหมู่' }}
                                 <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
                             </label>
-                            <input type="text" wire:model.live.debounce.100ms="editTopic" list="topics-list-edit"
-                                class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color) text-sm"
-                                placeholder="{{ 'เลือกหรือพิมพ์ชื่อหัวข้อใหม่' }}">
-                            <datalist id="topics-list-edit">
-                                @foreach($this->topics as $t)
-                                    <option value="{{ $t->name }}">
-                                @endforeach
-                            </datalist>
-                        </div>
+                        </x-topic-input>
                     </div>
 
                     {{-- Description (Tiptap editor) --}}

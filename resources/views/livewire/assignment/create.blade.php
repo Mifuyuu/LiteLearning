@@ -56,66 +56,67 @@
 
         <div class="p-6 pt-0 space-y-6 flex-1">
             {{-- Title & Topic row --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {{-- Title --}}
-                <div class="{{ $type === 'announcement' ? 'md:col-span-2' : '' }}">
-                    @if($type === 'attendance')
-                        <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่อเรื่อง *' }}</label>
-                        <input type="text" readonly disabled
-                            class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none"
-                            value="เช็คชื่อประจำวันที่ {{ now()->format('d/m/y') }}">
-                    @else
-                        <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่อเรื่อง *' }}</label>
-                        <input wire:model="title" type="text" maxlength="50"
-                            class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)"
-                            placeholder="{{ 'จำเป็นต้องใส่ชื่อเรื่อง' }}">
-                        <div class="mt-1 flex justify-between items-center">
-                            @error('title')
-                                <p class="text-xs text-red-500">{{ $message }}</p>
-                            @else
-                                <span></span>
-                            @enderror
-                            <span class="text-xs" :class="$wire.title.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
-                                <span x-text="$wire.title.length">0</span>/50
-                            </span>
-                        </div>
-                    @endif
-                </div>
-
-                {{-- Topic --}}
-                @if($type === 'attendance')
+            @if($type !== 'announcement')
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {{-- Title --}}
                     <div>
-                        <label class="block text-sm font-bold text-[#101114] mb-2">
-                            {{ 'หัวข้อ / หมวดหมู่' }}
-                        </label>
-                        <input type="text" readonly disabled
-                            class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none"
-                            value="เช็คชื่อ">
+                        @if($type === 'attendance')
+                            <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่อเรื่อง' }} <span class="text-red-500">*</span></label>
+                            <input type="text" readonly disabled
+                                class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none"
+                                value="เช็คชื่อประจำวันที่ {{ now()->format('d/m/y') }}">
+                        @else
+                            <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ชื่อเรื่อง' }} <span class="text-red-500">*</span></label>
+                            <input wire:model="title" type="text" maxlength="50"
+                                class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)"
+                                placeholder="{{ 'จำเป็นต้องใส่ชื่อเรื่อง' }}">
+                            <div class="mt-1 flex justify-between items-center">
+                                @error('title')
+                                    <p class="text-xs text-red-500">{{ $message }}</p>
+                                @else
+                                    <span></span>
+                                @enderror
+                                <span class="text-xs" :class="$wire.title.length >= 50 ? 'text-red-500 font-medium' : 'text-gray-400'">
+                                    <span x-text="$wire.title.length">0</span>/50
+                                </span>
+                            </div>
+                        @endif
                     </div>
-                @elseif($type !== 'announcement')
-                    <div>
-                        <label class="block text-sm font-bold text-[#101114] mb-2">
-                            <x-icon name="tag" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'หัวข้อ / หมวดหมู่' }}
-                            <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
-                        </label>
-                        <input wire:model="topic" type="text" list="topics-list"
+
+                    {{-- Topic --}}
+                    @if($type === 'attendance')
+                        <div>
+                            <label class="block text-sm font-bold text-[#101114] mb-2">
+                                <x-icon name="tag" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'หัวข้อ / หมวดหมู่' }}
+                                <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
+                            </label>
+                            <input type="text" readonly disabled
+                                class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed select-none"
+                                value="เช็คชื่อ">
+                        </div>
+                    @else
+                        <x-topic-input :topics="$this->topics" :value="$topic" wire:model="topic"
                             class="w-full border border-[#dedee5] rounded-lg px-3.5 py-2.5 text-sm focus:ring-1 focus:ring-(--cw-color) focus:border-(--cw-color)"
                             placeholder="{{ 'เลือกหรือพิมพ์สร้างหัวข้อใหม่' }}">
-                        <datalist id="topics-list">
-                            @foreach($this->topics as $t)
-                                <option value="{{ $t->name }}">
-                            @endforeach
-                        </datalist>
-                    </div>
-                @endif
-            </div>
+                            <label class="block text-sm font-bold text-[#101114] mb-2">
+                                <x-icon name="tag" class="h-4 w-4 mr-1 text-[#9497a9]" />{{ 'หัวข้อ / หมวดหมู่' }}
+                                <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
+                            </label>
+                        </x-topic-input>
+                    @endif
+                </div>
+            @endif
 
             {{-- Description (Tiptap editor) --}}
             @if($type !== 'attendance')
                 <div>
                     <label class="block text-sm font-bold text-[#101114] mb-2">
                         {{ $type === 'announcement' ? 'เนื้อหา' : 'รายละเอียด' }}
-                        <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
+                        @if($type === 'announcement')
+                            <span class="text-red-500">*</span>
+                        @else
+                            <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
+                        @endif
                     </label>
                     <div wire:ignore x-data="tiptapEditor({ wireModel: 'description', placeholder: '{{ 'เพิ่มรายละเอียดหรือคำแนะนำสำหรับงานนี้...' }}' })">
                         <x-tiptap-toolbar />
@@ -157,7 +158,7 @@
                                     <p class="text-xs text-[#9497a9]">{{ 'PDF, DOCX, PPTX, JPG, PNG (สูงสุด 25MB)' }}</p>
                                 @endif
                             </div>
-                            <input id="file-upload" type="file" wire:model.live="file" class="hidden" />
+                            <input id="file-upload" type="file" wire:model.live="file" multiple class="hidden" />
                         </label>
                     </div>
 
@@ -225,7 +226,7 @@
 
             {{-- Options: Auto-Publish + Due Date + Points --}}
             @if($type !== 'announcement')
-                <div class="space-y-4 pt-2">
+            <div class="space-y-4 pt-2">
                     <div class="grid grid-cols-1 {{ in_array($type, ['material', 'attendance', 'topic']) ? '' : 'md:grid-cols-2' }} gap-4">
                         {{-- Auto-Publish At --}}
                         <div>

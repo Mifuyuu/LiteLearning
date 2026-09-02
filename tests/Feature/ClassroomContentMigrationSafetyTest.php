@@ -39,14 +39,14 @@ class ClassroomContentMigrationSafetyTest extends TestCase
             'content' => 'Announcement hidden from another classroom',
         ]);
 
-        $publishedAssignment = Assignment::factory()->question()->create([
+        $publishedAssignment = Assignment::factory()->file()->create([
             'user_id' => $teacher->id,
             'classroom_id' => $classroom->id,
             'title' => 'Published assignment visible to students',
             'status' => 'published',
         ]);
 
-        Assignment::factory()->question()->create([
+        Assignment::factory()->file()->create([
             'classroom_id' => $otherClassroom->id,
             'title' => 'Assignment hidden from another classroom',
             'status' => 'published',

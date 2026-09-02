@@ -97,8 +97,8 @@ class Create extends Component
     public function save(): void
     {
         $this->validate([
-            'title' => 'required|string|max:50',
-            'description' => 'nullable|string',
+            'title' => 'required_unless:type,announcement|string|max:50',
+            'description' => $this->type === 'announcement' ? 'required|string' : 'nullable|string',
             'max_score' => 'required_unless:type,material,topic,announcement|integer|min:0|max:100',
             'exp_reward' => 'integer|min:0|max:9999',
             'coin_reward' => 'integer|min:0|max:9999',
@@ -109,13 +109,17 @@ class Create extends Component
             'topic' => 'nullable|string|max:255',
             'allow_late_submission' => 'boolean',
         ], [
-            'title.required' => __('messages.validation.title_assignment'),
+            'title.required_unless' => __('messages.validation.title_assignment'),
             'description.required' => __('messages.validation.description'),
             'max_score.required' => __('messages.validation.max_score'),
             'type.required' => __('messages.validation.type_assignment'),
             'status.required' => __('messages.validation.status'),
             'topic.required' => __('messages.validation.topic'),
         ]);
+
+        if ($this->type === 'announcement') {
+            $this->title = '';
+        }
 
         /** @var \App\Models\User $user */
         $user = auth()->user();

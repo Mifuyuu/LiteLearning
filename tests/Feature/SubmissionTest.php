@@ -37,7 +37,7 @@ class SubmissionTest extends TestCase
         $this->assignment = Assignment::factory()->create([
             'user_id' => $this->teacher->id,
             'classroom_id' => $this->classroom->id,
-            'type' => 'question',
+            'type' => 'file',
             'status' => 'published',
             'allow_late_submission' => true,
             'due_date' => now()->addDay(),
@@ -320,7 +320,7 @@ class SubmissionTest extends TestCase
         $assignmentNoDueDate = Assignment::factory()->create([
             'user_id' => $this->teacher->id,
             'classroom_id' => $this->classroom->id,
-            'type' => 'question',
+            'type' => 'file',
             'status' => 'published',
             'due_date' => null,
         ]);
@@ -328,7 +328,7 @@ class SubmissionTest extends TestCase
         $assignmentUrgent = Assignment::factory()->create([
             'user_id' => $this->teacher->id,
             'classroom_id' => $this->classroom->id,
-            'type' => 'question',
+            'type' => 'file',
             'status' => 'published',
             'due_date' => now()->addHours(2),
         ]);
