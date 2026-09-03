@@ -92,6 +92,21 @@ class SystemFeatureFlagsTest extends TestCase
         $this->assertFalse($classroom->fresh()->students->contains($student));
     }
 
+    public function test_classroom_join_is_blocked_when_teacher_disables_it(): void
+    {
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        $student = User::factory()->create(['role' => 'student']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id, 'join_enabled' => false]);
+
+        Livewire::actingAs($student)
+            ->test(JoinClassroom::class)
+            ->set('code', $classroom->code)
+            ->call('join')
+            ->assertHasErrors('code');
+
+        $this->assertFalse($classroom->fresh()->students->contains($student));
+    }
+
     public function test_bug_report_submission_is_blocked_when_disabled(): void
     {
         app(SettingsService::class)->set('bug_report_enabled', false);

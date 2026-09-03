@@ -16,7 +16,7 @@
 @endif
 
 <div class="space-y-5 max-w-4xl mx-auto">
-    <section class="rounded-xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px] min-h-[calc(100vh-3rem)] flex flex-col">
+    <section class="rounded-xl border-3 border-[#dedee5] bg-white shadow-[rgba(0,0,0,0.03)_0px_4px_24px]">
         <div class="border-b border-[#dedee5] p-5">
             <div class="skeleton h-7 w-56"></div>
         </div>
@@ -26,10 +26,21 @@
                 <div class="skeleton h-3 w-32"></div>
                 <div class="skeleton h-7 w-28"></div>
             </div>
-            <div class="skeleton h-11 w-24 rounded-[10px]"></div>
+            <div class="flex items-center gap-2">
+                <div class="skeleton h-10 w-10 rounded-[10px]"></div>
+                <div class="skeleton h-10 w-24 rounded-[10px]"></div>
+            </div>
         </div>
 
-        <div class="flex-1 flex flex-col space-y-5 p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#dedee5] p-5">
+            <div class="space-y-2">
+                <div class="skeleton h-4 w-48"></div>
+                <div class="skeleton h-3 w-64"></div>
+            </div>
+            <div class="skeleton h-6 w-11 rounded-full"></div>
+        </div>
+
+        <div class="space-y-5 p-5">
             <div class="grid gap-4 md:grid-cols-2">
                 <div class="space-y-2">
                     <div class="skeleton h-4 w-10"></div>
@@ -55,10 +66,25 @@
                 </div>
             </div>
 
-            <div class="mt-auto flex flex-wrap justify-end gap-2 border-t border-[#dedee5] pt-5">
-                <div class="skeleton h-11 w-28 rounded-[10px]"></div>
+            <div class="flex flex-wrap justify-end gap-2 border-t border-[#dedee5] pt-5">
                 <div class="skeleton h-11 w-24 rounded-[10px]"></div>
             </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 p-5">
+            <div class="max-w-xl space-y-2">
+                <div class="skeleton h-4 w-36"></div>
+                <div class="skeleton h-3 w-full max-w-md"></div>
+            </div>
+            <div class="ml-auto skeleton h-11 w-24 shrink-0 rounded-[10px]"></div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 rounded-b-xl p-5">
+            <div class="max-w-xl space-y-2">
+                <div class="skeleton h-4 w-24"></div>
+                <div class="skeleton h-3 w-full max-w-sm"></div>
+            </div>
+            <div class="ml-auto skeleton h-11 w-32 shrink-0 rounded-[10px]"></div>
         </div>
     </section>
 </div>

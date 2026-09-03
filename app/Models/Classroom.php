@@ -10,12 +10,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Str;
 
 class Classroom extends Model
 {
-    use HasFactory, HasSlug;
+    use HasFactory, HasSlug, SoftDeletes;
 
     protected $fillable = [
         'teacher_id',
@@ -26,6 +27,7 @@ class Classroom extends Model
         'code',
         'theme_category_id',
         'is_archived',
+        'join_enabled',
     ];
 
     // Use the method form of casts (consistent with rest of project — fix #4)
@@ -33,6 +35,7 @@ class Classroom extends Model
     {
         return [
             'is_archived' => 'boolean',
+            'join_enabled' => 'boolean',
         ];
     }
 

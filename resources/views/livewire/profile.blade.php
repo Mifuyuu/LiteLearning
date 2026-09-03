@@ -3,7 +3,7 @@
 
     <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)]">
 
-        {{-- Cover + Bio --}}
+        {{-- Cover --}}
         <div class="relative h-48 overflow-hidden bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_24%),linear-gradient(135deg,#1e40af,#2563eb_48%,#3b82f6)]">
             <img src="{{ $user->cover_image ? $user->cover_image_url : asset('images/default_profile_banner.webp').'?v='.filemtime(public_path('images/default_profile_banner.webp')) }}" alt="{{ $user->name }}"
                 class="absolute inset-0 h-full w-full object-cover">
@@ -36,29 +36,6 @@
 
         {{-- Stats + Side Content --}}
         <div class="p-5 pt-0 lg:px-7 space-y-6">
-
-            {{-- Bio --}}
-            @if($isOwnProfile)
-                <div x-data="{ editing: false, bioText: @js($user->bio ?? '') }"
-                    class="rounded-xl border border-[#dedee5] bg-white p-4 sm:p-5">
-                    <p x-show="!editing" @click="editing = true; $nextTick(() => $refs.bioInput.focus())"
-                        class="cursor-text rounded-lg text-sm leading-6 text-slate-600 transition-colors hover:bg-slate-50">
-                        {{ $user->bio ?: 'คลิกเพื่อเพิ่มคำอธิบายตัวตน...' }}
-                    </p>
-                    <textarea x-show="editing" x-cloak x-ref="bioInput" x-model="bioText" maxlength="250" rows="2"
-                        @keydown.enter.prevent="$wire.updateBio(bioText); editing = false"
-                        @keydown.escape="bioText = @js($user->bio ?? ''); editing = false"
-                        @blur="bioText = @js($user->bio ?? ''); editing = false"
-                        class="w-full resize-none rounded-lg border border-[#dedee5] p-2 text-sm leading-6 text-slate-600 focus:outline-none focus:ring-2 focus:ring-(--ll-blue)"
-                    ></textarea>
-                </div>
-            @else
-                <div class="rounded-xl border border-[#dedee5] bg-white p-4 sm:p-5">
-                    <p class="text-sm leading-6 text-slate-600">
-                        {{ $user->bio ?: 'โปรไฟล์การเรียนรู้, ความคืบหน้าในห้องเรียน และการสะสมความสำเร็จ' }}
-                    </p>
-                </div>
-            @endif
 
             {{-- Level progress bar (student only) --}}
             @if($user->isStudent())

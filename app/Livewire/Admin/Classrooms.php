@@ -21,24 +21,34 @@ class Classrooms extends Component
         $this->resetPage();
     }
 
-    public function deleteClassroom(Classroom $classroom)
+    public function deleteClassroom(string $slug)
     {
         abort_unless(auth()->user()->isAdmin(), 403);
-        $classroom->delete();
+        $classroom = Classroom::withTrashed()->where('slug', $slug)->firstOrFail();
+        $classroom->forceDelete();
         $this->dispatch('notify', message: __('messages.admin.classroom_deleted'));
     }
 
-    public function toggleArchived(Classroom $classroom)
+    public function setArchived(string $slug, bool $archived)
     {
         abort_unless(auth()->user()->isAdmin(), 403);
-        $classroom->is_archived = ! $classroom->is_archived;
+        $classroom = Classroom::withTrashed()->where('slug', $slug)->firstOrFail();
+        $classroom->is_archived = $archived;
         $classroom->save();
         $this->dispatch('notify', message: __('messages.admin.classroom_status_updated'));
     }
 
+    public function restoreClassroom(string $slug)
+    {
+        abort_unless(auth()->user()->isAdmin(), 403);
+        $classroom = Classroom::onlyTrashed()->where('slug', $slug)->firstOrFail();
+        $classroom->restore();
+        $this->dispatch('notify', message: __('messages.admin.classroom_restored'));
+    }
+
     public function render()
     {
-        $query = Classroom::query()->with(['teacher', 'members', 'themeCategory']);
+        $query = Classroom::withTrashed()->with(['teacher', 'members', 'themeCategory']);
 
         if ($this->search) {
             $query->where('name', 'like', '%'.$this->search.'%')

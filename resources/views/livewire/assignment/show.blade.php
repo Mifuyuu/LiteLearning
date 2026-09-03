@@ -1,13 +1,12 @@
 @section('page-title', $assignment->title)
 @section('breadcrumb')
-    <nav class="flex items-center space-x-1 text-sm">
-        <a href="{{ route('classrooms') }}"
-            class="text-gray-500 hover:text-blue-600 transition-colors">...</a>
-        <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />
-        <a href="{{ route('classroom.show', $classroom) }}" class="text-gray-500 hover:text-blue-600 transition-colors"
+    <nav class="flex items-center gap-1 text-sm">
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">...</a>
+        <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
+        <a href="{{ route('classroom.show', $classroom) }}" wire:navigate class="text-[#686b82] transition-colors hover:text-(--ll-blue)"
             title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 10, '..') }}</a>
-        <x-icon name="chevron-right" class="h-4 w-4 text-gray-400" />
-        <span class="text-gray-800 font-semibold"
+        <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
+        <span class="font-semibold text-[#101114]"
             title="{{ $assignment->title }}">{{ \Illuminate\Support\Str::limit($assignment->title, 10, '..') }}</span>
     </nav>
 @endsection

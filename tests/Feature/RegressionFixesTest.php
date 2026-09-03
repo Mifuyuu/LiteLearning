@@ -602,6 +602,53 @@ class RegressionFixesTest extends TestCase
         $this->assertSame($topic->id, $material->fresh()->classworkItem->topic_id);
     }
 
+    public function test_unused_topic_can_be_deleted(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $topic = Topic::create([
+            'classroom_id' => $classroom->id,
+            'name' => 'Unused',
+        ]);
+
+        $assignment = Assignment::factory()->file()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'status' => 'published',
+        ]);
+
+        Livewire::actingAs($teacher)
+            ->test(AssignmentShow::class, ['classroom' => $classroom, 'assignment' => $assignment])
+            ->call('deleteTopic', $topic->id);
+
+        $this->assertModelMissing($topic);
+    }
+
+    public function test_topic_still_in_use_cannot_be_deleted(): void
+    {
+        /** @var User $teacher */
+        $teacher = User::factory()->create(['role' => 'teacher']);
+        $classroom = Classroom::factory()->create(['teacher_id' => $teacher->id]);
+        $topic = Topic::create([
+            'classroom_id' => $classroom->id,
+            'name' => 'In Use',
+        ]);
+
+        $assignment = Assignment::factory()->file()->create([
+            'classroom_id' => $classroom->id,
+            'user_id' => $teacher->id,
+            'status' => 'published',
+            'topic_id' => $topic->id,
+        ]);
+
+        Livewire::actingAs($teacher)
+            ->test(AssignmentShow::class, ['classroom' => $classroom, 'assignment' => $assignment])
+            ->call('deleteTopic', $topic->id);
+
+        $this->assertModelExists($topic);
+    }
+
     public function test_deleting_assignment_removes_backing_classwork_item(): void
     {
         Storage::fake('s3');

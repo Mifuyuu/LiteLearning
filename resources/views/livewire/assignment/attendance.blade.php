@@ -98,7 +98,7 @@
                                         <p class="text-xs text-[#9497a9]">{{ $sub->turned_in_at?->translatedFormat('H:i น.') }}</p>
                                     </div>
                                 </div>
-                                <div class="shrink-0">
+                                <div class="flex items-center gap-2 shrink-0">
                                     @if($isLate)
                                         <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 flex items-center gap-1">
                                             <x-icon name="clock" class="h-3.5 w-3.5" />{{ 'เช็คชื่อสาย' }}
@@ -107,6 +107,12 @@
                                         <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 flex items-center gap-1">
                                             <x-icon name="check-circle" class="h-3.5 w-3.5" />{{ 'ตรงเวลา' }}
                                         </span>
+                                    @endif
+                                    @if($sub->isTurnedIn() || $sub->status === 'returned')
+                                        <a href="{{ route('assignment.grade', ['classroom' => $classroom, 'assignment' => $assignment, 'submission' => $sub]) }}"
+                                            class="px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors">
+                                            <x-icon :name="$sub->isGraded() ? 'eye' : ($sub->status === 'returned' ? 'arrow-uturn-left' : 'pencil')" class="h-4 w-4 mr-1" />{{ $sub->isGraded() ? 'ดูคะแนน' : ($sub->status === 'returned' ? 'ดูงานที่ส่งคืน' : 'ให้คะแนน') }}
+                                        </a>
                                     @endif
                                 </div>
                             </div>

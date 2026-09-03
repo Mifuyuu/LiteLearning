@@ -63,8 +63,8 @@
                         </td>
                         <td class="px-4 py-2 whitespace-nowrap">
                             <button wire:click="toggleActive({{ $category->id }})"
-                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors cursor-pointer
-                                {{ $category->is_active ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
+                                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold transition-colors
+                                {{ $category->is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' }}">
                                 {{ $category->is_active ? 'เปิดใช้งาน' : 'ปิดใช้งาน' }}
                             </button>
                         </td>
@@ -190,20 +190,14 @@
                         @error('planetImageUpload') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                    {{-- Active toggle --}}
-                    <div class="flex items-center gap-3">
-                        <input wire:model="form.is_active" type="checkbox" id="is_active"
-                            class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                        <label for="is_active" class="text-sm font-medium text-gray-700">เปิดใช้งาน</label>
-                    </div>
                 </div>
 
                 <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
                     <button wire:click="$set('showModal', false)"
-                        class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-colors">
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                         ยกเลิก
                     </button>
-                    <button wire:click="save" class="btn-3d btn-3d--blue px-5 py-2 rounded-xl text-sm">
+                    <button wire:click="save" class="px-5 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                         {{ $editingId ? 'บันทึกการแก้ไข' : 'สร้างหมวดหมู่' }}
                     </button>
                 </div>

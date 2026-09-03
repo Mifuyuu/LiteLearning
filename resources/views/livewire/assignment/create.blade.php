@@ -1,15 +1,14 @@
 @section('page-title', $type === 'announcement' ? 'สร้างประกาศ' : 'สร้างงาน')
 @section('breadcrumb')
-    <nav class="flex items-center space-x-1 text-sm">
-        <a href="{{ route('classrooms') }}"
-            class="text-[#686b82] hover:text-(--ll-blue) transition-colors">{{ auth()->user()->isTeacher() ? 'ชั้นเรียนของฉัน' : 'ห้องเรียน' }}</a>
+    <nav class="flex items-center gap-1 text-sm">
+        <a href="{{ route('classrooms') }}" class="text-[#686b82] transition-colors hover:text-(--ll-blue)">...</a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <a href="{{ route('classroom.show', $classroom) }}" wire:navigate
-            class="text-[#686b82] hover:text-(--ll-blue) transition-colors"
-            title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 25, '..') }}</a>
+            class="text-[#686b82] transition-colors hover:text-(--ll-blue)"
+            title="{{ $classroom->name }}">{{ \Illuminate\Support\Str::limit($classroom->name, 10, '..') }}</a>
         <x-icon name="chevron-right" class="h-3 w-3 text-[#9497a9]" />
         <span
-            class="text-[#101114] font-semibold">{{ $type === 'announcement' ? 'สร้างประกาศ' : ($type === 'attendance' ? 'สร้างงานเช็คชื่อ' : 'สร้างงาน') }}</span>
+            class="font-semibold text-[#101114]">{{ $type === 'announcement' ? 'สร้างประกาศ' : ($type === 'attendance' ? 'สร้างงานเช็คชื่อ' : 'สร้างงาน') }}</span>
     </nav>
 @endsection
 

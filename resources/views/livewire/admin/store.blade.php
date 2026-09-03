@@ -166,8 +166,8 @@
                             <label
                                 class="block text-sm font-semibold text-gray-700 mb-1">ประเภท</label>
                             <div class="relative">
-                                <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
-                                    class="flex w-full items-center justify-between px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'" @disabled($editingId)
+                                    class="flex w-full items-center justify-between px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed">
                                     <span>
                                         @if($form['type'] === 'name_color') Name Color
                                         @elseif($form['type'] === 'avatar_frame') Avatar Frame
@@ -176,6 +176,7 @@
                                     </span>
                                     <x-icon name="chevron-down" class="h-3.5 w-3.5 text-gray-400" />
                                 </button>
+                                @if(!$editingId)
                                 <div x-show="open" x-cloak @click.outside="open = false"
                                     x-transition:enter="transition ease-out duration-100"
                                     x-transition:enter-start="opacity-0 scale-95"
@@ -200,6 +201,7 @@
                                         </button>
                                     </div>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -249,28 +251,21 @@
                             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 font-mono">
                         @error('form.value') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
-                    <div class="flex items-end gap-4">
-                        <div class="flex-1">
-                            <label
-                                class="block text-sm font-semibold text-gray-700 mb-1">ราคา</label>
-                            <input type="number" wire:model="form.price" min="0"
-                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
-                        </div>
-                        <label class="flex items-center gap-2 pb-2 cursor-pointer select-none">
-                            <input type="checkbox" wire:model="form.is_active" class="w-4 h-4 text-blue-600 rounded">
-                            <span
-                                class="text-sm font-semibold text-gray-700">เปิดใช้งาน</span>
-                        </label>
+                    <div>
+                        <label
+                            class="block text-sm font-semibold text-gray-700 mb-1">ราคา</label>
+                        <input type="number" wire:model="form.price" min="0"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                     </div>
                 </div>
 
                 <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
                     <button wire:click="$set('showModal', false)"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                         ยกเลิก
                     </button>
                     <button wire:click="save"
-                        class="btn-3d btn-3d--blue px-6 py-2 text-sm font-bold rounded-lg transition-colors">
+                        class="px-6 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                         บันทึกสินค้า
                     </button>
                 </div>

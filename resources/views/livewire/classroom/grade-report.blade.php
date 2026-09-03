@@ -22,7 +22,7 @@
             'current' => $filterTopic,
             'allLabel' => 'ทุกหัวข้อ',
             'options' => $topics->map(fn ($t) => ['value' => $t, 'label' => $t]),
-            'menuClass' => 'w-52 max-h-64 overflow-y-auto',
+            'menuClass' => 'w-52',
         ],
         [
             'field' => 'filterType',
@@ -108,7 +108,7 @@
         </div>
 
         {{-- Table --}}
-        <div class="flex-1">
+        <div class="flex-1 flex flex-col">
             @if($students->isEmpty())
                 <div class="p-12">
                     <x-empty-state-inline :title="'สมุดเกรด'" :body="'ไม่มีนักเรียนที่ตรงกับเงื่อนไขที่กรอง'" />
@@ -118,7 +118,7 @@
                     <x-empty-state-inline :title="'สมุดเกรด'" :body="'ไม่มีงานที่สามารถให้คะแนนได้สำหรับเงื่อนไขที่กรอง'" />
                 </div>
             @else
-                <div class="overflow-x-auto">
+                <div class="gradebook-scroll flex-1 overflow-x-auto">
                     <table class="min-w-full text-sm">
                         <thead class="bg-[#f7f7fa]">
                             <tr class="border-b border-[#dedee5]">

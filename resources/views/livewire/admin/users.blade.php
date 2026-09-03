@@ -207,7 +207,7 @@
                                         <x-icon name="arrow-top-right-on-square" class="h-4 w-4" />
                                     </a>
                                     <button type="button"
-                                        @click="$dispatch('open-manage-user', { id: @js($user->username), name: @js($user->name), bio: @js($user->bio ?? ''), role: @js($user->role), coins: {{ $user->coins }}, xp: {{ $user->xp }} })"
+                                        @click="$dispatch('open-manage-user', { id: @js($user->username), name: @js($user->name), role: @js($user->role), coins: {{ $user->coins }}, xp: {{ $user->xp }} })"
                                         class="hover:text-amber-600 transition-colors p-1"
                                         title="จัดการผู้ใช้">
                                         <x-icon name="pencil" class="h-4 w-4" />
@@ -259,8 +259,8 @@
             </x-confirm-modal>
         </template>
     </div>
-    <div x-data="{ show: false, id: null, name: '', bio: '', role: 'student', coins: 0, xp: 0 }"
-        @open-manage-user.window="id = $event.detail.id; name = $event.detail.name; bio = $event.detail.bio; role = $event.detail.role; coins = $event.detail.coins; xp = $event.detail.xp; show = true"
+    <div x-data="{ show: false, id: null, name: '', role: 'student', coins: 0, xp: 0 }"
+        @open-manage-user.window="id = $event.detail.id; name = $event.detail.name; role = $event.detail.role; coins = $event.detail.coins; xp = $event.detail.xp; show = true"
         @keydown.escape.window="show = false">
         <template x-teleport="body">
             <div x-show="show" x-cloak class="fixed inset-0 z-70 flex items-center justify-center bg-black/50 p-4"
@@ -281,11 +281,6 @@
                             <input type="text" x-model="name" maxlength="{{ \App\Models\User::NAME_MAX_LENGTH }}"
                                 class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                         </label>
-                        <label class="block">
-                            <span class="text-xs font-bold text-[#686b82]">Bio</span>
-                            <textarea x-model="bio" rows="3" maxlength="500"
-                                class="mt-1 block w-full rounded-lg border border-[#dedee5] px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"></textarea>
-                        </label>
                         <template x-if="role === 'student'">
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="block">
@@ -303,11 +298,11 @@
                     </div>
                     <div class="mt-5 flex justify-center gap-2">
                         <button type="button" @click="show = false"
-                            class="flex-1 rounded-[10px] border border-[#dedee5] px-4 py-2.5 text-sm font-bold text-[#686b82] transition hover:bg-[rgba(37,99,235,0.04)]">
+                            class="flex-1 rounded-lg bg-gray-100 px-4 py-2.5 text-sm font-bold text-[#686b82] transition hover:bg-gray-200">
                             ยกเลิก
                         </button>
-                        <button type="button" @click="$wire.updateUser(id, name, bio, coins, xp); show = false"
-                            class="flex-1 rounded-[10px] bg-amber-500 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-amber-600">
+                        <button type="button" @click="$wire.updateUser(id, name, coins, xp); show = false"
+                            class="flex-1 rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-amber-600">
                             บันทึก
                         </button>
                     </div>

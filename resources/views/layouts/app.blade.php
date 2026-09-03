@@ -456,7 +456,7 @@
                         'text-(--ll-blue)': toast.type === 'info'
                     }">
                         <x-icon name="check-circle" class="h-5 w-5" x-show="toast.type === 'success'" />
-                        <x-icon name="exclamation-circle" class="h-5 w-5" x-show="toast.type === 'error'" />
+                        <x-icon name="circle-x" class="h-5 w-5" x-show="toast.type === 'error'" />
                         <x-icon name="information-circle" class="h-5 w-5" x-show="toast.type === 'info'" />
                     </span>
                     <img x-show="toast.badgeImage" :src="toast.badgeImage" class="h-10 w-10 mt-0.5" />

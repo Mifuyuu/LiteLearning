@@ -5,7 +5,7 @@
         {{-- Cover --}}
         <div class="skeleton h-48 w-full rounded-none"></div>
 
-        {{-- Bio area --}}
+        {{-- Header info --}}
         <div class="px-5 pb-6 lg:px-7">
             <div class="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:gap-20">
                 <div class="-mt-10 sm:-mt-12 relative inline-block shrink-0 self-center sm:ml-16">

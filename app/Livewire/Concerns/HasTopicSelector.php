@@ -32,4 +32,24 @@ trait HasTopicSelector
 
         return $topic->id;
     }
+
+    public function deleteTopic(int $topicId): void
+    {
+        $topic = Topic::where('classroom_id', $this->classroom->id)->find($topicId);
+
+        if (! $topic) {
+            return;
+        }
+
+        if ($topic->classworkItems()->exists()) {
+            $this->dispatch('notify', message: __('messages.topic.in_use'), type: 'error');
+
+            return;
+        }
+
+        $topic->delete();
+
+        $this->dispatch('notify', message: __('messages.topic.deleted'));
+        $this->dispatch('topic-deleted', id: $topicId);
+    }
 }

@@ -104,22 +104,60 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <button wire:click="toggleArchived({{ $classroom->id }})"
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold transition-colors cursor-pointer {{ $classroom->is_archived ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200' }}">
-                                    {{ $classroom->is_archived ? 'เก็บถาวรแล้ว' : 'เปิดใช้งาน' }}
-                                </button>
+                                @if($classroom->trashed())
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                        ลบโดยผู้สอน
+                                    </span>
+                                @else
+                                <div class="relative" x-data="{ open: false }">
+                                    <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
+                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold transition-colors cursor-pointer {{ $classroom->is_archived ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-green-100 text-green-700 hover:bg-green-200' }}">
+                                        {{ $classroom->is_archived ? 'เก็บถาวรแล้ว' : 'เปิดใช้งาน' }}
+                                        <x-icon name="chevron-down" class="h-3 w-3" />
+                                    </button>
+                                    <div x-show="open" x-cloak @click.outside="open = false"
+                                        x-transition:enter="transition ease-out duration-100"
+                                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                                        x-transition:leave="transition ease-in duration-75"
+                                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                                        class="absolute left-0 mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                                        <div role="menu">
+                                            <button type="button" role="menuitem"
+                                                wire:click="setArchived('{{ $classroom->slug }}', false)" @click="open = false"
+                                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ ! $classroom->is_archived ? 'text-green-700 bg-green-50' : 'text-gray-700' }}">
+                                                เปิดใช้งาน
+                                                @if(! $classroom->is_archived) <x-icon name="check" class="h-4 w-4" /> @endif
+                                            </button>
+                                            <button type="button" role="menuitem"
+                                                wire:click="setArchived('{{ $classroom->slug }}', true)" @click="open = false"
+                                                class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $classroom->is_archived ? 'text-amber-700 bg-amber-50' : 'text-gray-700' }}">
+                                                เก็บถาวร
+                                                @if($classroom->is_archived) <x-icon name="check" class="h-4 w-4" /> @endif
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right font-medium">
                                 <div class="flex justify-end gap-3 text-gray-400">
-                                    <a href="{{ route('classroom.show', $classroom) }}"
-                                        class="hover:text-blue-600 transition-colors p-1"
-                                        title="ดู">
-                                        <x-icon name="arrow-top-right-on-square" class="h-4 w-4" />
-                                    </a>
+                                    @if($classroom->trashed())
+                                        <button type="button" wire:click="restoreClassroom('{{ $classroom->slug }}')"
+                                            class="hover:text-green-600 transition-colors p-1"
+                                            title="กู้คืน">
+                                            <x-icon name="arrow-path" class="h-4 w-4" />
+                                        </button>
+                                    @else
+                                        <a href="{{ route('classroom.show', $classroom) }}"
+                                            class="hover:text-blue-600 transition-colors p-1"
+                                            title="ดู">
+                                            <x-icon name="arrow-top-right-on-square" class="h-4 w-4" />
+                                        </a>
+                                    @endif
                                     <button type="button"
-                                        @click="$dispatch('open-delete-classroom', { id: {{ $classroom->id }}, name: '{{ addslashes($classroom->name) }}' })"
+                                        @click="$dispatch('open-delete-classroom', { id: '{{ $classroom->slug }}', name: '{{ addslashes($classroom->name) }}' })"
                                         class="hover:text-red-600 transition-colors p-1"
-                                        title="ลบ">
+                                        title="ลบถาวร">
                                         <x-icon name="trash" class="h-4 w-4" />
                                     </button>
                                 </div>

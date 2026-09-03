@@ -57,7 +57,7 @@ class Show extends Component
         $this->validate([
             'editTitle' => 'required|string|max:255',
             'editDescription' => 'nullable|string',
-            'editTopic' => 'nullable|string|max:255',
+            'editTopic' => 'nullable|string|max:50',
         ], [
             'editTitle.required' => __('messages.validation.title_material'),
             'editDescription.required' => __('messages.validation.description'),

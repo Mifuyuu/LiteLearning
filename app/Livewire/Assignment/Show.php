@@ -305,7 +305,7 @@ class Show extends Component
             'editDueDate' => 'nullable|date',
             'editStatus' => 'required|in:draft,published,closed',
             'editType' => 'required|in:attendance,file,announcement,material,topic',
-            'editTopic' => 'nullable|string|max:255',
+            'editTopic' => 'nullable|string|max:50',
             'editAllowLateSubmission' => 'boolean',
         ], [
             'editTitle.required' => __('messages.validation.title_assignment'),

@@ -76,22 +76,19 @@ class Users extends Component
         $this->dispatch('notify', message: __('messages.admin.user_role_updated', ['role' => ucfirst($newRole)]));
     }
 
-    public function updateUser(User $user, GamificationService $gamification, $name, $bio, $coins, $xp)
+    public function updateUser(User $user, GamificationService $gamification, $name, $coins, $xp)
     {
-        Validator::make(compact('name', 'bio', 'coins', 'xp'), [
+        Validator::make(compact('name', 'coins', 'xp'), [
             'name' => 'required|string|max:'.User::NAME_MAX_LENGTH,
-            'bio' => 'nullable|string|max:500',
             'coins' => 'integer|min:0',
             'xp' => 'integer|min:0',
         ])->validate();
 
         $oldName = $user->name;
-        $oldBio = $user->bio;
         $oldCoins = $user->gamification?->coins;
         $oldXp = $user->gamification?->xp;
 
         $user->name = trim($name);
-        $user->bio = $bio !== '' ? $bio : null;
         $user->save();
 
         if ($user->isStudent()) {
@@ -107,9 +104,6 @@ class Users extends Component
         $changes = [];
         if ($oldName !== $user->name) {
             $changes[] = "ชื่อ: {$oldName} → {$user->name}";
-        }
-        if ($oldBio !== $user->bio) {
-            $changes[] = 'แก้ไขคำอธิบายตัวตน';
         }
         if ($user->isStudent() && $oldCoins !== (int) $coins) {
             $changes[] = "เหรียญ: {$oldCoins} → {$coins}";

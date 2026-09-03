@@ -58,7 +58,7 @@ class Create extends Component
         $this->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'topic' => 'nullable|string|max:255',
+            'topic' => 'nullable|string|max:50',
             'published_at' => ['nullable', 'date', 'after:now', 'before:'.now()->addYears(5)->toDateTimeString()],
         ], [
             'title.required' => __('messages.validation.title_material'),

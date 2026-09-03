@@ -191,16 +191,10 @@
                         <input type="number" wire:model="form.xp_reward" min="0" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500">
                     </div>
                 </div>
-                <div class="flex items-center gap-2 mt-1">
-                    <label class="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" wire:model="form.is_active" class="w-4 h-4 text-blue-600 rounded">
-                        <span class="text-sm font-semibold text-gray-700">เปิดใช้งาน</span>
-                    </label>
-                </div>
             </div>
 
             <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
-                <button wire:click="$set('showModal', false)" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                <button wire:click="$set('showModal', false)" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                     ยกเลิก
                 </button>
                 <button wire:click="save" class="btn-3d btn-3d--blue px-6 py-2 text-sm font-bold rounded-lg transition-colors">

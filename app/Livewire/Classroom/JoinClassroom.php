@@ -64,6 +64,12 @@ class JoinClassroom extends Component
             return;
         }
 
+        if (! $classroom->join_enabled) {
+            $this->addError('code', __('messages.classroom.join_closed_by_teacher'));
+
+            return;
+        }
+
         /** @var User $user */
         $user = Auth::user();
 

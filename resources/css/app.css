@@ -283,6 +283,16 @@ body {
     display: none !important;
 }
 
+/* ─── Hide scrollbar but keep scrolling ─────────────────────────────── */
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
 /* ─── Sidebar scrollbar ──────────────────────────────────────────────── */
 .sidebar-scroll {
     scrollbar-width: thin;
@@ -303,6 +313,29 @@ body {
 }
 
 .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background: #c2c5d2;
+}
+
+/* ─── Gradebook table horizontal scrollbar ──────────────────────────── */
+.gradebook-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #d5d7e0 #ffffff;
+}
+
+.gradebook-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.gradebook-scroll::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+.gradebook-scroll::-webkit-scrollbar-thumb {
+    background: #d5d7e0;
+    border-radius: 9999px;
+}
+
+.gradebook-scroll::-webkit-scrollbar-thumb:hover {
     background: #c2c5d2;
 }
 

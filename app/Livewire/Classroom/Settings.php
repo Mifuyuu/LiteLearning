@@ -87,6 +87,18 @@ class Settings extends Component
         $this->dispatch('notify', message: $this->classroom->is_archived ? __('messages.classroom.archived') : __('messages.classroom.restored'));
     }
 
+    public function toggleJoinEnabled(): void
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        abort_unless($this->classroom->isOwnedBy($user), 403);
+
+        $this->classroom->join_enabled = ! $this->classroom->join_enabled;
+        $this->classroom->save();
+
+        $this->dispatch('notify', message: __('messages.classroom.join_enabled_toggled'));
+    }
+
     public function deleteClassroom()
     {
         /** @var User $user */

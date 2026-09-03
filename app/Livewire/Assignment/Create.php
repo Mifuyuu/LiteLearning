@@ -106,7 +106,7 @@ class Create extends Component
             'due_date' => 'nullable|date',
             'published_at' => ['nullable', 'date', 'after:now', 'before:'.now()->addYears(5)->toDateTimeString()],
             'status' => 'required|in:draft,published,scheduled',
-            'topic' => 'nullable|string|max:255',
+            'topic' => 'nullable|string|max:50',
             'allow_late_submission' => 'boolean',
         ], [
             'title.required_unless' => __('messages.validation.title_assignment'),

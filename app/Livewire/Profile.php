@@ -8,7 +8,6 @@ use App\Models\UserGamification;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Lazy;
 use Livewire\Component;
@@ -210,21 +209,6 @@ class Profile extends Component
         }
 
         $this->chartPoints = $points;
-    }
-
-    public function updateBio(string $bio): void
-    {
-        if (! $this->isOwnProfile) {
-            return;
-        }
-
-        $bio = trim($bio);
-
-        Validator::make(['bio' => $bio], [
-            'bio' => 'nullable|string|max:250',
-        ])->validate();
-
-        $this->user->update(['bio' => $bio !== '' ? $bio : null]);
     }
 
     public function render(): View
