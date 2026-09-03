@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Assignment;
 use App\Models\Attachment;
-use App\Models\BugReport;
 use App\Models\Classroom;
 use App\Models\CoinTransaction;
 use App\Models\Submission;
 use App\Models\User;
+use App\Models\UserGamification;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -38,9 +37,7 @@ class AdminAnalyticsService
             $totalTeachers = User::where('role', 'teacher')->count();
             $totalClassrooms = Classroom::count();
             $activeClassrooms = Classroom::where('is_archived', false)->count();
-            $totalAssignments = Assignment::count();
-            $totalSubmissions = Submission::count();
-            $pendingGrading = Submission::where('status', 'turned_in')->count();
+            $totalXp = UserGamification::sum('xp');
 
             $coinsInEconomy = CoinTransaction::where('amount', '>', 0)->sum('amount');
             $coinsSpent = CoinTransaction::where('amount', '<', 0)->sum(DB::raw('ABS(amount)'));
@@ -52,12 +49,9 @@ class AdminAnalyticsService
                 'new_users_month' => User::where('created_at', '>=', $now->copy()->startOfMonth())->count(),
                 'total_classrooms' => $totalClassrooms,
                 'active_classrooms' => $activeClassrooms,
-                'total_assignments' => $totalAssignments,
-                'total_submissions' => $totalSubmissions,
-                'pending_grading' => $pendingGrading,
+                'total_xp' => $totalXp,
                 'coins_in_economy' => $coinsInEconomy,
                 'coins_spent' => $coinsSpent,
-                'recent_bug_reports' => BugReport::latest()->take(5)->get(),
             ];
         });
     }

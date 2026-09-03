@@ -1,6 +1,6 @@
 @section('page-title', 'แดชบอร์ดผู้ดูแล')
 
-<div class="space-y-6">
+<div class="space-y-6 bg-gray-50 rounded-2xl border-3 border-gray-200 p-4 sm:p-6">
     {{-- Stats Row 1 --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white rounded-2xl border border-gray-200 p-5">
@@ -36,17 +36,13 @@
         <div class="bg-white rounded-2xl border border-gray-200 p-5">
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                    <x-icon name="document-text" class="h-4 w-4 text-blue-600" />
+                    <x-icon name="bolt" class="h-4 w-4 text-blue-600" />
                 </div>
                 <div>
-                    <p class="text-gray-500 text-xs font-medium">งาน / การส่ง</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['total_assignments']) }}</p>
+                    <p class="text-gray-500 text-xs font-medium">XP ทั้งหมดในระบบ</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['total_xp']) }}</p>
                 </div>
             </div>
-            <p class="text-xs text-gray-500">
-                <span class="font-semibold text-blue-600">{{ number_format($stats['total_submissions']) }}</span> การส่ง
-                <span class="text-amber-600 font-medium ml-2">{{ $stats['pending_grading'] }} รอตรวจ</span>
-            </p>
         </div>
 
         <div class="bg-white rounded-2xl border border-gray-200 p-5">
@@ -156,15 +152,15 @@
         <div class="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col items-center">
             <h4 class="text-base font-bold text-gray-900 mb-1 self-start">พื้นที่จัดเก็บ</h4>
             <p class="text-xs text-gray-500 mb-4 self-start">การใช้งานรวมทั้งระบบ</p>
-            <div class="relative w-32 h-32">
-                <svg viewBox="0 0 128 128" class="w-32 h-32 -rotate-90">
+            <div class="relative w-32 h-32 lg:w-48 lg:h-48">
+                <svg viewBox="0 0 128 128" class="w-32 h-32 lg:w-48 lg:h-48 -rotate-90">
                     <circle cx="64" cy="64" r="{{ $storageRadius }}" fill="none" stroke="#e5e7eb" stroke-width="12" />
                     <circle cx="64" cy="64" r="{{ $storageRadius }}" fill="none" stroke="{{ $storageColor }}" stroke-width="12"
                         stroke-linecap="round" stroke-dasharray="{{ $storageCircumference }}"
                         stroke-dashoffset="{{ $storageDashOffset }}" class="transition-all duration-500" />
                 </svg>
                 <div class="absolute inset-0 flex items-center justify-center">
-                    <span class="text-2xl font-black text-gray-900">{{ $storagePercent }}%</span>
+                    <span class="text-2xl lg:text-4xl font-black text-gray-900">{{ $storagePercent }}%</span>
                 </div>
             </div>
             <p class="mt-4 text-xs text-gray-500">
@@ -173,55 +169,37 @@
         </div>
     </div>
 
-    {{-- Daily Active + Bug Reports --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {{-- Daily Active Students --}}
+    {{-- Daily Active Students --}}
+    <div>
         @php
             $aCount = $dailyActive->count();
             $aMax = max(1, $dailyActive->max('count'));
-            $aMin = $dailyActive->min('count');
-            $aRange = $aMax - $aMin;
+            $barW = 400 / max(1, $aCount);
+            $gap = $barW * 0.25;
             $activePoints = [];
             foreach ($dailyActive as $i => $d) {
-                $x = $aCount > 1 ? ($i / ($aCount - 1)) * 400 : 200;
-                $y = $aRange > 0 ? 65 - (($d['count'] - $aMin) / $aRange) * 45 : 42.5;
-                $activePoints[] = ['x' => $x, 'y' => $y, 'label' => $d['label'], 'count' => $d['count']];
+                $h = max(($d['count'] / $aMax) * 70, 2);
+                $activePoints[] = [
+                    'x' => $i * $barW + $gap / 2,
+                    'w' => $barW - $gap,
+                    'h' => $h,
+                    'y' => 80 - $h,
+                    'label' => $d['label'],
+                    'count' => $d['count'],
+                ];
             }
-            $aPathD = '';
-            foreach ($activePoints as $i => $p) {
-                if ($i === 0) {
-                    $aPathD .= "M {$p['x']} {$p['y']}";
-                } else {
-                    $prev = $activePoints[$i - 1];
-                    $offset = ($p['x'] - $prev['x']) / 3;
-                    $aPathD .= " C " . ($prev['x'] + $offset) . " {$prev['y']}, " . ($p['x'] - $offset) . " {$p['y']}, {$p['x']} {$p['y']}";
-                }
-            }
-            $aAreaD = $aPathD . " L 400 80 L 0 80 Z";
         @endphp
-        <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6"
+        <div class="bg-white rounded-2xl border border-gray-200 p-6"
             x-data="{ active: {{ $aCount - 1 }}, points: {{ json_encode($activePoints) }} }">
             <h4 class="text-base font-bold text-gray-900 mb-4">นักเรียนที่ active รายวัน (30 วัน)</h4>
             <div class="relative h-40">
                 <svg viewBox="0 0 400 80" class="w-full h-full overflow-visible" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="activeChartGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.2" />
-                            <stop offset="100%" stop-color="#3B82F6" stop-opacity="0" />
-                        </linearGradient>
-                    </defs>
-                    <path d="{{ $aAreaD }}" fill="url(#activeChartGradient)" />
-                    <path d="{{ $aPathD }}" fill="none" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round" />
+                    @foreach($activePoints as $index => $p)
+                        <rect x="{{ $p['x'] }}" y="{{ $p['y'] }}" width="{{ $p['w'] }}" height="{{ $p['h'] }}" rx="1.5"
+                            :fill="active === {{ $index }} ? '#3B82F6' : '#BFDBFE'"
+                            class="transition-colors duration-100" />
+                    @endforeach
                 </svg>
-                <div class="absolute top-0 bottom-0 w-px border-l border-dashed border-blue-400 pointer-events-none transition-all duration-75"
-                    style="opacity: 0.5;"
-                    :style="`left: ${points[active].x / 400 * 100}%`">
-                </div>
-                <div class="absolute pointer-events-none flex items-center justify-center -translate-x-1/2 -translate-y-1/2 transition-all duration-75"
-                    :style="`left: ${points[active].x / 400 * 100}%; top: ${points[active].y / 80 * 100}%;`">
-                    <span class="absolute w-5 h-5 rounded-full bg-blue-500/30 animate-pulse"></span>
-                    <span class="relative w-3 h-3 rounded-full bg-white border-2 border-blue-500 shadow-md"></span>
-                </div>
                 <div class="absolute inset-0 flex">
                     @foreach($activePoints as $index => $pt)
                         <div class="h-full flex-1 cursor-pointer"
@@ -234,29 +212,6 @@
             <div class="mt-4 flex items-center justify-between bg-gray-50 rounded-xl px-4 py-2 border border-gray-100">
                 <span class="font-bold text-gray-600 text-xs" x-text="points[active].label"></span>
                 <span class="font-black text-xs text-blue-600" x-text="points[active].count + ' คน'"></span>
-            </div>
-        </div>
-
-        {{-- Bug Reports --}}
-        <div class="bg-white rounded-2xl border border-gray-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h4 class="text-base font-bold text-gray-900">รายงานปัญหาล่าสุด</h4>
-                <a href="{{ route('admin.reports') }}" class="text-sm text-blue-600 font-medium hover:text-blue-700">ดูทั้งหมด</a>
-            </div>
-            <div class="space-y-3">
-                @forelse($stats['recent_bug_reports'] as $report)
-                    <div class="flex items-start gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
-                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0">
-                            <x-icon name="bug" class="h-4 w-4 text-red-500" />
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <p class="text-sm text-gray-700 truncate">{{ $report->message }}</p>
-                            <p class="text-xs text-gray-400 mt-1">{{ $report->created_at->diffForHumans() }}</p>
-                        </div>
-                    </div>
-                @empty
-                    <p class="text-sm text-gray-500 text-center py-4">ไม่มีรายงานปัญหาล่าสุด</p>
-                @endforelse
             </div>
         </div>
     </div>
