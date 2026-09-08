@@ -15,7 +15,7 @@
             </div>
             <div class="flex items-center gap-3 text-xs text-gray-500">
                 <span><span class="font-semibold text-green-600">{{ $stats['total_students'] }}</span> นักเรียน</span>
-                <span><span class="font-semibold text-blue-600">{{ $stats['total_teachers'] }}</span> ครู</span>
+                <span><span class="font-semibold text-blue-600">{{ $stats['total_teachers'] }}</span> ผู้สอน</span>
                 <span class="text-green-600 font-medium">+{{ $stats['new_users_month'] }} เดือนนี้</span>
             </div>
         </div>

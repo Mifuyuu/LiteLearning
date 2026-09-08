@@ -128,7 +128,7 @@
                     <span class="text-2xl font-black text-[#101114]">{{ $students->count() }}</span>
                 </div>
                 <h2 class="mt-4 text-lg font-black text-[#101114]">{{ 'สมาชิก' }}</h2>
-                <p class="mt-1 text-sm leading-6 text-[#686b82]">{{ 'ครู, ผู้สอนร่วม และนักเรียน' }}</p>
+                <p class="mt-1 text-sm leading-6 text-[#686b82]">{{ 'ผู้สอน, ผู้สอนร่วม และนักเรียน' }}</p>
             </a>
         </div>
 

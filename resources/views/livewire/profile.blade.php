@@ -27,7 +27,7 @@
                                 alt="{{ $badge->name }}" title="{{ $badge->name }}" class="h-7 w-7 shrink-0 object-contain">
                         @endforeach
                         <img src="{{ asset(match($user->role) { 'student' => 'images/badge_student.png', 'teacher' => 'images/badge_teacher.png', 'admin' => 'images/badge_administrator.png', default => 'images/badge_student.png' }) }}"
-                            alt="{{ match($user->role) { 'student' => 'นักเรียน', 'teacher' => 'ครู', 'admin' => 'แอดมิน', default => ucfirst($user->role) } }}"
+                            alt="{{ match($user->role) { 'student' => 'นักเรียน', 'teacher' => 'ผู้สอน', 'admin' => 'แอดมิน', default => ucfirst($user->role) } }}"
                             class="h-7 w-auto shrink-0 object-contain">
                     </div>
                 </div>

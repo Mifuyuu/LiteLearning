@@ -16,6 +16,27 @@ npm install
 
 ---
 
+## 0. โปรแกรมที่จำเป็นต้องติดตั้งบนเครื่อง (System Requirements)
+
+ก่อนจะติดตั้ง Library ในข้อ 1-2 ได้ เครื่องพัฒนา (Development Machine) ต้องมีโปรแกรมพื้นฐานเหล่านี้ติดตั้งไว้ก่อน
+
+| โปรแกรม | เวอร์ชันที่ใช้ | หน้าที่ |
+|---|---|---|
+| **PHP** | ^8.2 | ตัวแปลภาษา PHP สำหรับรัน Laravel |
+| **Composer** | 2.x | ตัวจัดการ Package ฝั่ง PHP (ติดตั้ง/อัปเดต Library ตาม `composer.json`) |
+| **Node.js** (พร้อม npm) | 18 ขึ้นไป | รันคำสั่ง Vite build/dev และติดตั้ง Package ฝั่ง JavaScript ตาม `package.json` |
+| **Git** | - | ระบบควบคุมเวอร์ชัน (Version Control) สำหรับ clone/track โค้ดโปรเจกต์ |
+| **MariaDB / MySQL** | 10.11 | ฐานข้อมูลหลักของระบบ (เก็บข้อมูลผู้ใช้ ห้องเรียน งานที่มอบหมาย ฯลฯ) |
+| **Docker Desktop** (พร้อม Docker Compose) | - | รัน Service สนับสนุนที่กำหนดใน `docker-compose.yml` ได้แก่ MariaDB, phpMyAdmin, MinIO และ Scheduler โดยไม่ต้องติดตั้งเองทีละตัว |
+| **MinIO** (หรือบัญชี Amazon S3) | - | พื้นที่จัดเก็บไฟล์แบบ S3-compatible สำหรับไฟล์แนบและรูปโปรไฟล์ (รันผ่าน Docker Compose ในข้อบน) |
+| **Cloudflared** | - | สร้าง Tunnel เปิดให้เข้าถึงเครื่อง Dev ผ่าน HTTPS จากภายนอก (ใช้ทดสอบ/สาธิตนอกเครื่อง) |
+| **Code Editor** (เช่น Visual Studio Code) | - | เครื่องมือเขียนโค้ด |
+| **Web Browser** (เช่น Google Chrome) | - | ใช้ทดสอบและใช้งานหน้าเว็บของระบบ |
+
+> โปรแกรมในตารางนี้เป็น "เครื่องมือ/สภาพแวดล้อม" ที่ต้องมีอยู่บนเครื่องก่อน ส่วน Library ในข้อ 1 และ 2 ด้านล่างคือโค้ดที่ติดตั้งเพิ่มเข้าไปในตัวโปรเจกต์ผ่าน Composer/npm
+
+---
+
 ## 1. PHP Library (จัดการผ่าน Composer)
 
 ### 1.1 laravel/framework (^12.0)
@@ -31,13 +52,13 @@ composer require livewire/livewire
 ```
 
 ### 1.3 mews/purifier (^3.4)
-ใช้กรอง (Sanitize) เนื้อหา HTML ที่ผู้ใช้กรอกผ่าน Rich Text Editor (เช่น เนื้อหางาน/เอกสารที่ครูสร้าง) ก่อนบันทึกและแสดงผล เพื่อป้องกันการโจมตีแบบ XSS (Cross-Site Scripting) จากสคริปต์อันตรายที่แฝงมากับ HTML
+ใช้กรอง (Sanitize) เนื้อหา HTML ที่ผู้ใช้กรอกผ่าน Rich Text Editor (เช่น เนื้อหางาน/เอกสารที่ผู้สอนสร้าง) ก่อนบันทึกและแสดงผล เพื่อป้องกันการโจมตีแบบ XSS (Cross-Site Scripting) จากสคริปต์อันตรายที่แฝงมากับ HTML
 ```bash
 composer require mews/purifier
 ```
 
 ### 1.4 league/flysystem-aws-s3-v3 (^3.31)
-Driver สำหรับให้ Laravel Filesystem เชื่อมต่อกับ Storage แบบ S3-compatible (เช่น Amazon S3 หรือ MinIO ที่รันเองในเครื่อง) ใช้สำหรับจัดเก็บไฟล์แนบ (Attachment) ที่ครูและนักเรียนอัปโหลด เช่น ไฟล์งาน เอกสารประกอบการสอน และรูปโปรไฟล์
+Driver สำหรับให้ Laravel Filesystem เชื่อมต่อกับ Storage แบบ S3-compatible (เช่น Amazon S3 หรือ MinIO ที่รันเองในเครื่อง) ใช้สำหรับจัดเก็บไฟล์แนบ (Attachment) ที่ผู้สอนและผู้เรียนอัปโหลด เช่น ไฟล์งาน เอกสารประกอบการสอน และรูปโปรไฟล์
 ```bash
 composer require league/flysystem-aws-s3-v3
 ```
@@ -91,7 +112,7 @@ npm install @tailwindcss/typography
 ```
 
 ### 2.5 @tiptap/* (core, starter-kit, extension-link, extension-placeholder, extension-text-align, extension-underline) (^3.20)
-ชุด Library สำหรับสร้าง Rich Text Editor (พิมพ์ตัวหนา ตัวเอียง จัดย่อหน้า ใส่ลิงก์ ฯลฯ) ใช้ในหน้าสร้าง/แก้ไขเนื้อหางาน (Assignment) และเอกสารประกอบการเรียน (Material) ให้ครูพิมพ์เนื้อหาแบบมีสไตล์ได้เหมือนโปรแกรมพิมพ์เอกสารทั่วไป
+ชุด Library สำหรับสร้าง Rich Text Editor (พิมพ์ตัวหนา ตัวเอียง จัดย่อหน้า ใส่ลิงก์ ฯลฯ) ใช้ในหน้าสร้าง/แก้ไขเนื้อหางาน (Assignment) และเอกสารประกอบการเรียน (Material) ให้ผู้สอนพิมพ์เนื้อหาแบบมีสไตล์ได้เหมือนโปรแกรมพิมพ์เอกสารทั่วไป
 ```bash
 npm install @tiptap/core @tiptap/starter-kit @tiptap/extension-link @tiptap/extension-placeholder @tiptap/extension-text-align @tiptap/extension-underline
 ```
@@ -102,13 +123,19 @@ Library สำหรับครอบตัดรูปภาพ (Image Croppin
 npm install cropperjs
 ```
 
-### 2.7 axios (^1.11)
+### 2.7 flatpickr (^4.6)
+Library สำหรับเลือกวันที่/เวลา (Date/Time Picker) แบบมี UI ปฏิทินให้เลือก ใช้ในหน้าที่ต้องกำหนดกำหนดส่งงาน (Due Date) หรือเวลาเผยแพร่เนื้อหาแบบตั้งเวลา (Scheduled Publish)
+```bash
+npm install flatpickr
+```
+
+### 2.8 axios (^1.11)
 Library สำหรับเรียก HTTP Request (AJAX) จากฝั่ง JavaScript ไปยัง Backend มาพร้อมกับไฟล์ตั้งต้นของ Laravel (`resources/js/bootstrap.js`)
 ```bash
 npm install axios
 ```
 
-### 2.8 concurrently (^9.0)
+### 2.9 concurrently (^9.0)
 เครื่องมือช่วยรันหลายคำสั่ง (เช่น `php artisan serve`, `queue:listen`, `npm run dev`) พร้อมกันในหน้าต่าง terminal เดียวตอนพัฒนา ผ่านคำสั่ง `composer dev`
 ```bash
 npm install --save-dev concurrently

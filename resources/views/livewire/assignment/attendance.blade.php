@@ -148,7 +148,7 @@
                 @elseif($session?->is_active)
                     {{-- Session active: show code entry --}}
                     <div wire:poll.5s class="text-center py-4">
-                        <p class="text-sm text-gray-500 mb-4">ใส่รหัสที่ครูแสดงบนหน้าจอ</p>
+                        <p class="text-sm text-gray-500 mb-4">ใส่รหัสที่ผู้สอนแสดงบนหน้าจอ</p>
                         <div class="max-w-xs mx-auto">
                             <input wire:model="enteredCode" type="text" maxlength="6"
                                 class="w-full text-center text-3xl font-mono tracking-[0.3em] border border-[#dedee5] rounded-lg px-3 py-4 focus:ring-1 focus:ring-amber-500 focus:border-amber-500"

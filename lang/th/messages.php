@@ -52,7 +52,7 @@ return [
     'classroom.join_closed_by_teacher' => 'ผู้สอนปิดการเข้าร่วมห้องเรียนนี้อยู่',
     'classroom.join_enabled_toggled' => 'อัปเดตการตั้งค่าเข้าร่วมห้องเรียนแล้ว',
     'classroom.code_not_found' => 'ไม่พบห้องเรียนด้วยรหัสนี้',
-    'classroom.already_owner_join' => 'คุณเป็นครูเจ้าของห้องเรียนนี้',
+    'classroom.already_owner_join' => 'คุณเป็นเจ้าของห้องเรียนนี้',
     'classroom.already_member' => 'คุณเป็นสมาชิกของห้องเรียนนี้อยู่แล้ว',
     'classroom.left' => 'ออกจากห้องเรียนแล้ว',
 

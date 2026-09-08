@@ -21,7 +21,7 @@
                         <span>
                             @if($roleFilter === '') ทุกบทบาท
                             @elseif($roleFilter === 'admin') แอดมิน
-                            @elseif($roleFilter === 'teacher') ครู
+                            @elseif($roleFilter === 'teacher') ผู้สอน
                             @else นักเรียน
                             @endif
                         </span>
@@ -48,7 +48,7 @@
                             </button>
                             <button type="button" role="menuitem" wire:click="$set('roleFilter', 'teacher')" @click="open = false"
                                 class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-50 transition-colors cursor-pointer {{ $roleFilter === 'teacher' ? 'text-blue-700 bg-blue-50' : 'text-gray-700' }}">
-                                ครู
+                                ผู้สอน
                                 @if($roleFilter === 'teacher') <x-icon name="check" class="h-4 w-4" /> @endif
                             </button>
                             <button type="button" role="menuitem" wire:click="$set('roleFilter', 'student')" @click="open = false"
@@ -142,7 +142,7 @@
                                         @if($user->id === auth()->id()) disabled @endif>
                                         <span>
                                             @if($user->role === 'admin') แอดมิน
-                                            @elseif($user->role === 'teacher') ครู
+                                            @elseif($user->role === 'teacher') ผู้สอน
                                             @else นักเรียน
                                             @endif
                                         </span>
@@ -164,7 +164,7 @@
                                             </button>
                                             <button type="button" role="menuitem" wire:click="updateRole('{{ $user->username }}', 'teacher')" @click="open = false"
                                                 class="flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-gray-50 transition-colors cursor-pointer {{ $user->role === 'teacher' ? 'text-blue-700 bg-blue-50 font-bold' : 'text-gray-700' }}">
-                                                ครู
+                                                ผู้สอน
                                                 @if($user->role === 'teacher') <x-icon name="check" class="h-3 w-3" /> @endif
                                             </button>
                                             <button type="button" role="menuitem" wire:click="updateRole('{{ $user->username }}', 'student')" @click="open = false"

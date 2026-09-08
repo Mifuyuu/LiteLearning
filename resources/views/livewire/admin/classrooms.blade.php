@@ -66,7 +66,7 @@
                 <thead class="bg-gray-50 uppercase text-sm font-bold text-gray-500 tracking-wider">
                     <tr>
                         <th class="px-6 py-3 text-left">ห้องเรียน</th>
-                        <th class="px-6 py-3 text-left">ครูผู้สอน</th>
+                        <th class="px-6 py-3 text-left">ผู้สอน</th>
                         <th class="px-6 py-3 text-left">นักเรียน</th>
                         <th class="px-6 py-3 text-left">สถานะ</th>
                         <th class="px-6 py-3 text-right">การดำเนินการ</th>

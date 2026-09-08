@@ -139,7 +139,7 @@
         <div class="flex flex-wrap items-center gap-3 rounded-b-xl p-5">
             <div class="max-w-xl">
                 <h2 class="text-sm font-black text-rose-700">{{ 'จุดอันตราย' }}</h2>
-                <p class="mt-1 text-sm text-[#686b82]">{{ 'ลบห้องเรียนนี้ นักเรียนและครูร่วมจะไม่เห็นห้องนี้อีก ข้อมูลจะยังไม่ถูกลบจริง แอดมินสามารถกู้คืนได้' }}</p>
+                <p class="mt-1 text-sm text-[#686b82]">{{ 'ลบห้องเรียนนี้ นักเรียนและผู้สอนร่วมจะไม่เห็นห้องนี้อีก ข้อมูลจะยังไม่ถูกลบจริง แอดมินสามารถกู้คืนได้' }}</p>
             </div>
             <div x-data="{ showDeleteModal: false }" class="ml-auto shrink-0">
                 <button type="button" @click="showDeleteModal = true"
@@ -152,7 +152,7 @@
                     <x-confirm-modal show="showDeleteModal" cancel="showDeleteModal = false"
                         heading="ยืนยันการลบห้องเรียน">
                         <x-slot:message>
-                            การกระทำนี้จะซ่อนห้อง <span class="font-semibold text-[#101114]">{{ $classroom->name }}</span> จากนักเรียนและครูร่วมทั้งหมด
+                            การกระทำนี้จะซ่อนห้อง <span class="font-semibold text-[#101114]">{{ $classroom->name }}</span> จากนักเรียนและผู้สอนร่วมทั้งหมด
                             พิมพ์ชื่อห้องเรียนด้านล่างเพื่อยืนยัน
                             <input type="text" wire:model="deleteConfirm"
                                 placeholder="{{ $classroom->name }}"
