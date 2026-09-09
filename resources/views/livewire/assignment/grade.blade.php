@@ -103,7 +103,7 @@
                     {{-- Actions --}}
                     <div class="space-y-2 pt-2">
                         <button wire:click="grade"
-                            class="btn-3d btn-3d--blue w-full py-2.5 text-sm font-medium rounded-lg transition-colors">
+                            class="w-full py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                             <span wire:loading.remove wire:target="grade">
                                     {{ $submission->isGraded() ? 'อัปเดตคะแนน' : 'บันทึกคะแนน' }}
                             </span>

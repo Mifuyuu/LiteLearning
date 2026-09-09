@@ -54,7 +54,7 @@
 
                         <div class="fade-up-enter delay-300 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                             <a href="{{ route('register') }}" class="btn-3d btn-3d--amber rounded-2xl px-8 py-4 text-base w-full sm:w-64 flex items-center justify-center">
-                                เริ่มสร้างห้องเรียน <x-icon name="rocket-launch" class="h-4 w-4 ml-2" />
+                                สมัครสมาชิก <x-icon name="rocket-launch" class="h-4 w-4 ml-2" />
                             </a>
                             <a href="{{ route('login') }}" class="btn-3d btn-3d--white rounded-2xl px-8 py-4 text-base w-full sm:w-64 flex items-center justify-center">
                                 เข้าสู่ระบบ <x-icon name="arrow-left-on-rectangle" class="h-4 w-4 ml-2" />

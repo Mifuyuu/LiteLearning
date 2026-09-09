@@ -116,7 +116,7 @@
                             {{ 'ยกเลิก' }}
                         </button>
                         <button type="submit"
-                            class="btn-3d btn-3d--blue px-6 py-2.5 text-sm font-medium rounded-lg transition-colors">
+                            class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                             <span wire:loading.remove wire:target="create">{{ 'สร้างห้องเรียน' }}</span>
                             <span wire:loading wire:target="create"><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" />
                                 {{ 'กำลังสร้าง...' }}</span>

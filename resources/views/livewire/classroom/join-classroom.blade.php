@@ -1,6 +1,6 @@
 <div class="" x-data>
     <button wire:click="openModal"
-        class="btn-3d btn-3d--blue inline-flex items-center px-3 sm:px-4 py-2 text-sm font-medium rounded-lg select-none">
+        class="inline-flex items-center px-3 sm:px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg select-none transition-colors">
         <x-icon name="rocket-launch-solid" class="h-4 w-4 sm:mr-2" /> <span class="hidden sm:inline">สำรวจดวงดาว</span>
     </button>
 
@@ -40,7 +40,7 @@
                                 {{ 'ยกเลิก' }}
                             </button>
                             <button type="submit"
-                                class="flex-1 btn-3d btn-3d--blue py-2.5 text-sm font-bold rounded-lg transition-colors cursor-pointer">
+                                class="flex-1 text-white bg-blue-600 hover:bg-blue-700 py-2.5 text-sm font-bold rounded-lg transition-colors cursor-pointer">
                                 <span wire:loading.remove wire:target="join">{{ 'เข้าร่วม' }}</span>
                                 <span wire:loading wire:target="join"><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" />
                                     {{ 'กำลังเข้าร่วม...' }}</span>

@@ -20,7 +20,7 @@
                         class="text-gray-900 font-bold">{{ \App\Models\StoreItem::count() }}</span>
                 </span>
                 <button wire:click="openCreate"
-                    class="btn-3d btn-3d--blue inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-colors">
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                     <x-icon name="plus" class="h-4 w-4" />
                     เพิ่มสินค้า
                 </button>
@@ -244,11 +244,12 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-1">
                             ค่า
                             @if($form['type'] === 'avatar_frame')
-                                <span class="font-normal text-gray-400">(พาธรูปที่อัปโหลด หรือคลาส CSS เช่น border-4 border-yellow-400)</span>
+                                <span class="font-normal text-gray-400">(กำหนดอัตโนมัติจากรูปที่อัปโหลด)</span>
                             @endif
                         </label>
                         <input type="text" wire:model="form.value"
-                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 font-mono">
+                            @if($form['type'] === 'avatar_frame') readonly @endif
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 font-mono {{ $form['type'] === 'avatar_frame' ? 'bg-gray-100 cursor-not-allowed' : '' }}">
                         @error('form.value') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>

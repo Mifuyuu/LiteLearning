@@ -96,11 +96,16 @@ class Store extends Component
         $this->rules['form.code'] = 'required|string|max:100|'.$uniqueRule;
 
         // Value is filled from the uploaded frame image after validation, so it's not required up front for that case.
-        $this->rules['form.value'] = ($this->form['type'] === 'avatar_frame' && $this->frameImageUpload)
+        $this->rules['form.value'] = ($this->form['type'] === 'avatar_frame')
             ? 'nullable|string|max:255'
             : 'required|string|max:255';
+        $this->rules['frameImageUpload'] = ($this->form['type'] === 'avatar_frame' && empty($this->form['value']))
+            ? 'required|file|mimes:png,svg,webp|max:2048'
+            : 'nullable|file|mimes:png,svg,webp|max:2048';
 
-        $this->validate();
+        $this->validate(null, array_merge($this->messages(), [
+            'frameImageUpload.required' => __('messages.validation.value_store'),
+        ]));
 
         if ($this->frameImageUpload) {
             $filename = $this->frameImageUpload->hashName();

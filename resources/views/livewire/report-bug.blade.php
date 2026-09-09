@@ -128,7 +128,7 @@
                             {{ 'ยกเลิก' }}
                         </button>
                         <button type="submit" wire:loading.attr="disabled"
-                            class="btn-3d btn-3d--blue flex-1 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer disabled:opacity-60">
+                            class="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition cursor-pointer disabled:opacity-60">
                             <span wire:loading.remove>{{ 'ส่งรายงาน' }}</span>
                             <span wire:loading><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" />{{ 'กำลังส่ง...' }}</span>
                         </button>

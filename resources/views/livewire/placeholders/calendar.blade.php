@@ -1,4 +1,4 @@
-@section('page-title', 'ปฏิทิน')
+@section('page-title', 'กิจกรรมตกค้าง')
 <div class="max-w-4xl mx-auto">
     <div class="bg-white rounded-2xl border-3 border-[#dedee5] shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)]">
         <div class="p-6 lg:p-8">

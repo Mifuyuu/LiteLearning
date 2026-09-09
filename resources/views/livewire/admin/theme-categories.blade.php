@@ -20,7 +20,7 @@
                     placeholder="ค้นหา...">
             </div>
             <button wire:click="openCreate"
-                class="btn-3d btn-3d--blue inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-colors">
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                 <x-icon name="plus" class="h-4 w-4" />
                 เพิ่มหมวดหมู่
             </button>

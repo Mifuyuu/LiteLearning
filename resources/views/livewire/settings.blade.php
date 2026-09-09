@@ -183,7 +183,7 @@
                                     placeholder="{{ 'ชื่อที่แสดงของคุณ' }}">
                                 <button type="submit" disabled wire:target="name"
                                     wire:dirty.attr.remove="disabled"
-                                    wire:dirty.class="btn-3d btn-3d--blue cursor-pointer"
+                                    wire:dirty.class="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
                                     wire:dirty.class.remove="bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
                                     class="bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed px-4 py-2.5 text-sm font-medium rounded-xl whitespace-nowrap transition-all">
                                     {{ 'บันทึก' }}
@@ -212,7 +212,7 @@
                                     placeholder="{{ 'เช่น john_doe' }}">
                                 <button type="submit" disabled wire:target="username"
                                     wire:dirty.attr.remove="disabled"
-                                    wire:dirty.class="btn-3d btn-3d--blue cursor-pointer"
+                                    wire:dirty.class="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
                                     wire:dirty.class.remove="bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
                                     class="bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed px-4 py-2.5 text-sm font-medium rounded-xl whitespace-nowrap transition-all">
                                     {{ 'บันทึก' }}
@@ -316,7 +316,7 @@
                         ยกเลิก
                     </button>
                     <button @click="saveCrop()"
-                        class="btn-3d btn-3d--blue rounded-xl px-6 py-2 text-sm font-bold">
+                        class="rounded-xl px-6 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors">
                         บันทึกการแก้ไข
                     </button>
                 </div>

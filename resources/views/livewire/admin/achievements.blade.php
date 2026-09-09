@@ -17,7 +17,7 @@
                 <div class="flex items-center gap-4">
                     <span class="text-xs text-gray-400 font-medium">เฉพาะความสำเร็จที่เปิดใช้งานเท่านั้นที่ปลดล็อกได้</span>
                     <button wire:click="openCreate"
-                        class="btn-3d btn-3d--blue inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-colors">
+                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                         <x-icon name="plus" class="h-4 w-4" />
                         เพิ่มความสำเร็จ
                     </button>
@@ -197,7 +197,7 @@
                 <button wire:click="$set('showModal', false)" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                     ยกเลิก
                 </button>
-                <button wire:click="save" class="btn-3d btn-3d--blue px-6 py-2 text-sm font-bold rounded-lg transition-colors">
+                <button wire:click="save" class="px-6 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                     บันทึกความสำเร็จ
                 </button>
             </div>

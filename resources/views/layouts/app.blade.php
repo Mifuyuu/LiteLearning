@@ -25,7 +25,7 @@
             'assignment.show' => 'รายละเอียดงาน',
             'material.show' => 'สื่อการสอน',
             'assignment.grade' => 'ตรวจงาน',
-            'calendar' => 'ปฏิทิน',
+            'pending-activities' => 'กิจกรรมตกค้าง',
             'to-review' => 'รอตรวจ',
             'profile' => 'โปรไฟล์',
             'settings' => 'ตั้งค่า',
@@ -106,7 +106,7 @@
             @php
                 $isDashboardActive    = request()->routeIs('dashboard');
                 $isClassroomsActive   = request()->routeIs('classrooms');
-                $isCalendarActive     = request()->routeIs('calendar');
+                $isCalendarActive     = request()->routeIs('pending-activities');
                 $isToReviewActive     = request()->routeIs('to-review');
                 $isStoreActive        = request()->routeIs('store');
                 $isInventoryActive    = request()->routeIs('inventory');
@@ -152,10 +152,10 @@
                             @endif
 
                             @if(auth()->user()->isStudent())
-                                <a href="{{ route('calendar') }}" wire:navigate
+                                <a href="{{ route('pending-activities') }}" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isCalendarActive) }}">
                                     <x-icon name="calendar-days{{ $isCalendarActive ? '-solid' : '' }}" class="mr-3 h-5 w-5" />
-                                    ปฏิทิน
+                                    กิจกรรมตกค้าง
                                 </a>
                                 <a href="{{ route('classrooms') }}" wire:navigate
                                     class="flex items-center px-3 py-2.5 text-sm font-bold rounded-lg transition-colors {{ $navItemClass($isClassroomsActive) }}">

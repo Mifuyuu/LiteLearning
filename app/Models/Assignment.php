@@ -266,33 +266,64 @@ class Assignment extends Model
         return $this->submissions()->where('user_id', $user->id)->first();
     }
 
-    public function submittedCount(): int
+    /**
+     * Count of submissions with status turned_in/graded.
+     *
+     * @param  iterable<int>|null  $currentStudentIds  When provided, only submissions from users still in
+     *                                                   this list (i.e. still enrolled as students) are counted.
+     *                                                   This prevents students who left the classroom from
+     *                                                   inflating the count.
+     */
+    public function submittedCount(?iterable $currentStudentIds = null): int
     {
+        $studentIds = $currentStudentIds !== null ? collect($currentStudentIds)->all() : null;
+
         if ($this->relationLoaded('submissions')) {
-            return $this->submissions->filter(fn ($submission) => in_array($submission->status, ['turned_in', 'graded'], true))->count();
+            return $this->submissions
+                ->filter(fn ($submission) => in_array($submission->status, ['turned_in', 'graded'], true))
+                ->filter(fn ($submission) => $studentIds === null || in_array($submission->user_id, $studentIds, true))
+                ->count();
         }
 
-        return $this->submissions()->whereIn('status', ['turned_in', 'graded'])->count();
+        return $this->submissions()
+            ->whereIn('status', ['turned_in', 'graded'])
+            ->when($studentIds !== null, fn ($query) => $query->whereIn('user_id', $studentIds))
+            ->count();
     }
 
-    public function gradedCount(): int
+    public function gradedCount(?iterable $currentStudentIds = null): int
     {
+        $studentIds = $currentStudentIds !== null ? collect($currentStudentIds)->all() : null;
+
         if ($this->relationLoaded('submissions')) {
-            return $this->submissions->where('status', 'graded')->count();
+            return $this->submissions
+                ->where('status', 'graded')
+                ->filter(fn ($submission) => $studentIds === null || in_array($submission->user_id, $studentIds, true))
+                ->count();
         }
 
-        return $this->submissions()->where('status', 'graded')->count();
+        return $this->submissions()
+            ->where('status', 'graded')
+            ->when($studentIds !== null, fn ($query) => $query->whereIn('user_id', $studentIds))
+            ->count();
     }
 
-    public function averageScore(): ?float
+    public function averageScore(?iterable $currentStudentIds = null): ?float
     {
-        if ($this->relationLoaded('submissions')) {
+        $studentIds = $currentStudentIds !== null ? collect($currentStudentIds)->all() : null;
+
+        if ($this->relationLoaded('submissions') && $studentIds === null) {
             $graded = $this->submissions->where('status', 'graded');
 
             return $graded->isNotEmpty() ? (float) $graded->avg('score') : null;
         }
 
-        return $this->submissions()->where('status', 'graded')->avg('score');
+        $graded = $this->submissions()
+            ->where('status', 'graded')
+            ->when($studentIds !== null, fn ($query) => $query->whereIn('user_id', $studentIds))
+            ->get();
+
+        return $graded->isNotEmpty() ? (float) $graded->avg('score') : null;
     }
 
     // ──────────────────────────────────────────────

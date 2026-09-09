@@ -9,7 +9,7 @@
             {{-- Search --}}
             <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-50 border border-[#dedee5] flex-1 sm:flex-none">
                 <x-icon name="magnifying-glass" class="text-[#9497a9] h-4 w-4 shrink-0" />
-                <input wire:model.live.debounce.300ms="search" type="text" placeholder="ค้นหาดาวเคราะห์..."
+                <input wire:model.live.debounce.300ms="search" type="text" placeholder="ค้นหาห้องเรียน..."
                     class="bg-transparent border-none outline-none text-[#101114] placeholder-[#9497a9] text-sm w-full sm:w-44" />
             </div>
 
@@ -26,12 +26,12 @@
                     </label>
 
                     {{-- Count (mobile only) --}}
-                    <span class="sm:hidden text-sm text-[#9497a9]">ค้นพบดาวเคราะห์ {{ $classrooms->count() }} ดวง</span>
+                    <span class="sm:hidden text-sm text-[#9497a9]">พบ {{ $classrooms->count() }} ห้องเรียน</span>
                 </div>
             @endif
 
             {{-- Count (sm+) --}}
-            <span class="hidden sm:block ml-auto text-sm text-[#9497a9]">ค้นพบดาวเคราะห์ {{ $classrooms->count() }} ดวง</span>
+            <span class="hidden sm:block ml-auto text-sm text-[#9497a9]">พบ {{ $classrooms->count() }} ห้องเรียน</span>
         </div>
     </div>
 
@@ -43,7 +43,7 @@
                 <img src="{{ asset('images/empty.svg') }}" alt=""
                     class="h-44 w-44 select-none object-contain" />
             </div>
-            <p class="mt-4 text-base font-medium text-[#686b82]">ยังไม่มีดวงดาวที่ค้นพบ...</p>
+            <p class="mt-4 text-base font-medium text-[#686b82]">ไม่มีห้องเรียน...</p>
         </div>
 
     @else
@@ -98,13 +98,13 @@
                             <span class="flex items-center gap-1">
                                 <x-icon name="user" class="h-3.5 w-3.5 shrink-0 sm:hidden" />
                                 <span>{{ $classroom->students()->count() }}</span>
-                                <span class="hidden sm:inline">นักสำรวจ</span>
+                                <span class="hidden sm:inline">ผู้เรียน</span>
                             </span>
                             <span class="text-[#dedee5]">|</span>
                             <span class="flex items-center gap-1">
                                 <x-icon name="backpack" class="h-3.5 w-3.5 shrink-0 sm:hidden" />
                                 <span>{{ $classroom->assignments()->published()->count() }}</span>
-                                <span class="hidden sm:inline">ทรัพยากร</span>
+                                <span class="hidden sm:inline">กิจกรรม</span>
                         </div>
                     </div>
 

@@ -72,7 +72,7 @@ class Show extends Component
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
-        abort_unless($user->isStudent(), 403);
+        abort_unless($user->isStudent() && $this->classroom->hasMember($user), 403);
 
         return $user;
     }
@@ -113,7 +113,12 @@ class Show extends Component
         }
 
         if ($classroom->canManageClassroom($user)) {
-            $this->submissions = $assignment->submissions()->with('user')->get();
+            $this->classroom->load(['members', 'students']);
+            $this->submissions = $assignment->submissions()
+                ->with('user')
+                ->get()
+                ->filter(fn ($submission) => $submission->user && $classroom->hasMember($submission->user))
+                ->values();
 
             // Auto-open edit tab if ?edit=1
             if (request()->query('edit') == '1') {

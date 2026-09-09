@@ -80,10 +80,10 @@ class Work extends Component
         $user = Auth::user();
 
         if ($this->classroom->canManageClassroom($user)) {
-            $studentCount = $this->classroom->students()->count();
+            $studentIds = $this->classroom->students->pluck('id');
 
-            return $assignments->filter(function (Assignment $assignment) use ($studentCount): bool {
-                return $assignment->submittedCount() < $studentCount;
+            return $assignments->filter(function (Assignment $assignment) use ($studentIds): bool {
+                return $assignment->submittedCount($studentIds) < $studentIds->count();
             })->values();
         }
 
@@ -100,10 +100,10 @@ class Work extends Component
         $user = Auth::user();
 
         if ($this->classroom->canManageClassroom($user)) {
-            $studentCount = $this->classroom->students()->count();
+            $studentIds = $this->classroom->students->pluck('id');
 
-            return $assignments->filter(function (Assignment $assignment) use ($studentCount): bool {
-                return $studentCount > 0 && $assignment->submittedCount() >= $studentCount;
+            return $assignments->filter(function (Assignment $assignment) use ($studentIds): bool {
+                return $studentIds->isNotEmpty() && $assignment->submittedCount($studentIds) >= $studentIds->count();
             })->values();
         }
 

@@ -1,7 +1,8 @@
 @php
     $isManager = $classroom->canManageClassroom(auth()->user());
-    $submittedCount = $assignment->submittedCount();
-    $studentCount = $classroom->students->count();
+    $currentStudentIds = $classroom->students->pluck('id');
+    $submittedCount = $assignment->submittedCount($currentStudentIds);
+    $studentCount = $currentStudentIds->count();
     $themeColor = $classroom->themeCategory?->color ?? \App\Models\ThemeCategory::fallbackFor($classroom->id)['color'];
 @endphp
 

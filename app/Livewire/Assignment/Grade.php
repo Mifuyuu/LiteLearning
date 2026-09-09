@@ -48,6 +48,8 @@ class Grade extends Component
             abort(404);
         }
 
+        abort_unless($classroom->hasMember($submission->user), 404);
+
         $this->classroom = $classroom;
         $this->assignment = $assignment;
         $this->submission = $submission;

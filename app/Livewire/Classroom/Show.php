@@ -144,10 +144,10 @@ class Show extends Component
         $user = Auth::user();
 
         if ($this->classroom->canManageClassroom($user)) {
-            $studentCount = $this->classroom->students->count();
+            $studentIds = $this->classroom->students->pluck('id');
 
             return $assignments->filter(
-                fn (Assignment $assignment): bool => $assignment->submittedCount() < $studentCount
+                fn (Assignment $assignment): bool => $assignment->submittedCount($studentIds) < $studentIds->count()
             )->values();
         }
 
@@ -164,10 +164,10 @@ class Show extends Component
         $user = Auth::user();
 
         if ($this->classroom->canManageClassroom($user)) {
-            $studentCount = $this->classroom->students->count();
+            $studentIds = $this->classroom->students->pluck('id');
 
             return $assignments->filter(
-                fn (Assignment $assignment): bool => $studentCount > 0 && $assignment->submittedCount() >= $studentCount
+                fn (Assignment $assignment): bool => $studentIds->isNotEmpty() && $assignment->submittedCount($studentIds) >= $studentIds->count()
             )->values();
         }
 

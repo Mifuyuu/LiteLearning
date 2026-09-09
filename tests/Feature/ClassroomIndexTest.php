@@ -24,7 +24,7 @@ class ClassroomIndexTest extends TestCase
             ->assertSee('data-empty-state-centered="true"', false)
             ->assertSee('data-empty-state-image-crop', false)
             ->assertSee('/images/empty.svg', false)
-            ->assertSeeText('ยังไม่มีดวงดาวที่ค้นพบ...');
+            ->assertSeeText('ไม่มีห้องเรียน...');
     }
 
     public function test_teacher_without_classrooms_sees_centered_empty_state(): void
@@ -40,7 +40,7 @@ class ClassroomIndexTest extends TestCase
             ->assertSee('data-empty-state-centered="true"', false)
             ->assertSee('data-empty-state-image-crop', false)
             ->assertSee('/images/empty.svg', false)
-            ->assertSeeText('ยังไม่มีดวงดาวที่ค้นพบ...');
+            ->assertSeeText('ไม่มีห้องเรียน...');
     }
 
     public function test_student_classrooms_page_shows_only_active_enrolled_classrooms_without_filter_controls(): void

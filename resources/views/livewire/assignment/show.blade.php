@@ -414,7 +414,7 @@
                             @if($assignment->canAcceptSubmission())
                                 <div class="flex flex-col gap-2">
                                     <button wire:click="turnIn"
-                                        class="btn-3d btn-3d--blue w-full py-2.5 text-sm font-medium rounded-lg transition-colors">
+                                        class="w-full py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                                         <span wire:loading.remove wire:target="turnIn">ส่งงาน</span>
                                         <span wire:loading wire:target="turnIn"><x-icon name="spinner" class="h-4 w-4 mr-1 animate-spin" />
                                             กำลังส่ง...</span>
@@ -466,8 +466,8 @@
                         <h3 class="text-lg font-semibold text-gray-900">งานนักเรียน</h3>
                         <div class="flex gap-4 mt-2 text-sm text-gray-500">
                             <span><x-icon name="user" class="h-4 w-4 mr-1 text-primary" />
-                                 ส่งแล้ว {{ $assignment->submittedCount() }} คน</span>
-                            <span><x-icon name="check-circle" class="h-4 w-4 mr-1 text-green-500" />ให้คะแนนแล้ว {{ $assignment->gradedCount() }} คน</span>
+                                 ส่งแล้ว {{ $assignment->submittedCount($classroom->students->pluck('id')) }} คน</span>
+                            <span><x-icon name="check-circle" class="h-4 w-4 mr-1 text-green-500" />ให้คะแนนแล้ว {{ $assignment->gradedCount($classroom->students->pluck('id')) }} คน</span>
                             @if($assignment->averageScore())
                                 <span><x-icon name="chart-bar" class="h-4 w-4 mr-1 text-blue-500" /> เฉลี่ย:
                                     {{ round($assignment->averageScore()) }}/{{ $assignment->max_score }}</span>
