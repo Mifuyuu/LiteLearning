@@ -26,8 +26,8 @@ npm install
 | **Composer** | 2.x | ตัวจัดการ Package ฝั่ง PHP (ติดตั้ง/อัปเดต Library ตาม `composer.json`) |
 | **Node.js** (พร้อม npm) | 18 ขึ้นไป | รันคำสั่ง Vite build/dev และติดตั้ง Package ฝั่ง JavaScript ตาม `package.json` |
 | **Git** | - | ระบบควบคุมเวอร์ชัน (Version Control) สำหรับ clone/track โค้ดโปรเจกต์ |
-| **MariaDB / MySQL** | 10.11 | ฐานข้อมูลหลักของระบบ (เก็บข้อมูลผู้ใช้ ห้องเรียน งานที่มอบหมาย ฯลฯ) |
-| **Docker Desktop** (พร้อม Docker Compose) | - | รัน Service สนับสนุนที่กำหนดใน `docker-compose.yml` ได้แก่ MariaDB, phpMyAdmin, MinIO และ Scheduler โดยไม่ต้องติดตั้งเองทีละตัว |
+| **MySQL** | 8.4 | ฐานข้อมูลหลักของระบบ (เก็บข้อมูลผู้ใช้ ห้องเรียน งานที่มอบหมาย ฯลฯ) |
+| **Docker Desktop** (พร้อม Docker Compose) | - | รัน Service สนับสนุนที่กำหนดใน `docker-compose.yml` ได้แก่ MySQL, phpMyAdmin, MinIO และ Scheduler โดยไม่ต้องติดตั้งเองทีละตัว |
 | **MinIO** (หรือบัญชี Amazon S3) | - | พื้นที่จัดเก็บไฟล์แบบ S3-compatible สำหรับไฟล์แนบและรูปโปรไฟล์ (รันผ่าน Docker Compose ในข้อบน) |
 | **Cloudflared** | - | สร้าง Tunnel เปิดให้เข้าถึงเครื่อง Dev ผ่าน HTTPS จากภายนอก (ใช้ทดสอบ/สาธิตนอกเครื่อง) |
 | **Code Editor** (เช่น Visual Studio Code) | - | เครื่องมือเขียนโค้ด |

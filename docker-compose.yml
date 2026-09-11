@@ -1,15 +1,15 @@
 services:
   # Database Service
-  mariadb:
-    image: mariadb:10.11
-    container_name: mariadb
+  mysql:
+    image: mysql:8.4
+    container_name: mysql
     restart: unless-stopped
     ports:
       - "3306:3306"
     env_file:
       - .env.docker
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword" ]
       interval: 5s
@@ -24,12 +24,12 @@ services:
     ports:
       - "8080:80"
     environment:
-      PMA_HOST: mariadb
+      PMA_HOST: mysql
       PMA_PORT: 3306
       PMA_USER: litelearning_user
       PMA_PASSWORD: secretpassword
     depends_on:
-      - mariadb
+      - mysql
 
   # MinIO (S3 Storage)
   minio:
@@ -79,7 +79,7 @@ services:
       - scheduler_vendor:/var/www/html/vendor
     environment:
       DB_CONNECTION: mysql
-      DB_HOST: mariadb
+      DB_HOST: mysql
       DB_PORT: 3306
       DB_DATABASE: litelearning
       DB_USERNAME: litelearning_user
@@ -87,7 +87,7 @@ services:
       AWS_ENDPOINT: http://minio:9000
       AWS_USE_PATH_STYLE_ENDPOINT: "true"
     depends_on:
-      mariadb:
+      mysql:
         condition: service_healthy
       minio:
         condition: service_healthy
@@ -105,6 +105,6 @@ services:
       - "host.docker.internal:host-gateway"
 
 volumes:
-  mariadb_data:
+  mysql_data:
   minio_data:
   scheduler_vendor:

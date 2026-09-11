@@ -11,7 +11,7 @@ services:
       - ./.env:/var/www/html/.env:ro
       - storage_logs:/var/www/html/storage/logs
     depends_on:
-      mariadb:
+      mysql:
         condition: service_healthy
       minio:
         condition: service_healthy
@@ -30,7 +30,7 @@ services:
       - ./.env:/var/www/html/.env:ro
       - storage_logs:/var/www/html/storage/logs
     depends_on:
-      mariadb:
+      mysql:
         condition: service_healthy
     networks:
       - litelearning
@@ -47,14 +47,14 @@ services:
       - ./.env:/var/www/html/.env:ro
       - storage_logs:/var/www/html/storage/logs
     depends_on:
-      mariadb:
+      mysql:
         condition: service_healthy
     networks:
       - litelearning
 
-  mariadb:
-    image: mariadb:10.11
-    container_name: mariadb
+  mysql:
+    image: mysql:8.4
+    container_name: mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
@@ -62,7 +62,7 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
       interval: 5s
@@ -109,7 +109,7 @@ services:
       - litelearning
 
 volumes:
-  mariadb_data:
+  mysql_data:
   minio_data:
   storage_logs:
 
