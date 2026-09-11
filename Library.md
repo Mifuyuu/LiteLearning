@@ -12,13 +12,13 @@ composer install
 npm install
 ```
 
-รายละเอียดด้านล่างคือ Library แต่ละตัวที่ใช้งานจริงในโค้ด พร้อมหน้าที่และคำสั่งติดตั้งเฉพาะตัว (กรณีต้องการติดตั้งเพิ่มทีละตัว)
+รายละเอียดด้านล่างคือ Library แต่ละตัวที่ใช้งานจริงในโค้ด แบ่งเป็น 3 กลุ่มตามหน้าที่: **Backend**, **Frontend** และ **เครื่องมือสำหรับพัฒนา (Dev Tools)** พร้อมหน้าที่และคำสั่งติดตั้งเฉพาะตัว (กรณีต้องการติดตั้งเพิ่มทีละตัว)
 
 ---
 
 ## 0. โปรแกรมที่จำเป็นต้องติดตั้งบนเครื่อง (System Requirements)
 
-ก่อนจะติดตั้ง Library ในข้อ 1-2 ได้ เครื่องพัฒนา (Development Machine) ต้องมีโปรแกรมพื้นฐานเหล่านี้ติดตั้งไว้ก่อน
+ก่อนจะติดตั้ง Library ในข้อ 1-3 ได้ เครื่องพัฒนา (Development Machine) ต้องมีโปรแกรมพื้นฐานเหล่านี้ติดตั้งไว้ก่อน
 
 | โปรแกรม | เวอร์ชันที่ใช้ | หน้าที่ |
 |---|---|---|
@@ -33,11 +33,13 @@ npm install
 | **Code Editor** (เช่น Visual Studio Code) | - | เครื่องมือเขียนโค้ด |
 | **Web Browser** (เช่น Google Chrome) | - | ใช้ทดสอบและใช้งานหน้าเว็บของระบบ |
 
-> โปรแกรมในตารางนี้เป็น "เครื่องมือ/สภาพแวดล้อม" ที่ต้องมีอยู่บนเครื่องก่อน ส่วน Library ในข้อ 1 และ 2 ด้านล่างคือโค้ดที่ติดตั้งเพิ่มเข้าไปในตัวโปรเจกต์ผ่าน Composer/npm
+> โปรแกรมในตารางนี้เป็น "เครื่องมือ/สภาพแวดล้อม" ที่ต้องมีอยู่บนเครื่องก่อน ส่วน Library ในข้อ 1-3 ด้านล่างคือโค้ดที่ติดตั้งเพิ่มเข้าไปในตัวโปรเจกต์ผ่าน Composer/npm
 
 ---
 
-## 1. PHP Library (จัดการผ่าน Composer)
+## 1. Backend Library (PHP — composer `require`)
+
+Library ที่ถูกใช้งานจริงตอนระบบรัน (Production) ระบุอยู่ใน `require` ของ `composer.json`
 
 ### 1.1 laravel/framework (^12.0)
 Framework หลักของโครงงาน ทำหน้าที่เป็นแกนกลางของระบบทั้งหมด ได้แก่ Routing, ORM (Eloquent) สำหรับติดต่อฐานข้อมูล, Authentication, Validation, Queue, Migration และโครงสร้าง MVC
@@ -69,8 +71,44 @@ composer require league/flysystem-aws-s3-v3
 composer require laravel/tinker
 ```
 
-### เครื่องมือสำหรับพัฒนา (require-dev)
-ใช้เฉพาะตอนพัฒนา/ทดสอบ ไม่ถูกนำไปใช้งานจริงบน Production
+---
+
+## 2. Frontend Library (JavaScript — npm `dependencies`)
+
+Library ที่ถูก bundle เข้ากับ Asset ฝั่งหน้าเว็บจริง (Production) ระบุอยู่ใน `dependencies` ของ `package.json`
+
+### 2.1 @tailwindcss/typography (^0.5)
+Plugin เสริมของ Tailwind สำหรับจัดรูปแบบข้อความเนื้อหายาว (เช่น เนื้อหาบทเรียน/งานที่ผ่านการแก้ไขจาก Rich Text Editor) ให้อ่านง่าย มีระยะบรรทัดและหัวข้อที่เหมาะสมโดยอัตโนมัติ
+```bash
+npm install @tailwindcss/typography
+```
+
+### 2.2 @tiptap/* (core, starter-kit, extension-link, extension-placeholder, extension-text-align, extension-underline) (^3.20)
+ชุด Library สำหรับสร้าง Rich Text Editor (พิมพ์ตัวหนา ตัวเอียง จัดย่อหน้า ใส่ลิงก์ ฯลฯ) ใช้ในหน้าสร้าง/แก้ไขเนื้อหางาน (Assignment) และเอกสารประกอบการเรียน (Material) ให้ผู้สอนพิมพ์เนื้อหาแบบมีสไตล์ได้เหมือนโปรแกรมพิมพ์เอกสารทั่วไป
+```bash
+npm install @tiptap/core @tiptap/starter-kit @tiptap/extension-link @tiptap/extension-placeholder @tiptap/extension-text-align @tiptap/extension-underline
+```
+
+### 2.3 cropperjs (^1.6)
+Library สำหรับครอบตัดรูปภาพ (Image Cropping) บนหน้าเว็บ ใช้ในหน้าตั้งค่าโปรไฟล์ผู้ใช้ (Settings) ให้ผู้ใช้ปรับขนาด/ครอบรูปโปรไฟล์ก่อนอัปโหลด
+```bash
+npm install cropperjs
+```
+
+### 2.4 flatpickr (^4.6)
+Library สำหรับเลือกวันที่/เวลา (Date/Time Picker) แบบมี UI ปฏิทินให้เลือก ใช้ในหน้าที่ต้องกำหนดกำหนดส่งงาน (Due Date) หรือเวลาเผยแพร่เนื้อหาแบบตั้งเวลา (Scheduled Publish)
+```bash
+npm install flatpickr
+```
+
+---
+
+## 3. เครื่องมือสำหรับพัฒนา (Dev Tools)
+
+ใช้เฉพาะตอนพัฒนา/ทดสอบ/build ไม่ถูก bundle หรือรันจริงบน Production (ระบุอยู่ใน `require-dev` ของ `composer.json` และ `devDependencies` ของ `package.json`)
+
+### 3.1 เครื่องมือฝั่ง PHP (composer `require-dev`)
+
 | Library | หน้าที่ |
 |---|---|
 | `laravel/pint` | จัดรูปแบบโค้ด PHP (Code Formatter) ให้เป็นมาตรฐานเดียวกัน |
@@ -83,59 +121,33 @@ composer require laravel/tinker
 
 ติดตั้งแบบ dev-dependency: `composer require --dev <package-name>`
 
----
+### 3.2 เครื่องมือฝั่ง JavaScript (npm `devDependencies`)
 
-## 2. JavaScript Library (จัดการผ่าน npm)
-
-### 2.1 vite (^7.0) และ laravel-vite-plugin (^2.0)
+#### 3.2.1 vite (^7.0) และ laravel-vite-plugin (^2.0)
 Vite คือเครื่องมือ Build/Bundle ไฟล์ CSS และ JavaScript ให้ทำงานเร็วในระหว่างพัฒนา (Hot Module Reload) และบีบอัดไฟล์ให้พร้อมใช้งานจริงตอน build ส่วน `laravel-vite-plugin` คือตัวเชื่อม Vite เข้ากับ Laravel ให้เรียกใช้ asset ผ่าน Blade directive ได้
 ```bash
 npm install --save-dev vite laravel-vite-plugin
 ```
 
-### 2.2 tailwindcss (^4.0) และ @tailwindcss/vite (^4.0)
+#### 3.2.2 tailwindcss (^4.0) และ @tailwindcss/vite (^4.0)
 Framework CSS แบบ Utility-first ใช้จัดหน้าตา (Layout, สี, ระยะห่าง, Responsive) ของทั้งระบบแทนการเขียน CSS เอง ส่วน `@tailwindcss/vite` คือ plugin ที่ให้ Vite ประมวลผล Tailwind โดยตรง
 ```bash
 npm install --save-dev tailwindcss @tailwindcss/vite
 ```
 
-### 2.3 daisyui (^5.5)
+#### 3.2.3 daisyui (^5.5)
 Plugin เสริมของ Tailwind ที่มี Component สำเร็จรูป (เช่น card, badge, avatar, tooltip, skeleton, toggle, checkbox) ช่วยลดเวลาการออกแบบ UI element ที่ใช้ซ้ำในหลายหน้า
 ```bash
 npm install --save-dev daisyui
 ```
 
-### 2.4 @tailwindcss/typography (^0.5)
-Plugin เสริมของ Tailwind สำหรับจัดรูปแบบข้อความเนื้อหายาว (เช่น เนื้อหาบทเรียน/งานที่ผ่านการแก้ไขจาก Rich Text Editor) ให้อ่านง่าย มีระยะบรรทัดและหัวข้อที่เหมาะสมโดยอัตโนมัติ
-```bash
-npm install @tailwindcss/typography
-```
-
-### 2.5 @tiptap/* (core, starter-kit, extension-link, extension-placeholder, extension-text-align, extension-underline) (^3.20)
-ชุด Library สำหรับสร้าง Rich Text Editor (พิมพ์ตัวหนา ตัวเอียง จัดย่อหน้า ใส่ลิงก์ ฯลฯ) ใช้ในหน้าสร้าง/แก้ไขเนื้อหางาน (Assignment) และเอกสารประกอบการเรียน (Material) ให้ผู้สอนพิมพ์เนื้อหาแบบมีสไตล์ได้เหมือนโปรแกรมพิมพ์เอกสารทั่วไป
-```bash
-npm install @tiptap/core @tiptap/starter-kit @tiptap/extension-link @tiptap/extension-placeholder @tiptap/extension-text-align @tiptap/extension-underline
-```
-
-### 2.6 cropperjs (^1.6)
-Library สำหรับครอบตัดรูปภาพ (Image Cropping) บนหน้าเว็บ ใช้ในหน้าตั้งค่าโปรไฟล์ผู้ใช้ (Settings) ให้ผู้ใช้ปรับขนาด/ครอบรูปโปรไฟล์ก่อนอัปโหลด
-```bash
-npm install cropperjs
-```
-
-### 2.7 flatpickr (^4.6)
-Library สำหรับเลือกวันที่/เวลา (Date/Time Picker) แบบมี UI ปฏิทินให้เลือก ใช้ในหน้าที่ต้องกำหนดกำหนดส่งงาน (Due Date) หรือเวลาเผยแพร่เนื้อหาแบบตั้งเวลา (Scheduled Publish)
-```bash
-npm install flatpickr
-```
-
-### 2.8 axios (^1.11)
+#### 3.2.4 axios (^1.11)
 Library สำหรับเรียก HTTP Request (AJAX) จากฝั่ง JavaScript ไปยัง Backend มาพร้อมกับไฟล์ตั้งต้นของ Laravel (`resources/js/bootstrap.js`)
 ```bash
-npm install axios
+npm install --save-dev axios
 ```
 
-### 2.9 concurrently (^9.0)
+#### 3.2.5 concurrently (^9.0)
 เครื่องมือช่วยรันหลายคำสั่ง (เช่น `php artisan serve`, `queue:listen`, `npm run dev`) พร้อมกันในหน้าต่าง terminal เดียวตอนพัฒนา ผ่านคำสั่ง `composer dev`
 ```bash
 npm install --save-dev concurrently
@@ -149,8 +161,8 @@ npm install --save-dev concurrently
 git clone <repository-url>
 cd LiteLearning
 
-composer install        # ติดตั้ง PHP library ทั้งหมด
-npm install              # ติดตั้ง JavaScript library ทั้งหมด
+composer install        # ติดตั้ง PHP library ทั้งหมด (Backend + Dev Tools)
+npm install              # ติดตั้ง JavaScript library ทั้งหมด (Frontend + Dev Tools)
 
 cp .env.example .env
 php artisan key:generate
