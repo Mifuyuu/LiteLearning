@@ -66,6 +66,7 @@ class Profile extends Component
             ? $user->submissions()
                 ->with(['assignment.classworkItem.classroom.themeCategory'])
                 ->whereNotNull('turned_in_at')
+                ->whereHas('assignment.classworkItem', fn ($q) => $q->whereIn('classroom_id', $classrooms->pluck('id')))
                 ->latest('turned_in_at')
                 ->take(6)
                 ->get()
