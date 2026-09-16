@@ -3,6 +3,7 @@
 namespace App\Livewire\Material;
 
 use App\Livewire\Concerns\HasEditableContent;
+use App\Livewire\Concerns\HasFileUpload;
 use App\Livewire\Concerns\HasTopicSelector;
 use App\Livewire\Concerns\VerifiesContentAccess;
 use App\Models\Classroom;
@@ -20,7 +21,7 @@ use Mews\Purifier\Facades\Purifier;
 #[Layout('layouts.app')]
 class Show extends Component
 {
-    use HasEditableContent, HasTopicSelector, VerifiesContentAccess, WithFileUploads;
+    use HasEditableContent, HasFileUpload, HasTopicSelector, VerifiesContentAccess, WithFileUploads;
 
     #[Locked]
     public Classroom $classroom;
@@ -46,6 +47,36 @@ class Show extends Component
             $classroom->canManageClassroom($user) || ! $material->classworkItem?->published_at?->isFuture(),
             404
         );
+    }
+
+    protected function allowedMimes(): string
+    {
+        return 'pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,zip,rar,txt,mp4,mp3';
+    }
+
+    protected function maxFileSizeKb(): int
+    {
+        return 25600;
+    }
+
+    public function cancelEditTab(): void
+    {
+        $this->isEditTab = false;
+        $this->uploadedFiles = [];
+        $this->file = null;
+    }
+
+    public function removeAttachment(int $attachmentId): void
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        abort_unless($this->classroom->canManageClassroom($user), 403);
+
+        $attachment = $this->material->attachments()->findOrFail($attachmentId);
+        Storage::disk('s3')->delete($attachment->file_path);
+        $attachment->delete();
+
+        $this->material->refresh();
     }
 
     public function saveMaterial(): void
@@ -75,6 +106,21 @@ class Show extends Component
             'description' => $this->editDescription ? Purifier::clean($this->editDescription) : null,
             'topic_id' => $topicId,
         ]);
+
+        foreach ($this->uploadedFiles as $uploaded) {
+            $path = $uploaded['file']->store(
+                'materials/attachments/'.$this->classroom->id,
+                's3'
+            );
+            $this->material->attachments()->create([
+                'file_name' => $uploaded['name'],
+                'file_path' => $path,
+                'file_type' => $uploaded['mime'],
+                'file_size' => $uploaded['size'],
+                'uploaded_by' => $user->id,
+            ]);
+        }
+        $this->uploadedFiles = [];
 
         $this->isEditTab = false;
         $this->material->refresh();

@@ -14,7 +14,7 @@
 @endphp
 
 <div class="max-w-4xl mx-auto" style="--cw-color: {{ $themeColor }}; --cw-subtle: {{ $themeColor }}26; --cw-faint: {{ $themeColor }}12;"
-    x-data="{ copiedToast: false }">
+    x-data="{ copiedToast: false, showDeleteFileModal: false, deleteFileIndex: null, deleteFileName: '', showDeleteAttachmentModal: false, deleteAttachmentId: null, deleteAttachmentName: '' }">
 
     {{-- Single Container Card --}}
     <div class="rounded-2xl border-3 border-[#dedee5] bg-white relative z-10 shadow-[rgba(0,0,0,0.03)_0px_4px_24px] overflow-hidden min-h-[calc(100vh-3rem)] flex flex-col">
@@ -165,7 +165,8 @@
                     get isDirty() {
                         return ($wire.editTitle ?? '') !== this.initialTitle ||
                                ($wire.editDescription ?? '') !== this.initialDescription ||
-                               ($wire.editTopic ?? '') !== this.initialTopic;
+                               ($wire.editTopic ?? '') !== this.initialTopic ||
+                               ($wire.uploadedFiles ?? []).length > 0;
                     }
                 }">
                 <div class="p-6 pt-0 space-y-6 flex-1">
@@ -201,6 +202,111 @@
                         </div>
                         @error('editDescription') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                     </div>
+
+                    {{-- Existing Attachments --}}
+                    @if($material->attachments->count())
+                        <div>
+                            <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'ไฟล์แนบเดิม' }}</label>
+                            <div class="space-y-2">
+                                @foreach($material->attachments as $attachment)
+                                    <div class="flex items-center justify-between p-3 bg-[#f9f9fb] border border-[#dedee5] rounded-xl">
+                                        <div class="flex items-center space-x-3 overflow-hidden">
+                                            <div class="shrink-0 w-9 h-9 rounded-lg bg-(--cw-faint) text-(--cw-color) flex items-center justify-center">
+                                                <x-icon :name="$attachment->icon" class="h-5 w-5" />
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-semibold text-[#101114] truncate">{{ $attachment->file_name }}</p>
+                                                <p class="text-xs text-[#9497a9]">{{ $attachment->formatted_size }}</p>
+                                            </div>
+                                        </div>
+                                        <button type="button"
+                                            @click="deleteAttachmentId = {{ $attachment->id }}; deleteAttachmentName = @js($attachment->file_name); showDeleteAttachmentModal = true"
+                                            class="text-[#9497a9] hover:text-red-500 shrink-0 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                                            title="{{ 'ลบ' }}">
+                                            <x-icon name="trash" class="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Add New Files --}}
+                    <div x-data="{ uploading: false, progress: 0, uploadError: '' }"
+                        x-on:livewire-upload-start="uploading = true; progress = 0; uploadError = ''"
+                        x-on:livewire-upload-finish="uploading = false"
+                        x-on:livewire-upload-cancel="uploading = false"
+                        x-on:livewire-upload-error="uploading = false; uploadError = 'อัปโหลดไฟล์ไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป (สูงสุด 25MB) กรุณาลองใหม่อีกครั้ง'"
+                        x-on:livewire-upload-progress="progress = $event.detail.progress">
+                        <label class="block text-sm font-bold text-[#101114] mb-2">{{ 'เพิ่มไฟล์แนบใหม่' }}
+                            <span class="text-[#9497a9] font-normal">({{ 'ไม่บังคับ' }})</span>
+                        </label>
+
+                        <label for="file-upload-edit"
+                            class="relative flex flex-col items-center justify-center w-full h-32 border-2 border-[#dedee5] border-dashed rounded-xl cursor-pointer bg-[#f9f9fb] hover:bg-(--cw-faint) hover:border-(--cw-color) transition-colors">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <x-icon name="arrow-up-tray" class="h-7 w-7 mb-2 text-[#9497a9]" />
+                                <p class="mb-1 text-sm text-[#686b82]">
+                                    <span class="font-bold">{{ 'คลิกเพื่ออัปโหลด' }}</span> {{ 'หรือลากและวางไฟล์' }}
+                                </p>
+                                <p class="text-xs text-[#9497a9]">{{ 'PDF, DOCX, PPTX, JPG, PNG (สูงสุด 25MB)' }}</p>
+                            </div>
+                            <input id="file-upload-edit" type="file" wire:model.live="file" multiple class="hidden" />
+                        </label>
+
+                        <div x-show="uploading" x-cloak class="mt-3 w-full bg-blue-50 rounded-lg p-3">
+                            <div class="flex items-center justify-between text-sm text-blue-600 mb-1.5">
+                                <span class="flex items-center gap-2">
+                                    <x-icon name="spinner" class="h-4 w-4 animate-spin" />
+                                    {{ 'กำลังอัปโหลดไฟล์...' }}
+                                </span>
+                                <span class="font-semibold" x-text="progress + '%'"></span>
+                            </div>
+                            <div class="h-2 bg-blue-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-500 rounded-full transition-all duration-150" :style="`width: ${progress}%`"></div>
+                            </div>
+                        </div>
+
+                        @error('file')
+                            <p class="mt-2 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
+                        <p x-show="uploadError" x-cloak x-text="uploadError" class="mt-2 text-xs text-red-500"></p>
+
+                        @if(count($uploadedFiles) > 0)
+                            <div class="mt-3 space-y-2">
+                                <h4 class="text-xs font-semibold text-[#686b82] uppercase tracking-wider mb-2">
+                                    {{ 'ไฟล์ที่จะแนบเพิ่ม' }} ({{ count($uploadedFiles) }})
+                                </h4>
+                                @foreach($uploadedFiles as $index => $uploadedFile)
+                                    <div class="flex items-center justify-between p-3 bg-[#f9f9fb] border border-[#dedee5] rounded-xl group hover:border-(--cw-color)/30 transition-colors">
+                                        <div class="flex items-center space-x-3 overflow-hidden">
+                                            <div class="shrink-0 w-9 h-9 rounded-lg bg-(--cw-faint) text-(--cw-color) flex items-center justify-center">
+                                                @php
+                                                    $mime = $uploadedFile['mime'];
+                                                    $icon = 'document';
+                                                    if (str_contains($mime, 'image'))
+                                                        $icon = 'photo';
+                                                    elseif (str_contains($mime, 'pdf') || str_contains($mime, 'word') || str_contains($mime, 'video') || str_contains($mime, 'audio'))
+                                                        $icon = 'document-text';
+                                                @endphp
+                                                <x-icon :name="$icon" class="h-5 w-5" />
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-semibold text-[#101114] truncate">{{ $uploadedFile['name'] }}</p>
+                                                <p class="text-xs text-[#9497a9]">{{ number_format($uploadedFile['size'] / 1024 / 1024, 2) }} MB</p>
+                                            </div>
+                                        </div>
+                                        <button type="button"
+                                            @click="deleteFileIndex = {{ $index }}; deleteFileName = @js($uploadedFile['name']); showDeleteFileModal = true"
+                                            class="text-[#9497a9] hover:text-red-500 shrink-0 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                                            title="{{ 'ลบ' }}">
+                                            <x-icon name="trash" class="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 {{-- Edit Actions Footer (2D Buttons with Dirty State) --}}
@@ -227,6 +333,34 @@
             <button type="button" wire:click="deleteMaterial"
                 class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
                 {{ 'ลบสื่อการสอน' }}
+            </button>
+        </x-confirm-modal>
+    </template>
+
+    {{-- Delete staged (not-yet-saved) file modal --}}
+    <template x-teleport="body">
+        <x-confirm-modal show="showDeleteFileModal" cancel="showDeleteFileModal = false" heading="ยืนยันการลบไฟล์">
+            <x-slot:message>
+                {{ 'คุณต้องการลบไฟล์' }} <span class="font-semibold text-[#101114]" x-text="deleteFileName"></span> {{ 'ใช่หรือไม่?' }}
+            </x-slot:message>
+            <button type="button"
+                @click="$wire.removeFile(deleteFileIndex); showDeleteFileModal = false"
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                {{ 'ลบไฟล์' }}
+            </button>
+        </x-confirm-modal>
+    </template>
+
+    {{-- Delete existing attachment modal --}}
+    <template x-teleport="body">
+        <x-confirm-modal show="showDeleteAttachmentModal" cancel="showDeleteAttachmentModal = false" heading="ยืนยันการลบไฟล์แนบ">
+            <x-slot:message>
+                {{ 'คุณต้องการลบไฟล์' }} <span class="font-semibold text-[#101114]" x-text="deleteAttachmentName"></span> {{ 'ใช่หรือไม่? การดำเนินการนี้ไม่สามารถยกเลิกได้' }}
+            </x-slot:message>
+            <button type="button"
+                @click="$wire.removeAttachment(deleteAttachmentId); showDeleteAttachmentModal = false"
+                class="flex-1 rounded-[10px] bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700">
+                {{ 'ลบไฟล์' }}
             </button>
         </x-confirm-modal>
     </template>
