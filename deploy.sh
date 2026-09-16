@@ -10,6 +10,12 @@ COMPOSE="docker compose -f docker-compose.prod.yml"
 
 git pull origin "$BRANCH"
 
+# public/images is bind-mounted into the php container so admin-uploaded
+# planet/achievement/frame images land on the host where nginx serves them.
+# The container's php-fpm runs as www-data (uid/gid 82 on Alpine), so the
+# host directory must be writable by that uid.
+sudo chown -R 82:82 public/images
+
 sudo $COMPOSE build php queue scheduler
 sudo $COMPOSE up -d --no-deps php queue scheduler
 

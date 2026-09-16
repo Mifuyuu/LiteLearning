@@ -51,21 +51,21 @@ return [
             'driver' => 'local',
             'root' => public_path('images/achievements'),
             'visibility' => 'public',
-            'throw' => false,
+            'throw' => true,
         ],
 
         'planets' => [
             'driver' => 'local',
             'root' => public_path('images/planets'),
             'visibility' => 'public',
-            'throw' => false,
+            'throw' => true,
         ],
 
         'frames' => [
             'driver' => 'local',
             'root' => public_path('images/frames'),
             'visibility' => 'public',
-            'throw' => false,
+            'throw' => true,
         ],
 
         's3' => [

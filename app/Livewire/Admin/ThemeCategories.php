@@ -106,7 +106,14 @@ class ThemeCategories extends Component
         $data = $this->form;
 
         if ($this->planetImageUpload) {
-            $this->planetImageUpload->storeAs('', "planet_{$data['planet_key']}.svg", ['disk' => 'planets']);
+            try {
+                $this->planetImageUpload->storeAs('', "planet_{$data['planet_key']}.svg", ['disk' => 'planets']);
+            } catch (\Throwable $e) {
+                report($e);
+                $this->addError('planetImageUpload', 'ไม่สามารถบันทึกไฟล์ภาพได้ กรุณาติดต่อผู้ดูแลระบบ');
+
+                return;
+            }
         }
 
         if ($this->editingId) {

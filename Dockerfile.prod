@@ -41,6 +41,6 @@ RUN echo "pm.max_children = 4" >> /usr/local/etc/php-fpm.d/www.conf \
     && echo "pm.min_spare_servers = 1" >> /usr/local/etc/php-fpm.d/www.conf \
     && echo "pm.max_spare_servers = 3" >> /usr/local/etc/php-fpm.d/www.conf
 
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/images
 
 EXPOSE 9000
