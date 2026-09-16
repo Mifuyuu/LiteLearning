@@ -62,12 +62,14 @@ class Profile extends Component
 
         $this->profileClassrooms = $classrooms->values();
 
-        $this->recentSubmissions = $user->submissions()
-            ->with(['assignment.classworkItem.classroom.themeCategory'])
-            ->whereNotNull('turned_in_at')
-            ->latest('turned_in_at')
-            ->take(6)
-            ->get();
+        $this->recentSubmissions = $user->isStudent()
+            ? $user->submissions()
+                ->with(['assignment.classworkItem.classroom.themeCategory'])
+                ->whereNotNull('turned_in_at')
+                ->latest('turned_in_at')
+                ->take(6)
+                ->get()
+            : collect();
 
         $this->computeProfileStats($user);
         $this->computeChart($user);
